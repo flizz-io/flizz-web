@@ -1,6 +1,6 @@
-# Turborepo Template
+# Flizz Web
 
-A pnpm + Turborepo monorepo starter with a public-facing Next.js app, an
+A pnpm + Turborepo monorepo with a public-facing Next.js app, an
 admin/dashboard Next.js app, and an Express + TypeScript API — all sharing one
 component library and one set of lint/format/typecheck conventions.
 
