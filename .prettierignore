@@ -1,0 +1,19 @@
+# Ignore artifacts:
+node_modules/
+.next/
+.turbo/
+package-lock.json
+pnpm-lock.yaml
+.pnpm-store/
+public/
+cache/
+*.log
+*.tmp
+dist/
+build/
+out/
+coverage/
+.env
+.env.local
+.env.production
+.husky/

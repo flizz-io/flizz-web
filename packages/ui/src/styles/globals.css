@@ -1,0 +1,144 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+@source '../../../apps/**/*.{ts,tsx}';
+@source '../../../components/**/*.{ts,tsx}';
+@source '../**/*.{ts,tsx}';
+
+@theme inline {
+	--font-heading: var(--font-heading);
+	--font-mono: var(--font-mono);
+	--color-sidebar-ring: var(--sidebar-ring);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar: var(--sidebar);
+	--color-chart-5: var(--chart-5);
+	--color-chart-4: var(--chart-4);
+	--color-chart-3: var(--chart-3);
+	--color-chart-2: var(--chart-2);
+	--color-chart-1: var(--chart-1);
+	--color-ring: var(--ring);
+	--color-input: var(--input);
+	--color-border: var(--border);
+	--color-destructive: var(--destructive);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-accent: var(--accent);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-muted: var(--muted);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-secondary: var(--secondary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-primary: var(--primary);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-popover: var(--popover);
+	--color-card-foreground: var(--card-foreground);
+	--color-card: var(--card);
+	--color-foreground: var(--foreground);
+	--color-background: var(--background);
+	--radius-sm: calc(var(--radius) * 0.6);
+	--radius-md: calc(var(--radius) * 0.8);
+	--radius-lg: var(--radius);
+	--radius-xl: calc(var(--radius) * 1.4);
+	--radius-2xl: calc(var(--radius) * 1.8);
+	--radius-3xl: calc(var(--radius) * 2.2);
+	--radius-4xl: calc(var(--radius) * 2.6);
+	--font-sans: var(--font-sans);
+}
+
+:root {
+	--background: #f6faf8;
+	--foreground: #0f1b19;
+	--card: #ffffff;
+	--card-foreground: #0f1b19;
+	--popover: #ffffff;
+	--popover-foreground: #0f1b19;
+	--primary: #04a18f;
+	--primary-foreground: #ffffff;
+	--secondary: #eaf5f3;
+	--secondary-foreground: #0b4a42;
+	--muted: #eff4f3;
+	--muted-foreground: #5b6c69;
+	--accent: #f2a93b;
+	--accent-foreground: #241505;
+	--destructive: oklch(0.577 0.245 27.325);
+	--border: #dceae7;
+	--input: #dceae7;
+	--ring: #14b8a6;
+	--chart-1: #14b8a6;
+	--chart-2: #04a18f;
+	--chart-3: #188478;
+	--chart-4: #f2a93b;
+	--chart-5: #5b6c69;
+	--radius: 0.5rem;
+	--sidebar: #ffffff;
+	--sidebar-foreground: #0f1b19;
+	--sidebar-primary: #04a18f;
+	--sidebar-primary-foreground: #ffffff;
+	--sidebar-accent: #eaf5f3;
+	--sidebar-accent-foreground: #0b4a42;
+	--sidebar-border: #dceae7;
+	--sidebar-ring: #14b8a6;
+}
+
+.dark {
+	--background: #0b1613;
+	--foreground: #eaf6f4;
+	--card: #10201c;
+	--card-foreground: #eaf6f4;
+	--popover: #10201c;
+	--popover-foreground: #eaf6f4;
+	--primary: #14b8a6;
+	--primary-foreground: #06201c;
+	--secondary: #16302b;
+	--secondary-foreground: #eaf6f4;
+	--muted: #16302b;
+	--muted-foreground: #8fb0ab;
+	--accent: #f2a93b;
+	--accent-foreground: #241505;
+	--destructive: oklch(0.704 0.191 22.216);
+	--border: oklch(1 0 0 / 10%);
+	--input: oklch(1 0 0 / 15%);
+	--ring: #14b8a6;
+	--chart-1: #14b8a6;
+	--chart-2: #04a18f;
+	--chart-3: #188478;
+	--chart-4: #f2a93b;
+	--chart-5: #8fb0ab;
+	--sidebar: #10201c;
+	--sidebar-foreground: #eaf6f4;
+	--sidebar-primary: #14b8a6;
+	--sidebar-primary-foreground: #06201c;
+	--sidebar-accent: #16302b;
+	--sidebar-accent-foreground: #eaf6f4;
+	--sidebar-border: oklch(1 0 0 / 10%);
+	--sidebar-ring: #14b8a6;
+}
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+	body {
+		@apply bg-background text-foreground;
+	}
+}
+
+@theme {
+	--animate-marquee: marquee 34s linear infinite;
+	--ease-power-on: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes marquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
