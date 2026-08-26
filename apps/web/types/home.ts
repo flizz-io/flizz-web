@@ -1,0 +1,47 @@
+export interface HeroUsp {
+	text: string;
+}
+
+export interface ProblemItem {
+	title: string;
+	description: string;
+	icon: 'blocks' | 'users' | 'clock';
+}
+
+export interface ProcessStep {
+	title: string;
+	description: string;
+	whatYouGet: string;
+}
+
+export interface ServiceCard {
+	category: string;
+	title: string;
+	description: string;
+}
+
+export interface ProjectCard {
+	name: string;
+	category: string;
+	summary: string;
+}
+
+export interface ValueProp {
+	title: string;
+	description: string;
+}
+
+export interface Testimonial {
+	quote: string;
+	author: string;
+	role: string;
+}
+
+export interface FaqItem {
+	question: string;
+	answer: string;
+}
+
+export interface RiskReversal {
+	text: string;
+}
