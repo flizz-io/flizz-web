@@ -50,6 +50,11 @@ Packages are created per feature/functionality; each has its own `src/` folder w
 - Named exports everywhere, except where Next.js requires a default export (pages, layouts, route handlers, config files).
 - Avoid `!important` in Tailwind/CSS.
 
+## Design
+
+- Public-facing landing page design (`apps/web`) uses the `frontend-design` skill — invoke it for any new page or section design, not just the first one.
+- Primary visual inspiration reference: [daynight.co.uk](https://www.daynight.co.uk/).
+
 ## Import order
 
 Enforced by the `import/order` ESLint rule. Groups, separated by a blank line, each sorted alphabetically:
