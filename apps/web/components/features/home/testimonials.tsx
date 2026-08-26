@@ -1,4 +1,5 @@
 import { Reveal } from '@/components/snippets/reveal/reveal';
+import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { testimonials } from '@/constants/home';
 import { Avatar, AvatarFallback } from '@workspace/ui/components/avatar';
 import {
@@ -23,30 +24,31 @@ export function Testimonials() {
 		<section className="dark border-y border-border bg-background text-foreground">
 			<div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
 				<Reveal className="max-w-xl">
-					<p className="font-mono text-xs tracking-[0.2em] text-primary uppercase">
-						What Clients Say
-					</p>
-					<h2 className="mt-4 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+					<SectionTag
+						index={8}
+						label="What Clients Say"
+					/>
+					<h2 className="mt-4 font-heading text-4xl font-semibold tracking-tight sm:text-5xl">
 						Trusted by the teams we&apos;ve built for
 					</h2>
 				</Reveal>
 
 				<Reveal
 					delay={80}
-					className="mt-12"
+					className="mt-16"
 				>
 					<Carousel opts={{ align: 'start', loop: true }}>
 						<CarouselContent>
 							{testimonials.map((testimonial) => (
 								<CarouselItem
 									key={testimonial.author}
-									className="sm:basis-1/2 lg:basis-1/3"
+									className="lg:basis-1/2"
 								>
-									<figure className="flex h-full flex-col rounded-md border border-border bg-card p-6">
-										<blockquote className="flex-1 text-sm text-pretty text-foreground">
+									<figure className="flex h-full flex-col justify-between border-t border-border pt-8 pr-8">
+										<blockquote className="font-heading text-2xl leading-snug text-pretty text-foreground sm:text-3xl">
 											&ldquo;{testimonial.quote}&rdquo;
 										</blockquote>
-										<figcaption className="mt-6 flex items-center gap-3">
+										<figcaption className="mt-10 flex items-center gap-3">
 											<Avatar>
 												<AvatarFallback>
 													{getInitials(
@@ -67,7 +69,7 @@ export function Testimonials() {
 								</CarouselItem>
 							))}
 						</CarouselContent>
-						<div className="mt-6 flex justify-end gap-2">
+						<div className="mt-10 flex justify-end gap-2">
 							<CarouselPrevious
 								variant="outline"
 								className="static translate-y-0"

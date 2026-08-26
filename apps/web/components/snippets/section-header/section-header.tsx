@@ -2,8 +2,10 @@ import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 
 import { Reveal } from '@/components/snippets/reveal/reveal';
+import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 
 interface SectionHeaderProps {
+	index: number;
 	eyebrow: string;
 	title: string;
 	description?: string;
@@ -12,6 +14,7 @@ interface SectionHeaderProps {
 }
 
 export function SectionHeader({
+	index,
 	eyebrow,
 	title,
 	description,
@@ -21,10 +24,11 @@ export function SectionHeader({
 	return (
 		<Reveal className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
 			<div className="max-w-xl">
-				<p className="font-mono text-xs tracking-[0.2em] text-primary uppercase">
-					{eyebrow}
-				</p>
-				<h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+				<SectionTag
+					index={index}
+					label={eyebrow}
+				/>
+				<h2 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
 					{title}
 				</h2>
 				{description ? (

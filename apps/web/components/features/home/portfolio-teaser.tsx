@@ -10,13 +10,14 @@ export function PortfolioTeaser() {
 		<section className="border-t border-border bg-secondary/30">
 			<div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
 				<SectionHeader
+					index={6}
 					eyebrow="Our Work"
-					title="Real Projects, Real Impact"
+					title="Real projects, real impact"
 					seeAllLabel="View all projects"
 					seeAllHref="/portfolio"
 				/>
 
-				<div className="mt-12 grid gap-6 sm:grid-cols-3">
+				<div className="mt-14 grid gap-4 sm:grid-cols-3">
 					{projectCards.map((project, index) => (
 						<Reveal
 							key={project.name}
@@ -24,20 +25,22 @@ export function PortfolioTeaser() {
 						>
 							<Link
 								href="/portfolio"
-								className="group flex h-full flex-col rounded-md border border-border bg-card p-6 transition-colors hover:border-primary/40"
+								className="group flex h-full flex-col justify-between gap-10 bg-card p-7 transition-colors hover:bg-primary hover:text-primary-foreground"
 							>
 								<div className="flex items-start justify-between gap-2">
-									<p className="font-mono text-[0.65rem] tracking-[0.15em] text-primary uppercase">
+									<p className="font-mono text-[0.65rem] tracking-[0.2em] uppercase opacity-70">
 										{project.category}
 									</p>
-									<ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" />
+									<ArrowUpRight className="size-5 shrink-0 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
 								</div>
-								<h3 className="mt-3 font-heading text-lg font-semibold tracking-tight text-foreground">
-									{project.name}
-								</h3>
-								<p className="mt-2 text-sm text-muted-foreground">
-									{project.summary}
-								</p>
+								<div>
+									<h3 className="font-heading text-2xl font-semibold tracking-tight">
+										{project.name}
+									</h3>
+									<p className="mt-2 text-sm opacity-80">
+										{project.summary}
+									</p>
+								</div>
 							</Link>
 						</Reveal>
 					))}
