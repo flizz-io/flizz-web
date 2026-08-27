@@ -7,7 +7,7 @@ export function WhyUs() {
 		<section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
 			<Reveal className="max-w-xl">
 				<SectionTag
-					index={7}
+					index={9}
 					label="Why Flizz"
 				/>
 				<h2 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">

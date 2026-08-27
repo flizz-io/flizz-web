@@ -9,7 +9,7 @@ export function ServicesTeaser() {
 	return (
 		<section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
 			<SectionHeader
-				index={5}
+				index={6}
 				eyebrow="What We Build"
 				title="Services for every stage of the build"
 				description="A snapshot of what we do — the full list lives on the Services page."

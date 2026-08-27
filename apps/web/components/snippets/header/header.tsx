@@ -1,15 +1,39 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 import { Logo } from '@/components/snippets/logo/logo';
 import { ThemeToggle } from '@/components/snippets/theme-toggle/theme-toggle';
 import { primaryNavItems } from '@/configs/nav';
 import { Button } from '@workspace/ui/components/button';
+import { cn } from '@workspace/ui/lib/utils';
 
 import { MobileNav } from './mobile-nav';
 
 export function Header() {
+	const [scrolled, setScrolled] = useState(false);
+
+	useEffect(() => {
+		function onScroll() {
+			setScrolled(window.scrollY > 24);
+		}
+
+		onScroll();
+		window.addEventListener('scroll', onScroll, { passive: true });
+
+		return () => window.removeEventListener('scroll', onScroll);
+	}, []);
+
 	return (
-		<header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
+		<header
+			className={cn(
+				'sticky top-0 z-40 border-b transition-colors duration-300',
+				scrolled
+					? 'border-border bg-background/90 backdrop-blur-md'
+					: 'border-transparent bg-transparent'
+			)}
+		>
 			<div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
 				<Link
 					href="/"

@@ -1,21 +1,20 @@
 import type {
 	FaqItem,
-	HeroUsp,
 	ProblemItem,
 	ProcessStep,
 	ProjectCard,
 	RiskReversal,
 	ServiceCard,
+	Stat,
 	Testimonial,
 	ValueProp
 } from '@/types/home';
 
-export const heroUsps: HeroUsp[] = [
-	{ text: '30-90 day warranty on all work — we stand behind what we build' },
-	{ text: 'Realistic timelines with weekly progress — see works, not words' },
-	{
-		text: 'Built to evolve — add features and scale without expensive rebuilds'
-	}
+// Facts already in the Hero/Solution/Final-CTA copy, reframed as a stat strip — not invented business metrics
+export const stats: Stat[] = [
+	{ value: '30-90', label: 'Day warranty on all work we ship' },
+	{ value: '2', label: 'Week cadence for working software' },
+	{ value: '100%', label: 'Of code and IP is yours, day one' }
 ];
 
 // Placeholder wordmarks — real company logos are an open item for the PM (see docs/requirements/progress-report.md)

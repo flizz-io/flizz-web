@@ -14,7 +14,7 @@ export function FinalCta() {
 				<Reveal className="mx-auto max-w-2xl">
 					<div className="flex justify-center">
 						<SectionTag
-							index={10}
+							index={12}
 							label="Let's Talk"
 						/>
 					</div>

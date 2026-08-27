@@ -1,5 +1,10 @@
 import type { Metadata } from 'next';
-import { IBM_Plex_Mono, Manrope, Space_Grotesk } from 'next/font/google';
+import {
+	IBM_Plex_Mono,
+	Instrument_Serif,
+	Manrope,
+	Space_Grotesk
+} from 'next/font/google';
 
 import '@workspace/ui/globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -24,6 +29,13 @@ const plexMono = IBM_Plex_Mono({
 	variable: '--font-mono'
 });
 
+const instrumentSerif = Instrument_Serif({
+	subsets: ['latin'],
+	weight: ['400'],
+	style: ['normal', 'italic'],
+	variable: '--font-serif'
+});
+
 export default function RootLayout({
 	children
 }: Readonly<{
@@ -38,6 +50,7 @@ export default function RootLayout({
 				manrope.variable,
 				spaceGrotesk.variable,
 				plexMono.variable,
+				instrumentSerif.variable,
 				'font-sans'
 			)}
 		>

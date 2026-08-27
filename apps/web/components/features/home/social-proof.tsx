@@ -9,12 +9,12 @@ export function SocialProof() {
 		<section className="border-b border-border py-10">
 			<Reveal className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 				<SectionTag
-					index={2}
+					index={3}
 					label="Trusted by businesses building what's next"
 				/>
 			</Reveal>
 
-			<div className="mt-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+			<div className="mt-6 overflow-hidden mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
 				<div className="flex w-max animate-marquee items-center gap-16">
 					{logos.map((logo, index) => (
 						<span

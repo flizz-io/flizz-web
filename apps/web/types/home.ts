@@ -1,5 +1,6 @@
-export interface HeroUsp {
-	text: string;
+export interface Stat {
+	value: string;
+	label: string;
 }
 
 export interface ProblemItem {

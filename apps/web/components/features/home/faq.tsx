@@ -13,7 +13,7 @@ export function Faq() {
 		<section className="mx-auto max-w-4xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
 			<Reveal>
 				<SectionTag
-					index={9}
+					index={11}
 					label="FAQs"
 				/>
 				<h2 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">

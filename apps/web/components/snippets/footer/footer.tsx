@@ -5,8 +5,8 @@ import { siteConfig } from '@/configs/site';
 
 export function Footer() {
 	return (
-		<footer className="border-t border-border bg-secondary/40">
-			<div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+		<footer className="dark relative overflow-hidden border-t border-border bg-background text-foreground">
+			<div className="mx-auto max-w-6xl px-4 pt-16 sm:px-6 lg:px-8">
 				<div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
 					<div className="col-span-2 sm:col-span-1">
 						<p className="font-heading text-lg font-semibold tracking-tight text-foreground">
@@ -56,6 +56,13 @@ export function Footer() {
 					</div>
 				</div>
 			</div>
+
+			<p
+				aria-hidden
+				className="mt-4 -mb-[0.14em] w-full text-center font-heading text-[18vw] leading-none font-semibold tracking-tight text-foreground/5 select-none"
+			>
+				{siteConfig.name}
+			</p>
 		</footer>
 	);
 }

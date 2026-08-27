@@ -10,7 +10,7 @@ interface SectionTagProps {
 export function SectionTag({
 	index,
 	label,
-	total = 10,
+	total = 12,
 	className
 }: SectionTagProps) {
 	return (

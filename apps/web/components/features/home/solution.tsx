@@ -1,49 +1,139 @@
-import { Reveal } from '@/components/snippets/reveal/reveal';
+'use client';
+
+import { motion } from 'framer-motion';
+
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { processSteps } from '@/constants/home';
+import { cn } from '@workspace/ui/lib/utils';
+
+const tileVariants = [
+	'bg-card border border-border text-foreground',
+	'bg-[#120f1c] dark:bg-secondary text-white dark:text-secondary-foreground',
+	'bg-card border border-border text-foreground',
+	'bg-[#120f1c] dark:bg-secondary text-white dark:text-secondary-foreground',
+	'bg-primary text-primary-foreground'
+];
+
+const mutedVariants = [
+	'text-muted-foreground',
+	'text-white/65 dark:text-muted-foreground',
+	'text-muted-foreground',
+	'text-white/65 dark:text-muted-foreground',
+	'text-primary-foreground/75'
+];
+
+function ProgressGraphic({
+	step,
+	accentClass
+}: {
+	step: number;
+	accentClass: string;
+}) {
+	return (
+		<svg
+			aria-hidden
+			width="72"
+			height="32"
+			viewBox="0 0 72 32"
+			className="shrink-0"
+		>
+			{[0, 1, 2, 3, 4].map((bar) => {
+				const height = 8 + bar * 6;
+				const filled = bar <= step;
+				return (
+					<motion.rect
+						key={bar}
+						x={bar * 16}
+						width={10}
+						height={height}
+						y={32 - height}
+						rx={2}
+						className={
+							filled ? accentClass : 'fill-current opacity-15'
+						}
+						initial={{ scaleY: 0 }}
+						whileInView={{ scaleY: 1 }}
+						viewport={{ once: true }}
+						transition={{
+							duration: 0.5,
+							delay: bar * 0.06,
+							ease: 'easeOut'
+						}}
+						style={{ transformOrigin: `${bar * 16 + 5}px 32px` }}
+					/>
+				);
+			})}
+		</svg>
+	);
+}
 
 export function Solution() {
 	return (
 		<section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-			<Reveal className="max-w-2xl">
+			<div className="max-w-2xl">
 				<SectionTag
-					index={4}
+					index={5}
 					label="Our Process"
 				/>
 				{/* TODO: PM to confirm final headline — the sheet duplicated the Problem section's headline here */}
 				<h2 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-balance text-foreground sm:text-5xl">
 					How we get you there
 				</h2>
-			</Reveal>
+			</div>
 
-			<div className="relative mx-auto mt-16 max-w-3xl">
-				<div className="absolute top-2 bottom-2 left-5 w-px bg-border" />
+			<div className="mt-14 grid gap-4 sm:grid-cols-2">
+				{processSteps.map((step, index) => {
+					const isWide = index === processSteps.length - 1;
+					const accentClass =
+						index === processSteps.length - 1
+							? 'fill-primary-foreground'
+							: 'fill-primary';
 
-				<ol className="flex flex-col gap-14">
-					{processSteps.map((step, index) => (
-						<li
+					return (
+						<motion.div
 							key={step.title}
-							className="relative"
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true, margin: '-80px' }}
+							transition={{
+								duration: 0.5,
+								delay: (index % 2) * 0.1
+							}}
+							className={cn(
+								'flex flex-col justify-between gap-8 rounded-lg p-7',
+								tileVariants[index],
+								isWide &&
+									'sm:col-span-2 sm:flex-row sm:items-end'
+							)}
 						>
-							<Reveal delay={index * 80}>
-								<span className="absolute top-0 left-0 flex size-10 items-center justify-center rounded-full border border-primary bg-background font-mono text-sm text-primary">
-									{String(index + 1).padStart(2, '0')}
-								</span>
-								<div className="pl-16">
-									<h3 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
-										{step.title}
-									</h3>
-									<p className="mt-3 max-w-xl text-base text-muted-foreground">
-										{step.description}
-									</p>
-									<p className="mt-4 font-mono text-xs tracking-[0.05em] text-primary">
-										What you get — {step.whatYouGet}
-									</p>
+							<div>
+								<div className="flex items-center gap-3">
+									<span className="font-mono text-xs opacity-60">
+										{String(index + 1).padStart(2, '0')}
+									</span>
+									<ProgressGraphic
+										step={index}
+										accentClass={accentClass}
+									/>
 								</div>
-							</Reveal>
-						</li>
-					))}
-				</ol>
+								<h3 className="mt-5 font-heading text-xl font-semibold tracking-tight">
+									{step.title}
+								</h3>
+								<p
+									className={cn(
+										'mt-3 max-w-md text-sm',
+										mutedVariants[index]
+									)}
+								>
+									{step.description}
+								</p>
+							</div>
+							<p className="font-mono text-xs tracking-[0.05em] opacity-80">
+								What you get — {step.whatYouGet}
+							</p>
+						</motion.div>
+					);
+				})}
 			</div>
 		</section>
 	);
