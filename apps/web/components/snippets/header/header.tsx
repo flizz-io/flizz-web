@@ -46,7 +46,7 @@ export function Header() {
 							<Link
 								key={item.href}
 								href={item.href}
-								className="rounded-full px-3.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+								className="rounded-full px-3.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground dark:text-white/80 dark:hover:text-white"
 							>
 								{item.label}
 							</Link>
@@ -57,7 +57,7 @@ export function Header() {
 						<ThemeToggle />
 						<Button
 							asChild
-							className="hidden rounded-full px-6 sm:inline-flex"
+							className="hidden rounded-full px-6 font-bold sm:inline-flex"
 						>
 							<Link href="/contact">Book a call</Link>
 						</Button>
