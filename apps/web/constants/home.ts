@@ -10,6 +10,9 @@ import type {
 	ValueProp
 } from '@/types/home';
 
+// Anchor the hero's scroll cue targets — shared so the id can't drift apart.
+export const heroScrollTargetId = 'highlights';
+
 // Facts already in the Hero/Solution/Final-CTA copy, reframed as a stat strip — not invented business metrics
 export const stats: Stat[] = [
 	{ value: '30-90', label: 'Day warranty on all work we ship' },

@@ -1,9 +1,12 @@
 import { Reveal } from '@/components/snippets/reveal/reveal';
-import { stats } from '@/constants/home';
+import { heroScrollTargetId, stats } from '@/constants/home';
 
 export function StatsStrip() {
 	return (
-		<section className="border-b border-border">
+		<section
+			id={heroScrollTargetId}
+			className="scroll-mt-24 border-b border-border"
+		>
 			<div className="mx-auto grid max-w-6xl divide-y divide-border px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6 lg:px-8">
 				{stats.map((stat, index) => (
 					<Reveal
