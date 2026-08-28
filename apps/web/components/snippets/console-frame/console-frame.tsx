@@ -1,10 +1,7 @@
-import { motion } from 'framer-motion';
-
 import { BorderBeam } from '@workspace/ui/components/border-beam';
 import { cn } from '@workspace/ui/lib/utils';
 
 export function ConsoleFrame({
-	index,
 	children,
 	headerTitle,
 	footerContent,
@@ -12,7 +9,6 @@ export function ConsoleFrame({
 	bodyClassName,
 	footerClassName
 }: {
-	index: number;
 	children: React.ReactNode;
 	headerTitle?: string;
 	footerContent?: React.ReactNode;
@@ -23,7 +19,7 @@ export function ConsoleFrame({
 	return (
 		<div
 			className={cn(
-				'relative overflow-hidden rounded-xl border border-border bg-card shadow-2xl lg:sticky lg:top-28',
+				'relative overflow-hidden rounded-xl border border-border bg-card shadow-2xl',
 				className
 			)}
 		>
@@ -53,7 +49,10 @@ export function ConsoleFrame({
 				</span>
 			</div>
 
-			<div className={cn('relative h-84 p-6', bodyClassName)}>
+			{/* Tall enough that the frame, not the steps rail, sets the grid row
+			    height — so nothing below can move as stages change. The rail
+			    settles at 524px, so this keeps a margin for future copy edits. */}
+			<div className={cn('relative h-116 p-6', bodyClassName)}>
 				{children}
 			</div>
 

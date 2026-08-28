@@ -19,15 +19,13 @@ interface SolutionProps {
 	totalSections?: number;
 	className?: string;
 	stepIntervalMs?: number;
-	consoleFrameType?: 'default' | 'minimal';
 }
 
 export function Solution({
 	className,
 	sectionIndex,
 	totalSections,
-	stepIntervalMs = STEP_INTERVAL_MS,
-	consoleFrameType = 'default'
+	stepIntervalMs = STEP_INTERVAL_MS
 }: SolutionProps) {
 	const reduceMotion = useReducedMotion();
 	const [activeIndex, setActiveIndex] = useState(0);
@@ -138,7 +136,14 @@ export function Solution({
 											}}
 											className="overflow-hidden"
 										>
-											<div className="pb-6 pl-10">
+											{/* Fixed slot height, not `auto`: the
+											    entering and exiting panels then
+											    animate over the same distance with
+											    the same easing, so their heights
+											    cancel and the rail never changes
+											    size mid-transition. Measured max
+											    content is 142px across breakpoints. */}
+											<div className="h-40 pb-6 pl-10">
 												<p className="font-heading text-base font-semibold text-foreground">
 													{step.title}
 												</p>
@@ -158,110 +163,55 @@ export function Solution({
 					})}
 				</ul>
 
-				{consoleFrameType === 'default' ? (
-					<ConsoleFrame
-						index={activeIndex}
-						headerTitle={'flizz.build / northwind'}
-						footerContent={
-							<>
-								<span className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
-									{String(activeIndex + 1).padStart(2, '0')} /{' '}
-									{activeStep?.shortLabel}
-								</span>
-								<span className="flex gap-1.5">
-									{processSteps.map((step, i) => (
-										<span
-											key={step.title}
-											className={cn(
-												'h-1 rounded-full transition-all duration-500',
-												i === activeIndex
-													? 'w-6 bg-primary'
-													: 'w-1.5 bg-muted-foreground/30'
-											)}
-										/>
-									))}
-								</span>
-							</>
-						}
-					>
-						<AnimatePresence mode="wait">
-							<motion.div
-								key={activeIndex}
-								initial="hidden"
-								animate="show"
-								exit="exit"
-								className="h-full"
-							>
-								{/* One scan sweep per stage change. */}
-								<motion.span
-									key={`sweep-${activeIndex}`}
-									aria-hidden
-									className="pointer-events-none absolute inset-x-0 z-10 h-24 bg-linear-to-b from-transparent via-primary/12 to-transparent"
-									initial={{ y: '-100%', opacity: 0.9 }}
-									animate={{ y: '420%', opacity: 0 }}
-									transition={{
-										duration: 1.1,
-										ease: 'easeOut'
-									}}
-								/>
-								<ProcessConsoleCine index={activeIndex} />
-							</motion.div>
-						</AnimatePresence>
-					</ConsoleFrame>
-				) : (
-					<div className="relative overflow-hidden rounded-xl border border-border bg-card shadow-2xl lg:sticky lg:top-28">
-						<div
-							aria-hidden
-							className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[120%] -translate-x-1/2 rounded-[50%] bg-primary/15 blur-3xl"
-						/>
-
-						<div className="relative flex items-center gap-2 border-b border-border px-4 py-3">
-							{[0, 1, 2].map((dot) => (
-								<span
-									key={dot}
-									className="size-2 rounded-full bg-muted-foreground/30"
-								/>
-							))}
-							<span className="ml-2 font-mono text-[0.65rem] text-muted-foreground">
-								flizz.build / northwind
-							</span>
-						</div>
-
-						<div className="relative h-[21rem] p-6">
-							<AnimatePresence mode="wait">
-								<motion.div
-									key={activeIndex}
-									initial="hidden"
-									animate="show"
-									exit="exit"
-									className="h-full"
-								>
-									<ProcessConsole index={activeIndex} />
-								</motion.div>
-							</AnimatePresence>
-						</div>
-
-						<div className="relative flex items-center justify-between border-t border-border px-4 py-2.5">
+				<ConsoleFrame
+					headerTitle={'flizz.build / northwind'}
+					footerContent={
+						<>
 							<span className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
 								{String(activeIndex + 1).padStart(2, '0')} /{' '}
 								{activeStep?.shortLabel}
 							</span>
 							<span className="flex gap-1.5">
-								{processSteps.map((step, index) => (
+								{processSteps.map((step, i) => (
 									<span
 										key={step.title}
 										className={cn(
 											'h-1 rounded-full transition-all duration-500',
-											index === activeIndex
+											i === activeIndex
 												? 'w-6 bg-primary'
 												: 'w-1.5 bg-muted-foreground/30'
 										)}
 									/>
 								))}
 							</span>
-						</div>
-					</div>
-				)}
+						</>
+					}
+					className="lg:sticky lg:top-28"
+				>
+					<AnimatePresence mode="wait">
+						<motion.div
+							key={activeIndex}
+							initial="hidden"
+							animate="show"
+							exit="exit"
+							className="h-full"
+						>
+							{/* One scan sweep per stage change. */}
+							<motion.span
+								key={`sweep-${activeIndex}`}
+								aria-hidden
+								className="pointer-events-none absolute inset-x-0 z-10 h-24 bg-linear-to-b from-transparent via-primary/12 to-transparent"
+								initial={{ y: '-100%', opacity: 0.9 }}
+								animate={{ y: '420%', opacity: 0 }}
+								transition={{
+									duration: 1.1,
+									ease: 'easeOut'
+								}}
+							/>
+							<ProcessConsoleCine index={activeIndex} />
+						</motion.div>
+					</AnimatePresence>
+				</ConsoleFrame>
 			</div>
 		</section>
 	);
