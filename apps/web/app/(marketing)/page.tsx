@@ -29,11 +29,11 @@ export default function HomePage() {
 				sectionIndex={3}
 				totalSections={totalSections}
 			/>
-			<WhyUs
+			<Problem
 				sectionIndex={4}
 				totalSections={totalSections}
 			/>
-			<Problem
+			<WhyUs
 				sectionIndex={5}
 				totalSections={totalSections}
 			/>
