@@ -1,71 +1,15 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
+import { ProcessConsole } from '@/components/features/home/process-console';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { processSteps } from '@/constants/home';
 import { cn } from '@workspace/ui/lib/utils';
 
-const tileVariants = [
-	'bg-card border border-border text-foreground',
-	'bg-[#120f1c] dark:bg-secondary text-white dark:text-secondary-foreground',
-	'bg-card border border-border text-foreground',
-	'bg-[#120f1c] dark:bg-secondary text-white dark:text-secondary-foreground',
-	'bg-primary text-primary-foreground'
-];
-
-const mutedVariants = [
-	'text-muted-foreground',
-	'text-white/65 dark:text-muted-foreground',
-	'text-muted-foreground',
-	'text-white/65 dark:text-muted-foreground',
-	'text-primary-foreground/75'
-];
-
-function ProgressGraphic({
-	step,
-	accentClass
-}: {
-	step: number;
-	accentClass: string;
-}) {
-	return (
-		<svg
-			aria-hidden
-			width="72"
-			height="32"
-			viewBox="0 0 72 32"
-			className="shrink-0"
-		>
-			{[0, 1, 2, 3, 4].map((bar) => {
-				const height = 8 + bar * 6;
-				const filled = bar <= step;
-				return (
-					<motion.rect
-						key={bar}
-						x={bar * 16}
-						width={10}
-						height={height}
-						y={32 - height}
-						rx={2}
-						className={
-							filled ? accentClass : 'fill-current opacity-15'
-						}
-						initial={{ scaleY: 0 }}
-						whileInView={{ scaleY: 1 }}
-						viewport={{ once: true }}
-						transition={{
-							duration: 0.5,
-							delay: bar * 0.06,
-							ease: 'easeOut'
-						}}
-						style={{ transformOrigin: `${bar * 16 + 5}px 32px` }}
-					/>
-				);
-			})}
-		</svg>
-	);
-}
+const STEP_INTERVAL_MS = 4500;
+const REVEAL_EASE = [0.16, 1, 0.3, 1] as const;
 
 interface SolutionProps {
 	sectionIndex: number;
@@ -78,11 +22,28 @@ export function Solution({
 	sectionIndex,
 	totalSections
 }: SolutionProps) {
+	const reduceMotion = useReducedMotion();
+	const [activeIndex, setActiveIndex] = useState(0);
+	const [isPaused, setIsPaused] = useState(false);
+
+	useEffect(() => {
+		// Reduced-motion visitors drive it themselves via the rail buttons.
+		if (reduceMotion || isPaused) return;
+
+		const timer = window.setInterval(() => {
+			setActiveIndex((current) => (current + 1) % processSteps.length);
+		}, STEP_INTERVAL_MS);
+
+		return () => window.clearInterval(timer);
+	}, [reduceMotion, isPaused]);
+
+	const activeStep = processSteps[activeIndex];
+
 	return (
 		<section
 			className={cn(
-				className,
-				'mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8'
+				'mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8',
+				className
 			)}
 		>
 			<div className="max-w-2xl">
@@ -95,61 +56,153 @@ export function Solution({
 				<h2 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-balance text-foreground sm:text-5xl">
 					How we get you there
 				</h2>
+				<p className="mt-4 text-base text-muted-foreground">
+					Five stages, one system of record. You can see exactly where
+					your project stands at every point.
+				</p>
 			</div>
 
-			<div className="mt-14 grid gap-4 sm:grid-cols-2">
-				{processSteps.map((step, index) => {
-					const isWide = index === processSteps.length - 1;
-					const accentClass =
-						index === processSteps.length - 1
-							? 'fill-primary-foreground'
-							: 'fill-primary';
+			<div
+				className="mt-14 grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-14"
+				onMouseEnter={() => setIsPaused(true)}
+				onMouseLeave={() => setIsPaused(false)}
+			>
+				<ul className="flex flex-col">
+					{processSteps.map((step, index) => {
+						const isActive = index === activeIndex;
 
-					return (
-						<motion.div
-							key={step.title}
-							initial={{ opacity: 0, y: 20 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							viewport={{ once: true, margin: '-80px' }}
-							transition={{
-								duration: 0.5,
-								delay: (index % 2) * 0.1
-							}}
-							className={cn(
-								'flex flex-col justify-between gap-8 rounded-lg p-7',
-								tileVariants[index],
-								isWide &&
-									'sm:col-span-2 sm:flex-row sm:items-end'
-							)}
-						>
-							<div>
-								<div className="flex items-center gap-3">
-									<span className="font-mono text-xs opacity-60">
+						return (
+							<li
+								key={step.title}
+								className="border-b border-border last:border-0"
+							>
+								<button
+									type="button"
+									onClick={() => setActiveIndex(index)}
+									aria-current={isActive}
+									className="flex w-full items-baseline gap-4 py-4 text-left"
+								>
+									<span
+										className={cn(
+											'font-mono text-xs transition-colors',
+											isActive
+												? 'text-primary'
+												: 'text-muted-foreground/50'
+										)}
+									>
 										{String(index + 1).padStart(2, '0')}
 									</span>
-									<ProgressGraphic
-										step={index}
-										accentClass={accentClass}
-									/>
-								</div>
-								<h3 className="mt-5 font-heading text-xl font-semibold tracking-tight">
-									{step.title}
-								</h3>
-								<p
+									<span
+										className={cn(
+											'font-heading text-3xl font-semibold tracking-tight transition-all duration-500 sm:text-4xl',
+											isActive
+												? 'text-primary opacity-100'
+												: 'text-foreground opacity-25 hover:opacity-50'
+										)}
+									>
+										{step.shortLabel}
+									</span>
+								</button>
+
+								<AnimatePresence initial={false}>
+									{isActive ? (
+										<motion.div
+											initial={
+												reduceMotion
+													? undefined
+													: { height: 0, opacity: 0 }
+											}
+											animate={
+												reduceMotion
+													? undefined
+													: {
+															height: 'auto',
+															opacity: 1
+														}
+											}
+											exit={
+												reduceMotion
+													? undefined
+													: { height: 0, opacity: 0 }
+											}
+											transition={{
+												duration: 0.45,
+												ease: REVEAL_EASE
+											}}
+											className="overflow-hidden"
+										>
+											<div className="pb-6 pl-10">
+												<p className="font-heading text-base font-semibold text-foreground">
+													{step.title}
+												</p>
+												<p className="mt-2 max-w-md text-sm text-muted-foreground">
+													{step.description}
+												</p>
+												<p className="mt-3 font-mono text-[0.7rem] text-primary">
+													What you get —{' '}
+													{step.whatYouGet}
+												</p>
+											</div>
+										</motion.div>
+									) : null}
+								</AnimatePresence>
+							</li>
+						);
+					})}
+				</ul>
+
+				<div className="relative overflow-hidden rounded-xl border border-border bg-card shadow-2xl lg:sticky lg:top-28">
+					<div
+						aria-hidden
+						className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[120%] -translate-x-1/2 rounded-[50%] bg-primary/15 blur-3xl"
+					/>
+
+					<div className="relative flex items-center gap-2 border-b border-border px-4 py-3">
+						{[0, 1, 2].map((dot) => (
+							<span
+								key={dot}
+								className="size-2 rounded-full bg-muted-foreground/30"
+							/>
+						))}
+						<span className="ml-2 font-mono text-[0.65rem] text-muted-foreground">
+							flizz.build / northwind
+						</span>
+					</div>
+
+					<div className="relative h-[21rem] p-6">
+						<AnimatePresence mode="wait">
+							<motion.div
+								key={activeIndex}
+								initial="hidden"
+								animate="show"
+								exit="exit"
+								className="h-full"
+							>
+								<ProcessConsole index={activeIndex} />
+							</motion.div>
+						</AnimatePresence>
+					</div>
+
+					<div className="relative flex items-center justify-between border-t border-border px-4 py-2.5">
+						<span className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+							{String(activeIndex + 1).padStart(2, '0')} /{' '}
+							{activeStep?.shortLabel}
+						</span>
+						<span className="flex gap-1.5">
+							{processSteps.map((step, index) => (
+								<span
+									key={step.title}
 									className={cn(
-										'mt-3 max-w-md text-sm',
-										mutedVariants[index]
+										'h-1 rounded-full transition-all duration-500',
+										index === activeIndex
+											? 'w-6 bg-primary'
+											: 'w-1.5 bg-muted-foreground/30'
 									)}
-								>
-									{step.description}
-								</p>
-							</div>
-							<p className="font-mono text-xs tracking-[0.05em] opacity-80">
-								What you get — {step.whatYouGet}
-							</p>
-						</motion.div>
-					);
-				})}
+								/>
+							))}
+						</span>
+					</div>
+				</div>
 			</div>
 		</section>
 	);

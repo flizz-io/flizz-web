@@ -10,8 +10,12 @@ export interface ProblemItem {
 }
 
 export interface ProcessStep {
+	/** Punchy one-word label for the process rail. */
+	shortLabel: string;
 	title: string;
 	description: string;
+	/** Trimmed description for layouts where the rail has less room. */
+	compactDescription: string;
 	whatYouGet: string;
 }
 

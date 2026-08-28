@@ -53,35 +53,50 @@ export const problemItems: ProblemItem[] = [
 
 export const processSteps: ProcessStep[] = [
 	{
+		shortLabel: 'Discover',
 		title: 'Discovery & Strategic Planning',
 		description:
 			"We don't start coding on day one. We start by understanding your business — current operations, pain points, growth goals, technical constraints. Then we map solutions that actually fit.",
+		compactDescription:
+			'We map your operations, constraints and goals before a line of code is written.',
 		whatYouGet:
 			'Clear technical roadmap, realistic timeline, transparent pricing'
 	},
 	{
+		shortLabel: 'Design',
 		title: 'Architecture & Design',
 		description:
 			'Smart architecture decisions now prevent expensive problems later. We design systems for your current needs and future growth — database schema, integrations, security, scalability built in from the start.',
+		compactDescription:
+			'Schema, integrations, security and scale decided up front, so later changes stay cheap.',
 		whatYouGet: 'Technical blueprint, user flow designs, integration plan'
 	},
 	{
+		shortLabel: 'Build',
 		title: 'Development with Regular Progress',
 		description:
 			'Agile development with weekly check-ins. You see working software regularly, provide feedback, and stay involved. No surprises. No black box development.',
+		compactDescription:
+			'Working software every two weeks — running builds you can use, not status decks.',
 		whatYouGet: 'Working software every 2 weeks, continuous feedback loop'
 	},
 	{
+		shortLabel: 'Launch',
 		title: 'Testing, Security & Launch',
 		description:
 			"Rigorous testing across scenarios. Security audits. Performance optimization. We launch when it's actually ready — stable, secure, and reliable.",
+		compactDescription:
+			'Tested, audited and tuned. We ship when it is genuinely ready, not when the calendar says so.',
 		whatYouGet:
 			'Production-ready software that works under real-world conditions'
 	},
 	{
+		shortLabel: 'Handover',
 		title: 'Training, Documentation & Support',
 		description:
 			"Complete handoff with documentation, team training, and optional ongoing support. You're never dependent on us, but we're here when you need us.",
+		compactDescription:
+			'Documentation, training and full ownership handed over. You are never locked in.',
 		whatYouGet:
 			'Knowledge transfer, technical documentation, support options'
 	}
