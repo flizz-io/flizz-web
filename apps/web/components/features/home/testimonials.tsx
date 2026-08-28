@@ -9,6 +9,7 @@ import {
 	CarouselNext,
 	CarouselPrevious
 } from '@workspace/ui/components/carousel';
+import { cn } from '@workspace/ui/lib/utils';
 
 function getInitials(name: string) {
 	return name
@@ -19,19 +20,32 @@ function getInitials(name: string) {
 		.toUpperCase();
 }
 
-export function Testimonials() {
-	return (
-		<section className="border-t border-border bg-secondary/30">
-			<div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-				<SectionTag
-					index={10}
-					label="What Clients Say"
-				/>
+interface TestimonialsProps {
+	sectionIndex: number;
+	totalSections?: number;
+	className?: string;
+}
 
+export function Testimonials({
+	sectionIndex,
+	totalSections,
+	className
+}: TestimonialsProps) {
+	return (
+		<section
+			className={cn('border-t border-border bg-secondary/30', className)}
+		>
+			<div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
 				<Reveal
 					delay={80}
-					className="mt-14"
+					className=""
 				>
+					<SectionTag
+						index={sectionIndex}
+						total={totalSections}
+						label="What Clients Say"
+						className="mb-14 text-center"
+					/>
 					<Carousel opts={{ align: 'start', loop: true }}>
 						<CarouselContent>
 							{testimonials.map((testimonial) => (

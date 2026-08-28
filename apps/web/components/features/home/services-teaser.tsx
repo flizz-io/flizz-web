@@ -4,12 +4,29 @@ import Link from 'next/link';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { serviceCards } from '@/constants/home';
+import { cn } from '@workspace/ui/lib/utils';
 
-export function ServicesTeaser() {
+interface ServicesTeaserProps {
+	sectionIndex: number;
+	totalSections?: number;
+	className?: string;
+}
+
+export function ServicesTeaser({
+	className,
+	sectionIndex,
+	totalSections
+}: ServicesTeaserProps) {
 	return (
-		<section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+		<section
+			className={cn(
+				className,
+				'mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8'
+			)}
+		>
 			<SectionHeader
-				index={6}
+				index={sectionIndex}
+				total={totalSections}
 				eyebrow="What We Build"
 				title="Services for every stage of the build"
 				description="A snapshot of what we do — the full list lives on the Services page."

@@ -6,6 +6,7 @@ import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 
 interface SectionHeaderProps {
 	index: number;
+	total?: number;
 	eyebrow: string;
 	title: string;
 	description?: string;
@@ -15,6 +16,7 @@ interface SectionHeaderProps {
 
 export function SectionHeader({
 	index,
+	total,
 	eyebrow,
 	title,
 	description,
@@ -26,6 +28,7 @@ export function SectionHeader({
 			<div className="max-w-xl">
 				<SectionTag
 					index={index}
+					total={total}
 					label={eyebrow}
 				/>
 				<h2 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">

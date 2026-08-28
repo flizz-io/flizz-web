@@ -1,3 +1,4 @@
+// Temporary Hidden the States
 'use client';
 
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
@@ -53,18 +54,18 @@ export function Proof() {
 			    wide glow bleeding in from off-screen, then haze thinning out. */}
 			<div
 				aria-hidden
-				className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent"
+				className="pointer-events-none absolute inset-x-0 top-0 hidden h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent"
 			/>
 			<div
 				aria-hidden
-				className="pointer-events-none absolute -top-52 left-1/2 h-80 w-[130%] -translate-x-1/2 rounded-[50%] bg-primary/20 blur-3xl dark:bg-primary/25"
+				className="pointer-events-none absolute -top-52 left-1/2 hidden h-80 w-[130%] -translate-x-1/2 rounded-[50%] bg-primary/20 blur-3xl dark:bg-primary/25"
 			/>
 			<div
 				aria-hidden
-				className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-primary/[0.07] to-transparent"
+				className="pointer-events-none absolute inset-x-0 top-0 hidden h-64 bg-gradient-to-b from-primary/[0.07] to-transparent"
 			/>
 
-			<div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+			<div className="relative mx-auto hidden max-w-6xl px-4 sm:px-6 lg:px-8">
 				<div className="grid sm:grid-cols-3">
 					{stats.map((stat, index) => (
 						<motion.div
@@ -142,7 +143,7 @@ export function Proof() {
 				</motion.div>
 			</div>
 
-			<div className="mt-8 pb-16">
+			<div className="py-8">
 				{/* The sweep is scoped to exactly the wordmark row — spanning the
 				    section's padding as well would render it as a lit rectangle
 				    rather than light falling on the logos. */}
@@ -150,7 +151,7 @@ export function Proof() {
 					<div className="flex w-max animate-marquee items-center gap-10">
 						{logos.map((logo, index) => (
 							<Fragment key={`${logo}-${index}`}>
-								<span className="font-heading text-2xl font-semibold whitespace-nowrap text-muted-foreground/60 dark:text-white/45">
+								<span className="font-heading text-2xl font-semibold whitespace-nowrap text-muted-foreground/60 dark:text-white/80">
 									{logo}
 								</span>
 								<span

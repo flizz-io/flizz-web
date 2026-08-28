@@ -1,14 +1,27 @@
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { valueProps } from '@/constants/home';
+import { cn } from '@workspace/ui/lib/utils';
 
-export function WhyUs() {
+interface WhyUsProps {
+	sectionIndex: number;
+	totalSections?: number;
+	className?: string;
+}
+
+export function WhyUs({ sectionIndex, totalSections, className }: WhyUsProps) {
 	return (
-		<section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+		<section
+			className={cn(
+				'mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8',
+				className
+			)}
+		>
 			<Reveal className="max-w-xl">
 				<SectionTag
-					index={9}
-					label="Why Flizz"
+					index={sectionIndex}
+					total={totalSections}
+					label="Why Flizzio"
 				/>
 				<h2 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
 					We create solutions that

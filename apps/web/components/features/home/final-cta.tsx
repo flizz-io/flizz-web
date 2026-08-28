@@ -6,15 +6,29 @@ import { SchematicFrame } from '@/components/snippets/schematic-frame/schematic-
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { riskReversals } from '@/constants/home';
 import { Button } from '@workspace/ui/components/button';
+import { cn } from '@workspace/ui/lib/utils';
 
-export function FinalCta() {
+interface FinalCtaProps {
+	sectionIndex: number;
+	totalSections?: number;
+	className?: string;
+}
+
+export function FinalCta({
+	sectionIndex,
+	totalSections,
+	className
+}: FinalCtaProps) {
 	return (
-		<section className="px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+		<section
+			className={cn('px-4 py-20 sm:px-6 sm:py-28 lg:px-8', className)}
+		>
 			<SchematicFrame className="mx-auto max-w-6xl border border-border px-6 py-16 text-center sm:px-16 sm:py-20">
 				<Reveal className="mx-auto max-w-2xl">
 					<div className="flex justify-center">
 						<SectionTag
-							index={12}
+							index={sectionIndex}
+							total={totalSections}
 							label="Let's Talk"
 						/>
 					</div>

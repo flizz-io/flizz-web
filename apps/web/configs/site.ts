@@ -1,5 +1,6 @@
 export const siteConfig = {
 	name: 'Flizz',
+	fullname: 'Flizzio',
 	shortName: 'FZ',
 	tagline: "Your Technology Partner for What's Next",
 	description:

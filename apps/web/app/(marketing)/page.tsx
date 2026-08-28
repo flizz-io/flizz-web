@@ -11,19 +11,48 @@ import { Testimonials } from '@/components/features/home/testimonials';
 import { WhyUs } from '@/components/features/home/why-us';
 
 export default function HomePage() {
+	const totalSections = 9;
+
 	return (
 		<>
 			<Hero />
 			<Proof />
-			<Problem />
-			<Solution />
-			<ServicesTeaser />
-			<PortfolioTeaser />
-			<MarqueeStatement />
-			<WhyUs />
-			<Testimonials />
-			<Faq />
-			<FinalCta />
+			<ServicesTeaser
+				sectionIndex={1}
+				totalSections={totalSections}
+			/>
+			<PortfolioTeaser
+				sectionIndex={2}
+				totalSections={totalSections}
+			/>
+			<Testimonials
+				sectionIndex={3}
+				totalSections={totalSections}
+			/>
+			<WhyUs
+				sectionIndex={4}
+				totalSections={totalSections}
+			/>
+			<Problem
+				sectionIndex={5}
+				totalSections={totalSections}
+			/>
+			<Solution
+				sectionIndex={6}
+				totalSections={totalSections}
+			/>
+			<MarqueeStatement
+				sectionIndex={7}
+				totalSections={totalSections}
+			/>
+			<Faq
+				sectionIndex={8}
+				totalSections={totalSections}
+			/>
+			<FinalCta
+				sectionIndex={9}
+				totalSections={totalSections}
+			/>
 		</>
 	);
 }

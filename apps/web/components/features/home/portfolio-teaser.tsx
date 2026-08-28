@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { projectCards } from '@/constants/home';
+import { cn } from '@workspace/ui/lib/utils';
 
 // Generated cover art standing in for real project screenshots — an open PM item (see docs/requirements/home-page.md)
 function ProjectCover({ seed }: { seed: number }) {
@@ -52,12 +53,23 @@ function ProjectCover({ seed }: { seed: number }) {
 	);
 }
 
-export function PortfolioTeaser() {
+interface PortfolioTeaserProps {
+	sectionIndex: number;
+	totalSections?: number;
+	className?: string;
+}
+
+export function PortfolioTeaser({
+	sectionIndex,
+	totalSections,
+	className
+}: PortfolioTeaserProps) {
 	return (
-		<section className="border-t border-border">
+		<section className={cn('border-t border-border', className)}>
 			<div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
 				<SectionHeader
-					index={7}
+					index={sectionIndex}
+					total={totalSections}
 					eyebrow="Our Work"
 					title="Real projects, real impact"
 					seeAllLabel="View all projects"

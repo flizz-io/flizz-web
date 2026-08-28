@@ -67,12 +67,28 @@ function ProgressGraphic({
 	);
 }
 
-export function Solution() {
+interface SolutionProps {
+	sectionIndex: number;
+	totalSections?: number;
+	className?: string;
+}
+
+export function Solution({
+	className,
+	sectionIndex,
+	totalSections
+}: SolutionProps) {
 	return (
-		<section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+		<section
+			className={cn(
+				className,
+				'mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8'
+			)}
+		>
 			<div className="max-w-2xl">
 				<SectionTag
-					index={5}
+					index={sectionIndex}
+					total={totalSections}
 					label="Our Process"
 				/>
 				{/* TODO: PM to confirm final headline — the sheet duplicated the Problem section's headline here */}

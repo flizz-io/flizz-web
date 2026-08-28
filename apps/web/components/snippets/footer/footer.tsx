@@ -37,8 +37,16 @@ export function Footer() {
 						</div>
 					))}
 				</div>
+				<div className="my-4 w-full">
+					<p
+						aria-hidden
+						className="text-center font-heading text-[18vw] leading-none font-semibold tracking-tight text-foreground/5 select-none"
+					>
+						{siteConfig.fullname}
+					</p>
+				</div>
 
-				<div className="mt-14 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+				<div className="flex flex-col gap-4 border-t border-border py-6 sm:flex-row sm:items-center sm:justify-between">
 					<p className="font-mono text-xs text-muted-foreground">
 						© {new Date().getFullYear()} {siteConfig.name}. All
 						rights reserved.
@@ -56,13 +64,6 @@ export function Footer() {
 					</div>
 				</div>
 			</div>
-
-			<p
-				aria-hidden
-				className="mt-4 -mb-[0.14em] w-full text-center font-heading text-[18vw] leading-none font-semibold tracking-tight text-foreground/5 select-none"
-			>
-				{siteConfig.name}
-			</p>
 		</footer>
 	);
 }
