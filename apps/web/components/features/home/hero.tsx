@@ -7,8 +7,8 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 import { heroScrollTargetId } from '@/constants/home';
-import { useIsDarkTheme } from '@/hooks/use-is-dark-theme';
 import { Button } from '@workspace/ui/components/button';
+import { useIsDarkTheme } from '@workspace/ui/hooks/use-is-dark-theme';
 
 // Three.js is heavy and purely decorative — keep it out of the initial bundle.
 const HeroScene = dynamic(

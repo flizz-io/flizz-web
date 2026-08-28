@@ -1,7 +1,8 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-	transpilePackages: ['@workspace/ui']
+	// TODO: drop '@workspace/theme-lab' together with that package before production.
+	transpilePackages: ['@workspace/ui', '@workspace/theme-lab']
 };
 
 export default nextConfig;

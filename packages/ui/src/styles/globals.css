@@ -6,6 +6,8 @@
 @source '../../../apps/**/*.{ts,tsx}';
 @source '../../../components/**/*.{ts,tsx}';
 @source '../**/*.{ts,tsx}';
+/* TODO: remove with the `@workspace/theme-lab` package before production. */
+@source '../../../theme-lab/src/**/*.{ts,tsx}';
 
 @theme inline {
 	--font-heading: var(--font-heading);

@@ -1,10 +1,5 @@
 /**
- * TEMPORARY DEV TOOL — delete the whole `components/dev/theme-lab` folder (and
- * its mount in `app/(marketing)/layout.tsx`) before production.
- *
- * Everything this tool needs lives in this folder rather than the app-wide
- * `constants/` and `hooks/` directories, so removing it is a single `rm -rf`
- * with no dangling imports.
+ * TEMPORARY DEV TOOL — see this package's README for removal steps.
  */
 
 export const THEME_LAB_STORAGE_KEY = 'flizz:theme-lab';
@@ -180,52 +175,58 @@ export const defaultThemeValues: ThemeOverrides = {
 
 export interface ThemePreset {
 	name: string;
-	hue: number;
+	/** Accent applied in light mode. */
+	light: string;
+	/** Accent applied in dark mode. */
+	dark: string;
 }
 
+/**
+ * Presets carry explicit values per mode so a requested colour lands exactly as
+ * given rather than being approximated. Where a pair differs, dark mode gets a
+ * lighter, more vivid tint of the same hue rather than reusing the light value.
+ */
 export const themePresets: ThemePreset[] = [
-	{ name: 'Violet', hue: 292 },
-	{ name: 'Indigo', hue: 275 },
-	{ name: 'Blue', hue: 255 },
-	{ name: 'Teal', hue: 195 },
-	{ name: 'Emerald', hue: 155 },
-	{ name: 'Amber', hue: 75 },
-	{ name: 'Rose', hue: 15 }
+	{ name: 'Brand violet', light: '#5e17eb', dark: '#8b5cf6' },
+	{ name: 'Sand', light: '#f0b65a', dark: '#f0b65a' },
+	{ name: 'Ember', light: '#ff6b3d', dark: '#ff6b3d' },
+	{ name: 'Indigo', light: '#4f46e5', dark: '#818cf8' },
+	{ name: 'Teal', light: '#0d9488', dark: '#2dd4bf' },
+	{ name: 'Emerald', light: '#059669', dark: '#34d399' },
+	{ name: 'Rose', light: '#e11d48', dark: '#fb7185' }
 ];
 
 /**
- * Presets are generated from a single hue in oklch rather than hand-written hex
- * pairs. That keeps them compact and structurally enforces the rule that dark
- * mode gets a lighter, more vivid tint of the same hue instead of reusing the
- * light-mode value.
+ * Picks black or white text for an accent using WCAG relative luminance, so a
+ * pale accent like Sand does not end up with unreadable white label text.
  */
-export function buildPresetValues(hue: number): ThemeOverrides {
+function readableForeground(hex: string): string {
+	const channels = [1, 3, 5].map((offset) => {
+		const value = parseInt(hex.slice(offset, offset + 2), 16) / 255;
+
+		return value <= 0.03928
+			? value / 12.92
+			: Math.pow((value + 0.055) / 1.055, 2.4);
+	});
+
+	const [r = 0, g = 0, b = 0] = channels;
+	const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+	return luminance > 0.4 ? '#0b0812' : '#ffffff';
+}
+
+function accentValues(color: string): ThemeValues {
 	return {
-		light: {
-			primary: `oklch(0.47 0.25 ${hue})`,
-			'primary-foreground': '#ffffff',
-			ring: `oklch(0.47 0.25 ${hue})`,
-			secondary: `oklch(0.95 0.035 ${hue})`,
-			'secondary-foreground': `oklch(0.32 0.14 ${hue})`,
-			accent: `oklch(0.95 0.035 ${hue})`,
-			'accent-foreground': `oklch(0.32 0.14 ${hue})`,
-			muted: `oklch(0.965 0.012 ${hue})`,
-			border: `oklch(0.91 0.02 ${hue})`,
-			input: `oklch(0.91 0.02 ${hue})`,
-			'chart-1': `oklch(0.47 0.25 ${hue})`,
-			'chart-2': `oklch(0.62 0.19 ${hue})`
-		},
-		dark: {
-			primary: `oklch(0.68 0.19 ${hue})`,
-			'primary-foreground': `oklch(0.16 0.03 ${hue})`,
-			ring: `oklch(0.68 0.19 ${hue})`,
-			secondary: `oklch(0.26 0.045 ${hue})`,
-			'secondary-foreground': `oklch(0.96 0.01 ${hue})`,
-			accent: `oklch(0.26 0.045 ${hue})`,
-			'accent-foreground': `oklch(0.96 0.01 ${hue})`,
-			muted: `oklch(0.23 0.04 ${hue})`,
-			'chart-1': `oklch(0.68 0.19 ${hue})`,
-			'chart-2': `oklch(0.76 0.15 ${hue})`
-		}
+		primary: color,
+		'primary-foreground': readableForeground(color),
+		ring: color,
+		'chart-1': color
+	};
+}
+
+export function buildPresetValues(preset: ThemePreset): ThemeOverrides {
+	return {
+		light: accentValues(preset.light),
+		dark: accentValues(preset.dark)
 	};
 }

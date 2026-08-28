@@ -20,15 +20,21 @@ function toCssBlock(selector: string, values: Record<string, string>) {
 }
 
 /**
- * Light overrides are scoped to `:root:not(.dark)` and dark to `:root.dark`.
- * Both globals.css selectors (`:root` and `.dark`) have equal specificity, so a
- * plain `:root` override injected later would also win *inside* dark mode and
- * leak light values across. The extra compound raises specificity above both.
+ * Light overrides are scoped to `:root:not(.dark)` so they outrank globals.css's
+ * `:root` block — a plain `:root` override injected later would tie with `.dark`
+ * on specificity and leak light values into dark mode.
+ *
+ * Dark overrides deliberately use a bare `.dark`, not `:root.dark`. Sections
+ * that opt into dark styling on their own (the footer, for one) carry the class
+ * on a nested element, and `:root.dark` only ever matches `<html>` — those
+ * blocks kept picking up the stylesheet defaults. A bare `.dark` ties with
+ * globals.css on specificity and wins on source order, for `<html>` and nested
+ * elements alike.
  */
 export function buildOverridesCss(overrides: ThemeOverrides): string {
 	return [
 		toCssBlock(':root:not(.dark)', overrides.light),
-		toCssBlock(':root.dark', overrides.dark)
+		toCssBlock('.dark', overrides.dark)
 	]
 		.filter(Boolean)
 		.join('\n\n');

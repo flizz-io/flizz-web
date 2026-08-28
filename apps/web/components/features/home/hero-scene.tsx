@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-import { readThemeColor } from '@/utils/css-color';
+import { readThemeColor } from '@workspace/ui/lib/css-color';
 
 const STAR_COUNT = 2200;
 const COMET_COUNT = 2;

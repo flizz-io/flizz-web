@@ -1,7 +1,7 @@
-import { ThemeLabMount } from '@/components/dev/theme-lab/theme-lab-mount';
 import { Footer } from '@/components/snippets/footer/footer';
 import { Header } from '@/components/snippets/header/header';
 import { SmoothScroll } from '@/components/snippets/smooth-scroll/smooth-scroll';
+import { ThemeLabMount } from '@workspace/theme-lab';
 
 export default function MarketingLayout({
 	children
@@ -13,7 +13,7 @@ export default function MarketingLayout({
 			<Header />
 			<main>{children}</main>
 			<Footer />
-			{/* TODO: remove with the `components/dev/theme-lab` folder before production. */}
+			{/* TODO: remove with the `@workspace/theme-lab` package before production. */}
 			<ThemeLabMount />
 		</SmoothScroll>
 	);

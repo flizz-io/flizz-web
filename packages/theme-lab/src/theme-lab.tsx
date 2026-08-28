@@ -7,8 +7,8 @@ import { Check, Copy, RotateCcw, Settings2, X } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
 
-import { useIsDarkTheme } from '@/hooks/use-is-dark-theme';
-import { cssColorToHex } from '@/utils/css-color';
+import { useIsDarkTheme } from '@workspace/ui/hooks/use-is-dark-theme';
+import { cssColorToHex } from '@workspace/ui/lib/css-color';
 import { cn } from '@workspace/ui/lib/utils';
 
 import {
@@ -17,7 +17,8 @@ import {
 	themePresets,
 	themeVariableGroups,
 	type ThemeMode,
-	type ThemeOverrides
+	type ThemeOverrides,
+	type ThemePreset
 } from './theme-lab-config';
 import {
 	applyThemeOverrides,
@@ -91,12 +92,12 @@ export function ThemeLab() {
 		}));
 	}
 
-	function applyPreset(hue: number) {
-		const preset = buildPresetValues(hue);
+	function applyPreset(preset: ThemePreset) {
+		const values = buildPresetValues(preset);
 
 		setOverrides((current) => ({
-			light: { ...current.light, ...preset.light },
-			dark: { ...current.dark, ...preset.dark }
+			light: { ...current.light, ...values.light },
+			dark: { ...current.dark, ...values.dark }
 		}));
 	}
 
@@ -202,14 +203,13 @@ export function ThemeLab() {
 										<button
 											key={preset.name}
 											type="button"
-											onClick={() =>
-												applyPreset(preset.hue)
-											}
-											title={preset.name}
+											onClick={() => applyPreset(preset)}
+											title={`${preset.name} · ${preset[mode]}`}
 											className="size-7 rounded-full border border-border transition-transform hover:scale-110"
-											style={{
-												background: `oklch(0.6 0.22 ${preset.hue})`
-											}}
+											// Swatch shows the value for the mode
+											// being edited, so it matches what
+											// clicking it will apply.
+											style={{ background: preset[mode] }}
 										>
 											<span className="sr-only">
 												{preset.name}
