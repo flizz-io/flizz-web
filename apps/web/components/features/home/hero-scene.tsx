@@ -3,6 +3,8 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+import { readThemeColor } from '@/utils/css-color';
+
 const STAR_COUNT = 2200;
 const COMET_COUNT = 2;
 // Points are spaced tighter than their own radius so the tail reads as one
@@ -18,7 +20,7 @@ const FIELD_DEPTH_NEAR = -3;
 const FIELD_DEPTH_FAR = -24;
 
 const HEAD_COLOR = new THREE.Color('#ffffff');
-const TAIL_COLOR = new THREE.Color('#8b5cf6');
+const FALLBACK_ACCENT = '#8b5cf6';
 
 const starVertexShader = /* glsl */ `
 	attribute float aSize;
@@ -124,6 +126,13 @@ export function HeroScene() {
 		const prefersReducedMotion = window.matchMedia(
 			'(prefers-reduced-motion: reduce)'
 		).matches;
+
+		// Read the brand accent from CSS rather than duplicating the hex here,
+		// so the scene follows the palette. Sampled once at setup: the colours
+		// are baked into buffer attributes, so a live swap needs a remount.
+		const TAIL_COLOR = new THREE.Color(
+			readThemeColor('--primary', FALLBACK_ACCENT)
+		);
 
 		const scene = new THREE.Scene();
 		const camera = new THREE.PerspectiveCamera(
