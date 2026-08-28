@@ -212,6 +212,18 @@ export const testimonials: Testimonial[] = [
 	}
 ];
 
+// Audience segments, derived from the four service categories in
+// docs/requirements/home-page.md — TODO: PM to confirm the final segment list
+// and the "Who we build for" headline.
+export const audienceSegments: string[] = [
+	'SaaS & product teams',
+	'E-commerce & retail',
+	'Operations & automation',
+	'Founders shipping v1',
+	'Legacy replacements',
+	'Internal tools'
+];
+
 export const faqItems: FaqItem[] = [
 	{
 		question: "What's your development process?",
