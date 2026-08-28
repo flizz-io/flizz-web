@@ -7,7 +7,6 @@ import { Problem } from '@/components/features/home/problem';
 import { Proof } from '@/components/features/home/proof';
 import { ServicesTeaser } from '@/components/features/home/services-teaser';
 import { Solution } from '@/components/features/home/solution';
-import { SolutionScroll } from '@/components/features/home/solution-scroll';
 import { Testimonials } from '@/components/features/home/testimonials';
 import { WhyUs } from '@/components/features/home/why-us';
 
@@ -40,10 +39,6 @@ export default function HomePage() {
 			/>
 			{/* TODO: two process variants stacked for comparison — keep one. */}
 			<Solution
-				sectionIndex={6}
-				totalSections={totalSections}
-			/>
-			<SolutionScroll
 				sectionIndex={6}
 				totalSections={totalSections}
 			/>

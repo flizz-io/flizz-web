@@ -4,23 +4,30 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 import { ProcessConsole } from '@/components/features/home/process-console';
+import { ConsoleFrame } from '@/components/snippets/console-frame/console-frame';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { processSteps } from '@/constants/home';
 import { cn } from '@workspace/ui/lib/utils';
 
-const STEP_INTERVAL_MS = 4500;
+import { ProcessConsoleCine } from './process-console-cine';
+
+const STEP_INTERVAL_MS = 3500;
 const REVEAL_EASE = [0.16, 1, 0.3, 1] as const;
 
 interface SolutionProps {
 	sectionIndex: number;
 	totalSections?: number;
 	className?: string;
+	stepIntervalMs?: number;
+	consoleFrameType?: 'default' | 'minimal';
 }
 
 export function Solution({
 	className,
 	sectionIndex,
-	totalSections
+	totalSections,
+	stepIntervalMs = STEP_INTERVAL_MS,
+	consoleFrameType = 'default'
 }: SolutionProps) {
 	const reduceMotion = useReducedMotion();
 	const [activeIndex, setActiveIndex] = useState(0);
@@ -32,10 +39,10 @@ export function Solution({
 
 		const timer = window.setInterval(() => {
 			setActiveIndex((current) => (current + 1) % processSteps.length);
-		}, STEP_INTERVAL_MS);
+		}, stepIntervalMs);
 
 		return () => window.clearInterval(timer);
-	}, [reduceMotion, isPaused]);
+	}, [reduceMotion, isPaused, stepIntervalMs]);
 
 	const activeStep = processSteps[activeIndex];
 
@@ -136,7 +143,7 @@ export function Solution({
 													{step.title}
 												</p>
 												<p className="mt-2 max-w-md text-sm text-muted-foreground">
-													{step.description}
+													{step.compactDescription}
 												</p>
 												<p className="mt-3 font-mono text-[0.7rem] text-primary">
 													What you get —{' '}
@@ -151,25 +158,32 @@ export function Solution({
 					})}
 				</ul>
 
-				<div className="relative overflow-hidden rounded-xl border border-border bg-card shadow-2xl lg:sticky lg:top-28">
-					<div
-						aria-hidden
-						className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[120%] -translate-x-1/2 rounded-[50%] bg-primary/15 blur-3xl"
-					/>
-
-					<div className="relative flex items-center gap-2 border-b border-border px-4 py-3">
-						{[0, 1, 2].map((dot) => (
-							<span
-								key={dot}
-								className="size-2 rounded-full bg-muted-foreground/30"
-							/>
-						))}
-						<span className="ml-2 font-mono text-[0.65rem] text-muted-foreground">
-							flizz.build / northwind
-						</span>
-					</div>
-
-					<div className="relative h-[21rem] p-6">
+				{consoleFrameType === 'default' ? (
+					<ConsoleFrame
+						index={activeIndex}
+						headerTitle={'flizz.build / northwind'}
+						footerContent={
+							<>
+								<span className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+									{String(activeIndex + 1).padStart(2, '0')} /{' '}
+									{activeStep?.shortLabel}
+								</span>
+								<span className="flex gap-1.5">
+									{processSteps.map((step, i) => (
+										<span
+											key={step.title}
+											className={cn(
+												'h-1 rounded-full transition-all duration-500',
+												i === activeIndex
+													? 'w-6 bg-primary'
+													: 'w-1.5 bg-muted-foreground/30'
+											)}
+										/>
+									))}
+								</span>
+							</>
+						}
+					>
 						<AnimatePresence mode="wait">
 							<motion.div
 								key={activeIndex}
@@ -178,31 +192,76 @@ export function Solution({
 								exit="exit"
 								className="h-full"
 							>
-								<ProcessConsole index={activeIndex} />
+								{/* One scan sweep per stage change. */}
+								<motion.span
+									key={`sweep-${activeIndex}`}
+									aria-hidden
+									className="pointer-events-none absolute inset-x-0 z-10 h-24 bg-linear-to-b from-transparent via-primary/12 to-transparent"
+									initial={{ y: '-100%', opacity: 0.9 }}
+									animate={{ y: '420%', opacity: 0 }}
+									transition={{
+										duration: 1.1,
+										ease: 'easeOut'
+									}}
+								/>
+								<ProcessConsoleCine index={activeIndex} />
 							</motion.div>
 						</AnimatePresence>
-					</div>
+					</ConsoleFrame>
+				) : (
+					<div className="relative overflow-hidden rounded-xl border border-border bg-card shadow-2xl lg:sticky lg:top-28">
+						<div
+							aria-hidden
+							className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[120%] -translate-x-1/2 rounded-[50%] bg-primary/15 blur-3xl"
+						/>
 
-					<div className="relative flex items-center justify-between border-t border-border px-4 py-2.5">
-						<span className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
-							{String(activeIndex + 1).padStart(2, '0')} /{' '}
-							{activeStep?.shortLabel}
-						</span>
-						<span className="flex gap-1.5">
-							{processSteps.map((step, index) => (
+						<div className="relative flex items-center gap-2 border-b border-border px-4 py-3">
+							{[0, 1, 2].map((dot) => (
 								<span
-									key={step.title}
-									className={cn(
-										'h-1 rounded-full transition-all duration-500',
-										index === activeIndex
-											? 'w-6 bg-primary'
-											: 'w-1.5 bg-muted-foreground/30'
-									)}
+									key={dot}
+									className="size-2 rounded-full bg-muted-foreground/30"
 								/>
 							))}
-						</span>
+							<span className="ml-2 font-mono text-[0.65rem] text-muted-foreground">
+								flizz.build / northwind
+							</span>
+						</div>
+
+						<div className="relative h-[21rem] p-6">
+							<AnimatePresence mode="wait">
+								<motion.div
+									key={activeIndex}
+									initial="hidden"
+									animate="show"
+									exit="exit"
+									className="h-full"
+								>
+									<ProcessConsole index={activeIndex} />
+								</motion.div>
+							</AnimatePresence>
+						</div>
+
+						<div className="relative flex items-center justify-between border-t border-border px-4 py-2.5">
+							<span className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+								{String(activeIndex + 1).padStart(2, '0')} /{' '}
+								{activeStep?.shortLabel}
+							</span>
+							<span className="flex gap-1.5">
+								{processSteps.map((step, index) => (
+									<span
+										key={step.title}
+										className={cn(
+											'h-1 rounded-full transition-all duration-500',
+											index === activeIndex
+												? 'w-6 bg-primary'
+												: 'w-1.5 bg-muted-foreground/30'
+										)}
+									/>
+								))}
+							</span>
+						</div>
 					</div>
-				</div>
+				)}
 			</div>
 		</section>
 	);
