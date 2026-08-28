@@ -3,6 +3,7 @@ import type {
 	ProblemItem,
 	ProcessStep,
 	ProjectCard,
+	RealCostItem,
 	RiskReversal,
 	ServiceCard,
 	Stat,
@@ -56,12 +57,25 @@ export const problemItems: ProblemItem[] = [
 ];
 
 // The sheet's "The Real Cost" block, split at its own sentence boundaries so
-// the closing stage can land one line at a time.
-export const realCostLines: string[] = [
-	'Technology that holds you back instead of moving you forward.',
-	"Competitive advantages you can't capture.",
-	"Growth opportunities you can't pursue.",
-	'Teams frustrated by tools that make work harder, not easier.'
+// the closing stage can land one loss at a time, each with a figure that plays
+// the sentence out.
+export const realCostItems: RealCostItem[] = [
+	{
+		line: 'Technology that holds you back instead of moving you forward.',
+		diagram: 'held-back'
+	},
+	{
+		line: "Competitive advantages you can't capture.",
+		diagram: 'missed'
+	},
+	{
+		line: "Growth opportunities you can't pursue.",
+		diagram: 'forked'
+	},
+	{
+		line: 'Teams frustrated by tools that make work harder, not easier.',
+		diagram: 'friction'
+	}
 ];
 
 export const processSteps: ProcessStep[] = [

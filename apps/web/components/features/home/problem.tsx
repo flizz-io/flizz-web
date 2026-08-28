@@ -1,16 +1,24 @@
 'use client';
 
 import { motion, useTransform } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 
+import { CostDiagram } from '@/components/features/home/cost-diagrams';
 import { ProblemScene } from '@/components/features/home/problem-scenes';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
-import { problemItems, realCostLines } from '@/constants/home';
+import { problemItems, realCostItems } from '@/constants/home';
 import { useScrollProgress } from '@/hooks/use-scroll-progress';
 import type { ProblemItem } from '@/types/home';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { cn } from '@workspace/ui/lib/utils';
+
+// Three.js is heavy and only the closing stage needs it.
+const CostScene = dynamic(
+	() => import('./cost-scene').then((mod) => mod.CostScene),
+	{ ssr: false }
+);
 
 const STAGE_SCROLL_VH = 80;
 const RAIL_HEIGHT = 176;
@@ -33,7 +41,7 @@ const SCENE_MASK =
 
 interface ProblemStage {
 	key: string;
-	scene: 'grid' | 'scattered' | 'slipping' | 'accumulation' | 'none';
+	scene: 'grid' | 'scattered' | 'slipping' | 'cost' | 'none';
 	drain: number;
 	item?: ProblemItem;
 	number?: number;
@@ -186,7 +194,7 @@ export function Problem({
 			item,
 			number: index + 1
 		})),
-		{ key: 'cost', scene: 'accumulation', drain: COST_DRAIN }
+		{ key: 'cost', scene: 'cost', drain: COST_DRAIN }
 	];
 
 	return (
@@ -213,16 +221,29 @@ export function Problem({
 							{/* Carved back where the copy sits, so the diagram
 							    stays rich at the edges and never competes. */}
 							<div
-								className="absolute inset-0 text-foreground opacity-[0.16]"
+								className={cn(
+									'absolute inset-0',
+									stage.scene === 'cost'
+										? 'opacity-80'
+										: 'text-foreground opacity-[0.16]'
+								)}
 								style={{
 									maskImage: SCENE_MASK,
 									WebkitMaskImage: SCENE_MASK
 								}}
 							>
-								<ProblemScene
-									scene={stage.scene}
-									active={isInView}
-								/>
+								{stage.scene === 'cost' ? (
+									<CostScene
+										active={
+											isInView && index === activeIndex
+										}
+									/>
+								) : (
+									<ProblemScene
+										scene={stage.scene}
+										active={isInView}
+									/>
+								)}
 							</div>
 						</div>
 					))}
@@ -273,36 +294,53 @@ export function Problem({
 											</p>
 										</div>
 									) : stage.key === 'cost' ? (
-										<div className="max-w-4xl">
+										<div className="max-w-3xl">
 											<p className="font-mono text-[0.65rem] tracking-[0.22em] text-primary uppercase sm:text-xs">
 												The real cost
 											</p>
-											<div className="mt-7 border-t border-border pt-7">
-												{realCostLines.map(
-													(line, lineIndex) => (
-														<p
-															key={line}
-															className={cn(
-																'font-serif text-2xl leading-snug text-foreground transition-[opacity,transform] duration-700 ease-power-on sm:text-3xl lg:text-4xl',
-																lineIndex > 0 &&
-																	'mt-3',
-																isActive
-																	? 'translate-y-0 opacity-100'
-																	: 'translate-y-3 opacity-0'
-															)}
-															style={{
-																transitionDelay: `${
-																	160 +
-																	lineIndex *
-																		120
-																}ms`
-															}}
+
+											<ul className="mt-8">
+												{realCostItems.map(
+													(item, itemIndex) => (
+														// The row clips its own
+														// content, so each loss
+														// rises out from behind
+														// the rule above it.
+														<li
+															key={item.line}
+															className="overflow-hidden border-b border-border/60 last:border-0"
 														>
-															{line}
-														</p>
+															<div
+																className={cn(
+																	'flex items-center gap-5 py-4 transition-transform duration-[900ms] ease-power-on sm:gap-7',
+																	isActive
+																		? 'translate-y-0'
+																		: 'translate-y-full'
+																)}
+																style={{
+																	transitionDelay: `${
+																		200 +
+																		itemIndex *
+																			150
+																	}ms`
+																}}
+															>
+																<CostDiagram
+																	kind={
+																		item.diagram
+																	}
+																	active={
+																		isActive
+																	}
+																/>
+																<p className="font-serif text-lg leading-snug text-foreground sm:text-xl lg:text-2xl">
+																	{item.line}
+																</p>
+															</div>
+														</li>
 													)
 												)}
-											</div>
+											</ul>
 										</div>
 									) : stage.item ? (
 										<ProblemBody
@@ -389,17 +427,22 @@ function ProblemStack({
 					<p className="font-mono text-xs tracking-[0.22em] text-primary uppercase">
 						The real cost
 					</p>
-					{realCostLines.map((line, index) => (
-						<p
-							key={line}
-							className={cn(
-								'font-serif text-2xl leading-snug text-foreground sm:text-3xl',
-								index > 0 && 'mt-3'
-							)}
-						>
-							{line}
-						</p>
-					))}
+					<ul className="mt-6">
+						{realCostItems.map((item) => (
+							<li
+								key={item.line}
+								className="flex items-center gap-5 border-b border-border/60 py-4 last:border-0 sm:gap-7"
+							>
+								<CostDiagram
+									kind={item.diagram}
+									active={false}
+								/>
+								<p className="font-serif text-lg leading-snug text-foreground sm:text-xl">
+									{item.line}
+								</p>
+							</li>
+						))}
+					</ul>
 				</Reveal>
 			</div>
 		</section>

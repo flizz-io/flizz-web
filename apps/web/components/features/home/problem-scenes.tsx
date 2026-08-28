@@ -293,28 +293,11 @@ function SlippingScene({ active }: { active: boolean }) {
 	);
 }
 
-/** Everything at once, and nothing moving. */
-function AccumulationScene() {
-	return (
-		<>
-			<div className="absolute inset-0 opacity-40">
-				<RigidGridScene active={false} />
-			</div>
-			<div className="absolute inset-0 opacity-55">
-				<ScatteredScene active={false} />
-			</div>
-			<div className="absolute inset-0 opacity-50">
-				<SlippingScene active={false} />
-			</div>
-		</>
-	);
-}
-
 export function ProblemScene({
 	scene,
 	active
 }: {
-	scene: 'grid' | 'scattered' | 'slipping' | 'accumulation' | 'none';
+	scene: 'grid' | 'scattered' | 'slipping' | 'cost' | 'none';
 	active: boolean;
 }) {
 	switch (scene) {
@@ -324,8 +307,6 @@ export function ProblemScene({
 			return <ScatteredScene active={active} />;
 		case 'slipping':
 			return <SlippingScene active={active} />;
-		case 'accumulation':
-			return <AccumulationScene />;
 		default:
 			return null;
 	}

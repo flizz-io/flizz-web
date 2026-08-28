@@ -12,6 +12,14 @@ export interface ProblemItem {
 	cost: string;
 }
 
+export type RealCostDiagram = 'held-back' | 'missed' | 'forked' | 'friction';
+
+export interface RealCostItem {
+	line: string;
+	/** Which moving figure plays out this line. */
+	diagram: RealCostDiagram;
+}
+
 export interface ProcessStep {
 	/** Punchy one-word label for the process rail. */
 	shortLabel: string;
