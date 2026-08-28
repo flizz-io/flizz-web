@@ -87,11 +87,19 @@ function Caption({ children }: { children: React.ReactNode }) {
 	);
 }
 
+const intakeLines = [
+	'mapped 6 core workflows',
+	'flagged 3 manual bottlenecks',
+	'scoped 24 requirements'
+];
+
 function DiscoverStage() {
 	const signals = [
 		{ label: 'Current operations', value: 72 },
 		{ label: 'Pain points', value: 54 },
-		{ label: 'Growth goals', value: 86 }
+		{ label: 'Growth goals', value: 86 },
+		{ label: 'Data readiness', value: 61 },
+		{ label: 'Technical constraints', value: 45 }
 	];
 
 	return (
@@ -101,7 +109,41 @@ function DiscoverStage() {
 		>
 			<Caption>Project brief</Caption>
 
-			<div className="flex flex-col gap-3.5">
+			{/* Workshop transcript, typed in line by line — the clip comes from
+			    animating width against `overflow-hidden`, so the row keeps its
+			    full height from the first frame and nothing below it moves. */}
+			<motion.div
+				variants={row}
+				className="flex flex-col gap-1.5 rounded border border-border bg-card px-3 py-2.5"
+			>
+				{intakeLines.map((line, i) => (
+					<motion.p
+						key={line}
+						className="overflow-hidden font-mono text-[0.6rem] whitespace-nowrap text-muted-foreground"
+						initial={{ width: 0 }}
+						animate={{ width: '100%' }}
+						transition={{
+							duration: 0.45,
+							delay: 0.25 + i * 0.4,
+							ease: 'linear'
+						}}
+					>
+						<span className="text-primary">›</span> {line}
+					</motion.p>
+				))}
+				<motion.span
+					aria-hidden
+					className="block h-2.5 w-1.5 bg-primary"
+					animate={{ opacity: [1, 0.1, 1] }}
+					transition={{
+						duration: 1.1,
+						repeat: Infinity,
+						ease: 'linear'
+					}}
+				/>
+			</motion.div>
+
+			<div className="flex flex-1 flex-col justify-between gap-3.5">
 				{signals.map((signal) => (
 					<motion.div
 						key={signal.label}
@@ -132,10 +174,7 @@ function DiscoverStage() {
 				))}
 			</div>
 
-			<motion.div
-				variants={row}
-				className="mt-auto"
-			>
+			<motion.div variants={row}>
 				<div className="flex gap-1">
 					{['Disc', 'Arch', 'Build', 'QA', 'Ship'].map((phase, i) => (
 						<motion.span
@@ -261,6 +300,21 @@ function DesignStage() {
 					</div>
 				))}
 			</div>
+
+			<motion.div
+				variants={row}
+				className="flex items-center justify-between border-t border-border pt-3 font-mono text-[0.6rem] text-muted-foreground"
+			>
+				<span>
+					<span className="text-primary">4</span> services
+				</span>
+				<span>
+					<span className="text-primary">1</span> gateway
+				</span>
+				<span>
+					<span className="text-primary">12</span> endpoints
+				</span>
+			</motion.div>
 		</motion.div>
 	);
 }
@@ -269,7 +323,8 @@ function BuildStage() {
 	const shipped = [
 		{ label: 'Auth + roles', week: 'wk 2' },
 		{ label: 'Orders module', week: 'wk 4' },
-		{ label: 'Reporting view', week: 'wk 6' }
+		{ label: 'Reporting view', week: 'wk 6' },
+		{ label: 'Client portal', week: 'wk 7' }
 	];
 	const velocity = [40, 65, 45, 80, 60, 95, 70, 88];
 
@@ -321,14 +376,16 @@ function BuildStage() {
 				))}
 			</div>
 
+			{/* The chart takes the leftover height rather than a fixed one, so
+			    the frame stays full whatever the copy above it grows to. */}
 			<motion.div
 				variants={row}
-				className="mt-auto"
+				className="flex min-h-0 flex-1 flex-col"
 			>
 				<p className="mb-2 font-mono text-[0.55rem] tracking-[0.15em] text-muted-foreground uppercase">
 					Velocity
 				</p>
-				<div className="flex h-12 items-end gap-1">
+				<div className="flex flex-1 items-end gap-1">
 					{velocity.map((height, i) => (
 						<motion.span
 							key={i}
@@ -353,7 +410,9 @@ function LaunchStage() {
 		'Unit + integration tests',
 		'Security audit',
 		'Load & performance',
-		'Accessibility pass'
+		'Accessibility pass',
+		'Cross-browser QA',
+		'Rollback drill'
 	];
 
 	return (
@@ -363,19 +422,28 @@ function LaunchStage() {
 		>
 			<Caption>Pre-flight checks</Caption>
 
-			<div className="relative flex flex-col gap-2.5">
+			{/* Spaced out by `justify-between` and tied together by the rail, so
+			    the leftover height reads as a sequence rather than a gap. */}
+			<div className="relative flex flex-1 flex-col justify-between">
+				<motion.span
+					aria-hidden
+					className="absolute top-2 bottom-2 left-2 w-px origin-top bg-border"
+					initial={{ scaleY: 0 }}
+					animate={{ scaleY: 1 }}
+					transition={{ duration: 0.9, ease: REVEAL_EASE }}
+				/>
 				{checks.map((check, i) => (
 					<motion.div
 						key={check}
 						variants={row}
-						className="flex items-center gap-3"
+						className="relative flex items-center gap-3"
 					>
 						<motion.span
-							className="flex size-4 shrink-0 items-center justify-center rounded-full border border-primary/70 text-[0.6rem] text-primary"
+							className="flex size-4 shrink-0 items-center justify-center rounded-full border border-primary/70 bg-card text-[0.6rem] text-primary"
 							initial={{ scale: 0, rotate: -90 }}
 							animate={{ scale: 1, rotate: 0 }}
 							transition={{
-								delay: 0.3 + i * 0.18,
+								delay: 0.3 + i * 0.14,
 								type: 'spring',
 								stiffness: 380,
 								damping: 16
@@ -390,7 +458,7 @@ function LaunchStage() {
 							className="font-mono text-[0.6rem] text-primary"
 							initial={{ opacity: 0 }}
 							animate={{ opacity: 1 }}
-							transition={{ delay: 0.45 + i * 0.18 }}
+							transition={{ delay: 0.45 + i * 0.14 }}
 						>
 							pass
 						</motion.span>
@@ -400,7 +468,7 @@ function LaunchStage() {
 
 			<motion.div
 				variants={row}
-				className="mt-auto grid grid-cols-3 gap-2"
+				className="grid grid-cols-3 gap-2"
 			>
 				{[
 					{ to: 1.2, decimals: 1, suffix: 's', label: 'LCP' },
@@ -430,10 +498,12 @@ function LaunchStage() {
 
 function HandoverStage() {
 	const docs = [
-		'Architecture guide',
-		'API reference',
-		'Deployment runbook',
-		'Admin training recording'
+		{ label: 'Architecture guide', kind: 'pdf' },
+		{ label: 'API reference', kind: 'openapi' },
+		{ label: 'Deployment runbook', kind: 'md' },
+		{ label: 'Admin training recording', kind: 'mp4' },
+		{ label: 'Environment credentials', kind: 'vault' },
+		{ label: 'Support & escalation path', kind: 'md' }
 	];
 
 	return (
@@ -443,21 +513,23 @@ function HandoverStage() {
 		>
 			<Caption>Handover pack</Caption>
 
-			<div className="flex flex-col gap-2">
+			{/* Equal-height bands rather than `justify-between`, so the leftover
+			    height lands between the dividers instead of under them. */}
+			<div className="flex flex-1 flex-col">
 				{docs.map((doc) => (
 					<motion.div
-						key={doc}
+						key={doc.label}
 						variants={row}
-						className="flex items-center gap-3 border-b border-border pb-2 last:border-0"
+						className="flex flex-1 items-center gap-3 border-b border-border last:border-0"
 					>
 						<span className="font-mono text-[0.6rem] text-primary">
 							/
 						</span>
 						<span className="flex-1 text-xs text-foreground">
-							{doc}
+							{doc.label}
 						</span>
-						<span className="font-mono text-[0.55rem] text-muted-foreground">
-							ready
+						<span className="rounded bg-muted-foreground/10 px-1.5 py-0.5 font-mono text-[0.55rem] text-muted-foreground">
+							{doc.kind}
 						</span>
 					</motion.div>
 				))}
@@ -465,7 +537,7 @@ function HandoverStage() {
 
 			<motion.div
 				variants={row}
-				className="relative mt-auto overflow-hidden rounded border border-primary/50 bg-primary/10 px-4 py-3"
+				className="relative overflow-hidden rounded border border-primary/50 bg-primary/10 px-4 py-3"
 			>
 				<motion.span
 					aria-hidden

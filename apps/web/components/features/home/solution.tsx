@@ -3,7 +3,6 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
-import { ProcessConsole } from '@/components/features/home/process-console';
 import { ConsoleFrame } from '@/components/snippets/console-frame/console-frame';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { processSteps } from '@/constants/home';
