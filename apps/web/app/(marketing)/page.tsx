@@ -44,6 +44,7 @@ export default function HomePage() {
 			<WhoWeBuildFor
 				sectionIndex={7}
 				totalSections={totalSections}
+				marqueeSpeed={0.5}
 			/>
 			<Faq
 				sectionIndex={8}

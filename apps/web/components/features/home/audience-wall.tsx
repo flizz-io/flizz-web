@@ -6,15 +6,16 @@ import { useEffect, useRef } from 'react';
 import { audienceSegments } from '@/constants/home';
 import { cn } from '@workspace/ui/lib/utils';
 
-// Co-prime-ish durations so the rows never phase-lock into a visible grid.
+// Seconds per loop at speed 1. Co-prime so the rows never phase-lock into a
+// visible grid, and long enough that the wall drifts rather than scrolls.
 const marqueeRows = [
-	{ duration: 61, reverse: false },
-	{ duration: 47, reverse: true },
-	{ duration: 73, reverse: false },
-	{ duration: 53, reverse: true },
-	{ duration: 67, reverse: false },
-	{ duration: 43, reverse: true },
-	{ duration: 59, reverse: false }
+	{ duration: 109, reverse: false },
+	{ duration: 83, reverse: true },
+	{ duration: 131, reverse: false },
+	{ duration: 97, reverse: true },
+	{ duration: 127, reverse: false },
+	{ duration: 79, reverse: true },
+	{ duration: 103, reverse: false }
 ];
 
 // Two fades intersected: the wall runs off every edge of the band rather than
@@ -29,10 +30,12 @@ const SPOTLIGHT =
 
 function Rows({
 	animate,
+	speed,
 	className,
 	style
 }: {
 	animate: boolean;
+	speed: number;
 	className?: string;
 	style?: React.CSSProperties;
 }) {
@@ -59,7 +62,9 @@ function Rows({
 						style={
 							animate
 								? {
-										animation: `marquee ${marqueeRow.duration}s linear infinite${
+										animation: `marquee ${
+											marqueeRow.duration / speed
+										}s linear infinite${
 											marqueeRow.reverse ? ' reverse' : ''
 										}`
 									}
@@ -91,8 +96,18 @@ function Rows({
 	);
 }
 
-export function AudienceWall({ className }: { className?: string }) {
+interface AudienceWallProps {
+	/**
+	 * Drift rate of the word rows. 1 is the tuned baseline, 0.5 runs it at
+	 * half speed, 2 at double. Clamped so a 0 can't freeze the wall.
+	 */
+	speed?: number;
+	className?: string;
+}
+
+export function AudienceWall({ speed = 1, className }: AudienceWallProps) {
 	const reduceMotion = useReducedMotion();
+	const rowSpeed = Math.max(0.1, speed);
 	const ref = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -159,12 +174,14 @@ export function AudienceWall({ className }: { className?: string }) {
 		>
 			<Rows
 				animate={!reduceMotion}
+				speed={rowSpeed}
 				className="text-foreground opacity-[0.07]"
 			/>
 			{/* The same wall again, lit — cut back to just the pointer's circle,
 			    so the segments are found rather than displayed. */}
 			<Rows
 				animate={!reduceMotion}
+				speed={rowSpeed}
 				className="text-primary opacity-90"
 				style={{ maskImage: SPOTLIGHT, WebkitMaskImage: SPOTLIGHT }}
 			/>

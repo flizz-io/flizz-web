@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { AudienceList } from '@/components/features/home/audience-list';
 import { AudienceWall } from '@/components/features/home/audience-wall';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
@@ -9,32 +10,34 @@ import { cn } from '@workspace/ui/lib/utils';
 interface WhoWeBuildForProps {
 	sectionIndex: number;
 	totalSections?: number;
+	/** Drift rate of the word wall — 1 is the baseline, 0.5 is half speed. */
+	marqueeSpeed?: number;
 	className?: string;
 }
 
 export function WhoWeBuildFor({
 	sectionIndex,
 	totalSections,
+	marqueeSpeed = 1,
 	className
 }: WhoWeBuildForProps) {
 	return (
 		<section
 			className={cn(
-				'relative isolate flex min-h-[85svh] items-center overflow-hidden border-y border-border px-4 py-24 sm:px-6 sm:py-32 lg:px-8',
+				'relative isolate flex min-h-[70svh] items-center overflow-hidden border-y border-border px-4 py-24 sm:min-h-[85svh] sm:px-6 sm:py-32 lg:px-8',
 				className
 			)}
 		>
-			<AudienceWall />
+			<AudienceWall speed={marqueeSpeed} />
 
-			{/* Calms the middle of the wall without erasing it — the segments
-			    should still read behind the statement, the way they do on the
-			    reference; only the smaller body copy needs the bed. */}
+			{/* Sinks the middle of the wall back into the page so the statement
+			    sits on its own bed rather than on top of the drifting words. */}
 			<div
 				aria-hidden
 				className="pointer-events-none absolute inset-0"
 				style={{
 					background:
-						'radial-gradient(ellipse 52% 42% at 50% 52%, color-mix(in oklab, var(--color-background) 74%, transparent) 0%, transparent 78%)'
+						'radial-gradient(ellipse 62% 54% at 50% 50%, var(--color-background) 32%, transparent 100%)'
 				}}
 			/>
 
@@ -62,18 +65,9 @@ export function WhoWeBuildFor({
 					</h2>
 				</Reveal>
 
-				<Reveal
-					delay={180}
-					className="mt-6 max-w-xl"
-				>
-					<p className="text-base text-pretty text-muted-foreground sm:text-lg">
-						SaaS and product teams, e-commerce operators,
-						operations-heavy businesses, and founders shipping a
-						first version — work where the requirements are
-						specific, the timeline is real, and the code has to stay
-						yours.
-					</p>
-				</Reveal>
+				{/* The wall is decorative and hidden from assistive tech, so
+				    this list is where the segments are actually stated. */}
+				<AudienceList className="mt-8" />
 
 				<Reveal
 					delay={270}
