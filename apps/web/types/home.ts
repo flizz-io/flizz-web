@@ -4,9 +4,12 @@ export interface Stat {
 }
 
 export interface ProblemItem {
+	/** Short framing line above the title, set in the utility face. */
+	eyebrow: string;
 	title: string;
 	description: string;
-	icon: 'blocks' | 'users' | 'clock';
+	/** The single sharpest consequence, pulled out as a callout. */
+	cost: string;
 }
 
 export interface ProcessStep {

@@ -32,23 +32,36 @@ export const socialProofLogos: string[] = [
 
 export const problemItems: ProblemItem[] = [
 	{
+		eyebrow: 'The tool sets the process',
 		title: "Generic off-the-shelf tools that don't fit",
 		description:
 			"You're forcing your unique processes into rigid templates. Manual workarounds everywhere. Features you pay for but never use. Missing the exact capabilities you actually need.",
-		icon: 'blocks'
+		cost: 'Your team spends its day being the integration layer.'
 	},
 	{
-		title: 'Unreliable freelancers and scattered contractors',
+		eyebrow: 'No one owns the whole',
+		title: 'Unreliable freelancers & contractors',
+		// title: 'Unreliable freelancers and scattered contractors',
 		description:
-			'No one owns the full picture. Communication breaks down between specialists. Code quality is inconsistent. You’re spending more time managing than building.',
-		icon: 'users'
+			'No one owns the full picture. Communication breaks down between specialists. Code quality is inconsistent. You\u2019re spending more time managing than building.',
+		cost: 'You become the project manager for people you hired to manage the project.'
 	},
 	{
+		eyebrow: 'Shipping after it matters',
 		title: 'Slow-moving agencies or internal teams',
 		description:
 			'Months of meetings. Endless scope discussions. By the time something ships, requirements have changed. Technical debt piles up because "we\'ll fix it later."',
-		icon: 'clock'
+		cost: 'What finally ships was scoped for a business you no longer run.'
 	}
+];
+
+// The sheet's "The Real Cost" block, split at its own sentence boundaries so
+// the closing stage can land one line at a time.
+export const realCostLines: string[] = [
+	'Technology that holds you back instead of moving you forward.',
+	"Competitive advantages you can't capture.",
+	"Growth opportunities you can't pursue.",
+	'Teams frustrated by tools that make work harder, not easier.'
 ];
 
 export const processSteps: ProcessStep[] = [
