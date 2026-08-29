@@ -9,8 +9,8 @@ export function Footer() {
 			<div className="mx-auto max-w-6xl px-4 pt-16 sm:px-6 lg:px-8">
 				<div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
 					<div className="col-span-2 sm:col-span-1">
-						<p className="font-heading text-lg font-semibold tracking-tight text-foreground">
-							{siteConfig.name}
+						<p className="font-proxima text-lg font-semibold tracking-tight text-foreground">
+							{siteConfig.fullname}
 						</p>
 						<p className="mt-4 max-w-[22ch] text-sm text-muted-foreground">
 							{siteConfig.tagline}
@@ -40,7 +40,7 @@ export function Footer() {
 				<div className="my-4 w-full">
 					<p
 						aria-hidden
-						className="text-center font-heading text-[18vw] leading-none font-semibold tracking-tight text-foreground/5 select-none"
+						className="text-center font-proxima text-[18vw] leading-none font-semibold tracking-tight text-foreground/5 select-none"
 					>
 						{siteConfig.fullname}
 					</p>

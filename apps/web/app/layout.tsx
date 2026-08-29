@@ -5,6 +5,7 @@ import {
 	Manrope,
 	Space_Grotesk
 } from 'next/font/google';
+import localFont from 'next/font/local';
 
 import '@workspace/ui/globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -36,6 +37,12 @@ const instrumentSerif = Instrument_Serif({
 	variable: '--font-serif'
 });
 
+const proximaNova = localFont({
+	src: './fonts/ProximaNovaBold.woff',
+	variable: '--font-proxima',
+	weight: '600 700'
+});
+
 export default function RootLayout({
 	children
 }: Readonly<{
@@ -51,6 +58,7 @@ export default function RootLayout({
 				spaceGrotesk.variable,
 				plexMono.variable,
 				instrumentSerif.variable,
+				proximaNova.variable,
 				'font-sans'
 			)}
 		>
