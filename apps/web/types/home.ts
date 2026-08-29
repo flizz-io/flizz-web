@@ -1,5 +1,11 @@
 import type { ServiceVisualKind } from '@workspace/service-visuals';
 
+export interface HeroDiscipline {
+	label: string;
+	/** One line on what the discipline actually contributes. */
+	caption: string;
+}
+
 export interface Stat {
 	value: string;
 	/** Unit, set smaller and italic beside the value. */
