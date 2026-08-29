@@ -110,7 +110,10 @@ export function ServicesTeaser({
 					// the track is swallowed by page scroll.
 					data-lenis-prevent
 					{...dragHandlers}
-					className="lg:overflow-x-auto lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden"
+					// `overflow-x: auto` computes `overflow-y` from visible to auto, so a
+					// focused specimen's scale transform made this a vertical scroll
+					// container too and the wheel got captured mid-page.
+					className="lg:overflow-x-auto lg:overflow-y-hidden lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden"
 				>
 					<div className="relative lg:w-max lg:min-w-full lg:px-20">
 						<span

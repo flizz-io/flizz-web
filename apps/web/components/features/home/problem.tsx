@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, useTransform } from 'framer-motion';
+import { useLenis } from 'lenis/react';
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 
@@ -52,6 +53,10 @@ interface ProblemProps {
 	totalSections?: number;
 	/** Viewport heights of scroll each stage is held for. */
 	stageScrollVh?: number;
+	/** Which axis stages travel on as the sequence advances. */
+	slideDirection?: 'vertical' | 'horizontal';
+	/** Offer a way out of the pinned sequence before the last stage. */
+	showSkip?: boolean;
 	className?: string;
 }
 
@@ -137,9 +142,12 @@ export function Problem({
 	className,
 	sectionIndex,
 	totalSections,
-	stageScrollVh = STAGE_SCROLL_VH
+	stageScrollVh = STAGE_SCROLL_VH,
+	slideDirection = 'vertical',
+	showSkip = true
 }: ProblemProps) {
 	const reduceMotion = usePrefersReducedMotion();
+	const lenis = useLenis();
 	const trackRef = useRef<HTMLDivElement>(null);
 	const progress = useScrollProgress(trackRef);
 	const [activeIndex, setActiveIndex] = useState(0);
@@ -174,6 +182,25 @@ export function Problem({
 
 		return () => observer.disconnect();
 	}, []);
+
+	const skipSequence = () => {
+		const track = trackRef.current;
+		if (!track) return;
+
+		// The pin releases once the track's bottom reaches the viewport bottom,
+		// so that position is exactly where the sequence has finished.
+		const target =
+			window.scrollY +
+			track.getBoundingClientRect().bottom -
+			window.innerHeight;
+
+		if (lenis) {
+			lenis.scrollTo(target);
+			return;
+		}
+
+		window.scrollTo({ top: target, behavior: 'smooth' });
+	};
 
 	if (reduceMotion) {
 		return (
@@ -266,9 +293,21 @@ export function Problem({
 								key={stage.key}
 								className={cn(
 									'absolute inset-0 flex items-center px-4 transition-[opacity,transform,filter] duration-700 ease-power-on sm:px-6 lg:px-8',
-									isActive
-										? 'translate-y-0 opacity-100 blur-none'
-										: 'pointer-events-none translate-y-5 opacity-0 blur-[6px]'
+									isActive &&
+										'translate-x-0 translate-y-0 opacity-100 blur-none',
+									!isActive &&
+										'pointer-events-none opacity-0 blur-[6px]',
+									// Horizontal stages sit on the side they
+									// belong to, so advancing brings the next in
+									// from the right and going back from the left.
+									!isActive &&
+										slideDirection === 'horizontal' &&
+										(index > activeIndex
+											? 'translate-x-16'
+											: '-translate-x-16'),
+									!isActive &&
+										slideDirection === 'vertical' &&
+										'translate-y-5'
 								)}
 							>
 								<div className="mx-auto w-full max-w-6xl">
@@ -353,6 +392,20 @@ export function Problem({
 							</div>
 						);
 					})}
+
+					{/* A way out of the pin. Hidden on the closing stage, where
+					    the sequence is over and the next section is one scroll
+					    away anyway. */}
+					{showSkip && activeIndex < stageCount - 1 ? (
+						<button
+							type="button"
+							onClick={skipSequence}
+							className="absolute inset-x-0 bottom-10 mx-auto flex w-fit items-center gap-2 font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-primary"
+						>
+							Skip the problem
+							<span aria-hidden>&darr;</span>
+						</button>
+					) : null}
 
 					<div
 						aria-hidden

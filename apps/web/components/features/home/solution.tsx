@@ -1,7 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { ConsoleFrame } from '@/components/snippets/console-frame/console-frame';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
@@ -29,22 +29,42 @@ export function Solution({
 	const reduceMotion = useReducedMotion();
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [isPaused, setIsPaused] = useState(false);
+	const sectionRef = useRef<HTMLElement>(null);
+	const [isInView, setIsInView] = useState(false);
+
+	useEffect(() => {
+		const node = sectionRef.current;
+		if (!node) return;
+
+		// Cycling off screen isn't just wasted work: each stage remount makes
+		// Motion measure percentage keyframes, and that measurement scrolls the
+		// window and restores it — which Lenis doesn't recover from, so the
+		// page creeps upward while the reader is somewhere else entirely.
+		const observer = new IntersectionObserver(([entry]) =>
+			setIsInView(Boolean(entry?.isIntersecting))
+		);
+
+		observer.observe(node);
+
+		return () => observer.disconnect();
+	}, []);
 
 	useEffect(() => {
 		// Reduced-motion visitors drive it themselves via the rail buttons.
-		if (reduceMotion || isPaused) return;
+		if (reduceMotion || isPaused || !isInView) return;
 
 		const timer = window.setInterval(() => {
 			setActiveIndex((current) => (current + 1) % processSteps.length);
 		}, stepIntervalMs);
 
 		return () => window.clearInterval(timer);
-	}, [reduceMotion, isPaused, stepIntervalMs]);
+	}, [reduceMotion, isPaused, isInView, stepIntervalMs]);
 
 	const activeStep = processSteps[activeIndex];
 
 	return (
 		<section
+			ref={sectionRef}
 			className={cn(
 				'mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8',
 				className

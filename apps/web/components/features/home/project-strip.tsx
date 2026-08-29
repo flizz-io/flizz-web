@@ -277,7 +277,10 @@ export function ProjectStrip({ className }: { className?: string }) {
 					onPointerUp={endDrag}
 					onPointerLeave={endDrag}
 					onClickCapture={onClickCapture}
-					className="snap-x snap-mandatory scroll-px-[var(--gutter)] overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+					// `overflow-x: auto` turns `overflow-y` into auto as well, and the
+					// cards' 36px entrance transform overflowed it — which made the
+					// strip a vertical scroll container that stole the wheel.
+					className="snap-x snap-mandatory scroll-px-[var(--gutter)] overflow-x-auto overflow-y-hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
 					style={{
 						maskImage:
 							'linear-gradient(to right, transparent, #000 5%, #000 95%, transparent)',
@@ -285,7 +288,9 @@ export function ProjectStrip({ className }: { className?: string }) {
 							'linear-gradient(to right, transparent, #000 5%, #000 95%, transparent)'
 					}}
 				>
-					<div className="flex w-max gap-8 px-[var(--gutter)] sm:gap-12 lg:gap-16">
+					{/* Bottom padding gives the entrance transform somewhere to go, so
+					    hiding vertical overflow clips nothing. */}
+					<div className="flex w-max gap-8 px-[var(--gutter)] pb-9 sm:gap-12 lg:gap-16">
 						{projectCards.map((project, index) => (
 							<article
 								key={project.name}
