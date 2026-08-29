@@ -15,6 +15,8 @@ interface ServiceSpecimenProps {
 	dimmed: boolean;
 	/** Even items sit above the spine, odd ones below (large screens only). */
 	above: boolean;
+	/** Whether hovering opens the detail popover across the spine. */
+	showPopover: boolean;
 	onFocusChange: (focusing: boolean) => void;
 }
 
@@ -24,8 +26,10 @@ export function ServiceSpecimen({
 	focused,
 	dimmed,
 	above,
+	showPopover,
 	onFocusChange
 }: ServiceSpecimenProps) {
+	const revealed = showPopover && focused;
 	return (
 		<li
 			className={cn(
@@ -103,6 +107,54 @@ export function ServiceSpecimen({
 						: 'bottom-[calc(100%+30px)] translate-y-1/2'
 				)}
 			/>
+
+			{showPopover ? (
+				<>
+					{/* The same thread continued through the spine: it grows
+					    outward from the node to meet the panel. */}
+					<span
+						aria-hidden
+						className={cn(
+							'pointer-events-none absolute left-1/2 hidden h-7.5 w-px bg-primary transition-transform duration-400 ease-power-on lg:block',
+							revealed ? 'scale-y-100' : 'scale-y-0',
+							above
+								? 'top-[calc(100%+30px)] origin-top'
+								: 'bottom-[calc(100%+30px)] origin-bottom'
+						)}
+					/>
+
+					{/* Absolutely positioned and fixed-size, so opening it can
+					    never move anything. Duplicates copy already in the DOM
+					    for the stacked layout, so it stays out of the a11y tree. */}
+					<div
+						aria-hidden
+						className={cn(
+							'pointer-events-none absolute left-1/2 hidden w-75 rounded-xl border border-primary/40 bg-card/95 px-5 py-4 shadow-2xl backdrop-blur-sm transition-[opacity,transform] duration-400 ease-power-on lg:block',
+							revealed
+								? '-translate-x-1/2 translate-y-0 opacity-100'
+								: 'opacity-0',
+							above
+								? 'top-[calc(100%+60px)]'
+								: 'bottom-[calc(100%+60px)]',
+							// Emerges from the spine, so it travels outward.
+							!revealed &&
+								(above
+									? '-translate-x-1/2 -translate-y-2'
+									: '-translate-x-1/2 translate-y-2')
+						)}
+					>
+						<p className="font-mono text-[0.55rem] tracking-[0.2em] text-primary uppercase">
+							{service.category}
+						</p>
+						<p className="mt-2 font-heading text-base font-semibold tracking-tight text-foreground">
+							{service.title}
+						</p>
+						<p className="mt-2 text-sm text-muted-foreground">
+							{service.description}
+						</p>
+					</div>
+				</>
+			) : null}
 		</li>
 	);
 }

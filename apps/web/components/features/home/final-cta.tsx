@@ -33,8 +33,9 @@ export function FinalCta({
 						/>
 					</div>
 					<h2 className="mt-5 font-heading text-4xl font-semibold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
-						Ready to build technology that actually works for your
-						business?
+						{/* Ready to build technology that actually works for your
+						business? */}
+						Let&apos;s Build technology that works for your business
 					</h2>
 					<p className="mt-5 text-lg text-pretty text-muted-foreground">
 						Whether you&apos;re launching something new, scaling

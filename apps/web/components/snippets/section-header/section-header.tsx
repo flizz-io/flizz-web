@@ -25,7 +25,7 @@ export function SectionHeader({
 }: SectionHeaderProps) {
 	return (
 		<Reveal className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-			<div className="max-w-xl">
+			<div className="max-w-2xl">
 				<SectionTag
 					index={index}
 					total={total}
