@@ -6,7 +6,16 @@ export const SERVICE_VISUAL_KINDS = [
 	'particle-swarm',
 	'pulse-orb',
 	'orbit-ring',
-	'device-frame'
+	'device-frame',
+	// Purpose-built per service; the six above stay available to the picker.
+	'mvp-ascent',
+	'tenant-column',
+	'neural-layers',
+	'dialogue-bubbles',
+	'catalog-checkout',
+	'dual-handset',
+	'plugin-socket',
+	'secure-rail'
 ] as const;
 
 export type ServiceVisualKind = (typeof SERVICE_VISUAL_KINDS)[number];

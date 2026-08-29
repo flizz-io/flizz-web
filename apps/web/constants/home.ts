@@ -141,69 +141,53 @@ export const serviceCards: ServiceCard[] = [
 		category: 'Custom Software',
 		title: 'MVP Development',
 		description: 'Validate fast with a lean, production-grade first build.',
-		visualKind: 'layered-stack'
+		visualKind: 'mvp-ascent'
 	},
 	{
 		category: 'Custom Software',
 		title: 'SaaS Application Development',
 		description:
 			'Multi-tenant platforms built to scale with your customer base.',
-		visualKind: 'grid-lattice'
+		visualKind: 'tenant-column'
 	},
 	{
 		category: 'AI & Automation',
 		title: 'AI Integration',
 		description:
 			'Embed AI where it removes real work, not where it looks good in a demo.',
-		visualKind: 'particle-swarm'
+		visualKind: 'neural-layers'
 	},
 	{
 		category: 'AI & Automation',
 		title: 'Chatbots & Conversational AI',
 		description:
 			'Support and sales conversations that actually resolve things.',
-		visualKind: 'pulse-orb'
+		visualKind: 'dialogue-bubbles'
 	},
 	{
 		category: 'E-commerce',
 		title: 'Online Store Development',
 		description:
 			'Storefronts tuned for conversion, not just checked boxes.',
-		visualKind: 'orbit-ring'
-	},
-	{
-		category: 'Custom Software two',
-		title: 'SaaS Application Development',
-		description:
-			'Multi-tenant platforms built to scale with your customer base.',
-		visualKind: 'grid-lattice'
-	},
-	{
-		category: 'AI & Automation two',
-		title: 'AI Integration',
-		description:
-			'Embed AI where it removes real work, not where it looks good in a demo.',
-		visualKind: 'particle-swarm'
-	},
-	{
-		category: 'AI & Automation two',
-		title: 'Chatbots & Conversational AI',
-		description:
-			'Support and sales conversations that actually resolve things.',
-		visualKind: 'pulse-orb'
-	},
-	{
-		category: 'E-commerce two',
-		title: 'Online Store Development',
-		description:
-			'Storefronts tuned for conversion, not just checked boxes.',
-		visualKind: 'orbit-ring'
+		visualKind: 'catalog-checkout'
 	},
 	{
 		category: 'Mobile',
 		title: 'Native Mobile App Development',
 		description: 'iOS and Android apps that feel native because they are.',
-		visualKind: 'device-frame'
+		visualKind: 'dual-handset'
+	},
+	{
+		category: 'Shopify',
+		title: 'Shopify App Development',
+		description: 'Extend Shopify Beyond Its Limits and build custom apps.',
+		visualKind: 'plugin-socket'
+	},
+	{
+		category: 'Payment',
+		title: 'Payment Integration',
+		description: 'Accept Payments Securely, Globally, Your Way.',
+		visualKind: 'secure-rail'
 	}
 ];
 
