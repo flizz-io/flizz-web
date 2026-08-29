@@ -1,9 +1,7 @@
 'use client';
 
-import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 
-import { Reveal } from '@/components/snippets/reveal/reveal';
 import type { ServiceCard } from '@/types/home';
 import { ServiceVisual } from '@workspace/service-visuals';
 import { cn } from '@workspace/ui/lib/utils';
@@ -11,12 +9,13 @@ import { cn } from '@workspace/ui/lib/utils';
 interface ServiceSpecimenProps {
 	service: ServiceCard;
 	index: number;
-	/** This card is the one under the pointer/focus. */
+	/** This one is under the pointer or keyboard focus. */
 	focused: boolean;
-	/** Some *other* card is focused, so this one recedes. */
+	/** Some *other* one is, so this recedes. */
 	dimmed: boolean;
-	revealDelay?: number;
-	onHoverChange: (hovering: boolean) => void;
+	/** Even items sit above the spine, odd ones below (large screens only). */
+	above: boolean;
+	onFocusChange: (focusing: boolean) => void;
 }
 
 export function ServiceSpecimen({
@@ -24,68 +23,83 @@ export function ServiceSpecimen({
 	index,
 	focused,
 	dimmed,
-	revealDelay = 0,
-	onHoverChange
+	above,
+	onFocusChange
 }: ServiceSpecimenProps) {
 	return (
-		<Reveal delay={revealDelay}>
+		<li
+			className={cn(
+				// Fixed height on large screens so the edge facing the spine
+				// sits at a known offset and the connector can meet it exactly.
+				'relative lg:h-65 lg:px-4 xl:h-75',
+				above ? 'lg:self-start' : 'lg:self-end'
+			)}
+		>
 			<Link
 				href="/services"
-				onMouseEnter={() => onHoverChange(true)}
-				onMouseLeave={() => onHoverChange(false)}
-				onFocus={() => onHoverChange(true)}
-				onBlur={() => onHoverChange(false)}
+				onMouseEnter={() => onFocusChange(true)}
+				onMouseLeave={() => onFocusChange(false)}
+				onFocus={() => onFocusChange(true)}
+				onBlur={() => onFocusChange(false)}
 				className={cn(
-					'group relative block rounded-xl border border-border bg-card p-5 transition-[opacity,transform,border-color] duration-500 ease-power-on',
-					focused && 'border-primary/50',
-					dimmed && 'opacity-45 sm:scale-[0.98]'
+					'group flex h-full items-center gap-5 pl-12 transition-[opacity,transform] duration-1500 ease-power-on lg:gap-3 lg:pl-0',
+					// Specimen always ends up nearest the spine.
+					above
+						? 'lg:flex-col-reverse lg:justify-start'
+						: 'lg:flex-col lg:justify-start',
+					dimmed && 'opacity-70',
+					focused && 'lg:-translate-y-0.5'
 				)}
 			>
-				<span
-					aria-hidden
-					className="pointer-events-none absolute inset-0 rounded-xl transition-opacity duration-500"
-					style={{
-						opacity: focused ? 1 : 0,
-						background:
-							'radial-gradient(120% 100% at 50% 0%, color-mix(in oklab, var(--color-primary) 12%, transparent), transparent 70%)'
-					}}
+				<ServiceVisual
+					kind={service.visualKind}
+					focused={focused}
+					className={cn(
+						'size-24 shrink-0 transition-transform duration-1500 ease-power-on sm:size-28 lg:size-40 xl:size-48',
+						focused && 'scale-120'
+					)}
 				/>
 
-				<div className="relative aspect-square overflow-hidden rounded-lg border border-border/70 bg-background/40">
-					<span
-						aria-hidden
-						className="pointer-events-none absolute inset-0 opacity-[0.06]"
-						style={{
-							backgroundImage:
-								'radial-gradient(var(--color-foreground) 1px, transparent 1px)',
-							backgroundSize: '14px 14px'
-						}}
-					/>
-					<ServiceVisual
-						kind={service.visualKind}
-						focused={focused}
-						className="absolute inset-0"
-					/>
+				<div className="min-w-0 lg:w-full lg:text-center">
+					<p className="font-mono text-[0.55rem] tracking-[0.2em] text-primary uppercase">
+						{String(index + 1).padStart(2, '0')} ·{' '}
+						{service.category}
+					</p>
+					<h3
+						className={cn(
+							'mt-1.5 font-heading text-lg font-semibold tracking-tight text-foreground transition-colors sm:text-xl lg:text-base xl:text-lg',
+							'group-hover:text-primary'
+						)}
+					>
+						{service.title}
+					</h3>
+					{/* Below the spine layout there's no hover to reveal a
+					    caption, so the copy stays inline and always readable. */}
+					<p className="mt-2 max-w-sm text-sm text-muted-foreground lg:hidden">
+						{service.description}
+					</p>
 				</div>
-
-				<div className="relative mt-5 flex items-start justify-between gap-3">
-					<div>
-						<span className="font-mono text-xs text-muted-foreground">
-							{String(index + 1).padStart(2, '0')}
-						</span>
-						<p className="mt-1 font-mono text-[0.6rem] tracking-[0.2em] text-primary uppercase">
-							{service.category}
-						</p>
-						<h3 className="mt-1 font-heading text-xl font-semibold tracking-tight text-foreground transition-colors group-hover:text-primary sm:text-2xl">
-							{service.title}
-						</h3>
-					</div>
-					<ArrowUpRight className="mt-1 size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" />
-				</div>
-				<p className="relative mt-2 text-sm text-muted-foreground">
-					{service.description}
-				</p>
 			</Link>
-		</Reveal>
+
+			{/* Connector and node, bridging the fixed 30px gap to the spine. */}
+			<span
+				aria-hidden
+				className={cn(
+					'pointer-events-none absolute left-1/2 hidden h-7.5 w-px transition-colors duration-1500 lg:block',
+					focused ? 'bg-primary' : 'bg-border',
+					above ? 'top-full' : 'bottom-full'
+				)}
+			/>
+			<span
+				aria-hidden
+				className={cn(
+					'pointer-events-none absolute left-1/2 hidden size-1.5 -translate-x-1/2 rounded-full transition-colors duration-500 lg:block',
+					focused ? 'bg-primary' : 'bg-muted-foreground/40',
+					above
+						? 'top-[calc(100%+30px)] -translate-y-1/2'
+						: 'bottom-[calc(100%+30px)] translate-y-1/2'
+				)}
+			/>
+		</li>
 	);
 }

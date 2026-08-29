@@ -58,8 +58,11 @@ export function useServiceVisualScene(
 		);
 
 		const scene = new THREE.Scene();
+		// Framed tight: at z=6 every specimen floated in the middle of its
+		// canvas with dead space all round, which is what made them read as
+		// thumbnails rather than objects.
 		const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50);
-		camera.position.set(0, 0, 6);
+		camera.position.set(0, 0, 4.6);
 
 		const pixelRatio = Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO);
 		renderer.setPixelRatio(pixelRatio);
