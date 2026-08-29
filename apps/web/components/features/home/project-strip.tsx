@@ -226,6 +226,23 @@ export function ProjectStrip({ className }: { className?: string }) {
 		}
 	};
 
+	/**
+	 * Horizontal gestures are claimed here rather than via `data-lenis-prevent`:
+	 * that attribute makes Lenis ignore the element, so vertical scrolling over
+	 * the strip turns native and instant while the rest of the page eases, and
+	 * Lenis reasserts its own position every frame. The two fight, and it reads
+	 * as flicker.
+	 */
+	const onWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+		const viewport = viewportRef.current;
+		if (!viewport) return;
+
+		// Vertical and diagonal intent stays with the page.
+		if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+
+		viewport.scrollLeft += event.deltaX;
+	};
+
 	// A drag that ended over a card shouldn't also open it.
 	const onClickCapture = (event: React.MouseEvent<HTMLDivElement>) => {
 		if (dragRef.current.moved > DRAG_THRESHOLD) {
@@ -268,10 +285,8 @@ export function ProjectStrip({ className }: { className?: string }) {
 			<div className="relative mt-10">
 				<div
 					ref={viewportRef}
-					// Lenis owns the wheel; this opts the strip out so a
-					// horizontal swipe over it isn't swallowed by page scroll.
-					data-lenis-prevent
 					onScroll={readScroll}
+					onWheel={onWheel}
 					onPointerDown={onPointerDown}
 					onPointerMove={onPointerMove}
 					onPointerUp={endDrag}
@@ -280,7 +295,7 @@ export function ProjectStrip({ className }: { className?: string }) {
 					// `overflow-x: auto` turns `overflow-y` into auto as well, and the
 					// cards' 36px entrance transform overflowed it — which made the
 					// strip a vertical scroll container that stole the wheel.
-					className="snap-x snap-mandatory scroll-px-[var(--gutter)] overflow-x-auto overflow-y-hidden [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+					className="scrollbar-none snap-x snap-mandatory scroll-px-(--gutter) overflow-x-auto overflow-y-hidden [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
 					style={{
 						maskImage:
 							'linear-gradient(to right, transparent, #000 5%, #000 95%, transparent)',
@@ -290,14 +305,14 @@ export function ProjectStrip({ className }: { className?: string }) {
 				>
 					{/* Bottom padding gives the entrance transform somewhere to go, so
 					    hiding vertical overflow clips nothing. */}
-					<div className="flex w-max gap-8 px-[var(--gutter)] pb-9 sm:gap-12 lg:gap-16">
+					<div className="flex w-max scroll-px-(--gutter) gap-8 pb-9 sm:gap-12 lg:gap-16">
 						{projectCards.map((project, index) => (
 							<article
 								key={project.name}
 								data-card
 								data-index={index}
 								className={cn(
-									'w-[var(--card-w)] shrink-0 snap-start transition-[opacity,transform] duration-700 ease-power-on',
+									'w-(--card-w) shrink-0 snap-start transition-[opacity,transform] duration-700 ease-power-on',
 									reduceMotion || entered.includes(index)
 										? 'translate-y-0 opacity-100'
 										: 'translate-y-9 opacity-0'
@@ -310,7 +325,7 @@ export function ProjectStrip({ className }: { className?: string }) {
 									draggable={false}
 									className="group block"
 								>
-									<div className="relative aspect-[620/388] overflow-hidden rounded-lg border border-border bg-card">
+									<div className="relative aspect-620/388 overflow-hidden rounded-lg border border-border bg-card">
 										{project.image ? (
 											<Image
 												src={project.image}

@@ -106,9 +106,6 @@ export function ServicesTeaser({
 
 				<div
 					ref={viewportRef}
-					// Lenis owns the wheel; without this a horizontal swipe over
-					// the track is swallowed by page scroll.
-					data-lenis-prevent
 					{...dragHandlers}
 					// `overflow-x: auto` computes `overflow-y` from visible to auto, so a
 					// focused specimen's scale transform made this a vertical scroll
