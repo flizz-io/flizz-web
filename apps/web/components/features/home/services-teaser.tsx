@@ -1,10 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import { ServiceSpecimen } from '@/components/features/home/service-specimen';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { serviceCards } from '@/constants/home';
+import { useDragScroll } from '@/hooks/use-drag-scroll';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface ServicesTeaserProps {
@@ -18,11 +19,13 @@ export function ServicesTeaser({
 	className,
 	sectionIndex,
 	totalSections,
-	limit = 3
+	limit = 4
 }: ServicesTeaserProps) {
 	// One shared index rather than per-item state: focusing one has to dim its
 	// siblings and drive the shared caption, which only a common owner can do.
 	const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+	const viewportRef = useRef<HTMLDivElement>(null);
+	const dragHandlers = useDragScroll(viewportRef);
 
 	const displayServices = useMemo(
 		() => (limit ? serviceCards.slice(0, limit) : serviceCards),
@@ -56,44 +59,65 @@ export function ServicesTeaser({
 			</div>
 
 			<div className="relative mt-16 lg:mt-20">
-				{/* The spine: vertical while the items are stacked, horizontal
-				    and full-bleed once they straddle it. */}
+				{/* Stacked layout keeps its spine on the left; the scrolling
+				    layout carries its own inside the track, so the spine spans
+				    every item rather than stopping at the viewport edge. */}
 				<span
 					aria-hidden
-					className="absolute top-0 bottom-0 left-6 w-px bg-border sm:left-8 lg:inset-x-0 lg:top-1/2 lg:bottom-auto lg:left-0 lg:h-px lg:w-auto"
+					className="absolute top-0 bottom-0 left-6 w-px bg-border sm:left-8 lg:hidden"
 				/>
 
-				<div className="mx-auto hidden max-w-6xl px-4 sm:px-6 lg:block lg:px-8">
-					<div className="absolute top-1/2 left-0 flex w-full -translate-y-1/2 justify-between px-4 sm:px-6 lg:px-8">
-						<span className="bg-background pr-3 font-mono text-[0.55rem] tracking-[0.25em] text-muted-foreground uppercase">
+				<div
+					ref={viewportRef}
+					// Lenis owns the wheel; without this a horizontal swipe over
+					// the track is swallowed by page scroll.
+					data-lenis-prevent
+					{...dragHandlers}
+					className="lg:overflow-x-auto lg:[mask-image:linear-gradient(to_right,transparent,#000_3%,#000_97%,transparent)] lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden"
+				>
+					<div className="relative lg:w-max lg:min-w-full lg:px-20">
+						<span
+							aria-hidden
+							className="absolute inset-x-0 top-1/2 hidden h-px bg-border lg:block"
+						/>
+						<span
+							aria-hidden
+							className="absolute top-1/2 left-0 hidden -translate-y-1/2 bg-background pr-3 font-mono text-[0.55rem] tracking-[0.25em] text-muted-foreground uppercase lg:block"
+						>
 							Start
 						</span>
-						<span className="bg-background pl-3 font-mono text-[0.55rem] tracking-[0.25em] text-muted-foreground uppercase">
+						<span
+							aria-hidden
+							className="absolute top-1/2 right-0 hidden -translate-y-1/2 bg-background pl-3 font-mono text-[0.55rem] tracking-[0.25em] text-muted-foreground uppercase lg:block"
+						>
 							Scale
 						</span>
+
+						<ul className="mx-auto flex max-w-6xl flex-col gap-12 px-4 sm:gap-14 sm:px-6 lg:h-[580px] lg:max-w-none lg:flex-row lg:gap-0 lg:px-0 xl:h-[660px]">
+							{displayServices.map((service, index) => (
+								<ServiceSpecimen
+									key={`${service.title}-${index}`}
+									service={service}
+									index={index}
+									above={index % 2 === 0}
+									focused={focusedIndex === index}
+									dimmed={
+										focusedIndex !== null &&
+										focusedIndex !== index
+									}
+									onFocusChange={(focusing) =>
+										setFocusedIndex((current) => {
+											if (focusing) return index;
+											return current === index
+												? null
+												: current;
+										})
+									}
+								/>
+							))}
+						</ul>
 					</div>
 				</div>
-
-				<ul className="mx-auto flex max-w-6xl flex-col gap-12 px-4 sm:gap-14 sm:px-6 lg:grid lg:h-145 lg:max-w-none lg:grid-cols-6 lg:gap-0 lg:px-6 xl:h-165">
-					{displayServices.map((service, index) => (
-						<ServiceSpecimen
-							key={service.title}
-							service={service}
-							index={index}
-							above={index % 2 === 0}
-							focused={focusedIndex === index}
-							dimmed={
-								focusedIndex !== null && focusedIndex !== index
-							}
-							onFocusChange={(focusing) =>
-								setFocusedIndex((current) => {
-									if (focusing) return index;
-									return current === index ? null : current;
-								})
-							}
-						/>
-					))}
-				</ul>
 			</div>
 
 			{/* Fixed height, so swapping the caption on focus can never move

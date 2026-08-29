@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 import { useIsDarkTheme } from '@workspace/ui/hooks/use-is-dark-theme';
+import { useThemeColorVersion } from '@workspace/ui/hooks/use-theme-color-version';
 import { readThemeColor } from '@workspace/ui/lib/css-color';
 
 /**
@@ -25,6 +26,7 @@ const Y_ORIGIN = -3.4;
 const Y_POTENTIAL_END = 3.6;
 const Y_ACTUAL_END = -2.1;
 
+const THEMED_VARIABLES = ['--primary', '--foreground'];
 const FALLBACK_ACCENT = '#8b5cf6';
 const FALLBACK_INK = '#e7e4f0';
 
@@ -81,6 +83,8 @@ const fragmentShader = /* glsl */ `
 export function CostScene({ active }: { active: boolean }) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const isDark = useIsDarkTheme();
+	// Same reason as the service specimens: colours are sampled once at build.
+	const themeColorVersion = useThemeColorVersion(THEMED_VARIABLES);
 	const activeRef = useRef(active);
 	const controlsRef = useRef<{ start: () => void; stop: () => void } | null>(
 		null
@@ -358,7 +362,7 @@ export function CostScene({ active }: { active: boolean }) {
 			renderer.dispose();
 			renderer.domElement.remove();
 		};
-	}, [isDark]);
+	}, [isDark, themeColorVersion]);
 
 	// Held separate from the setup effect so becoming the active stage starts
 	// the loop instead of rebuilding the whole scene.

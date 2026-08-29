@@ -29,9 +29,12 @@ export function ServiceSpecimen({
 	return (
 		<li
 			className={cn(
-				// Fixed height on large screens so the edge facing the spine
-				// sits at a known offset and the connector can meet it exactly.
-				'relative lg:h-65 lg:px-4 xl:h-75',
+				// Fixed size on large screens: the height puts the edge facing
+				// the spine at a known offset so the connector meets it
+				// exactly, and the width lets any number of services extend
+				// along the spine and scroll instead of wrapping to a second
+				// row the spine no longer relates to.
+				'relative lg:h-65 lg:w-65 lg:shrink-0 lg:px-4 xl:h-75 xl:w-75',
 				above ? 'lg:self-start' : 'lg:self-end'
 			)}
 		>

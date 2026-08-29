@@ -5,11 +5,13 @@ import * as THREE from 'three';
 
 import { useIsDarkTheme } from '@workspace/ui/hooks/use-is-dark-theme';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
+import { useThemeColorVersion } from '@workspace/ui/hooks/use-theme-color-version';
 import { readThemeColor } from '@workspace/ui/lib/css-color';
 
 import type { ServiceVisualBuilder } from './types';
 
 const MAX_PIXEL_RATIO = 2;
+const THEMED_VARIABLES = ['--primary', '--foreground'];
 const FALLBACK_ACCENT = '#8b5cf6';
 const FALLBACK_INK = '#e7e4f0';
 
@@ -28,6 +30,10 @@ export function useServiceVisualScene(
 ) {
 	const isDark = useIsDarkTheme();
 	const prefersReducedMotion = usePrefersReducedMotion();
+	// Colours are baked into the geometry when the scene builds, so a palette
+	// change has to rebuild it — a class flip alone doesn't cover overrides
+	// injected at runtime.
+	const themeColorVersion = useThemeColorVersion(THEMED_VARIABLES);
 	const focusedRef = useRef(focused);
 
 	useEffect(() => {
@@ -134,5 +140,5 @@ export function useServiceVisualScene(
 		};
 		// `focused` is read through `focusedRef` inside the render loop, not
 		// referenced here, so the scene isn't torn down and rebuilt on hover.
-	}, [containerRef, build, isDark, prefersReducedMotion]);
+	}, [containerRef, build, isDark, prefersReducedMotion, themeColorVersion]);
 }
