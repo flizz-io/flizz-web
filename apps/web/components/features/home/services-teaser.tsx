@@ -1,7 +1,8 @@
-import {
-	IndexedList,
-	IndexedListItem
-} from '@/components/snippets/indexed-list/indexed-list';
+'use client';
+
+import { useState } from 'react';
+
+import { ServiceSpecimen } from '@/components/features/home/service-specimen';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { serviceCards } from '@/constants/home';
 import { cn } from '@workspace/ui/lib/utils';
@@ -17,6 +18,10 @@ export function ServicesTeaser({
 	sectionIndex,
 	totalSections
 }: ServicesTeaserProps) {
+	// One shared index rather than per-card state: hovering a card has to
+	// dim its siblings too, which only a common owner can coordinate.
+	const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
 	return (
 		<section
 			className={cn(
@@ -34,19 +39,24 @@ export function ServicesTeaser({
 				seeAllHref="/services"
 			/>
 
-			<IndexedList className="mt-14">
+			<div className="mt-14 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-3">
 				{serviceCards.map((service, index) => (
-					<IndexedListItem
+					<ServiceSpecimen
 						key={service.title}
+						service={service}
 						index={index}
-						eyebrow={service.category}
-						title={service.title}
-						description={service.description}
-						href="/services"
-						revealDelay={index * 40}
+						focused={hoveredIndex === index}
+						dimmed={hoveredIndex !== null && hoveredIndex !== index}
+						revealDelay={index * 60}
+						onHoverChange={(hovering) =>
+							setHoveredIndex((current) => {
+								if (hovering) return index;
+								return current === index ? null : current;
+							})
+						}
 					/>
 				))}
-			</IndexedList>
+			</div>
 		</section>
 	);
 }

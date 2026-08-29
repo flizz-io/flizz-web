@@ -134,35 +134,42 @@ export const serviceCards: ServiceCard[] = [
 	{
 		category: 'Custom Software',
 		title: 'MVP Development',
-		description: 'Validate fast with a lean, production-grade first build.'
+		description: 'Validate fast with a lean, production-grade first build.',
+		visualKind: 'layered-stack'
 	},
 	{
 		category: 'Custom Software',
 		title: 'SaaS Application Development',
 		description:
-			'Multi-tenant platforms built to scale with your customer base.'
+			'Multi-tenant platforms built to scale with your customer base.',
+		visualKind: 'grid-lattice'
 	},
 	{
 		category: 'AI & Automation',
 		title: 'AI Integration',
 		description:
-			'Embed AI where it removes real work, not where it looks good in a demo.'
+			'Embed AI where it removes real work, not where it looks good in a demo.',
+		visualKind: 'particle-swarm'
 	},
 	{
 		category: 'AI & Automation',
 		title: 'Chatbots & Conversational AI',
 		description:
-			'Support and sales conversations that actually resolve things.'
+			'Support and sales conversations that actually resolve things.',
+		visualKind: 'pulse-orb'
 	},
 	{
 		category: 'E-commerce',
 		title: 'Online Store Development',
-		description: 'Storefronts tuned for conversion, not just checked boxes.'
+		description:
+			'Storefronts tuned for conversion, not just checked boxes.',
+		visualKind: 'orbit-ring'
 	},
 	{
 		category: 'Mobile',
 		title: 'Native Mobile App Development',
-		description: 'iOS and Android apps that feel native because they are.'
+		description: 'iOS and Android apps that feel native because they are.',
+		visualKind: 'device-frame'
 	}
 ];
 
