@@ -279,7 +279,11 @@ export function Problem({
 					<motion.span
 						key={`seam-${activeIndex}`}
 						aria-hidden
-						className="pointer-events-none absolute inset-x-0 z-10 h-1/3 bg-linear-to-b from-transparent via-primary/10 to-transparent"
+						className={cn(
+							'pointer-events-none absolute inset-x-0 z-10 h-1/3 bg-linear-to-b from-transparent via-primary/10 to-transparent'
+							// slideDirection === 'horizontal' && 'bg-linear-to-r',
+							// slideDirection === 'vertical' && 'bg-linear-to-b'
+						)}
 						initial={{ y: '-100%', opacity: 0.9 }}
 						animate={{ y: '300%', opacity: 0 }}
 						transition={{ duration: 1.2, ease: 'easeOut' }}

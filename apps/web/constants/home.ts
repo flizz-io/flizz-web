@@ -296,16 +296,19 @@ export const valueProps: ValueProp[] = [
 export const testimonials: Testimonial[] = [
 	{
 		quote: "Flizz shipped in weeks what our last agency couldn't finish in a year. We saw working software every two weeks, not a status deck.",
+		highlights: ['in weeks', 'every two weeks'],
 		author: 'Dana Whitfield',
 		role: 'COO, Northwind'
 	},
 	{
 		quote: 'The system they handed off is one we can actually maintain ourselves. No black box, no lock-in — exactly what we needed.',
+		highlights: ['maintain ourselves', 'no lock-in'],
 		author: 'Marcus Oyelaran',
 		role: 'Founder, Vantage Cove'
 	},
 	{
 		quote: 'They caught a scaling problem in the architecture phase that would have cost us months to fix post-launch.',
+		highlights: ['architecture phase', 'cost us months'],
 		author: 'Priya Nandakumar',
 		role: 'VP Engineering, Fieldstone'
 	}

@@ -67,6 +67,12 @@ export interface ValueProp {
 
 export interface Testimonial {
 	quote: string;
+	/**
+	 * Exact phrases from `quote` to set in the accent colour. Kept as data
+	 * rather than markup in the string so the same quotes survive moving to
+	 * the Testimonial CRUD later.
+	 */
+	highlights?: string[];
 	author: string;
 	role: string;
 }
