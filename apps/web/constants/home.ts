@@ -167,25 +167,62 @@ export const serviceCards: ServiceCard[] = [
 ];
 
 // Placeholder cards — no project entries provided yet (see docs/requirements/home-page.md)
+// TODO: PM to replace with real projects and supply a screenshot per card
+// (`image`) — the roster mirrors the placeholder names used by socialProofLogos.
 export const projectCards: ProjectCard[] = [
 	{
 		name: 'Northwind Ops Platform',
 		category: 'Custom Software',
+		sector: 'B2B \u00b7 Operations',
+		year: '2025',
 		summary:
 			'Replaced five spreadsheets with one system of record for a 40-person ops team.'
 	},
 	{
 		name: 'Vantage Cove Storefront',
 		category: 'E-commerce',
-		summary: 'Rebuilt checkout flow and cut cart abandonment by a third.'
+		sector: 'DTC \u00b7 Retail',
+		year: '2025',
+		summary:
+			'Rebuilt the checkout flow and cut cart abandonment by a third.'
 	},
 	{
 		name: 'Fieldstone Field App',
 		category: 'Mobile',
+		sector: 'Field Services',
+		year: '2024',
 		summary:
 			'Offline-first inspection app for crews working without signal.'
+	},
+	{
+		name: 'Adaptive Labs Intake',
+		category: 'AI & Automation',
+		sector: 'B2B \u00b7 Services',
+		year: '2026',
+		summary:
+			'Automated a manual intake queue that was costing two days a week.'
+	},
+	{
+		name: 'Marlin & Co Dashboard',
+		category: 'SaaS Platform',
+		sector: 'B2B \u00b7 Logistics',
+		year: '2024',
+		summary:
+			'One dashboard in place of four vendor logins for a distributed team.'
+	},
+	{
+		name: 'Rivergate Rebuild',
+		category: 'Legacy Modernisation',
+		sector: 'B2B \u00b7 Finance',
+		year: '2026',
+		summary:
+			'Moved a decade-old internal tool off unsupported infrastructure, without downtime.'
 	}
 ];
+
+// Sits opposite the section tag, the way the reference states its remit.
+export const portfolioMeta =
+	'Custom software, e-commerce & mobile \u00b7 2024 to 2026';
 
 export const valueProps: ValueProp[] = [
 	{
