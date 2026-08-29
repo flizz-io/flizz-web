@@ -69,6 +69,13 @@ interface Text3DFlipProps {
 	staggerFrom?: 'first' | 'last' | 'center' | number | 'random';
 	transition?: ValueAnimationTransition | AnimationOptions;
 	rotateDirection?: 'top' | 'right' | 'bottom' | 'left';
+	/**
+	 * Plays the flip whenever this turns true, so something other than the
+	 * pointer — scroll position, a parent's active state — can drive it.
+	 */
+	active?: boolean;
+	/** Set false when an external trigger owns the animation. */
+	flipOnHover?: boolean;
 }
 
 const Text3DFlip = ({
@@ -81,6 +88,8 @@ const Text3DFlip = ({
 	staggerFrom = 'first',
 	transition = DEFAULT_TRANSITION,
 	rotateDirection = 'right',
+	active,
+	flipOnHover = true,
 	...props
 }: Text3DFlipProps) => {
 	const isAnimatingRef = useRef(false);
@@ -177,10 +186,22 @@ const Text3DFlip = ({
 		}
 	}, [characters, transition, getStaggerDelay, rotationTransform, animate]);
 
+	// Rising edge only: re-running while already active would restart the
+	// flip on every unrelated re-render.
+	const wasActiveRef = useRef(false);
+
+	useEffect(() => {
+		if (active && !wasActiveRef.current) {
+			void handleHoverStart();
+		}
+
+		wasActiveRef.current = Boolean(active);
+	}, [active, handleHoverStart]);
+
 	return (
 		<ElementTag
 			className={cn('relative flex flex-wrap', className)}
-			onMouseEnter={handleHoverStart}
+			onMouseEnter={flipOnHover ? handleHoverStart : undefined}
 			ref={scope}
 			{...props}
 		>
@@ -273,4 +294,4 @@ const CharBox = memo(
 CharBox.displayName = 'CharBox';
 Text3DFlip.displayName = 'Text3DFlip';
 
-export default Text3DFlip;
+export { Text3DFlip };
