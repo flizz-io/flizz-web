@@ -16,9 +16,15 @@ export const heroScrollTargetId = 'highlights';
 
 // Facts already in the Hero/Solution/Final-CTA copy, reframed as a stat strip — not invented business metrics
 export const stats: Stat[] = [
-	{ value: '30-90', label: 'Day warranty on all work we ship' },
-	{ value: '2', label: 'Week cadence for working software' },
-	{ value: '100%', label: 'Of code and IP is yours, day one' }
+	{
+		// value: '30\u201390',
+		value: '30',
+		suffix: 'days',
+		label: 'Warranty on everything we ship'
+	},
+	{ value: '2', suffix: 'wks', label: 'Cadence for working software' },
+	{ value: '100', suffix: '%', label: 'Of code and IP is yours, day one' },
+	{ value: '20', suffix: '+', label: 'Projects shipped' }
 ];
 
 // Placeholder wordmarks — real company logos are an open item for the PM (see docs/requirements/progress-report.md)

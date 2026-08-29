@@ -2,7 +2,14 @@ import type { ServiceVisualKind } from '@workspace/service-visuals';
 
 export interface Stat {
 	value: string;
+	/** Unit, set smaller and italic beside the value. */
+	suffix?: string;
 	label: string;
+	/**
+	 * No real figure yet. Rendered provisionally so a placeholder can't be
+	 * mistaken for a claim we've actually made.
+	 */
+	pending?: boolean;
 }
 
 export interface ProblemItem {
