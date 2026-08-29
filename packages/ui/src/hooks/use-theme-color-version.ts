@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { readThemeColor } from '../lib/css-color.js';
+import { readThemeColor } from '@workspace/ui/lib/css-color';
 
 /**
  * A counter that increments whenever the resolved value of any watched CSS
