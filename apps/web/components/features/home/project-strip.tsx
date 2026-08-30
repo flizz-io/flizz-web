@@ -273,7 +273,7 @@ export function ProjectStrip({ className }: { className?: string }) {
 				} as React.CSSProperties
 			}
 		>
-			<div className="mx-auto flex max-w-6xl items-center justify-end border-b border-border px-4 pb-4 sm:px-6 lg:px-8">
+			<div className="mx-auto flex max-w-7xl items-center justify-end border-b border-border px-4 pb-4 sm:px-6 lg:px-8">
 				<span
 					aria-hidden
 					className="relative h-0.5 w-32 overflow-hidden rounded-full bg-border sm:w-40"

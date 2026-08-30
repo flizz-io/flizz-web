@@ -65,7 +65,7 @@ export function Proof() {
 				className="pointer-events-none absolute inset-x-0 top-0 hidden h-64 bg-gradient-to-b from-primary/[0.07] to-transparent"
 			/>
 
-			<div className="relative mx-auto hidden max-w-6xl px-4 sm:px-6 lg:px-8">
+			<div className="relative mx-auto hidden max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="grid sm:grid-cols-3">
 					{stats.map((stat, index) => (
 						<motion.div

@@ -66,7 +66,7 @@ export function Solution({
 		<section
 			ref={sectionRef}
 			className={cn(
-				'mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8',
+				'mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8',
 				className
 			)}
 		>

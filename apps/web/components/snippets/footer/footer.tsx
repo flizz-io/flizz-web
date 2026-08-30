@@ -6,7 +6,7 @@ import { siteConfig } from '@/configs/site';
 export function Footer() {
 	return (
 		<footer className="dark relative overflow-hidden border-t border-border bg-background text-foreground">
-			<div className="mx-auto max-w-6xl px-4 pt-16 sm:px-6 lg:px-8">
+			<div className="mx-auto max-w-7xl px-4 pt-16 sm:px-6 lg:px-8">
 				<div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
 					<div className="col-span-2 sm:col-span-1">
 						<p className="font-proxima text-lg font-semibold tracking-tight text-foreground">

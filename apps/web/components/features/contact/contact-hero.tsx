@@ -26,7 +26,7 @@ export function ContactHero({ className }: { className?: string }) {
 		>
 			<Atmosphere />
 
-			<div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-14 pt-40 pb-20 sm:pt-44 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16 lg:pt-48 lg:pb-28">
+			<div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 pt-40 pb-20 sm:pt-44 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16 lg:pt-48 lg:pb-28">
 				<Reveal trigger="mount">
 					<span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3.5 py-1.5 font-mono text-xs tracking-[0.1em] text-muted-foreground uppercase backdrop-blur-sm dark:text-white/75">
 						<Radio className="size-3.5 text-primary" />

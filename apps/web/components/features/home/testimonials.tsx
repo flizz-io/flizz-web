@@ -120,7 +120,7 @@ export function Testimonials({
 				&ldquo;
 			</span>
 
-			<div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+			<div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
 				<Reveal delay={80}>
 					<SectionTag
 						index={sectionIndex}

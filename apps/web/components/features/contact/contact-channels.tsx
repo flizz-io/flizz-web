@@ -30,7 +30,7 @@ export function ContactChannels({
 				className
 			)}
 		>
-			<Reveal className="mx-auto flex max-w-6xl flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
+			<Reveal className="mx-auto flex max-w-7xl flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
 				<div>
 					<SectionTag
 						index={sectionIndex}

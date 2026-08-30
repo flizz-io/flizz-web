@@ -72,7 +72,7 @@ export function ServicesTeaser({
 
 	return (
 		<section className={cn(className, 'overflow-x-clip py-20 sm:py-28')}>
-			<div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<SectionHeader
 					index={sectionIndex}
 					total={totalSections}
@@ -134,7 +134,7 @@ export function ServicesTeaser({
 
 						{/* `w-max` + `mx-auto`: a short list centres on the
 						    spine, a long one fills the track and scrolls. */}
-						<ul className="mx-auto flex max-w-6xl flex-col gap-12 px-4 sm:gap-14 sm:px-6 lg:h-145 lg:w-max lg:max-w-none lg:flex-row lg:gap-0 lg:px-0 xl:h-165">
+						<ul className="mx-auto flex max-w-7xl flex-col gap-12 px-4 sm:gap-14 sm:px-6 lg:h-145 lg:w-max lg:max-w-none lg:flex-row lg:gap-0 lg:px-0 xl:h-165">
 							{displayServices.map((service, index) => (
 								<ServiceSpecimen
 									key={`${service.title}-${index}`}

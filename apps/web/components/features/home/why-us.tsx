@@ -63,7 +63,7 @@ export function WhyUs({
 				className
 			)}
 		>
-			<div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
+			<div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
 				{/* Centred in the viewport rather than pinned to its top, so
 				    the column tracks the clause being read instead of leaving a
 				    void beside the list. Deliberately shorter than the viewport:

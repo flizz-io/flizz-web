@@ -35,7 +35,7 @@ export function ContactBooking({
 				className
 			)}
 		>
-			<div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
+			<div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
 				<Reveal>
 					<SectionTag
 						index={sectionIndex}

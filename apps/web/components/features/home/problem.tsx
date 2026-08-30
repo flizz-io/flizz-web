@@ -314,7 +314,7 @@ export function Problem({
 										'translate-y-5'
 								)}
 							>
-								<div className="mx-auto w-full max-w-6xl">
+								<div className="mx-auto w-full max-w-7xl">
 									{stage.key === 'intro' ? (
 										<div className="max-w-3xl">
 											<SectionTag
@@ -452,7 +452,7 @@ function ProblemStack({
 }: Omit<ProblemProps, 'stageScrollVh'>) {
 	return (
 		<section className={cn('border-y border-border', className)}>
-			<div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
+			<div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
 				<Reveal className="max-w-3xl">
 					<SectionTag
 						index={sectionIndex}

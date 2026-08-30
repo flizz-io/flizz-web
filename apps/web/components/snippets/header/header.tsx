@@ -30,7 +30,7 @@ export function Header() {
 			<div
 				className={cn(
 					'mx-auto px-4 transition-[max-width] duration-500 ease-out sm:px-8',
-					scrolled ? 'max-w-5xl' : 'max-w-6xl'
+					scrolled ? 'max-w-5xl' : 'max-w-7xl'
 				)}
 			>
 				<div className="flex h-16 items-center justify-between gap-4 rounded-full border border-border bg-card/70 pr-5 pl-5 shadow-lg shadow-black/5 backdrop-blur-lg">

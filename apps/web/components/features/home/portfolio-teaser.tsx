@@ -27,7 +27,7 @@ export function PortfolioTeaser({
 				className
 			)}
 		>
-			<div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<Reveal className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
 					<SectionTag
 						index={sectionIndex}

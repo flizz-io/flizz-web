@@ -42,7 +42,7 @@ export function StatsBand({ className }: { className?: string }) {
 				}}
 			/>
 
-			<div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+			<div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<dl className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4 lg:gap-x-4">
 					{stats.map((stat, index) => (
 						<Reveal
