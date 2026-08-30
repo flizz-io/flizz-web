@@ -255,25 +255,23 @@ export function ProjectStrip({ className }: { className?: string }) {
 
 	return (
 		<div
-			className={cn(
-				// `--strip-pad` tracks the header container's own `px-*`, so
-				// `--gutter` below lands on the title's text edge rather than
-				// on the edge of the box holding it.
-				'relative [--strip-pad:1rem] sm:[--strip-pad:1.5rem] lg:[--strip-pad:2rem]',
-				className
-			)}
+			className={cn('relative', className)}
 			style={
 				{
 					'--card-w': 'min(85vw, 620px)',
 					'--shot-h': 'calc(min(85vw, 620px) / 1.6)',
-					// Lines the first card up with the header, then lets the
-					// rest of the strip run to the viewport edges as it scrolls.
-					'--gutter':
-						'calc(max(0px, (100% - 72rem) / 2) + var(--strip-pad))'
+					// Must match the `max-w-*` on the header container in
+					// `portfolio-teaser.tsx` — the strip can't measure it, and
+					// `--gutter` below is derived from it. The rule underneath
+					// the header reads from it too, so the two can't drift.
+					'--page-w': '80rem',
+					// Lines the first card up with the page container, then lets
+					// the rest of the strip run to the viewport edges as it scrolls.
+					'--gutter': 'max(1rem, calc((100% - var(--page-w)) / 2))'
 				} as React.CSSProperties
 			}
 		>
-			<div className="mx-auto flex max-w-7xl items-center justify-end border-b border-border px-4 pb-4 sm:px-6 lg:px-8">
+			<div className="mx-auto flex max-w-(--page-w) items-center justify-end border-b border-border px-4 pb-4 sm:px-6 lg:px-8">
 				<span
 					aria-hidden
 					className="relative h-0.5 w-32 overflow-hidden rounded-full bg-border sm:w-40"
