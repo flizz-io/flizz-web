@@ -1,8 +1,9 @@
 export const siteConfig = {
-	name: 'Your Product',
-	shortName: 'YP',
-	tagline: 'A short, honest sentence about what this product does.',
+	name: 'Flizz',
+	fullname: 'Flizzio',
+	shortName: 'FZ',
+	tagline: "Your Technology Partner for What's Next",
 	description:
-		'Replace this with a one- or two-sentence description of the product — used for the default page title and meta description.',
-	contactEmail: 'hello@example.com'
+		'We build transparent, maintainable systems that give you freedom to pivot, scale, or switch vendors without starting over.',
+	contactEmail: 'hello@flizz.io'
 } as const;

@@ -5,12 +5,12 @@ import { siteConfig } from '@/configs/site';
 
 export function Footer() {
 	return (
-		<footer className="border-t border-border bg-secondary/40">
-			<div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+		<footer className="dark relative overflow-hidden border-t border-border bg-background text-foreground">
+			<div className="mx-auto max-w-7xl px-4 pt-16 sm:px-6 lg:px-8">
 				<div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
 					<div className="col-span-2 sm:col-span-1">
-						<p className="font-heading text-lg font-semibold tracking-tight text-foreground">
-							{siteConfig.name}
+						<p className="font-proxima text-lg font-semibold tracking-tight text-foreground">
+							{siteConfig.fullname}
 						</p>
 						<p className="mt-4 max-w-[22ch] text-sm text-muted-foreground">
 							{siteConfig.tagline}
@@ -37,8 +37,16 @@ export function Footer() {
 						</div>
 					))}
 				</div>
+				<div className="my-4 w-full">
+					<p
+						aria-hidden
+						className="text-center font-proxima text-[18vw] leading-none font-semibold tracking-tight text-foreground/5 select-none"
+					>
+						{siteConfig.fullname}
+					</p>
+				</div>
 
-				<div className="mt-14 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+				<div className="flex flex-col gap-4 border-t border-border py-6 sm:flex-row sm:items-center sm:justify-between">
 					<p className="font-mono text-xs text-muted-foreground">
 						© {new Date().getFullYear()} {siteConfig.name}. All
 						rights reserved.

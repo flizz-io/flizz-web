@@ -6,10 +6,13 @@
 @source '../../../apps/**/*.{ts,tsx}';
 @source '../../../components/**/*.{ts,tsx}';
 @source '../**/*.{ts,tsx}';
+/* TODO: remove with the `@workspace/theme-lab` package before production. */
+@source '../../../theme-lab/src/**/*.{ts,tsx}';
 
 @theme inline {
 	--font-heading: var(--font-heading);
 	--font-mono: var(--font-mono);
+	--font-serif: var(--font-serif);
 	--color-sidebar-ring: var(--sidebar-ring);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,76 +51,77 @@
 	--radius-2xl: calc(var(--radius) * 1.8);
 	--radius-3xl: calc(var(--radius) * 2.2);
 	--radius-4xl: calc(var(--radius) * 2.6);
+	--font-proxima: var(--font-proxima);
 	--font-sans: var(--font-sans);
 }
 
 :root {
-	--background: #f6faf8;
-	--foreground: #0f1b19;
+	--background: #fdfcff;
+	--foreground: #0b0812;
 	--card: #ffffff;
-	--card-foreground: #0f1b19;
+	--card-foreground: #0b0812;
 	--popover: #ffffff;
-	--popover-foreground: #0f1b19;
-	--primary: #04a18f;
+	--popover-foreground: #0b0812;
+	--primary: #5e17eb;
 	--primary-foreground: #ffffff;
-	--secondary: #eaf5f3;
-	--secondary-foreground: #0b4a42;
-	--muted: #eff4f3;
-	--muted-foreground: #5b6c69;
-	--accent: #f2a93b;
-	--accent-foreground: #241505;
+	--secondary: #efeaf9;
+	--secondary-foreground: #2f1868;
+	--muted: #f2f0f7;
+	--muted-foreground: #55506a;
+	--accent: #efeaf9;
+	--accent-foreground: #2f1868;
 	--destructive: oklch(0.577 0.245 27.325);
-	--border: #dceae7;
-	--input: #dceae7;
-	--ring: #14b8a6;
-	--chart-1: #14b8a6;
-	--chart-2: #04a18f;
-	--chart-3: #188478;
-	--chart-4: #f2a93b;
-	--chart-5: #5b6c69;
-	--radius: 0.5rem;
+	--border: #e2ddec;
+	--input: #e2ddec;
+	--ring: #5e17eb;
+	--chart-1: #5e17eb;
+	--chart-2: #8b5cf6;
+	--chart-3: #4c11c4;
+	--chart-4: #b794f6;
+	--chart-5: #55506a;
+	--radius: 0.4rem;
 	--sidebar: #ffffff;
-	--sidebar-foreground: #0f1b19;
-	--sidebar-primary: #04a18f;
+	--sidebar-foreground: #0b0812;
+	--sidebar-primary: #5e17eb;
 	--sidebar-primary-foreground: #ffffff;
-	--sidebar-accent: #eaf5f3;
-	--sidebar-accent-foreground: #0b4a42;
-	--sidebar-border: #dceae7;
-	--sidebar-ring: #14b8a6;
+	--sidebar-accent: #efeaf9;
+	--sidebar-accent-foreground: #2f1868;
+	--sidebar-border: #e2ddec;
+	--sidebar-ring: #5e17eb;
 }
 
 .dark {
-	--background: #0b1613;
-	--foreground: #eaf6f4;
-	--card: #10201c;
-	--card-foreground: #eaf6f4;
-	--popover: #10201c;
-	--popover-foreground: #eaf6f4;
-	--primary: #14b8a6;
-	--primary-foreground: #06201c;
-	--secondary: #16302b;
-	--secondary-foreground: #eaf6f4;
-	--muted: #16302b;
-	--muted-foreground: #8fb0ab;
-	--accent: #f2a93b;
-	--accent-foreground: #241505;
+	--background: #08060d;
+	--foreground: #f7f5fb;
+	--card: #100c1a;
+	--card-foreground: #f7f5fb;
+	--popover: #100c1a;
+	--popover-foreground: #f7f5fb;
+	--primary: #8b5cf6;
+	--primary-foreground: #08060d;
+	--secondary: #1a1428;
+	--secondary-foreground: #f7f5fb;
+	--muted: #150f22;
+	--muted-foreground: #9d94b8;
+	--accent: #1a1428;
+	--accent-foreground: #f7f5fb;
 	--destructive: oklch(0.704 0.191 22.216);
 	--border: oklch(1 0 0 / 10%);
 	--input: oklch(1 0 0 / 15%);
-	--ring: #14b8a6;
-	--chart-1: #14b8a6;
-	--chart-2: #04a18f;
-	--chart-3: #188478;
-	--chart-4: #f2a93b;
-	--chart-5: #8fb0ab;
-	--sidebar: #10201c;
-	--sidebar-foreground: #eaf6f4;
-	--sidebar-primary: #14b8a6;
-	--sidebar-primary-foreground: #06201c;
-	--sidebar-accent: #16302b;
-	--sidebar-accent-foreground: #eaf6f4;
+	--ring: #8b5cf6;
+	--chart-1: #8b5cf6;
+	--chart-2: #a78bfa;
+	--chart-3: #5e17eb;
+	--chart-4: #c4b5fd;
+	--chart-5: #9d94b8;
+	--sidebar: #100c1a;
+	--sidebar-foreground: #f7f5fb;
+	--sidebar-primary: #8b5cf6;
+	--sidebar-primary-foreground: #08060d;
+	--sidebar-accent: #1a1428;
+	--sidebar-accent-foreground: #f7f5fb;
 	--sidebar-border: oklch(1 0 0 / 10%);
-	--sidebar-ring: #14b8a6;
+	--sidebar-ring: #8b5cf6;
 }
 
 @layer base {
@@ -131,7 +135,34 @@
 
 @theme {
 	--animate-marquee: marquee 34s linear infinite;
+	--animate-aurora: aurora-drift 26s ease-in-out infinite;
 	--ease-power-on: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Slow enough to be felt rather than watched — atmosphere behind a scene,
+   never a thing competing with it for attention. */
+/* The wordmark sweep, as CSS rather than a JS animation, so it pauses with the
+   marquee under a single `animation-play-state` rather than needing its own
+   stop signal. The hold after 48% is the gap between passes. */
+@keyframes proof-sweep {
+	0%,
+	4% {
+		transform: translateX(-130%);
+	}
+	48%,
+	100% {
+		transform: translateX(530%);
+	}
+}
+
+@keyframes aurora-drift {
+	0%,
+	100% {
+		transform: translate3d(0, 0, 0) scale(1);
+	}
+	50% {
+		transform: translate3d(4%, -4%, 0) scale(1.14);
+	}
 }
 
 @keyframes marquee {
