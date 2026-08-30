@@ -10,8 +10,8 @@ function ThemeProvider({
 	return (
 		<NextThemesProvider
 			attribute="class"
-			defaultTheme="system"
-			enableSystem
+			defaultTheme="dark"
+			enableSystem={false}
 			disableTransitionOnChange
 			{...props}
 		>
@@ -47,11 +47,17 @@ function ThemeHotkey() {
 				return;
 			}
 
-			if (event.key.toLowerCase() !== 'd') {
+			if (isTypingTarget(event.target)) {
 				return;
 			}
 
-			if (isTypingTarget(event.target)) {
+			// Extensions and autofill dispatch synthetic keydowns with no
+			// `key` at all, so this can't go straight to `toLowerCase`.
+			if (typeof event.key !== 'string') {
+				return;
+			}
+
+			if (event.key.toLowerCase() !== 'd') {
 				return;
 			}
 

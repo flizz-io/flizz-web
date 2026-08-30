@@ -9,10 +9,11 @@ export const footerLinkGroups: FooterLinkGroup[] = [
 		]
 	},
 	{
-		title: 'Product',
+		title: 'Explore',
 		items: [
-			{ label: 'Product', href: '/product' },
-			{ label: 'Pricing', href: '/pricing' }
+			{ label: 'Services', href: '/services' },
+			{ label: 'Portfolio', href: '/portfolio' },
+			{ label: 'Articles', href: '/articles' }
 		]
 	},
 	{

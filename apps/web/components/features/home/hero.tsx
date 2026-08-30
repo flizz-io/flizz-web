@@ -1,34 +1,23 @@
-import Link from 'next/link';
+import { HeroConstellation } from '@/components/features/home/hero-constellation';
+import { HeroStarfield } from '@/components/features/home/hero-starfield';
 
-import { Reveal } from '@/components/snippets/reveal/reveal';
-import { siteConfig } from '@/configs/site';
-import { Button } from '@workspace/ui/components/button';
+/**
+ * `starfield` — the centred statement over a drifting starfield.
+ * `constellation` — copy on one side, the disciplines turning on the other.
+ */
+export type HeroVariation = 'starfield' | 'constellation';
 
-export function Hero() {
-	return (
-		<section className="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:px-8">
-			<Reveal className="max-w-2xl">
-				<p className="font-mono text-xs tracking-[0.2em] text-primary uppercase">
-					{siteConfig.shortName}
-				</p>
-				<h1 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-					{siteConfig.tagline}
-				</h1>
-				<p className="mt-4 text-base text-muted-foreground">
-					{siteConfig.description}
-				</p>
-				<div className="mt-8 flex gap-3">
-					<Button asChild>
-						<Link href="/contact">Get Started</Link>
-					</Button>
-					<Button
-						asChild
-						variant="outline"
-					>
-						<Link href="/product">Learn More</Link>
-					</Button>
-				</div>
-			</Reveal>
-		</section>
-	);
+interface HeroProps {
+	/**
+	 * Which hero to render. Each variation is a self-contained component; this
+	 * only picks between them, so a page never imports one directly and
+	 * swapping is a prop change rather than an import change.
+	 */
+	variation?: HeroVariation;
+}
+
+export function Hero({ variation = 'constellation' }: HeroProps) {
+	if (variation === 'constellation') return <HeroConstellation />;
+
+	return <HeroStarfield />;
 }
