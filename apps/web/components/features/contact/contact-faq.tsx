@@ -1,10 +1,10 @@
-import { ArrowUpRight } from 'lucide-react';
-import Link from 'next/link';
+import { ArrowUp } from 'lucide-react';
 
 import { OpenIndicator } from '@/components/snippets/open-indicator/open-indicator';
 import { Reveal } from '@/components/snippets/reveal/reveal';
+import { ScrollLink } from '@/components/snippets/scroll-link/scroll-link';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
-import { faqItems } from '@/constants/home';
+import { contactFaqItems, contactFormAnchorId } from '@/constants/contact';
 import {
 	Accordion,
 	AccordionContent,
@@ -13,13 +13,21 @@ import {
 } from '@workspace/ui/components/accordion';
 import { cn } from '@workspace/ui/lib/utils';
 
-interface FaqProps {
+interface ContactFaqProps {
 	sectionIndex: number;
 	totalSections?: number;
 	className?: string;
 }
 
-export function Faq({ sectionIndex, totalSections, className }: FaqProps) {
+/**
+ * Only the questions that come up before someone writes in — the ones about
+ * the work itself live on the home page.
+ */
+export function ContactFaq({
+	sectionIndex,
+	totalSections,
+	className
+}: ContactFaqProps) {
 	return (
 		<section
 			className={cn(
@@ -31,13 +39,13 @@ export function Faq({ sectionIndex, totalSections, className }: FaqProps) {
 				<SectionTag
 					index={sectionIndex}
 					total={totalSections}
-					label="FAQs"
+					label="Before you write"
 				/>
 				<h2 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-					Questions, answered
+					What people ask first
 				</h2>
 				<p className="mt-4 max-w-xl text-base text-muted-foreground">
-					The things people ask before we start working together.
+					Everything else is fair game on the call.
 				</p>
 			</Reveal>
 
@@ -50,17 +58,12 @@ export function Faq({ sectionIndex, totalSections, className }: FaqProps) {
 					collapsible
 					className="border-t border-border"
 				>
-					{faqItems.map((item, index) => (
+					{contactFaqItems.map((item, index) => (
 						<AccordionItem
 							key={item.question}
 							value={item.question}
 						>
-							<AccordionTrigger
-								// The packaged chevrons are hidden in favour of
-								// the indicator below, and the underline with
-								// them — it fights type this size.
-								className="items-start gap-5 py-6 hover:no-underline **:data-[slot=accordion-trigger-icon]:hidden"
-							>
+							<AccordionTrigger className="items-start gap-5 py-6 hover:no-underline **:data-[slot=accordion-trigger-icon]:hidden">
 								<span className="mt-1.5 font-mono text-xs text-muted-foreground transition-colors group-aria-expanded/accordion-trigger:text-primary">
 									{String(index + 1).padStart(2, '0')}
 								</span>
@@ -70,8 +73,6 @@ export function Faq({ sectionIndex, totalSections, className }: FaqProps) {
 								<OpenIndicator />
 							</AccordionTrigger>
 
-							{/* Indented past the index so the answer hangs off
-							    its question rather than the row edge. */}
 							<AccordionContent className="pr-9 pb-6 pl-11 text-base text-pretty text-muted-foreground">
 								{item.answer}
 							</AccordionContent>
@@ -81,8 +82,8 @@ export function Faq({ sectionIndex, totalSections, className }: FaqProps) {
 
 				{/* Reads as the list's last row: the way out when none of the
 				    answers above is the one you needed. */}
-				<Link
-					href="/contact"
+				<ScrollLink
+					targetId={contactFormAnchorId}
 					className="group flex items-center justify-between gap-5 border-b border-border py-6 transition-colors hover:border-primary/50"
 				>
 					<span className="flex items-baseline gap-5">
@@ -90,14 +91,14 @@ export function Faq({ sectionIndex, totalSections, className }: FaqProps) {
 							&mdash;
 						</span>
 						<span className="font-heading text-lg font-semibold tracking-tight text-foreground transition-colors group-hover:text-primary sm:text-xl">
-							Still have a question?
+							Something else on your mind?
 						</span>
 					</span>
 					<span className="flex shrink-0 items-center gap-2 font-mono text-xs tracking-[0.15em] text-muted-foreground uppercase transition-colors group-hover:text-primary">
-						Talk to us
-						<ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+						Ask it above
+						<ArrowUp className="size-4 transition-transform group-hover:-translate-y-0.5" />
 					</span>
-				</Link>
+				</ScrollLink>
 			</Reveal>
 		</section>
 	);
