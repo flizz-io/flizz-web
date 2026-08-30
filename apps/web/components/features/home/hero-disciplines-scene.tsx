@@ -215,9 +215,19 @@ export function HeroDisciplinesScene() {
 
 				projected.project(camera);
 
+				const screenX = (projected.x * 0.5 + 0.5) * clientWidth;
+				const screenY = (-projected.y * 0.5 + 0.5) * clientHeight;
+
+				// Pushed clear of its own cluster: sitting on the node put the
+				// words straight over the points and neither could be read.
+				const outX = screenX - clientWidth / 2;
+				const outY = screenY - clientHeight / 2;
+				const reach = Math.hypot(outX, outY) || 1;
+				const push = 58;
+
 				label.style.transform = `translate(-50%, -50%) translate(${
-					(projected.x * 0.5 + 0.5) * clientWidth
-				}px, ${(-projected.y * 0.5 + 0.5) * clientHeight}px)`;
+					screenX + (outX / reach) * push
+				}px, ${screenY + (outY / reach) * push}px)`;
 				label.style.opacity = String(
 					0.25 + Math.min(1, Math.max(0, depth)) * 0.75
 				);
