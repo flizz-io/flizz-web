@@ -135,7 +135,20 @@
 
 @theme {
 	--animate-marquee: marquee 34s linear infinite;
+	--animate-aurora: aurora-drift 26s ease-in-out infinite;
 	--ease-power-on: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Slow enough to be felt rather than watched — atmosphere behind a scene,
+   never a thing competing with it for attention. */
+@keyframes aurora-drift {
+	0%,
+	100% {
+		transform: translate3d(0, 0, 0) scale(1);
+	}
+	50% {
+		transform: translate3d(4%, -4%, 0) scale(1.14);
+	}
 }
 
 @keyframes marquee {
