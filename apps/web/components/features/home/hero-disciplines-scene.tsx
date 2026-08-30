@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 import { heroDisciplines } from '@/constants/home';
+import { serviceVisualRegistry } from '@workspace/service-visuals';
 import { useIsDarkTheme } from '@workspace/ui/hooks/use-is-dark-theme';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { useThemeColorVersion } from '@workspace/ui/hooks/use-theme-color-version';
@@ -28,7 +29,18 @@ const SIGNALS_PER_EDGE = 2;
  * read head-on. The labels are HTML projected onto their own node each frame,
  * which is what ties the words to the object instead of captioning it.
  */
-export function HeroDisciplinesScene() {
+interface HeroDisciplinesSceneProps {
+	/**
+	 * What sits at the centre of the constellation. `pulse-orb` borrows the
+	 * specimen from the services palette; `icosahedron` is the plain wireframe
+	 * core.
+	 */
+	centerObject?: 'pulse-orb' | 'icosahedron';
+}
+
+export function HeroDisciplinesScene({
+	centerObject = 'pulse-orb'
+}: HeroDisciplinesSceneProps = {}) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const labelRefs = useRef<(HTMLDivElement | null)[]>([]);
 	const isDark = useIsDarkTheme();
@@ -73,16 +85,74 @@ export function HeroDisciplinesScene() {
 		scene.add(group);
 
 		// --- the core everything reports to --------------------------------
-		const coreGeometry = new THREE.EdgesGeometry(
-			new THREE.IcosahedronGeometry(0.42, 0)
-		);
-		const coreMaterial = new THREE.LineBasicMaterial({
-			color: accent,
-			transparent: true,
-			opacity: 0.85
-		});
-		const core = new THREE.LineSegments(coreGeometry, coreMaterial);
-		group.add(core);
+		// Held in its own scaled group so a borrowed specimen — built for a
+		// square 192px card — sits inside the triangle rather than swallowing
+		// it, and so both options expose the same update/dispose pair.
+		const coreHolder = new THREE.Group();
+		coreHolder.scale.setScalar(centerObject === 'pulse-orb' ? 0.52 : 1);
+		group.add(coreHolder);
+
+		let core: {
+			update: (elapsed: number, active: boolean) => void;
+			dispose: () => void;
+		};
+
+		if (centerObject === 'pulse-orb') {
+			core = serviceVisualRegistry['pulse-orb'].build(
+				coreHolder,
+				{ accent, ink },
+				isDark
+			);
+		} else {
+			const coreGeometry = new THREE.EdgesGeometry(
+				new THREE.IcosahedronGeometry(0.42, 0)
+			);
+			const coreMaterial = new THREE.LineBasicMaterial({
+				color: accent,
+				transparent: true,
+				opacity: 0.85
+			});
+			const wireframe = new THREE.LineSegments(
+				coreGeometry,
+				coreMaterial
+			);
+			coreHolder.add(wireframe);
+
+			core = {
+				update: (elapsed) => {
+					wireframe.rotation.y = elapsed * 0.5;
+					wireframe.rotation.x = elapsed * 0.3;
+				},
+				dispose: () => {
+					coreGeometry.dispose();
+					coreMaterial.dispose();
+				}
+			};
+		}
+
+		// --- pointer steering ------------------------------------------------
+		// Target is where the pointer asks the constellation to face; `lean` is
+		// what it has actually reached. Easing between them keeps the turn
+		// weighted rather than snapping to the cursor.
+		const target = { x: 0, y: 0 };
+		const lean = { x: 0, y: 0 };
+		let hovered = false;
+
+		const onPointerMove = (event: PointerEvent) => {
+			const rect = container.getBoundingClientRect();
+			target.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+			target.y = ((event.clientY - rect.top) / rect.height) * 2 - 1;
+			hovered = true;
+		};
+
+		const onPointerLeave = () => {
+			target.x = 0;
+			target.y = 0;
+			hovered = false;
+		};
+
+		container.addEventListener('pointermove', onPointerMove);
+		container.addEventListener('pointerleave', onPointerLeave);
 
 		// --- one cluster per discipline, on a tilted triangle ---------------
 		const anchors = heroDisciplines.map((unused, index) => {
@@ -240,10 +310,13 @@ export function HeroDisciplinesScene() {
 		const draw = () => {
 			const elapsed = (performance.now() - start) / 1000;
 
-			group.rotation.y = elapsed * 0.16;
-			group.rotation.x = -0.28 + Math.sin(elapsed * 0.22) * 0.1;
-			core.rotation.y = elapsed * 0.5;
-			core.rotation.x = elapsed * 0.3;
+			lean.x += (target.x - lean.x) * 0.055;
+			lean.y += (target.y - lean.y) * 0.055;
+
+			group.rotation.y = elapsed * 0.16 + lean.x * 0.6;
+			group.rotation.x =
+				-0.28 + Math.sin(elapsed * 0.22) * 0.1 + lean.y * 0.4;
+			core.update(elapsed, hovered);
 
 			edges.forEach((edge, edgeIndex) => {
 				for (let lane = 0; lane < SIGNALS_PER_EDGE; lane += 1) {
@@ -308,8 +381,9 @@ export function HeroDisciplinesScene() {
 				onVisibilityChange
 			);
 
-			coreGeometry.dispose();
-			coreMaterial.dispose();
+			container.removeEventListener('pointermove', onPointerMove);
+			container.removeEventListener('pointerleave', onPointerLeave);
+			core.dispose();
 			clusterMaterial.dispose();
 			clusters.forEach(({ points, hub }) => {
 				points.geometry.dispose();
@@ -323,12 +397,12 @@ export function HeroDisciplinesScene() {
 			renderer.dispose();
 			renderer.domElement.remove();
 		};
-	}, [isDark, prefersReducedMotion, themeColorVersion]);
+	}, [centerObject, isDark, prefersReducedMotion, themeColorVersion]);
 
 	return (
 		<div
 			ref={containerRef}
-			className="absolute inset-0"
+			className="absolute inset-0 lg:top-12"
 		>
 			{heroDisciplines.map((discipline, index) => (
 				<div

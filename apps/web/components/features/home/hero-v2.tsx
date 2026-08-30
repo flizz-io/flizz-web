@@ -8,8 +8,8 @@ import Link from 'next/link';
 
 import { heroScrollTargetId } from '@/constants/home';
 import { Button } from '@workspace/ui/components/button';
-import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { Particles } from '@workspace/ui/components/particles';
+import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 
 // Three.js is heavy — keep it out of the initial bundle.
 const HeroDisciplinesScene = dynamic(

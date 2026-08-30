@@ -150,7 +150,7 @@ export const serviceCards: ServiceCard[] = [
 		category: 'Custom Software',
 		title: 'MVP Development',
 		description: 'Validate fast with a lean, production-grade first build.',
-		visualKind: 'mvp-ascent'
+		visualKind: 'layered-stack' //'mvp-ascent'
 	},
 	{
 		category: 'Custom Software',

@@ -32,7 +32,12 @@ export interface ServiceVisualHandle {
 }
 
 export type ServiceVisualBuilder = (
-	scene: THREE.Scene,
+	/**
+	 * Where the visual mounts. Widened from `Scene` to `Object3D` so a visual
+	 * can also be dropped into a group inside a larger scene — the hero mounts
+	 * one as the core of its constellation.
+	 */
+	target: THREE.Object3D,
 	colors: ServiceVisualColors,
 	isDark: boolean
 ) => ServiceVisualHandle;
