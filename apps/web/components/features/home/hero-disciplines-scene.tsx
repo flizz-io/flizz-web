@@ -79,6 +79,11 @@ export function HeroDisciplinesScene({
 		container.append(renderer.domElement);
 		renderer.domElement.style.width = '100%';
 		renderer.domElement.style.height = '100%';
+		// Hidden until the first frame drawn at a valid size. A canvas that is
+		// visible before that can flash an uninitialised buffer, which is what
+		// showed up as a blank block on a cold load.
+		renderer.domElement.style.opacity = '0';
+		renderer.domElement.style.transition = 'opacity 400ms ease-out';
 
 		const group = new THREE.Group();
 		group.rotation.x = -0.28;
@@ -258,6 +263,8 @@ export function HeroDisciplinesScene({
 			() => 0.14 + Math.random() * 0.16
 		);
 
+		let sized = false;
+
 		const resize = () => {
 			const { clientWidth, clientHeight } = container;
 			if (!clientWidth || !clientHeight) return;
@@ -265,6 +272,12 @@ export function HeroDisciplinesScene({
 			camera.aspect = clientWidth / clientHeight;
 			camera.updateProjectionMatrix();
 			renderer.setSize(clientWidth, clientHeight, false);
+			sized = true;
+		};
+
+		const reveal = () => {
+			if (!sized) return;
+			renderer.domElement.style.opacity = '1';
 		};
 
 		const projected = new THREE.Vector3();
@@ -344,6 +357,7 @@ export function HeroDisciplinesScene({
 
 			placeLabels();
 			renderer.render(scene, camera);
+			reveal();
 			animationFrame = requestAnimationFrame(draw);
 		};
 
@@ -361,6 +375,7 @@ export function HeroDisciplinesScene({
 		resize();
 		placeLabels();
 		renderer.render(scene, camera);
+		reveal();
 
 		const observer = new IntersectionObserver(([entry]) =>
 			entry?.isIntersecting ? play() : stop()
@@ -369,12 +384,24 @@ export function HeroDisciplinesScene({
 
 		const onVisibilityChange = () => (document.hidden ? stop() : play());
 
+		// The square box takes its height from its own width during layout, so
+		// the first measurement can land before that resolves — a window
+		// listener never sees it and the buffer stays the wrong shape.
+		const resizeObserver = new ResizeObserver(() => {
+			resize();
+			placeLabels();
+			renderer.render(scene, camera);
+			reveal();
+		});
+		resizeObserver.observe(container);
+
 		window.addEventListener('resize', resize);
 		document.addEventListener('visibilitychange', onVisibilityChange);
 
 		return () => {
 			stop();
 			observer.disconnect();
+			resizeObserver.disconnect();
 			window.removeEventListener('resize', resize);
 			document.removeEventListener(
 				'visibilitychange',

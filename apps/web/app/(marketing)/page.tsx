@@ -16,7 +16,7 @@ export default function HomePage() {
 
 	return (
 		<>
-			<Hero />
+			<Hero variation="constellation" />
 			<Proof />
 			<ServicesTeaser
 				sectionIndex={1}

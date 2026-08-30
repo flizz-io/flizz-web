@@ -1,6 +1,6 @@
 import { Faq } from '@/components/features/home/faq';
 import { FinalCta } from '@/components/features/home/final-cta';
-import { HeroV2 } from '@/components/features/home/hero-v2';
+import { Hero } from '@/components/features/home/hero';
 import { PortfolioTeaser } from '@/components/features/home/portfolio-teaser';
 import { Problem } from '@/components/features/home/problem';
 import { Proof } from '@/components/features/home/proof';
@@ -16,7 +16,7 @@ export default function HomeV2Page() {
 
 	return (
 		<>
-			<HeroV2 />
+			<Hero variation="starfield" />
 			<Proof />
 			<ServicesTeaser
 				sectionIndex={1}

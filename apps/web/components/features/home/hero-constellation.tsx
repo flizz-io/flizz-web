@@ -36,11 +36,11 @@ const item: Variants = {
 };
 
 /**
- * Alternate hero: the copy holds one side and the practice itself turns on the
+ * Split hero: the copy holds one side and the practice itself turns on the
  * other, rather than sitting centred over a full-bleed field. Same message,
  * read as a split rather than a title card.
  */
-export function HeroV2() {
+export function HeroConstellation() {
 	const reduceMotion = usePrefersReducedMotion();
 	const lenis = useLenis();
 

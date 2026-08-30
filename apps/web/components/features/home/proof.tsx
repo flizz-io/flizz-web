@@ -147,11 +147,14 @@ export function Proof() {
 				{/* The sweep is scoped to exactly the wordmark row — spanning the
 				    section's padding as well would render it as a lit rectangle
 				    rather than light falling on the logos. */}
-				<div className="relative isolate overflow-hidden mask-[linear-gradient(to_right,transparent,black_12%,black_88%,transparent)] py-2">
-					<div className="flex w-max animate-marquee items-center gap-10">
+				{/* Hovering the band holds everything still — the scroll and
+				    the sweep both pause on the same signal — so a name can be
+				    read rather than chased. */}
+				<div className="group/band relative isolate overflow-hidden mask-[linear-gradient(to_right,transparent,black_12%,black_88%,transparent)] py-2">
+					<div className="flex w-max animate-marquee items-center gap-10 group-hover/band:[animation-play-state:paused]">
 						{logos.map((logo, index) => (
 							<Fragment key={`${logo}-${index}`}>
-								<span className="font-heading text-2xl font-semibold whitespace-nowrap text-muted-foreground/60 dark:text-white/80">
+								<span className="cursor-default font-heading text-2xl font-semibold whitespace-nowrap text-muted-foreground/60 transition-colors duration-300 hover:text-primary dark:text-white/80 dark:hover:text-primary">
 									{logo}
 								</span>
 								<span
@@ -166,17 +169,9 @@ export function Proof() {
 					    dark — the section's one moving accent. Radial, so it has
 					    falloff on every edge instead of hard vertical seams. */}
 					{reduceMotion ? null : (
-						<motion.div
+						<div
 							aria-hidden
-							className="pointer-events-none absolute inset-y-0 w-1/4 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.28),transparent_70%)] mix-blend-plus-lighter"
-							initial={{ x: '-130%' }}
-							animate={{ x: '530%' }}
-							transition={{
-								duration: 3.4,
-								repeat: Infinity,
-								repeatDelay: 4.5,
-								ease: 'easeInOut'
-							}}
+							className="pointer-events-none absolute inset-y-0 w-1/4 animate-[proof-sweep_7.9s_linear_infinite] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.28),transparent_70%)] mix-blend-plus-lighter group-hover/band:opacity-0 group-hover/band:[animation-play-state:paused]"
 						/>
 					)}
 				</div>

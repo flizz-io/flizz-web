@@ -141,6 +141,20 @@
 
 /* Slow enough to be felt rather than watched — atmosphere behind a scene,
    never a thing competing with it for attention. */
+/* The wordmark sweep, as CSS rather than a JS animation, so it pauses with the
+   marquee under a single `animation-play-state` rather than needing its own
+   stop signal. The hold after 48% is the gap between passes. */
+@keyframes proof-sweep {
+	0%,
+	4% {
+		transform: translateX(-130%);
+	}
+	48%,
+	100% {
+		transform: translateX(530%);
+	}
+}
+
 @keyframes aurora-drift {
 	0%,
 	100% {
