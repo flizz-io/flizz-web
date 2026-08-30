@@ -6,7 +6,7 @@ import { useTheme } from 'next-themes';
 import { Button } from '@workspace/ui/components/button';
 import { useIsDarkTheme } from '@workspace/ui/hooks/use-is-dark-theme';
 
-export function ThemeToggle() {
+export function ThemeToggle({ className }: { className?: string }) {
 	const { setTheme } = useTheme();
 	const isDark = useIsDarkTheme();
 
@@ -16,6 +16,7 @@ export function ThemeToggle() {
 			size="icon"
 			aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
 			onClick={() => setTheme(isDark ? 'light' : 'dark')}
+			className={className}
 		>
 			{isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
 		</Button>

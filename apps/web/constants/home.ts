@@ -18,9 +18,9 @@ export const heroScrollTargetId = 'highlights';
 // The three disciplines the alternate hero orbits — labels track their own node
 // as the constellation turns.
 export const heroDisciplines: HeroDiscipline[] = [
-	{ label: 'Product R&D', caption: 'Deciding what is worth building' },
-	{ label: 'AI-driven development', caption: 'Building it in less time' },
-	{ label: 'Engineering works', caption: 'Making it hold up' }
+	{ label: 'Product discovery', caption: 'Deciding what is worth building' },
+	{ label: 'AI-assisted delivery', caption: 'Building it in less time' },
+	{ label: 'Systems engineering', caption: 'Making it hold up' }
 ];
 
 // Facts already in the Hero/Solution/Final-CTA copy, reframed as a stat strip — not invented business metrics

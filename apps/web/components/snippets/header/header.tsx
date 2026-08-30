@@ -54,7 +54,7 @@ export function Header() {
 					</nav>
 
 					<div className="flex items-center gap-1.5">
-						<ThemeToggle />
+						<ThemeToggle className="hidden" />
 						<Button
 							asChild
 							className="hidden rounded-full px-6 font-bold sm:inline-flex"

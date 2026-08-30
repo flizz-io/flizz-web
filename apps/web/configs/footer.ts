@@ -13,7 +13,7 @@ export const footerLinkGroups: FooterLinkGroup[] = [
 		items: [
 			{ label: 'Services', href: '/services' },
 			{ label: 'Portfolio', href: '/portfolio' },
-			{ label: 'Blog', href: '/blog' }
+			{ label: 'Articles', href: '/articles' }
 		]
 	},
 	{
