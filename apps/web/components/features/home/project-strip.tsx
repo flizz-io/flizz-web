@@ -255,14 +255,21 @@ export function ProjectStrip({ className }: { className?: string }) {
 
 	return (
 		<div
-			className={cn('relative', className)}
+			className={cn(
+				// `--strip-pad` tracks the header container's own `px-*`, so
+				// `--gutter` below lands on the title's text edge rather than
+				// on the edge of the box holding it.
+				'relative [--strip-pad:1rem] sm:[--strip-pad:1.5rem] lg:[--strip-pad:2rem]',
+				className
+			)}
 			style={
 				{
 					'--card-w': 'min(85vw, 620px)',
 					'--shot-h': 'calc(min(85vw, 620px) / 1.6)',
-					// Lines the first card up with the page container, then lets
-					// the rest of the strip run to the viewport edges.
-					'--gutter': 'max(1rem, calc((100% - 72rem) / 2))'
+					// Lines the first card up with the header, then lets the
+					// rest of the strip run to the viewport edges as it scrolls.
+					'--gutter':
+						'calc(max(0px, (100% - 72rem) / 2) + var(--strip-pad))'
 				} as React.CSSProperties
 			}
 		>
@@ -305,7 +312,7 @@ export function ProjectStrip({ className }: { className?: string }) {
 				>
 					{/* Bottom padding gives the entrance transform somewhere to go, so
 					    hiding vertical overflow clips nothing. */}
-					<div className="flex w-max scroll-px-(--gutter) gap-8 pb-9 sm:gap-12 lg:gap-16">
+					<div className="flex w-max gap-8 pb-9 pl-(--gutter) sm:gap-12 lg:gap-16">
 						{projectCards.map((project, index) => (
 							<article
 								key={project.name}
