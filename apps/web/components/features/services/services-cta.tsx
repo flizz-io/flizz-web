@@ -9,6 +9,10 @@ import { cn } from '@workspace/ui/lib/utils';
 interface ServicesCtaProps {
 	sectionIndex: number;
 	totalSections?: number;
+	/** Defaults to the list page's wording; detail pages pass their own. */
+	heading?: string;
+	lead?: string;
+	ctaLabel?: string;
 	className?: string;
 }
 
@@ -19,6 +23,9 @@ interface ServicesCtaProps {
 export function ServicesCta({
 	sectionIndex,
 	totalSections,
+	heading = servicesCtaHeading,
+	lead = servicesCtaLead,
+	ctaLabel = 'Describe your problem →',
 	className
 }: ServicesCtaProps) {
 	return (
@@ -47,10 +54,10 @@ export function ServicesCta({
 						/>
 					</div>
 					<h2 className="mt-6 font-heading text-4xl font-semibold tracking-tight text-balance text-foreground sm:text-5xl">
-						{servicesCtaHeading}
+						{heading}
 					</h2>
 					<p className="mx-auto mt-6 max-w-xl text-lg text-pretty text-muted-foreground">
-						{servicesCtaLead}
+						{lead}
 					</p>
 				</Reveal>
 
@@ -67,7 +74,7 @@ export function ServicesCta({
 						size="lg"
 						className="relative h-12 px-7 text-base shadow-[0_0_40px_-12px_var(--color-primary)]"
 					>
-						<Link href="/contact">Describe your problem →</Link>
+						<Link href="/contact">{ctaLabel}</Link>
 					</Button>
 				</Reveal>
 			</div>

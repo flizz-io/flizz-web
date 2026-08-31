@@ -8,7 +8,7 @@ import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SchematicFrame } from '@/components/snippets/schematic-frame/schematic-frame';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { services } from '@/constants/services';
-import { serviceCategoryOrder } from '@/enums/services';
+import { serviceCategoryAnchors, serviceCategoryOrder } from '@/enums/services';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { ServiceVisual } from '@workspace/service-visuals';
 import { cn } from '@workspace/ui/lib/utils';
@@ -99,6 +99,11 @@ export function ServicesCatalogue({
 							<Reveal
 								key={category}
 								delay={groupIndex * 60}
+								// Detail pages link back to their own category,
+								// so each group is an anchor. The scroll margin
+								// clears the sticky header.
+								id={serviceCategoryAnchors[category]}
+								className="scroll-mt-28"
 							>
 								<p className="flex items-baseline gap-3 border-b border-border pb-3 font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
 									{category}

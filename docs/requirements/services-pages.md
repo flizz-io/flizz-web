@@ -7,7 +7,7 @@ Covers two public routes in `apps/web`, specced together because they share one 
 - `/services` — the Services list page
 - `/services/[slug]` — Single Service detail
 
-Stage 4. Both are static for now; the Services CRUD (Stage 8–12) replaces the constants later without changing either page's structure.
+Stage 4. **Both built 2026-09-01.** Static for now; the Services CRUD (Stage 8–12) replaces the constants later without changing either page's structure.
 
 > The per-service copy originally transcribed from the sheet was deliberately removed — the PM holds the source and will re-author through the admin CRUD. Everything below is placeholder written to the site's voice, not sheet content.
 
@@ -118,6 +118,26 @@ Notes:
 - **Do not restate the five-step process from the home page.** It already lives there and on About; a service page repeating it is filler. Reference it or leave it out.
 - Twelve pages share one template. It has to hold up when `engagement` is missing and when `deliverables` runs long.
 - `generateStaticParams` over the twelve slugs; unknown slug → `notFound()`.
+
+## Build notes
+
+Worth knowing before touching either page again:
+
+- **One roster, one source.** `constants/services.ts` holds all twelve as `ServiceDetail[]`; the home teaser derives from it via `homeTeaserServices`, so the three surfaces cannot disagree. The old `ServiceCard` type is gone.
+- **The list page mounts one WebGL context, not twelve.** The index is static and a single sticky viewer swaps specimens on hover or focus. Below `lg` the viewer is not rendered at all — gated on `useMediaQuery`, because `hidden` would still mount it and burn a context on phones that never see it.
+- **Row handlers sit on the `<li>`, not the `<Link>`**, so the behaviour does not depend on which props `next/link` forwards. React's synthetic focus bubbles up from the anchor.
+- **Specimen swaps are debounced** by 130ms; without it, dragging the cursor down the index rebuilds a Three scene per row crossed.
+- **The detail section counter is computed, not fixed.** "Nearby" drops out when a category holds only the current service, so `totalSections` is 4 or 3 accordingly.
+- **Do not lower-case service titles in copy.** It renders MVP, AI, API and SaaS as mvp, ai, api and saas.
+- **The detail hero keeps the specimen beside the headline, not in a full-width band below it.** Run edge to edge and the hero splits into a text block and an unrelated strip; these scenes are also small by design, so at full width the geometry reads as a wireframe box adrift rather than a specimen. It uses the same frame as the list page's viewer, so following a link lands somewhere that looks like where it came from.
+- **Both routes back to the catalogue are built**, switched by `serviceDetailBackNav` in `constants/services.ts`:
+    - `LINK` — "All services" above the title; an explicit step up.
+    - `CATEGORY` — the category eyebrow links to `/services#<category>`; a lateral move into the rest of that group.
+    - `BOTH` (current) or `NONE`.
+
+    The four category groups on the list page carry anchor ids (`serviceCategoryAnchors`) with `scroll-mt-28` to clear the sticky header. Cross-page hash navigation was checked against Lenis and lands correctly.
+
+- **Breadcrumb structured data is not implemented.** `BreadcrumbList` JSON-LD is worth adding for a twelve-page catalogue, but it needs an absolute site URL and `configs/site.ts` has none — a guessed domain would be worse than omitting it. Add `NEXT_PUBLIC_SITE_URL` first.
 
 ## Design constraints
 

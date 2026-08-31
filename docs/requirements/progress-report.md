@@ -99,9 +99,9 @@ Non-blocking follow-ups the PM still owes:
 | Milestone dates   | Correct every date after March 2024 — only the founding month is real                                    | Timeline ships with dummy dates          |
 | Published figures | Real projects / team size / clients served                                                               | Must stay in sync with Home's `stats`    |
 
-### Services pages — spec'd, awaiting content
+### Services pages — built
 
-Both routes are specced in [services-pages.md](services-pages.md). Twelve services across four categories; placeholder copy ships while the PM authors the real thing.
+Both routes shipped 2026-09-01: `/services` and twelve `/services/[slug]` pages, statically generated. The roster now lives in `constants/services.ts` as the single source of truth, with the home teaser derived from it. Placeholder copy ships while the PM authors the real thing.
 
 | Item                | Needed from PM                                                        | Note                                                                             |
 | ------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------- |

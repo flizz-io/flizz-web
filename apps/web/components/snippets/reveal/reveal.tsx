@@ -8,6 +8,8 @@ interface RevealProps {
 	children: React.ReactNode;
 	delay?: number;
 	trigger?: 'view' | 'mount';
+	/** Anchor target, for sections that get linked to directly. */
+	id?: string;
 	className?: string;
 }
 
@@ -15,6 +17,7 @@ export function Reveal({
 	children,
 	delay = 0,
 	trigger = 'view',
+	id,
 	className
 }: RevealProps) {
 	const ref = useRef<HTMLDivElement>(null);
@@ -50,6 +53,7 @@ export function Reveal({
 	return (
 		<div
 			ref={ref}
+			id={id}
 			data-revealed={isVisible}
 			style={delay ? { transitionDelay: `${delay}ms` } : undefined}
 			className={cn(
