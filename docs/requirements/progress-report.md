@@ -4,20 +4,20 @@ Master index and tracker for the Flizz web project: public site pages, admin CRU
 
 ## Pages — public site (`apps/web`)
 
-| #   | Page                            | Notes doc                      | Route      | Static build stage | Status                     |
-| --- | ------------------------------- | ------------------------------ | ---------- | ------------------ | -------------------------- |
-| 1   | Home                            | [home-page.md](home-page.md)   | `/`        | Stage 2            | Built — pending PM content |
-| 2   | About                           | [about-page.md](about-page.md) | `/about`   | Stage 3            | Built — pending PM content |
-| 3   | Services (list)                 | _to be written before Stage 4_ | —          | Stage 4            | Not started                |
-| 4   | Single Service detail           | _to be written before Stage 4_ | —          | Stage 4            | Not started                |
-| 5   | Contact Us                      | _not written — built ad hoc_   | `/contact` | Stage 5            | Built — pending PM content |
-| 6   | Portfolio/Projects (list)       | _to be written before Stage 6_ | —          | Stage 6            | Not started                |
-| 7   | Single Portfolio/Project detail | _to be written before Stage 6_ | —          | Stage 6            | Not started                |
-| 8   | Blog (list)                     | _to be written before Stage 7_ | —          | Stage 7            | Not started                |
-| 9   | Single Blog detail              | _to be written before Stage 7_ | —          | Stage 7            | Not started                |
-| 10  | Case Studies (list)             | _to be written before Stage 7_ | —          | Stage 7            | Not started                |
-| 11  | Single Case Study detail        | _to be written before Stage 7_ | —          | Stage 7            | Not started                |
-| —   | Home design variant (scratch)   | —                              | `/home-v2` | —                  | Delete before launch       |
+| #   | Page                            | Notes doc                              | Route              | Static build stage | Status                     |
+| --- | ------------------------------- | -------------------------------------- | ------------------ | ------------------ | -------------------------- |
+| 1   | Home                            | [home-page.md](home-page.md)           | `/`                | Stage 2            | Built — pending PM content |
+| 2   | About                           | [about-page.md](about-page.md)         | `/about`           | Stage 3            | Built — pending PM content |
+| 3   | Services (list)                 | [services-pages.md](services-pages.md) | `/services`        | Stage 4            | Spec'd — ready to build    |
+| 4   | Single Service detail           | [services-pages.md](services-pages.md) | `/services/[slug]` | Stage 4            | Spec'd — ready to build    |
+| 5   | Contact Us                      | _not written — built ad hoc_           | `/contact`         | Stage 5            | Built — pending PM content |
+| 6   | Portfolio/Projects (list)       | _to be written before Stage 6_         | —                  | Stage 6            | Not started                |
+| 7   | Single Portfolio/Project detail | _to be written before Stage 6_         | —                  | Stage 6            | Not started                |
+| 8   | Blog (list)                     | _to be written before Stage 7_         | —                  | Stage 7            | Not started                |
+| 9   | Single Blog detail              | _to be written before Stage 7_         | —                  | Stage 7            | Not started                |
+| 10  | Case Studies (list)             | _to be written before Stage 7_         | —                  | Stage 7            | Not started                |
+| 11  | Single Case Study detail        | _to be written before Stage 7_         | —                  | Stage 7            | Not started                |
+| —   | Home design variant (scratch)   | —                                      | `/home-v2`         | —                  | Delete before launch       |
 
 Each page's requirements doc is written just before its static-design stage starts — no point speccing pages we're 5 stages away from.
 
@@ -98,6 +98,17 @@ Non-blocking follow-ups the PM still owes:
 | Team photographs  | Generate one per member from their own photo — prompt and size spec in [about-page.md](about-page.md) §6 | Set `photo` per member; no layout change |
 | Milestone dates   | Correct every date after March 2024 — only the founding month is real                                    | Timeline ships with dummy dates          |
 | Published figures | Real projects / team size / clients served                                                               | Must stay in sync with Home's `stats`    |
+
+### Services pages — spec'd, awaiting content
+
+Both routes are specced in [services-pages.md](services-pages.md). Twelve services across four categories; placeholder copy ships while the PM authors the real thing.
+
+| Item                | Needed from PM                                                        | Note                                                                             |
+| ------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Service copy        | Real intro, problem, deliverables and outcomes for all twelve         | Placeholder ships meanwhile                                                      |
+| Roster confirmation | Are the four new services actually offered, or sheet candidates only? | Legacy Modernisation, API Development, Intelligent Automation, App Modernisation |
+| Engagement shapes   | Typical duration and cadence per service                              | Section omitted where unknown                                                    |
+| Pricing             | Whether any pricing appears on detail pages at all                    | Currently assumed no                                                             |
 
 ### Upcoming stages
 

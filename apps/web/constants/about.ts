@@ -166,9 +166,10 @@ export const showTeamSection = true;
  */
 export const aboutTeam: TeamMember[] = [
 	{
-		name: 'Arman Chowdhury',
+		name: 'Zahid Showarav',
 		role: 'Co-founder, Principal Engineer',
 		isFounder: true,
+		photo: '/team-members/zahid.png',
 		links: {
 			linkedin: 'https://www.linkedin.com/in/arman-chowdhury',
 			x: 'https://x.com/armanchowdhury',
@@ -176,9 +177,10 @@ export const aboutTeam: TeamMember[] = [
 		}
 	},
 	{
-		name: 'Nabila Rahman',
+		name: 'Abdur Rahman',
 		role: 'Co-founder, CTO',
 		isFounder: true,
+		photo: '/team-members/riyad.png',
 		links: {
 			linkedin: 'https://www.linkedin.com/in/nabila-rahman',
 			x: 'https://x.com/nabilarahman',
@@ -186,8 +188,9 @@ export const aboutTeam: TeamMember[] = [
 		}
 	},
 	{
-		name: 'Tanvir Hasan',
+		name: 'Meer Estiyak',
 		role: 'Co-founder, Product',
+		photo: '/team-members/meer.jpg',
 		isFounder: true,
 		links: {
 			linkedin: 'https://www.linkedin.com/in/tanvir-hasan',
@@ -195,12 +198,13 @@ export const aboutTeam: TeamMember[] = [
 		}
 	},
 	{
-		name: 'Sadia Karim',
-		role: 'Co-founder, Design',
+		name: 'Imran Hossain Estiyak',
+		role: 'Co-founder, Product',
+		photo: '/team-members/imran-hossain.jpeg',
 		isFounder: true,
 		links: {
-			linkedin: 'https://www.linkedin.com/in/sadia-karim',
-			portfolio: 'https://sadiakarim.design'
+			linkedin: 'https://www.linkedin.com/in/tanvir-hasan',
+			x: 'https://x.com/tanvirhasan'
 		}
 	},
 	{
