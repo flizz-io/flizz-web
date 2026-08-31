@@ -1,5 +1,3 @@
-import type { ServiceVisualKind } from '@workspace/service-visuals';
-
 export interface HeroDiscipline {
 	label: string;
 	/** One line on what the discipline actually contributes. */
@@ -43,19 +41,6 @@ export interface ProcessStep {
 	/** Trimmed description for layouts where the rail has less room. */
 	compactDescription: string;
 	whatYouGet: string;
-}
-
-export interface ServiceCard {
-	category: string;
-	title: string;
-	description: string;
-	/**
-	 * Which specimen from `@workspace/service-visuals` represents this
-	 * service. Once the Services CRUD ships, this becomes the same key an
-	 * admin picks from that package's picker — the palette lives there, not
-	 * here, so this field only ever stores the id.
-	 */
-	visualKind: ServiceVisualKind;
 }
 
 export interface ProjectCard {

@@ -30,7 +30,9 @@ Four categories, as `home-page.md` defines them:
 
 Shopify and Payment fold under E-commerce; SaaS and Legacy Modernisation under Custom Software.
 
-> **Correction required in existing code.** `constants/home.ts` currently uses eight ad-hoc category strings — `Shopify`, `Payment`, `SaaS Platform` and `Legacy Modernisation` sit at top level alongside the four real ones. The home teaser and these pages must agree, so those values need folding into the four above as part of this stage.
+> **Corrected 2026-09-01.** `constants/home.ts` had `Shopify` and `Payment` as top-level service categories alongside the four real ones. (The other odd values seen while scoping — `SaaS Platform`, `Legacy Modernisation` — turned out to be _project_ categories on `projectCards`, not services.) Both now fold into E-commerce.
+>
+> Rather than fixing the strings in place, the roster moved to `constants/services.ts` as the single source of truth, and `serviceCards` is now derived from it — so the home teaser and `/services` cannot disagree about a title, summary or visual.
 
 ## The 12 services
 
@@ -58,7 +60,7 @@ Eight already exist in `constants/home.ts`. Four are new to this stage — Legac
 - **Intelligent Automation** — Take repetitive work off people, and keep the audit trail.
 - **App Modernisation** — Bring an app that still works onto a platform that still ships.
 
-`mvp-development` currently points at `layered-stack` in `constants/home.ts` with `mvp-ascent` commented out beside it. Restore `mvp-ascent` — the purpose-built visual exists and is unused.
+`mvp-development` pointed at `layered-stack` with `mvp-ascent` commented out beside it; the purpose-built visual is now restored.
 
 That assignment leaves `pulse-orb` and `orbit-ring` free for the future admin picker; `pulse-orb` is also the hero's default centre object.
 
