@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 
-import { ArticleFeatured } from '@/components/features/articles/article-featured';
-import { ArticlesArchive } from '@/components/features/articles/articles-archive';
+import { ArticlesBrowser } from '@/components/features/articles/articles-browser';
 import { ArticlesCta } from '@/components/features/articles/articles-cta';
 import { ArticlesHero } from '@/components/features/articles/articles-hero';
 import { siteConfig } from '@/configs/site';
@@ -28,21 +28,21 @@ export const metadata: Metadata = {
 };
 
 export default function ArticlesPage() {
-	const totalSections = 3;
+	const totalSections = 2;
 
 	return (
 		<>
 			<ArticlesHero />
-			<ArticleFeatured
-				sectionIndex={1}
-				totalSections={totalSections}
-			/>
-			<ArticlesArchive
-				sectionIndex={2}
-				totalSections={totalSections}
-			/>
+			{/* The browser reads filter state from the query string, which
+			    needs a boundary for the statically rendered shell. */}
+			<Suspense>
+				<ArticlesBrowser
+					sectionIndex={1}
+					totalSections={totalSections}
+				/>
+			</Suspense>
 			<ArticlesCta
-				sectionIndex={3}
+				sectionIndex={2}
 				totalSections={totalSections}
 			/>
 		</>

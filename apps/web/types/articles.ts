@@ -29,6 +29,12 @@ export interface Article {
 	/** One or two lines. Carries the list entry and the meta description. */
 	excerpt: string;
 	category: ArticleCategory;
+	/**
+	 * Open vocabulary, unlike `category`. Categories are a fixed taxonomy the
+	 * site is organised by; tags describe an individual piece and can be added
+	 * freely without a schema change.
+	 */
+	tags: string[];
 	/** ISO date. The list is ordered by this. */
 	publishedAt: string;
 	/** Matched by name against `aboutTeam`; unused when the byline is COMPANY. */
