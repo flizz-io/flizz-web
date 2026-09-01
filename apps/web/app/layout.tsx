@@ -13,8 +13,25 @@ import { siteConfig } from '@/configs/site';
 import { cn } from '@workspace/ui/lib/utils';
 
 export const metadata: Metadata = {
+	// Makes every relative URL in a page's metadata resolve to an absolute one,
+	// which Open Graph and canonical tags require.
+	metadataBase: new URL(siteConfig.url),
 	title: { default: siteConfig.name, template: `%s — ${siteConfig.name}` },
-	description: siteConfig.description
+	description: siteConfig.description,
+	openGraph: {
+		type: 'website',
+		siteName: siteConfig.fullname,
+		locale: 'en_GB',
+		url: siteConfig.url,
+		title: siteConfig.name,
+		description: siteConfig.description
+	},
+	twitter: {
+		card: 'summary_large_image',
+		title: siteConfig.name,
+		description: siteConfig.description
+	},
+	robots: { index: true, follow: true }
 };
 
 const manrope = Manrope({ subsets: ['latin'], variable: '--font-sans' });
