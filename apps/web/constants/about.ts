@@ -189,7 +189,7 @@ export const aboutTeam: TeamMember[] = [
 	},
 	{
 		name: 'Meer Estiyak',
-		role: 'Co-founder, Product',
+		role: 'Co-founder, Lead AI/ML Engineer',
 		photo: '/team-members/meer.jpg',
 		isFounder: true,
 		links: {
@@ -198,8 +198,8 @@ export const aboutTeam: TeamMember[] = [
 		}
 	},
 	{
-		name: 'Imran Hossain Estiyak',
-		role: 'Co-founder, Product',
+		name: 'Imran Hossain',
+		role: 'Co-founder, Head of Product & Marketing',
 		photo: '/team-members/imran-hossain.jpeg',
 		isFounder: true,
 		links: {
@@ -217,7 +217,7 @@ export const aboutTeam: TeamMember[] = [
 	},
 	{
 		name: 'Mehjabin Islam',
-		role: 'AI/ML Engineer',
+		role: 'Lead Product Designer',
 		links: {
 			linkedin: 'https://www.linkedin.com/in/mehjabin-islam',
 			portfolio: 'https://mehjabin.ai'
