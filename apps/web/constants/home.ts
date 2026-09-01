@@ -1,3 +1,4 @@
+import { homeTeaserServices } from '@/constants/services';
 import type {
 	FaqItem,
 	HeroDiscipline,
@@ -6,7 +7,6 @@ import type {
 	ProjectCard,
 	RealCostItem,
 	RiskReversal,
-	ServiceCard,
 	Stat,
 	Testimonial,
 	ValueProp
@@ -145,60 +145,12 @@ export const processSteps: ProcessStep[] = [
 ];
 
 // Placeholder cards — Services content moves to a CRUD feature later (see docs/requirements/progress-report.md); do not treat as final copy
-export const serviceCards: ServiceCard[] = [
-	{
-		category: 'Custom Software',
-		title: 'MVP Development',
-		description: 'Validate fast with a lean, production-grade first build.',
-		visualKind: 'layered-stack' //'mvp-ascent'
-	},
-	{
-		category: 'Custom Software',
-		title: 'SaaS Application Development',
-		description:
-			'Multi-tenant platforms built to scale with your customer base.',
-		visualKind: 'tenant-column'
-	},
-	{
-		category: 'AI & Automation',
-		title: 'AI Integration',
-		description:
-			'Embed AI where it removes real work, not where it looks good in a demo.',
-		visualKind: 'neural-layers'
-	},
-	{
-		category: 'AI & Automation',
-		title: 'Chatbots & Conversational AI',
-		description:
-			'Support and sales conversations that actually resolve things.',
-		visualKind: 'dialogue-bubbles'
-	},
-	{
-		category: 'E-commerce',
-		title: 'Online Store Development',
-		description:
-			'Storefronts tuned for conversion, not just checked boxes.',
-		visualKind: 'catalog-checkout'
-	},
-	{
-		category: 'Mobile',
-		title: 'Native Mobile App Development',
-		description: 'iOS and Android apps that feel native because they are.',
-		visualKind: 'dual-handset'
-	},
-	{
-		category: 'Shopify',
-		title: 'Shopify App Development',
-		description: 'Extend Shopify Beyond Its Limits and build custom apps.',
-		visualKind: 'plugin-socket'
-	},
-	{
-		category: 'Payment',
-		title: 'Payment Integration',
-		description: 'Accept Payments Securely, Globally, Your Way.',
-		visualKind: 'secure-rail'
-	}
-];
+/**
+ * The teaser's roster, derived from the canonical list in `constants/services.ts`
+ * so the home page and `/services` can never disagree about a title, summary or
+ * visual. Re-exported under the old name to keep the teaser's import stable.
+ */
+export const serviceCards = homeTeaserServices;
 
 // Placeholder cards — no project entries provided yet (see docs/requirements/home-page.md)
 // TODO: PM to replace with real projects and supply a screenshot per card

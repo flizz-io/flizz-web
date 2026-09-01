@@ -2,12 +2,12 @@
 
 import Link from 'next/link';
 
-import type { ServiceCard } from '@/types/home';
+import type { Service } from '@/types/services';
 import { ServiceVisual } from '@workspace/service-visuals';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface ServiceSpecimenProps {
-	service: ServiceCard;
+	service: Service;
 	index: number;
 	/** This one is under the pointer or keyboard focus. */
 	focused: boolean;
@@ -43,7 +43,7 @@ export function ServiceSpecimen({
 			)}
 		>
 			<Link
-				href="/services"
+				href={`/services/${service.slug}`}
 				onMouseEnter={() => onFocusChange(true)}
 				onMouseLeave={() => onFocusChange(false)}
 				onFocus={() => onFocusChange(true)}
@@ -83,7 +83,7 @@ export function ServiceSpecimen({
 					{/* Below the spine layout there's no hover to reveal a
 					    caption, so the copy stays inline and always readable. */}
 					<p className="mt-2 max-w-sm text-sm text-muted-foreground lg:hidden">
-						{service.description}
+						{service.summary}
 					</p>
 				</div>
 			</Link>
@@ -150,7 +150,7 @@ export function ServiceSpecimen({
 							{service.title}
 						</p>
 						<p className="mt-2 text-sm text-muted-foreground">
-							{service.description}
+							{service.summary}
 						</p>
 					</div>
 				</>
