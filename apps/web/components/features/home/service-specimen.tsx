@@ -43,7 +43,7 @@ export function ServiceSpecimen({
 			)}
 		>
 			<Link
-				href="/services"
+				href={`/services/${service.slug}`}
 				onMouseEnter={() => onFocusChange(true)}
 				onMouseLeave={() => onFocusChange(false)}
 				onFocus={() => onFocusChange(true)}
