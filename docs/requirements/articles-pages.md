@@ -83,10 +83,12 @@ Tags render as chips on each list row and drive the tag filter. They do not curr
 
 **Job:** let someone find writing worth reading, and see that the writing is current.
 
-1. **Hero** — what this is, stated once.
+1. **Masthead** — what this is, stated once, with the browse controls docked to its foot.
 2. **Featured** — the most recent article, given a larger treatment.
 3. **The archive** — the rest, reverse-chronological, each row leading with its date.
 4. **CTA** → `/contact`.
+
+**The controls belong to the masthead, not to a section of their own.** A statement block at full height followed by a filter panel put roughly a screen and a half between the top of the page and the first title — a reader who came to read something had to scroll past two pieces of furniture first. Standing the lead beside the heading rather than under it makes the room for the toolbar, and the index header now sits about a third of the way down the first screen. The masthead keeps one number, the last-updated date; the live count belongs on the index header, where it answers to the filters.
 
 Date leads each row because for articles the chronology _is_ the organising information — unlike the services index, where order carried nothing and rows led with the title. That difference is also what keeps the two pages from reading as the same list twice.
 
@@ -165,9 +167,11 @@ The root layout now also carries site-wide OG and Twitter defaults, which benefi
 
 ## Search, filter and sort
 
-The index is a client component (`articles-browser.tsx`) with the logic in `use-article-filters.ts`.
+Two client components — `articles-controls.tsx` (the toolbar in the masthead) and `articles-results.tsx` (the index itself) — with the logic in `use-article-filters.ts`.
 
-**Still server-rendered.** `"use client"` governs hydration, not rendering — the initial HTML contains every article, so the page is complete for crawlers and for anyone before JavaScript arrives. Filtering takes over after hydration.
+**Neither owns the other's state.** Both call the hook, and the hook reads the query string, so the two stay in step while sitting in different parts of the tree. That is what lets the toolbar dock to the masthead without a provider spanning the page.
+
+**What is prerendered, and what is not.** `useSearchParams` takes the client tree up to the nearest `Suspense` boundary out of the prerender, so each of the two gets its own boundary and the masthead around them stays in the static HTML — heading, lead and last-updated date are all present before JavaScript. The controls and the article rows are not: they are client-rendered on arrival. The toolbar's boundary renders a skeleton of the same height so the index does not jump when they land. **TODO:** if the article titles need to be in the HTML for crawlers, the route has to read the `searchParams` prop and render dynamically — worth deciding when the API takes over filtering at Stage 13.
 
 **State lives in the query string, not component state.** `?q=`, `?category=`, `?tag=`, `?sort=`. That makes a filtered view linkable, survives a refresh, keeps the back button working, and means the URL contract already exists when the API takes over filtering at Stage 13. `router.replace` rather than `push`, so typing in the search box does not fill the history stack with one entry per keystroke.
 
@@ -182,7 +186,7 @@ The index is a client component (`articles-browser.tsx`) with the logic in `use-
 
 **Category dropdown.** `DropdownMenuCheckboxItem`, with `onSelect` prevented so the menu stays open across several ticks — otherwise picking a second category costs a second trip. Each row draws its own always-visible box: the built-in indicator only appears once something is ticked, so an untouched menu gave no sign it accepted more than one answer. That box is presentational; the menu item itself carries the `menuitemcheckbox` role and `aria-checked`, and nesting a real checkbox inside would fight it for focus.
 
-**Tag rail.** One line that pans rather than a block that wraps — at eighteen tags it already ran to three rows and pushed the results off screen, and the list only grows as articles are added. It reuses `useDragScroll`, the same hook the services teaser uses, which already handles the thing that matters here: suppressing the click when a drag ends over a control, so panning the rail never toggles a tag by accident. A right-edge fade signals there is more without adding a control.
+**Tag rail.** One line that pans rather than a block that wraps — at eighteen tags it already ran to three rows and pushed the results off screen, and the list only grows as articles are added. It reuses `useDragScroll`, the same hook the services teaser uses, which already handles the thing that matters here: suppressing the click when a drag ends over a control, so panning the rail never toggles a tag by accident. A right-edge fade signals there is more without adding a control — a mask rather than a gradient panel laid on top, since the rail now sits on the hero's film and a panel painted in the background colour would print a pale rectangle over it.
 
 **The featured card hides whenever a filter is active.** Promoting one piece above a set the reader has deliberately narrowed makes the result look wrong, so it only appears on the unfiltered index.
 

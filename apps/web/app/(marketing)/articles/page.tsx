@@ -1,9 +1,13 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 
-import { ArticlesBrowser } from '@/components/features/articles/articles-browser';
+import {
+	ArticlesControls,
+	ArticlesControlsSkeleton
+} from '@/components/features/articles/articles-controls';
 import { ArticlesCta } from '@/components/features/articles/articles-cta';
 import { ArticlesHero } from '@/components/features/articles/articles-hero';
+import { ArticlesResults } from '@/components/features/articles/articles-results';
 import { siteConfig } from '@/configs/site';
 
 const description =
@@ -32,15 +36,22 @@ export default function ArticlesPage() {
 
 	return (
 		<>
-			<ArticlesHero />
-			{/* The browser reads filter state from the query string, which
-			    needs a boundary for the statically rendered shell. */}
+			{/* Controls and results both read filter state from the query
+			    string, so each needs a boundary of its own — that is what keeps
+			    the masthead around them in the statically rendered shell. */}
+			<ArticlesHero>
+				<Suspense fallback={<ArticlesControlsSkeleton />}>
+					<ArticlesControls />
+				</Suspense>
+			</ArticlesHero>
+
 			<Suspense>
-				<ArticlesBrowser
+				<ArticlesResults
 					sectionIndex={1}
 					totalSections={totalSections}
 				/>
 			</Suspense>
+
 			<ArticlesCta
 				sectionIndex={2}
 				totalSections={totalSections}
