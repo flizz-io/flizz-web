@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import { PortfolioArchive } from '@/components/features/portfolio/portfolio-archive';
 import { PortfolioCta } from '@/components/features/portfolio/portfolio-cta';
 import { PortfolioHero } from '@/components/features/portfolio/portfolio-hero';
 import { PortfolioReel } from '@/components/features/portfolio/portfolio-reel';
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
 };
 
 export default function PortfolioPage() {
-	const totalSections = 2;
+	const totalSections = 3;
 
 	return (
 		<>
@@ -34,8 +35,12 @@ export default function PortfolioPage() {
 				sectionIndex={1}
 				totalSections={totalSections}
 			/>
-			<PortfolioCta
+			<PortfolioArchive
 				sectionIndex={2}
+				totalSections={totalSections}
+			/>
+			<PortfolioCta
+				sectionIndex={3}
 				totalSections={totalSections}
 			/>
 		</>

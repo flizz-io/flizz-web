@@ -9,8 +9,8 @@ import { ProjectShift } from '@/components/features/portfolio/project-shift';
 import { Atmosphere } from '@/components/snippets/atmosphere/atmosphere';
 import { DotField } from '@/components/snippets/dot-field/dot-field';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
-import { projects, projectSectorVisuals } from '@/constants/portfolio';
-import { projectSectorAnchors, projectSectorOrder } from '@/enums/portfolio';
+import { featuredProjects, projectSectorVisuals } from '@/constants/portfolio';
+import { projectSectorOrder } from '@/enums/portfolio';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { ServiceVisual } from '@workspace/service-visuals';
 import { Button } from '@workspace/ui/components/button';
@@ -37,16 +37,16 @@ const sceneMask =
 	'radial-gradient(ellipse 72% 78% at 52% 50%, #000 22%, transparent 78%)';
 
 /**
- * The roster in running order — sector by sector, newest first inside each —
- * so the reel plays as five chapters rather than ten unrelated frames.
+ * The highlighted work in running order — sector by sector, newest first inside
+ * each — so the reel plays as chapters rather than as unrelated frames.
  */
 const reel = projectSectorOrder.flatMap((sector) =>
-	projects
+	featuredProjects
 		.filter((project) => project.sector === sector)
 		.sort((a, b) => b.year.localeCompare(a.year))
 );
 
-/** Where each chapter opens, for the scrubber and the masthead's rail. */
+/** Where each chapter opens, for the scrubber's grouping. */
 const chapters = projectSectorOrder
 	.map((sector) => ({
 		sector,
@@ -57,26 +57,19 @@ const chapters = projectSectorOrder
 	}))
 	.filter((chapter) => chapter.items.length > 0);
 
-const chapterAnchors = new Map(
-	chapters.map((chapter) => [
-		chapter.start,
-		projectSectorAnchors[chapter.sector]
-	])
-);
-
 /**
- * One project at a time, full-bleed, advanced by scrolling.
+ * The highlighted work, one project at a time, advanced by scrolling.
  *
- * A portfolio's job is to be watched rather than scanned — a list of ten rows
- * gives every project the same weight and none of them any presence. So the
- * stage pins and the work plays through it: the specimen from the service that
- * delivered the project sits behind the title as scenery, the change it made
- * lands under it, and the next frame arrives as this one leaves.
+ * Rows give every project the same weight and none of them any presence, so the
+ * work we lead with gets a stage instead: it pins, the chapter's scenery sits
+ * behind the title, the change the project made lands under it, and the next
+ * frame arrives as this one leaves. Everything not highlighted is a row in
+ * `PortfolioArchive` below, which is the right treatment for the rest.
  *
- * Every frame stays in the DOM so the ten links are always crawlable and the
- * copy is always in the page; only the active one is visible and reachable.
- * The scrubber along the foot is what makes it browsable rather than a queue —
- * ten ticks, grouped into chapters, each one a jump.
+ * Every frame stays in the DOM so its link is always crawlable and its copy is
+ * always in the page; only the active one is visible and reachable. The
+ * scrubber along the foot is what makes it browsable rather than a queue — one
+ * tick per frame, grouped into chapters, each one a jump.
  */
 export function PortfolioReel({
 	sectionIndex,
@@ -366,18 +359,16 @@ export function PortfolioReel({
 					</span>
 				</div>
 
-				{/* One per frame, stacked down the track. They carry the chapter
-				    anchors the masthead rail links to, and give the scrubber
-				    something real to measure a jump against. */}
+				{/* One per frame, stacked down the track — what the scrubber
+				    measures a jump against. */}
 				<div
 					ref={markersRef}
 					aria-hidden
 					className="pointer-events-none absolute inset-x-0 top-0"
 				>
-					{reel.map((project, index) => (
+					{reel.map((project) => (
 						<div
 							key={project.slug}
-							id={chapterAnchors.get(index)}
 							style={{ height: frameHeight }}
 						/>
 					))}

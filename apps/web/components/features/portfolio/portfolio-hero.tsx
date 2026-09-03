@@ -2,21 +2,21 @@ import { Hammer } from 'lucide-react';
 
 import { Atmosphere } from '@/components/snippets/atmosphere/atmosphere';
 import { Reveal } from '@/components/snippets/reveal/reveal';
-import { ScrollLink } from '@/components/snippets/scroll-link/scroll-link';
 import {
 	portfolioHeroLead,
 	portfolioMeta,
 	projects
 } from '@/constants/portfolio';
-import { projectSectorAnchors, projectSectorOrder } from '@/enums/portfolio';
+import { projectSectorOrder } from '@/enums/portfolio';
 import { cn } from '@workspace/ui/lib/utils';
 
 /**
- * Masthead, with the sector rail docked to the foot of it.
+ * Masthead, with the sectors we build in docked to the foot of it.
  *
- * The rail is a table of contents rather than a filter: ten projects across
- * five sectors is a set you scroll, and hiding eight of them behind a chip
- * would make the page look emptier than the work actually is. It also keeps
+ * They are a statement of range rather than a filter or a table of contents:
+ * with the reel playing the highlighted work and the index carrying the rest,
+ * a visitor's first question is whether we have built anything in their world,
+ * and the counts answer it before they scroll. Keeping them inert also keeps
  * this whole page server-rendered, which a filter would not.
  */
 export function PortfolioHero({ className }: { className?: string }) {
@@ -67,23 +67,21 @@ export function PortfolioHero({ className }: { className?: string }) {
 					delay={140}
 					className="mt-10 border-t border-border pt-6 lg:mt-12"
 				>
-					<nav
-						aria-label="Jump to a sector"
-						className="flex flex-wrap items-baseline gap-x-7 gap-y-3"
-					>
+					<dl className="flex flex-wrap items-baseline gap-x-7 gap-y-3 font-mono text-[0.65rem] tracking-[0.18em] uppercase">
 						{sectors.map(({ sector, count }) => (
-							<ScrollLink
+							<div
 								key={sector}
-								targetId={projectSectorAnchors[sector]}
-								className="inline-flex items-baseline gap-2 font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase underline-offset-4 transition-colors hover:text-foreground hover:underline"
+								className="flex items-baseline gap-2"
 							>
-								{sector}
-								<span className="text-primary">
+								<dt className="text-muted-foreground">
+									{sector}
+								</dt>
+								<dd className="text-primary">
 									{String(count).padStart(2, '0')}
-								</span>
-							</ScrollLink>
+								</dd>
+							</div>
 						))}
-					</nav>
+					</dl>
 				</Reveal>
 			</div>
 		</section>

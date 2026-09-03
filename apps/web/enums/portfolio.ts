@@ -22,16 +22,3 @@ export const projectSectorOrder: ProjectSector[] = [
 	ProjectSector.FINANCE,
 	ProjectSector.PROFESSIONAL
 ];
-
-/**
- * Anchor targets for each sector group, so the masthead rail and a project's
- * own detail page can land on its group rather than the top of the index.
- * Written out rather than slugified so the ids cannot drift if a label changes.
- */
-export const projectSectorAnchors: Record<ProjectSector, string> = {
-	[ProjectSector.OPERATIONS]: 'operations-logistics',
-	[ProjectSector.RETAIL]: 'retail-commerce',
-	[ProjectSector.FIELD]: 'field-frontline',
-	[ProjectSector.FINANCE]: 'financial-services',
-	[ProjectSector.PROFESSIONAL]: 'professional-services'
-};

@@ -55,38 +55,56 @@ A single figure claims nothing a visitor can check — "four hours" only means s
 
 ## Design notes
 
-### The list page is a reel, not an index
+### The list page is a reel plus an index
 
-The first build of `/portfolio` was a sector-grouped ledger of rows. It was
-honest and scannable and completely flat — every project carried the same
-weight, and browsing ten of them felt like reading a table. Rejected on that
-basis 2026-09-03 and replaced.
+`/portfolio` went through three shapes before it settled, and the middle one is
+worth recording because it explains the final one:
 
-What ships instead pins one stage to the viewport and plays the work through it,
-one project per screen, advanced by scrolling:
+1. **A sector-grouped ledger of rows.** Honest, scannable, and completely flat —
+   every project carried the same weight and browsing ten of them read like a
+   table. Rejected 2026-09-03.
+2. **A reel of all ten projects**, one per screen. Right treatment, wrong scope:
+   nobody wants to scroll ten full-height frames to reach the one that matches
+   their situation.
+3. **What ships:** the reel plays the _highlighted_ work only, and everything
+   else falls to an index below it.
 
-- **Chapters.** The reel runs sector by sector, newest first inside each, so it
-  reads as five chapters rather than ten unrelated frames.
+**The reel** pins one stage to the viewport and advances by scrolling:
+
+- **Highlighted work only**, flagged by `featured` on the project itself. Four
+  today, one per service category, so the reel covers the range of what we do
+  rather than four variations on one thing.
+- **Chapters.** Frames run sector by sector, newest first inside each.
 - **Scenery.** Each chapter plays against a specimen from
   `@workspace/service-visuals`, masked into a soft blob and dimmed under the
   type. Changing scenery is what tells you the sector changed — no second label
-  needed. It is per chapter rather than per project deliberately: see the
-  performance note below.
-- **One project, full-bleed.** Chapter label, the name at display size, the
-  summary in the serif, the change it made, and the way into the case study.
-- **A scrubber**, not a list. Ten ticks along the foot, grouped into chapters,
-  each one a jump — that is what keeps the reel browsable rather than a queue.
-  The masthead's sector rail lands on the same frames.
+  needed. Per chapter, not per project: see the performance note below.
+- **A frame** carries the chapter, the name at display size, the summary in the
+  serif, the change the project made, and the way into the case study.
+- **A scrubber** along the foot — one tick per frame, grouped into chapters,
+  each one a jump. That is what keeps the reel browsable rather than a queue.
 
-Every frame stays in the DOM, so all ten links are crawlable and the copy is
+Every frame stays in the DOM, so all its links are crawlable and the copy is
 always in the page; only the active frame is visible, and the inactive ones are
 `inert` so they take no focus and no clicks.
 
+**The index** below it is the shared `IndexedList` snippet — numbered rows with
+the sector as an eyebrow, the summary, and the project's headline result, all
+in fixed columns so the set reads as a table rather than a ragged stack. It
+opens at four rows behind a **Load more** button (`archivePageSize`), because an
+index that opens at full length reads as a backlog. Paging is client-side over a
+static roster today, and the shape is what the Projects API will page against at
+Stage 13.
+
+Because there are no longer per-sector groups to link to, the sector anchors are
+gone: the masthead lists sectors and counts as a statement of range, and a case
+study's sector eyebrow is plain text rather than a link back to a group.
+
 ### Cover plates
 
-Still none, anywhere on the list page: not one project has a real screenshot,
-and ten reserved slots would read as an unfinished site. The detail page keeps
-one reserved 21:9 plate under its hero, matching the article banner treatment.
+Still none on the list page: not one project has a real screenshot, and reserved
+slots down a page read as an unfinished site. The detail page keeps one reserved
+21:9 plate under its hero, matching the article banner treatment.
 
 ### Performance — why the scenery is sized and scoped the way it is
 
@@ -97,9 +115,8 @@ Measured, not assumed. Two findings from profiling the reel:
   151ms for the small framed specimen the services page ships. The cost is
   pixel-bound: shrinking the panel to half the stage took the long task to
   **zero**. Never give one of these scenes the whole screen.
-- Binding scenery to the **chapter** rather than the project cuts a full scroll
-  of the reel from nine scene builds to four, and means moving between the two
-  projects inside a sector costs nothing at all.
+- Binding scenery to the **chapter** rather than the project means moving
+  between two projects in the same sector costs nothing at all.
 
 A settle delay (`sceneSettleMs`) means a fast scroll through several chapters
 builds only the set it lands on.

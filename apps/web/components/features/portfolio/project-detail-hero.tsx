@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Atmosphere } from '@/components/snippets/atmosphere/atmosphere';
 import { MediaSlot } from '@/components/snippets/media-slot/media-slot';
 import { Reveal } from '@/components/snippets/reveal/reveal';
-import { projectSectorAnchors } from '@/enums/portfolio';
 import type { ProjectDetail } from '@/types/portfolio';
 import { getProjectService } from '@/utils/portfolio';
 import { cn } from '@workspace/ui/lib/utils';
@@ -52,12 +51,7 @@ export function ProjectDetailHero({
 					</Link>
 
 					<p className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs tracking-[0.2em] uppercase">
-						<Link
-							href={`/portfolio#${projectSectorAnchors[project.sector]}`}
-							className="text-primary underline-offset-4 hover:underline"
-						>
-							{project.sector}
-						</Link>
+						<span className="text-primary">{project.sector}</span>
 						<span className="text-border">·</span>
 						<span className="text-muted-foreground">
 							{project.year}

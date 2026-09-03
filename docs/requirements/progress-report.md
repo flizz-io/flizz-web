@@ -90,7 +90,7 @@ The old "Contact Us form field list" item is now **resolved** — the field list
 
 ### Portfolio pages — built
 
-Both routes shipped 2026-09-03: `/portfolio` — a pinned reel that plays one project per screen, in five sector chapters — and ten `/portfolio/[slug]` case studies, statically generated, clearing the 404 the nav had been pointing at. `constants/portfolio.ts` is the single source of truth — the home strip is derived from it and its cards now link to individual projects. Full decisions and data model in [portfolio-pages.md](portfolio-pages.md).
+Both routes shipped 2026-09-03: `/portfolio` — a pinned reel playing the four highlighted projects one per screen, with the rest in a paged index below it — and ten `/portfolio/[slug]` case studies, statically generated, clearing the 404 the nav had been pointing at. `constants/portfolio.ts` is the single source of truth — the home strip is derived from it and its cards now link to individual projects. Full decisions and data model in [portfolio-pages.md](portfolio-pages.md).
 
 | Item           | Needed from PM                                                             | Note                                                             |
 | -------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------- |

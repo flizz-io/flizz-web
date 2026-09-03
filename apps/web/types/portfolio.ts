@@ -48,6 +48,12 @@ export interface Project {
 	 */
 	results: ProjectResult[];
 	/**
+	 * Highlighted work. The reel plays these and nothing else; everything left
+	 * over falls to the index below it. A flag rather than a hand-kept list, so
+	 * the Projects CRUD can offer it as a checkbox on the record itself.
+	 */
+	featured?: boolean;
+	/**
 	 * Path to a real screenshot. Unfilled slots render the registration marks
 	 * used elsewhere on the site rather than invented cover art.
 	 */

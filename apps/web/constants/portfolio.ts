@@ -23,6 +23,7 @@ export const portfolioCtaLead =
 export const projects: ProjectDetail[] = [
 	{
 		slug: 'northwind-ops-platform',
+		featured: true,
 		name: 'Northwind Ops Platform',
 		client: 'A 40-person operations team running a national parts network',
 		sector: ProjectSector.OPERATIONS,
@@ -131,6 +132,7 @@ export const projects: ProjectDetail[] = [
 	},
 	{
 		slug: 'vantage-cove-storefront',
+		featured: true,
 		name: 'Vantage Cove Storefront',
 		client: 'A direct-to-consumer homeware brand',
 		sector: ProjectSector.RETAIL,
@@ -239,6 +241,7 @@ export const projects: ProjectDetail[] = [
 	},
 	{
 		slug: 'fieldstone-field-app',
+		featured: true,
 		name: 'Fieldstone Field App',
 		client: 'An inspection business with crews working out of signal',
 		sector: ProjectSector.FIELD,
@@ -401,6 +404,7 @@ export const projects: ProjectDetail[] = [
 	},
 	{
 		slug: 'penhurst-claims-triage',
+		featured: true,
 		name: 'Penhurst Claims Triage',
 		client: 'A mutual insurer with a claims queue growing faster than the team',
 		sector: ProjectSector.FINANCE,
@@ -586,6 +590,23 @@ const homeTeaserSlugs = [
 export const homeTeaserProjects: ProjectDetail[] = homeTeaserSlugs.flatMap(
 	(slug) => projects.filter((project) => project.slug === slug)
 );
+
+/**
+ * What the reel plays: the work we lead with, in the roster's own order. One
+ * per service category as it stands, so four frames cover the range of what we
+ * do rather than four variations on one thing.
+ */
+export const featuredProjects: ProjectDetail[] = projects.filter(
+	(project) => project.featured
+);
+
+/** Everything the reel does not carry, newest first. */
+export const archiveProjects: ProjectDetail[] = projects
+	.filter((project) => !project.featured)
+	.sort((a, b) => b.year.localeCompare(a.year));
+
+/** How many index rows land at a time, before and after "Load more". */
+export const archivePageSize = 4;
 
 /**
  * The scenery each chapter of the reel plays against, borrowed from the
