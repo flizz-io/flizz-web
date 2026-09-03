@@ -36,6 +36,7 @@ export const articles: Article[] = [
 		excerpt:
 			'Every undocumented endpoint becomes someone else’s guess, and every guess eventually becomes your ticket.',
 		category: ArticleCategory.ENGINEERING,
+		tags: ['APIs', 'Documentation', 'Versioning', 'Developer experience'],
 		publishedAt: '2026-08-18',
 		author: 'Zahid Showarav',
 		body: [
@@ -143,6 +144,7 @@ export const articles: Article[] = [
 		excerpt:
 			'Full rewrites are the most reliable way to lose two years. There is almost always a staged path, and it is almost always faster.',
 		category: ArticleCategory.ENGINEERING,
+		tags: ['Legacy systems', 'Migration', 'Risk'],
 		publishedAt: '2026-07-29',
 		author: 'Abdur Rahman',
 		body: [
@@ -230,6 +232,7 @@ export const articles: Article[] = [
 		excerpt:
 			'Most AI features do not need the largest model. They need a defined task, an evaluation, and a fallback.',
 		category: ArticleCategory.AI,
+		tags: ['LLMs', 'Evaluation', 'Cost control', 'Retrieval'],
 		publishedAt: '2026-07-11',
 		author: 'Mehjabin Islam',
 		body: [
@@ -320,6 +323,7 @@ export const articles: Article[] = [
 		excerpt:
 			'The most valuable thing an engineering partner does is say no to the feature you were ready to pay for.',
 		category: ArticleCategory.PRODUCT,
+		tags: ['Scope', 'Discovery', 'Prioritisation'],
 		publishedAt: '2026-06-24',
 		author: 'Meer Estiyak',
 		body: [
@@ -397,6 +401,7 @@ export const articles: Article[] = [
 		excerpt:
 			'Retrofitting tenant isolation into a single-tenant product is not a refactor. It is a rewrite with a deadline.',
 		category: ArticleCategory.ENGINEERING,
+		tags: ['SaaS', 'Architecture', 'Data isolation'],
 		publishedAt: '2026-06-02',
 		author: 'Rifat Ahmed',
 		body: [
@@ -483,6 +488,7 @@ export const articles: Article[] = [
 		excerpt:
 			'Shipping working software every two weeks is not free. It is worth it, and the price should be stated plainly.',
 		category: ArticleCategory.PRACTICE,
+		tags: ['Delivery', 'Process', 'Client work'],
 		publishedAt: '2026-05-14',
 		author: 'Imran Hossain',
 		body: [

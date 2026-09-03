@@ -18,3 +18,26 @@ export enum ArticleByline {
 	/** Date and reading time only. */
 	NONE = 'none'
 }
+
+/** Ordering options on the articles index. Values double as URL parameters. */
+export enum ArticleSort {
+	NEWEST = 'newest',
+	OLDEST = 'oldest',
+	LONGEST = 'longest',
+	SHORTEST = 'shortest'
+}
+
+export const articleSortLabels: Record<ArticleSort, string> = {
+	[ArticleSort.NEWEST]: 'Newest first',
+	[ArticleSort.OLDEST]: 'Oldest first',
+	[ArticleSort.LONGEST]: 'Longest read',
+	[ArticleSort.SHORTEST]: 'Shortest read'
+};
+
+/** Query-string keys, so the hook and any link building agree on them. */
+export enum ArticleFilterParam {
+	QUERY = 'q',
+	CATEGORY = 'category',
+	TAG = 'tag',
+	SORT = 'sort'
+}

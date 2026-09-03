@@ -1,74 +1,15 @@
 'use client';
 
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { MediaSlot } from '@/components/snippets/media-slot/media-slot';
 import { projectCards } from '@/constants/home';
-import type { ProjectCard } from '@/types/home';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { cn } from '@workspace/ui/lib/utils';
 
 const DRAG_THRESHOLD = 6;
-
-/**
- * The slot a real screenshot will drop into. Marked as pending rather than
- * filled with invented cover art — this is a portfolio, and the placeholder
- * shouldn't be mistakeable for work we've done.
- */
-function PendingShot({ project }: { project: ProjectCard }) {
-	return (
-		<div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-			<span
-				aria-hidden
-				className="absolute inset-0 opacity-[0.1]"
-				style={{
-					backgroundImage:
-						'radial-gradient(var(--color-foreground) 1px, transparent 1px)',
-					backgroundSize: '16px 16px'
-				}}
-			/>
-
-			{/* Registration marks — the conventions of an unfilled image slot,
-			    so it reads as reserved rather than broken. */}
-			<span
-				aria-hidden
-				className="pointer-events-none absolute inset-4 border border-dashed border-border"
-			/>
-			{[
-				'top-3 left-3 border-t border-l',
-				'top-3 right-3 border-t border-r',
-				'bottom-3 left-3 border-b border-l',
-				'right-3 bottom-3 border-b border-r'
-			].map((corner) => (
-				<span
-					key={corner}
-					aria-hidden
-					className={cn(
-						'pointer-events-none absolute size-6 border-primary/50',
-						corner
-					)}
-				/>
-			))}
-			<span
-				aria-hidden
-				className="pointer-events-none absolute top-1/2 left-1/2 h-px w-10 -translate-x-1/2 -translate-y-1/2 bg-border"
-			/>
-			<span
-				aria-hidden
-				className="pointer-events-none absolute top-1/2 left-1/2 h-10 w-px -translate-x-1/2 -translate-y-1/2 bg-border"
-			/>
-
-			<p className="relative bg-card px-3 font-mono text-[0.6rem] tracking-[0.25em] text-muted-foreground uppercase">
-				Screenshot pending
-			</p>
-			<p className="relative font-heading text-base text-muted-foreground/70">
-				{project.category}
-			</p>
-		</div>
-	);
-}
 
 export function ProjectStrip({ className }: { className?: string }) {
 	const reduceMotion = usePrefersReducedMotion();
@@ -324,24 +265,20 @@ export function ProjectStrip({ className }: { className?: string }) {
 								)}
 							>
 								<Link
-									href="/portfolio"
+									href={`/portfolio/${project.slug}`}
 									// Native link dragging would cancel the
 									// pointer stream mid-pan.
 									draggable={false}
 									className="group block"
 								>
 									<div className="relative aspect-620/388 overflow-hidden rounded-lg border border-border bg-card">
-										{project.image ? (
-											<Image
-												src={project.image}
-												alt={`${project.name} — ${project.category}`}
-												fill
-												sizes="(max-width: 640px) 85vw, 620px"
-												className="object-cover transition-transform duration-700 ease-power-on group-hover:scale-[1.03]"
-											/>
-										) : (
-											<PendingShot project={project} />
-										)}
+										<MediaSlot
+											src={project.image}
+											alt={`${project.name} — ${project.service}`}
+											label="Screenshot pending"
+											sizes="(max-width: 640px) 85vw, 620px"
+											className="transition-transform duration-700 ease-power-on group-hover:scale-[1.03]"
+										/>
 									</div>
 
 									<div className="mt-5 flex items-start gap-4">
@@ -357,7 +294,7 @@ export function ProjectStrip({ className }: { className?: string }) {
 											</p>
 											<div className="mt-4 flex flex-wrap items-center gap-2">
 												<span className="rounded-full bg-primary/15 px-2.5 py-1 font-mono text-[0.6rem] tracking-[0.15em] text-primary uppercase">
-													{project.category}
+													{project.service}
 												</span>
 												<span className="rounded-full border border-border px-2.5 py-1 font-mono text-[0.6rem] tracking-[0.15em] text-muted-foreground uppercase">
 													{project.sector}

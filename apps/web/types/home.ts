@@ -43,21 +43,6 @@ export interface ProcessStep {
 	whatYouGet: string;
 }
 
-export interface ProjectCard {
-	name: string;
-	/** Accent pill — the kind of build. */
-	category: string;
-	/** Outline pill — the market it was built for. */
-	sector: string;
-	year: string;
-	summary: string;
-	/**
-	 * Path to the real screenshot. Until the PM supplies one the card shows a
-	 * marked-empty slot rather than invented cover art.
-	 */
-	image?: string;
-}
-
 export interface ValueProp {
 	title: string;
 	description: string;
