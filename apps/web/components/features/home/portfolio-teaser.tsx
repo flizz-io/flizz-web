@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ProjectStrip } from '@/components/features/home/project-strip';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
-import { portfolioMeta } from '@/constants/home';
+import { portfolioMeta } from '@/constants/portfolio';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
 
