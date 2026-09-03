@@ -73,7 +73,7 @@ export function ArticleRelated({
 										{formatArticleDate(article.publishedAt)}
 									</time>
 
-									<span className="relative hidden aspect-16/9 overflow-hidden rounded-md border border-border transition-colors group-hover/row:border-primary/40 sm:block">
+									<span className="relative hidden aspect-16/9 overflow-hidden rounded-md border border-border transition-colors group-hover/row:border-primary/40 sm:mt-0.5 sm:block sm:self-start">
 										<MediaSlot
 											src={article.coverImage}
 											alt={article.title}

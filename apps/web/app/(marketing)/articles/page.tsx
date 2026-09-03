@@ -1,9 +1,13 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 
-import { ArticleFeatured } from '@/components/features/articles/article-featured';
-import { ArticlesArchive } from '@/components/features/articles/articles-archive';
+import {
+	ArticlesControls,
+	ArticlesControlsSkeleton
+} from '@/components/features/articles/articles-controls';
 import { ArticlesCta } from '@/components/features/articles/articles-cta';
 import { ArticlesHero } from '@/components/features/articles/articles-hero';
+import { ArticlesResults } from '@/components/features/articles/articles-results';
 import { siteConfig } from '@/configs/site';
 
 const description =
@@ -28,21 +32,28 @@ export const metadata: Metadata = {
 };
 
 export default function ArticlesPage() {
-	const totalSections = 3;
+	const totalSections = 2;
 
 	return (
 		<>
-			<ArticlesHero />
-			<ArticleFeatured
-				sectionIndex={1}
-				totalSections={totalSections}
-			/>
-			<ArticlesArchive
-				sectionIndex={2}
-				totalSections={totalSections}
-			/>
+			{/* Controls and results both read filter state from the query
+			    string, so each needs a boundary of its own — that is what keeps
+			    the masthead around them in the statically rendered shell. */}
+			<ArticlesHero>
+				<Suspense fallback={<ArticlesControlsSkeleton />}>
+					<ArticlesControls />
+				</Suspense>
+			</ArticlesHero>
+
+			<Suspense>
+				<ArticlesResults
+					sectionIndex={1}
+					totalSections={totalSections}
+				/>
+			</Suspense>
+
 			<ArticlesCta
-				sectionIndex={3}
+				sectionIndex={2}
 				totalSections={totalSections}
 			/>
 		</>

@@ -4,20 +4,20 @@ Master index and tracker for the Flizz web project: public site pages, admin CRU
 
 ## Pages — public site (`apps/web`)
 
-| #   | Page                            | Notes doc                              | Route              | Static build stage | Status                     |
-| --- | ------------------------------- | -------------------------------------- | ------------------ | ------------------ | -------------------------- |
-| 1   | Home                            | [home-page.md](home-page.md)           | `/`                | Stage 2            | Built — pending PM content |
-| 2   | About                           | [about-page.md](about-page.md)         | `/about`           | Stage 3            | Built — pending PM content |
-| 3   | Services (list)                 | [services-pages.md](services-pages.md) | `/services`        | Stage 4            | Spec'd — ready to build    |
-| 4   | Single Service detail           | [services-pages.md](services-pages.md) | `/services/[slug]` | Stage 4            | Spec'd — ready to build    |
-| 5   | Contact Us                      | _not written — built ad hoc_           | `/contact`         | Stage 5            | Built — pending PM content |
-| 6   | Portfolio/Projects (list)       | _to be written before Stage 6_         | —                  | Stage 6            | Not started                |
-| 7   | Single Portfolio/Project detail | _to be written before Stage 6_         | —                  | Stage 6            | Not started                |
-| 8   | Articles (list)                 | [articles-pages.md](articles-pages.md) | `/articles`        | Stage 7            | Built — pending PM content |
-| 9   | Single Article detail           | [articles-pages.md](articles-pages.md) | `/articles/[slug]` | Stage 7            | Built — pending PM content |
-| 10  | Case Studies (list)             | _to be written before Stage 7_         | —                  | Stage 7            | Not started                |
-| 11  | Single Case Study detail        | _to be written before Stage 7_         | —                  | Stage 7            | Not started                |
-| —   | Home design variant (scratch)   | —                                      | `/home-v2`         | —                  | Delete before launch       |
+| #   | Page                          | Notes doc                                | Route               | Static build stage | Status                     |
+| --- | ----------------------------- | ---------------------------------------- | ------------------- | ------------------ | -------------------------- |
+| 1   | Home                          | [home-page.md](home-page.md)             | `/`                 | Stage 2            | Built — pending PM content |
+| 2   | About                         | [about-page.md](about-page.md)           | `/about`            | Stage 3            | Built — pending PM content |
+| 3   | Services (list)               | [services-pages.md](services-pages.md)   | `/services`         | Stage 4            | Built — pending PM content |
+| 4   | Single Service detail         | [services-pages.md](services-pages.md)   | `/services/[slug]`  | Stage 4            | Built — pending PM content |
+| 5   | Contact Us                    | _not written — built ad hoc_             | `/contact`          | Stage 5            | Built — pending PM content |
+| 6   | Portfolio/Projects (list)     | [portfolio-pages.md](portfolio-pages.md) | `/portfolio`        | Stage 6            | Built — pending PM content |
+| 7   | Single Project detail         | [portfolio-pages.md](portfolio-pages.md) | `/portfolio/[slug]` | Stage 6            | Built — pending PM content |
+| 8   | Articles (list)               | [articles-pages.md](articles-pages.md)   | `/articles`         | Stage 7            | Built — pending PM content |
+| 9   | Single Article detail         | [articles-pages.md](articles-pages.md)   | `/articles/[slug]`  | Stage 7            | Built — pending PM content |
+| 10  | Case Studies (list)           | [portfolio-pages.md](portfolio-pages.md) | —                   | —                  | Dropped — see below        |
+| 11  | Single Case Study detail      | [portfolio-pages.md](portfolio-pages.md) | —                   | —                  | Dropped — see below        |
+| —   | Home design variant (scratch) | —                                        | `/home-v2`          | —                  | Delete before launch       |
 
 Each page's requirements doc is written just before its static-design stage starts — no point speccing pages we're 5 stages away from.
 
@@ -30,7 +30,7 @@ Each page's requirements doc is written just before its static-design stage star
 | Services           | Powers the Services list, Single Service detail, and the Home page Services teaser section. Content will be authored via this CRUD (or written fresh) — the original Google Sheet copy was removed from docs since the PM holds the source and no longer wants it folded into seed data. | Not started |
 | Portfolio/Projects | Powers the Portfolio list, Single Project detail, and the Home page Portfolio teaser section.                                                                                                                                                                                            | Not started |
 | Articles           | Powers the Articles list and Single Article detail pages. Renamed from Blog on 2026-09-01 to match the shipped nav.                                                                                                                                                                      | Not started |
-| Case Studies       | Powers the Case Studies list and Single Case Study detail pages.                                                                                                                                                                                                                         | Not started |
+| Case Studies       | **Dropped 2026-09-03** — a case study is a project shown in full, not a separate record. The Projects CRUD covers both.                                                                                                                                                                  | —           |
 | Contact Us         | Stores/manages Contact Us form submissions.                                                                                                                                                                                                                                              | Not started |
 | Testimonial        | Home page section only — no dedicated public page or list.                                                                                                                                                                                                                               | Not started |
 | Book a Call        | No dedicated public page identified yet — confirm where this is triggered from (e.g. Hero CTA / Final CTA on Home) when we get there.                                                                                                                                                    | Not started |
@@ -39,27 +39,29 @@ Each page's requirements doc is written just before its static-design stage star
 
 Work proceeds in this order. Update status inline as we move through them.
 
-| #   | Stage                                                                                               | Status                          |
-| --- | --------------------------------------------------------------------------------------------------- | ------------------------------- |
-| 1   | ~~Read & document PM's Google Sheet content~~                                                       | Done                            |
-| 2   | ~~Static Home page — design + build with static/placeholder data, launch-ready~~                    | Built — pending PM content      |
-| 3   | Static About page — design + build                                                                  | **Current** — spec'd, unblocked |
-| 4   | Static Services + Single Service pages — design + build                                             | Not started                     |
-| 5   | ~~Static Contact Us page — design + build~~                                                         | Built early — pending PM        |
-| 6   | Static Portfolio/Project pages — design + build                                                     | Not started                     |
-| 7   | Static Blog + Case Studies pages — design + build                                                   | Not started                     |
-| 8   | Database design — schema for all CRUD features                                                      | Not started                     |
-| 9   | Admin dashboard base structure, design, and authentication                                          | Not started                     |
-| 10  | Build APIs — feature by feature                                                                     | Not started                     |
-| 11  | Frontend common API service functions, Zod schemas, models, enums & types (request/response/params) | Not started                     |
-| 12  | Admin dashboard CRUD feature design & API integration                                               | Not started                     |
-| 13  | Landing page API integration — replace static data with live data across all public pages           | Not started                     |
-| 14  | Testing & bug fixing — full feature + design pass                                                   | Not started                     |
+| #   | Stage                                                                                               | Status                         |
+| --- | --------------------------------------------------------------------------------------------------- | ------------------------------ |
+| 1   | ~~Read & document PM's Google Sheet content~~                                                       | Done                           |
+| 2   | ~~Static Home page — design + build with static/placeholder data, launch-ready~~                    | Built — pending PM content     |
+| 3   | ~~Static About page — design + build~~                                                              | Built — pending PM content     |
+| 4   | ~~Static Services + Single Service pages — design + build~~                                         | Built — pending PM content     |
+| 5   | ~~Static Contact Us page — design + build~~                                                         | Built early — pending PM       |
+| 6   | ~~Static Portfolio/Project pages — design + build~~                                                 | Built — pending PM content     |
+| 7   | ~~Static Articles pages — design + build~~ (Case Studies dropped)                                   | Built — pending PM content     |
+| 8   | Database design — schema for all CRUD features                                                      | **Current** — nothing blocking |
+| 9   | Admin dashboard base structure, design, and authentication                                          | Not started                    |
+| 10  | Build APIs — feature by feature                                                                     | Not started                    |
+| 11  | Frontend common API service functions, Zod schemas, models, enums & types (request/response/params) | Not started                    |
+| 12  | Admin dashboard CRUD feature design & API integration                                               | Not started                    |
+| 13  | Landing page API integration — replace static data with live data across all public pages           | Not started                    |
+| 14  | Testing & bug fixing — full feature + design pass                                                   | Not started                    |
 
 ### Deviations from the plan
 
-- **Stage 5 (Contact Us) was built before Stages 3 and 4.** It was designed directly against the Home page's cinematic style while that visual language was fresh, rather than waiting its turn. Stages 3 and 4 remain outstanding.
-- **Contact Us shipped without a requirements doc.** The original rule — write each page's doc just before its stage — was skipped here. Decide before Stage 3 whether to keep writing docs first, or accept design-led builds and backfill the doc afterwards.
+- **Stage 5 (Contact Us) was built before Stages 3 and 4.** It was designed directly against the Home page's cinematic style while that visual language was fresh, rather than waiting its turn. Both have since been built.
+- **Contact Us shipped without a requirements doc.** The original rule — write each page's doc just before its stage — was skipped here. Every stage since has had its doc written or settled first, so treat that as the standing practice; Contact Us is the one page still owed a backfilled doc.
+- **Stage 7 was built before Stage 6.** Articles shipped 2026-09-01, Portfolio 2026-09-03.
+- **Case Studies were dropped, not deferred.** The PM settled on 2026-09-03 that a case study is a project shown in full — so `/portfolio/[slug]` is the case study, and Stage 7's second half disappears rather than moving.
 - The original "each stage starts only once the prior one is agreed/done" rule no longer matches how work is actually being sequenced, so it has been dropped from the intro above.
 
 ## Open items for PM
@@ -71,7 +73,7 @@ Each item below is marked with a `// TODO:` at the referenced location, so the c
 | Item                   | Needed from PM                                                                | Location                                           |
 | ---------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------- |
 | Social proof logos     | Real company logos — currently text placeholders                              | `constants/home.ts` → `socialProofLogos`           |
-| Portfolio projects     | Real projects plus one screenshot per card                                    | `constants/home.ts:204`                            |
+| Portfolio projects     | Real projects plus one screenshot each — the strip is derived from the roster | `constants/portfolio.ts` → `projects`              |
 | Solution headline      | Confirm final headline — the sheet duplicated the Problem section's headline  | `components/features/home/solution.tsx:79`         |
 | "Who we build for"     | Confirm headline and the final audience segment list                          | `constants/home.ts:317`, `who-we-build-for.tsx:57` |
 | Hero discipline labels | Pick wording — "Engineering Works" reads wrong; three label sets were drafted | `constants/home.ts:20–24`                          |
@@ -85,6 +87,20 @@ Each item below is marked with a `// TODO:` at the referenced location, so the c
 | Form submission   | No endpoint yet — form validates but does not POST (due Stage 10/13) | `hooks/use-contact-form.ts:93` |
 
 The old "Contact Us form field list" item is now **resolved** — the field list was settled during the Stage 5 build.
+
+### Portfolio pages — built
+
+Both routes shipped 2026-09-03: `/portfolio` — a pinned reel playing the four highlighted projects one per screen, with the rest in a paged index below it — and ten `/portfolio/[slug]` case studies, statically generated, clearing the 404 the nav had been pointing at. `constants/portfolio.ts` is the single source of truth — the home strip is derived from it and its cards now link to individual projects. Full decisions and data model in [portfolio-pages.md](portfolio-pages.md).
+
+| Item             | Needed from PM                                                             | Note                                                                        |
+| ---------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Result figures   | **Nothing in `results` may be published as-is** — every figure is invented | These are the pages' only claims; they need real numbers or cuts            |
+| Project copy     | Real engagements to replace all ten placeholders                           | Brief, constraints, approach, handover and stack per project                |
+| Screenshots      | One per project                                                            | Set `image`; the reserved plate disappears on its own                       |
+| Client naming    | Whether clients can be named, and which are under NDA                      | `client` is an anonymised descriptor today                                  |
+| Quotes           | Real attributions, or drop them                                            | Optional per project; omitting one changes no layout                        |
+| Which work leads | Confirm the four projects the reel highlights                              | `featured` in `constants/portfolio.ts`; the rest fall to the index          |
+| Reel treatment   | Scroll-driven stage or visitor-driven carousel — both are built            | `portfolioReelVariant` in `constants/portfolio.ts`; carousel is the default |
 
 ### About page — built
 
