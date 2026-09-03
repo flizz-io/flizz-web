@@ -102,9 +102,11 @@ study's sector eyebrow is plain text rather than a link back to a group.
 
 ### Two treatments for the highlighted work — 2026-09-03
 
-Both are built and switched by `portfolioReelVariant` in
-`constants/portfolio.ts` (`PortfolioReelVariant`), the same way the article
-byline and the service back-nav are switched. **TODO: PM to choose.**
+All three are built and dispatched by one component, `PortfolioReelSection`,
+which takes a `variant` prop (default `PREMIERE`). The page passes
+`portfolioReelVariant` from `constants/portfolio.ts` into it, so the PM can
+switch the whole page from one constant — the same way the article byline and
+the service back-nav are switched. **TODO: PM to choose.**
 
 | Variant    | Component           | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | ---------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -122,6 +124,11 @@ Notes across the driven variants:
   premiere's plate parallax only fire when there is a real `image`; everything
   animated in both is dropped under `prefers-reduced-motion`, which the premiere
   falls back to as a plain cross-fade with a static tick.
+- **Premiere takes two layout props**, both on by default: `fullWidth` runs
+  the stage edge to edge, and `fullHeight` makes it fill the viewport on
+  desktop the way the home Problem section does. `fullHeight` is deliberately
+  desktop-only — a fixed height on a phone would clip the stacked copy and
+  plate, so mobile keeps its natural height.
 - **Premiere forces a dark surface** (`.dark` on the section) whatever the site
   theme: a screen is a dark object and the letterbox bars are black. Harmless
   today — the site ships dark — and correct the day a light theme lands.
