@@ -22,3 +22,20 @@ export const projectSectorOrder: ProjectSector[] = [
 	ProjectSector.FINANCE,
 	ProjectSector.PROFESSIONAL
 ];
+
+/**
+ * How the highlighted work is presented on the index page. Both are built; this
+ * picks which renders, so the two can be compared in place rather than one
+ * being rewritten into the other.
+ */
+export enum PortfolioReelVariant {
+	/** A pinned stage advanced by scrolling, with the chapter's specimen behind. */
+	SCROLL = 'scroll',
+	/** A carousel of project plates, advanced by the visitor. */
+	CAROUSEL = 'carousel',
+	/**
+	 * A letterboxed stage: kinetic title behind a plate in perspective, scene
+	 * wipes, a running timecode, and the reel playing on by itself.
+	 */
+	PREMIERE = 'premiere'
+}

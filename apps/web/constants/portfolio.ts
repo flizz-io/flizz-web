@@ -1,7 +1,15 @@
-import { ProjectSector } from '@/enums/portfolio';
+import { PortfolioReelVariant, ProjectSector } from '@/enums/portfolio';
 import { ServiceCategory } from '@/enums/services';
 import type { ProjectDetail } from '@/types/portfolio';
 import type { ServiceVisualKind } from '@workspace/service-visuals';
+
+/**
+ * Which treatment the highlighted work gets on `/portfolio`. Both are built —
+ * change this one value to compare them.
+ *
+ * TODO: PM to choose.
+ */
+export const portfolioReelVariant = PortfolioReelVariant.PREMIERE;
 
 export const portfolioHeroLead =
 	'Ten builds, five sectors, and the change each one actually made. Every project below states where it started and where it landed — including the ones that took longer than we said they would.';

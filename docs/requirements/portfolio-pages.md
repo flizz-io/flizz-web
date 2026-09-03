@@ -100,6 +100,35 @@ Because there are no longer per-sector groups to link to, the sector anchors are
 gone: the masthead lists sectors and counts as a statement of range, and a case
 study's sector eyebrow is plain text rather than a link back to a group.
 
+### Two treatments for the highlighted work — 2026-09-03
+
+Both are built and switched by `portfolioReelVariant` in
+`constants/portfolio.ts` (`PortfolioReelVariant`), the same way the article
+byline and the service back-nav are switched. **TODO: PM to choose.**
+
+| Variant    | Component           | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ---------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `SCROLL`   | `PortfolioReel`     | The pinned stage above: advanced by scroll, chapter specimen behind the type.                                                                                                                                                                                                                                                                                                                                                                                |
+| `CAROUSEL` | `PortfolioCarousel` | A run of project stills advanced by the visitor — the screenshot is the frame, with the name and result set into its foot over a scrim like a caption on a still. Neighbours peek in dimmed at the edges so the set reads as a strip of film. Built on the shared embla `Carousel`.                                                                                                                                                                          |
+| `PREMIERE` | `PortfolioPremiere` | **Current default.** A letterboxed stage that _plays_. The project's name runs past behind the plate in outline at title-card size; the plate hangs in perspective and answers the cursor (near layer leaning, title drifting against it); cuts are light-bar wipes; a timecode runs in the corner; and the reel autoplays, the active tick filling as each scene holds. Pauses on hover/focus. Swipe, arrow keys, ticks and transport buttons all drive it. |
+
+Notes across the driven variants:
+
+- **Carousel has no autoplay** — a strip the visitor pulls. **Premiere does**,
+  because a premiere runs; it holds each scene eight seconds and pauses the
+  moment a hand or focus is on it, and the active tick's fill _is_ the timer, so
+  the countdown is visible rather than a surprise.
+- **Motion is gated on reality and preference.** The carousel's push-in and the
+  premiere's plate parallax only fire when there is a real `image`; everything
+  animated in both is dropped under `prefers-reduced-motion`, which the premiere
+  falls back to as a plain cross-fade with a static tick.
+- **Premiere forces a dark surface** (`.dark` on the section) whatever the site
+  theme: a screen is a dark object and the letterbox bars are black. Harmless
+  today — the site ships dark — and correct the day a light theme lands.
+- Until screenshots land, every plate is the `MediaSlot` reserved state, which
+  is the honest version of this section and the reason the PM's screenshot item
+  below is the one that changes it most.
+
 ### Cover plates
 
 Still none on the list page: not one project has a real screenshot, and reserved
