@@ -85,7 +85,7 @@ export function PortfolioArchive({
 							index={index}
 							eyebrow={project.sector}
 							title={project.name}
-							description={project.summary}
+							// description={project.summary}
 							// Fixed widths on both right-hand columns: left to
 							// size themselves, every row starts its summary and
 							// its result at a different x and the index reads as
