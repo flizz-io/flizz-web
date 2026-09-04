@@ -134,6 +134,11 @@
 }
 
 @theme {
+	/* Continues the default container scale's 8rem steps past `7xl` (80rem). */
+	--container-8xl: 88rem;
+	--container-9xl: 96rem;
+	--container-10xl: 104rem;
+
 	--animate-marquee: marquee 34s linear infinite;
 	--animate-aurora: aurora-drift 26s ease-in-out infinite;
 	--ease-power-on: cubic-bezier(0.16, 1, 0.3, 1);
