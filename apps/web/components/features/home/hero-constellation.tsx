@@ -6,7 +6,10 @@ import { ArrowDown, Sparkle } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
-import { heroScrollTargetId } from '@/constants/home';
+import {
+	heroDisciplinesSceneConfig,
+	heroScrollTargetId
+} from '@/constants/home';
 import { Button } from '@workspace/ui/components/button';
 import { Particles } from '@workspace/ui/components/particles';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
@@ -111,7 +114,7 @@ export function HeroConstellation() {
 				refresh
 			/>
 
-			<div className="relative mx-auto grid min-h-[calc(100svh-4rem)] max-w-7xl grid-cols-1 items-center gap-12 px-4 pt-20 pb-28 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16 lg:px-8">
+			<div className="relative mx-auto grid min-h-[calc(100svh-4rem)] max-w-8xl grid-cols-1 items-center gap-12 px-4 pt-20 pb-28 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16 lg:px-8">
 				<motion.div
 					variants={reduceMotion ? undefined : container}
 					initial={reduceMotion ? undefined : 'hidden'}
@@ -171,7 +174,7 @@ export function HeroConstellation() {
 				{/* Square so the constellation never distorts, and the labels
 				    it projects stay inside the frame at every breakpoint. */}
 				<div className="relative aspect-square w-full max-w-xl justify-self-center lg:max-w-none">
-					<HeroDisciplinesScene />
+					<HeroDisciplinesScene {...heroDisciplinesSceneConfig} />
 				</div>
 			</div>
 		</section>

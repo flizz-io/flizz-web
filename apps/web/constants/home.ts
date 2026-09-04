@@ -3,6 +3,7 @@ import { homeTeaserServices } from '@/constants/services';
 import type {
 	FaqItem,
 	HeroDiscipline,
+	HeroDisciplinesSceneConfig,
 	ProblemItem,
 	ProcessStep,
 	RealCostItem,
@@ -18,10 +19,26 @@ export const heroScrollTargetId = 'highlights';
 // The three disciplines the alternate hero orbits — labels track their own node
 // as the constellation turns.
 export const heroDisciplines: HeroDiscipline[] = [
-	{ label: 'Product discovery', caption: 'Deciding what is worth building' },
-	{ label: 'AI-assisted delivery', caption: 'Building it in less time' },
+	{
+		label: 'Product discovery',
+		caption: 'Building what matters' //'Deciding what is worth building'
+	},
+	{ label: 'AI-assisted delivery', caption: 'Building in less time' },
 	{ label: 'Systems engineering', caption: 'Making it hold up' }
 ];
+
+// The one place to resize the hero constellation or its labels. Both scales run
+// 0–100 with 50 as the size the scene was composed at, so they read like
+// sliders rather than raw multipliers. 100 is whatever still fits the frame,
+// measured at runtime — no setting can clip the artwork.
+export const heroDisciplinesSceneConfig: HeroDisciplinesSceneConfig = {
+	sceneScale: 100,
+	centerObjectScale: 50,
+	labelFontSize: 13,
+	captionFontSize: 15,
+	clusterPointCount: 20,
+	hasDisciplineBg: false
+};
 
 // Facts already in the Hero/Solution/Final-CTA copy, reframed as a stat strip — not invented business metrics
 export const stats: Stat[] = [
