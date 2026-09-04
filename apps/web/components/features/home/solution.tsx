@@ -4,12 +4,11 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
 import { ConsoleFrame } from '@/components/snippets/console-frame/console-frame';
-import { SectionTag } from '@/components/snippets/section-tag/section-tag';
+import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { processSteps } from '@/constants/home';
 import { cn } from '@workspace/ui/lib/utils';
 
 import { ProcessConsoleCine } from './process-console-cine';
-import { SectionHeader } from '@/components/snippets/section-header/section-header';
 
 const STEP_INTERVAL_MS = 3500;
 const REVEAL_EASE = [0.16, 1, 0.3, 1] as const;

@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { OpenIndicator } from '@/components/snippets/open-indicator/open-indicator';
 import { Reveal } from '@/components/snippets/reveal/reveal';
-import { SectionTag } from '@/components/snippets/section-tag/section-tag';
+import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { faqItems } from '@/constants/home';
 import {
 	Accordion,
@@ -12,7 +12,6 @@ import {
 	AccordionTrigger
 } from '@workspace/ui/components/accordion';
 import { cn } from '@workspace/ui/lib/utils';
-import { SectionHeader } from '@/components/snippets/section-header/section-header';
 
 interface FaqProps {
 	sectionIndex: number;

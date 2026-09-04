@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { SectionTag } from '@/components/snippets/section-tag/section-tag';
+import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { valueProps } from '@/constants/home';
 import { Text3DFlip } from '@workspace/ui/components/text-3d-flip';
 import { cn } from '@workspace/ui/lib/utils';
@@ -17,8 +17,7 @@ interface WhyUsProps {
 	sectionIndex: number;
 	totalSections?: number;
 	className?: string;
-	/** Show every descrip
-				metaInfo="10 projects · 2024 to 2026"tion at once instead of only the active clause's. */
+	/** Show every description at once instead of only the active clause's. */
 	showAllDescriptions?: boolean;
 }
 
@@ -71,14 +70,12 @@ export function WhyUs({
 				    a full-height sticky in a container only a little taller than
 				    the screen has almost no travel and unsticks immediately. */}
 				<div className="lg:sticky lg:top-[calc((100svh-500px)/2)] lg:flex lg:h-125 lg:flex-col lg:justify-center lg:self-start">
-					<SectionTag
+					<SectionHeader
 						index={sectionIndex}
 						total={totalSections}
-						label="Why Flizzio"
+						eyebrow="Why Flizzio"
+						title="We create solutions that"
 					/>
-					<h2 className="mt-5 font-heading text-4xl font-semibold tracking-tight text-balance text-foreground sm:text-5xl">
-						We create solutions that
-					</h2>
 
 					{/* The stem's other half. Set in the serif and in the
 					    accent so it reads as the sentence finishing rather

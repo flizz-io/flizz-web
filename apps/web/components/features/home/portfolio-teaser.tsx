@@ -1,12 +1,10 @@
 import Link from 'next/link';
 
 import { ProjectStrip } from '@/components/features/home/project-strip';
-import { Reveal } from '@/components/snippets/reveal/reveal';
-import { SectionTag } from '@/components/snippets/section-tag/section-tag';
+import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { portfolioMeta } from '@/constants/portfolio';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
-import { SectionHeader } from '@/components/snippets/section-header/section-header';
 
 interface PortfolioTeaserProps {
 	sectionIndex: number;
@@ -35,7 +33,7 @@ export function PortfolioTeaser({
 					eyebrow="Our Work"
 					title="Work we've designed and built"
 					description="A snapshot of what we do — the full list lives on the Services page."
-					metaInfo="10 projects · 2024 to 2026"
+					metaInfo={portfolioMeta}
 					sectionTagWrapperClassName="w-full"
 				/>
 			</div>

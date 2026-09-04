@@ -163,10 +163,10 @@ export function HeroConstellation() {
 						<button
 							type="button"
 							onClick={scrollToNext}
-							className="group inline-flex items-center gap-2.5 font-mono text-[0.7rem] tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-primary"
+							className="group inline-flex items-center gap-2.5 font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-primary"
 						>
 							<ArrowDown className="size-3.5 text-primary transition-transform group-hover:translate-y-0.5" />
-							See the work
+							See the works
 						</button>
 					</motion.div>
 				</motion.div>

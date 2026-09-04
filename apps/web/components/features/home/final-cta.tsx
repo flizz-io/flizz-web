@@ -2,7 +2,7 @@ import { Check } from 'lucide-react';
 import Link from 'next/link';
 
 import { Reveal } from '@/components/snippets/reveal/reveal';
-import { SectionTag } from '@/components/snippets/section-tag/section-tag';
+import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { riskReversals } from '@/constants/home';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
@@ -49,26 +49,23 @@ export function FinalCta({
 			/>
 
 			<div className="relative mx-auto w-full max-w-3xl text-center">
-				<Reveal>
-					<div className="flex justify-center">
-						<SectionTag
-							index={sectionIndex}
-							total={totalSections}
-							label="Let's Talk"
-						/>
-					</div>
-					<h2 className="mt-6 font-heading text-4xl font-semibold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
-						Let&apos;s Build technology that{' '}
-						<span className="text-primary">
-							works for your business
-						</span>
-					</h2>
-					<p className="mx-auto mt-6 max-w-xl text-lg text-pretty text-muted-foreground">
-						Whether you&apos;re launching something new, scaling
-						what&apos;s working, or fixing what&apos;s broken —
-						let&apos;s talk about how we can help you get there.
-					</p>
-				</Reveal>
+				<SectionHeader
+					index={sectionIndex}
+					total={totalSections}
+					eyebrow="Let's Talk"
+					title={
+						<>
+							Let&apos;s Build technology that <br />
+							<span className="font-serif leading-1.5 tracking-wide text-primary italic">
+								works for your business
+							</span>
+						</>
+					}
+					description="Whether you're launching something new, scaling what's working, or fixing what's broken — let's talk about how we can help you get there."
+					align="center"
+					titleClassName="text-4xl sm:text-5xl lg:text-6xl"
+					descriptionClassName="mx-auto max-w-xl"
+				/>
 
 				{/* The button sits on the horizon, and the horizon draws outward
 				    from it — so the whole frame reads as radiating from the one
