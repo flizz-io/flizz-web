@@ -9,6 +9,7 @@ import { processSteps } from '@/constants/home';
 import { cn } from '@workspace/ui/lib/utils';
 
 import { ProcessConsoleCine } from './process-console-cine';
+import { SectionHeader } from '@/components/snippets/section-header/section-header';
 
 const STEP_INTERVAL_MS = 3500;
 const REVEAL_EASE = [0.16, 1, 0.3, 1] as const;
@@ -70,21 +71,14 @@ export function Solution({
 				className
 			)}
 		>
-			<div className="max-w-2xl">
-				<SectionTag
-					index={sectionIndex}
-					total={totalSections}
-					label="Our Process"
-				/>
-				{/* TODO: PM to confirm final headline — the sheet duplicated the Problem section's headline here */}
-				<h2 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-balance text-foreground sm:text-5xl">
-					How we get you there
-				</h2>
-				<p className="mt-4 text-base text-muted-foreground">
-					Five stages, one system of record. You can see exactly where
-					your project stands at every point.
-				</p>
-			</div>
+			<SectionHeader
+				index={sectionIndex}
+				total={totalSections}
+				eyebrow="Our Process"
+				title="How we get you there"
+				description="Five stages, one system of record. You can see exactly where your project stands at every point."
+				sectionTagWrapperClassName="max-w-2xl"
+			/>
 
 			<div
 				className="mt-14 grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-14"

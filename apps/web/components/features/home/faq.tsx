@@ -12,6 +12,7 @@ import {
 	AccordionTrigger
 } from '@workspace/ui/components/accordion';
 import { cn } from '@workspace/ui/lib/utils';
+import { SectionHeader } from '@/components/snippets/section-header/section-header';
 
 interface FaqProps {
 	sectionIndex: number;
@@ -27,19 +28,13 @@ export function Faq({ sectionIndex, totalSections, className }: FaqProps) {
 				className
 			)}
 		>
-			<Reveal>
-				<SectionTag
-					index={sectionIndex}
-					total={totalSections}
-					label="FAQs"
-				/>
-				<h2 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-					Questions, answered
-				</h2>
-				<p className="mt-4 max-w-xl text-base text-muted-foreground">
-					The things people ask before we start working together.
-				</p>
-			</Reveal>
+			<SectionHeader
+				index={sectionIndex}
+				total={totalSections}
+				eyebrow="FAQs"
+				title="Questions, answered"
+				description="The things people ask before we start working together"
+			/>
 
 			<Reveal
 				delay={80}

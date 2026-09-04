@@ -17,7 +17,8 @@ interface WhyUsProps {
 	sectionIndex: number;
 	totalSections?: number;
 	className?: string;
-	/** Show every description at once instead of only the active clause's. */
+	/** Show every descrip
+				metaInfo="10 projects · 2024 to 2026"tion at once instead of only the active clause's. */
 	showAllDescriptions?: boolean;
 }
 
