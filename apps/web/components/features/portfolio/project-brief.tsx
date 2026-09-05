@@ -58,7 +58,7 @@ export function ProjectBrief({
 							delay={180}
 							className="mt-12"
 						>
-							<p className="font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+							<p className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 								What the answer had to survive
 							</p>
 

@@ -105,7 +105,7 @@ export function ServicesCatalogue({
 								id={serviceCategoryAnchors[category]}
 								className="scroll-mt-28"
 							>
-								<p className="flex items-baseline gap-3 border-b border-border pb-3 font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+								<p className="flex items-baseline gap-3 border-b border-border pb-3 font-mono text-sm tracking-[0.2em] text-primary uppercase">
 									{category}
 									<span className="text-muted-foreground">
 										{String(items.length).padStart(2, '0')}
@@ -187,10 +187,10 @@ export function ServicesCatalogue({
 						<div className="sticky top-28 self-start">
 							<SchematicFrame className="border border-border bg-card/40">
 								<div className="flex items-center justify-between border-b border-border px-5 py-3">
-									<span className="font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+									<span className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 										Specimen
 									</span>
-									<span className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+									<span className="font-mono text-sm tracking-[0.2em] text-primary uppercase">
 										{settled?.category}
 									</span>
 								</div>

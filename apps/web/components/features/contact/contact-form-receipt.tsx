@@ -59,7 +59,7 @@ export function ContactFormReceipt({
 							key={row.term}
 							className="flex items-baseline justify-between gap-4 py-3"
 						>
-							<dt className="font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+							<dt className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 								{row.term}
 							</dt>
 							<dd className="truncate text-right text-sm text-foreground">

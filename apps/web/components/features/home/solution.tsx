@@ -156,13 +156,13 @@ export function Solution({
 											    size mid-transition. Measured max
 											    content is 142px across breakpoints. */}
 											<div className="h-40 pb-6 pl-10">
-												<p className="font-heading text-base font-semibold text-foreground">
+												<p className="font-heading text-lg font-semibold text-foreground">
 													{step.title}
 												</p>
-												<p className="mt-2 max-w-md text-sm text-muted-foreground">
+												<p className="mt-2 max-w-md text-base text-muted-foreground">
 													{step.compactDescription}
 												</p>
-												<p className="mt-3 font-mono text-[0.7rem] text-primary">
+												<p className="mt-3 font-mono text-sm text-primary">
 													What you get —{' '}
 													{step.whatYouGet}
 												</p>
@@ -179,7 +179,7 @@ export function Solution({
 					headerTitle={'flizz.build / northwind'}
 					footerContent={
 						<>
-							<span className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+							<span className="font-mono text-sm tracking-[0.2em] text-primary uppercase">
 								{String(activeIndex + 1).padStart(2, '0')} /{' '}
 								{activeStep?.shortLabel}
 							</span>

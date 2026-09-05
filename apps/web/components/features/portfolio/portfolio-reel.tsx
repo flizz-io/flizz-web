@@ -219,7 +219,7 @@ export function PortfolioReel({
 								label="The reel"
 							/>
 
-							<p className="font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+							<p className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 								Frame
 								<span className="ml-3 text-foreground">
 									{String(activeIndex + 1).padStart(2, '0')}
@@ -252,7 +252,7 @@ export function PortfolioReel({
 														: '-translate-y-8 opacity-0'
 											)}
 										>
-											<p className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+											<p className="font-mono text-sm tracking-[0.2em] text-primary uppercase">
 												{project.sector}
 											</p>
 
@@ -286,7 +286,7 @@ export function PortfolioReel({
 													</Link>
 												</Button>
 
-												<p className="font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+												<p className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 													{project.service}
 													<span className="mx-2 text-border">
 														·
@@ -301,7 +301,7 @@ export function PortfolioReel({
 						</div>
 
 						<div className="mt-auto flex items-end justify-between gap-6 border-t border-border pt-4">
-							<p className="hidden font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase sm:block">
+							<p className="hidden font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase sm:block">
 								{activeProject?.client}
 							</p>
 

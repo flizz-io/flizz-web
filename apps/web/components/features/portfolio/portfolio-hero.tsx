@@ -47,7 +47,7 @@ export function PortfolioHero({ className }: { className?: string }) {
 							Portfolio
 						</span>
 
-						<p className="font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+						<p className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 							{portfolioMeta}
 						</p>
 					</div>
@@ -67,7 +67,7 @@ export function PortfolioHero({ className }: { className?: string }) {
 					delay={140}
 					className="mt-10 border-t border-border pt-6 lg:mt-12"
 				>
-					<dl className="flex flex-wrap items-baseline gap-x-7 gap-y-3 font-mono text-[0.65rem] tracking-[0.18em] uppercase">
+					<dl className="flex flex-wrap items-baseline gap-x-7 gap-y-3 font-mono text-sm tracking-[0.18em] uppercase">
 						{sectors.map(({ sector, count }) => (
 							<div
 								key={sector}

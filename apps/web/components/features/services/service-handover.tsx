@@ -69,7 +69,7 @@ export function ServiceHandover({
 							<h2 className="font-heading text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
 								{column.label}
 							</h2>
-							<p className="mt-2 font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+							<p className="mt-2 font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 								{column.note}
 							</p>
 

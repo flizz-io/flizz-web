@@ -121,7 +121,7 @@ export function AboutTeam({
 										)}
 									>
 										<div className="overflow-hidden">
-											<p className="mt-2 font-mono text-[0.65rem] tracking-[0.18em] text-primary uppercase">
+											<p className="mt-2 font-mono text-sm tracking-[0.18em] text-primary uppercase">
 												{member.role}
 											</p>
 
@@ -138,7 +138,7 @@ export function AboutTeam({
 																href={href}
 																target="_blank"
 																rel="noopener noreferrer"
-																className="font-mono text-[0.65rem] tracking-[0.1em] text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:text-foreground"
+																className="font-mono text-sm tracking-[0.1em] text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:text-foreground"
 															>
 																{label}
 															</Link>

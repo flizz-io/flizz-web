@@ -144,7 +144,7 @@ export function Testimonials({
 								return (
 									<CarouselItem key={testimonial.author}>
 										<figure className="relative mx-auto flex max-w-3xl flex-col items-center gap-8 py-4 text-center">
-											<blockquote className="relative font-serif text-3xl leading-tight text-pretty text-foreground italic sm:text-4xl">
+											<blockquote className="relative font-serif text-3xl leading-tight tracking-wide text-pretty text-foreground italic sm:text-4xl">
 												{splitOnHighlights(
 													testimonial.quote,
 													testimonial.highlights ?? []

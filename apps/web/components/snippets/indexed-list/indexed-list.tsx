@@ -65,7 +65,7 @@ export function IndexedListItem({
 				</span>
 				<div>
 					{eyebrow ? (
-						<p className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+						<p className="font-mono text-sm tracking-[0.2em] text-primary uppercase">
 							{eyebrow}
 						</p>
 					) : null}

@@ -68,13 +68,13 @@ export function ServiceSpecimen({
 				/>
 
 				<div className="min-w-0 lg:w-full lg:text-center">
-					<p className="font-mono text-[0.55rem] tracking-[0.2em] text-primary uppercase">
+					<p className="font-mono text-sm tracking-[0.2em] text-primary uppercase">
 						{String(index + 1).padStart(2, '0')} ·{' '}
 						{service.category}
 					</p>
 					<h3
 						className={cn(
-							'mt-1.5 font-heading text-lg font-semibold tracking-tight text-foreground transition-colors sm:text-xl lg:text-base xl:text-lg',
+							'mt-1.5 font-heading text-lg font-semibold tracking-tight text-foreground transition-colors sm:text-xl lg:text-base xl:text-2xl',
 							'group-hover:text-primary'
 						)}
 					>
@@ -143,7 +143,7 @@ export function ServiceSpecimen({
 									: '-translate-x-1/2 translate-y-2')
 						)}
 					>
-						<p className="font-mono text-[0.55rem] tracking-[0.2em] text-primary uppercase">
+						<p className="font-mono text-xs tracking-[0.2em] text-primary uppercase">
 							{service.category}
 						</p>
 						<p className="mt-2 font-heading text-base font-semibold tracking-tight text-foreground">

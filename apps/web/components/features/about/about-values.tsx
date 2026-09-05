@@ -64,7 +64,7 @@ export function AboutValues({
 								{value.description}
 							</p>
 
-							<p className="mt-8 border-t border-border pt-4 font-mono text-[0.65rem] tracking-[0.18em] text-balance text-muted-foreground uppercase transition-colors group-hover/value:text-primary">
+							<p className="mt-8 border-t border-border pt-4 font-mono text-sm tracking-[0.18em] text-balance text-muted-foreground uppercase transition-colors group-hover/value:text-primary">
 								{value.impact}
 							</p>
 						</Reveal>

@@ -21,7 +21,7 @@ export function SectionTag({
 		<Reveal className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
 			<p
 				className={cn(
-					'sm:text-md font-mono text-sm tracking-[0.2em] uppercase',
+					'font-mono text-base tracking-[0.2em] uppercase',
 					className
 				)}
 			>
@@ -33,7 +33,7 @@ export function SectionTag({
 				<span className="text-primary">{label}</span>
 			</p>
 			{metaInfo && (
-				<p className="sm:text-md font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
+				<p className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase sm:text-base">
 					{metaInfo}
 				</p>
 			)}

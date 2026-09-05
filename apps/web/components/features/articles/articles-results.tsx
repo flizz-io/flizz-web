@@ -53,7 +53,7 @@ export function ArticlesResults({
 					/>
 
 					<div className="flex items-center gap-4">
-						<p className="font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+						<p className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 							{results.length}{' '}
 							{results.length === 1 ? 'article' : 'articles'}
 							{isFiltered ? ' matched' : ''}
@@ -63,7 +63,7 @@ export function ArticlesResults({
 							<button
 								type="button"
 								onClick={clear}
-								className="inline-flex items-center gap-1.5 font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase underline-offset-4 transition-colors hover:text-foreground hover:underline"
+								className="inline-flex items-center gap-1.5 font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase underline-offset-4 transition-colors hover:text-foreground hover:underline"
 							>
 								<X className="size-3.5" />
 								Clear filters
@@ -91,7 +91,7 @@ export function ArticlesResults({
 						</div>
 
 						<div>
-							<p className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+							<p className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 								<span className="text-primary">
 									{featured.category}
 								</span>
@@ -126,7 +126,7 @@ export function ArticlesResults({
 								>
 									<time
 										dateTime={article.publishedAt}
-										className="font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase"
+										className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase"
 									>
 										{formatArticleDate(article.publishedAt)}
 									</time>
@@ -151,7 +151,7 @@ export function ArticlesResults({
 											{article.tags.map((entry) => (
 												<span
 													key={entry}
-													className="rounded-full border border-border px-2.5 py-0.5 font-mono text-[0.55rem] tracking-[0.15em] text-muted-foreground uppercase"
+													className="rounded-full border border-border px-2.5 py-0.5 font-mono text-xs tracking-[0.15em] text-muted-foreground uppercase"
 												>
 													{entry}
 												</span>
@@ -180,7 +180,7 @@ export function ArticlesResults({
 						<button
 							type="button"
 							onClick={clear}
-							className="mt-2 font-mono text-[0.65rem] tracking-[0.18em] text-primary uppercase underline-offset-4 hover:underline"
+							className="mt-2 font-mono text-sm tracking-[0.18em] text-primary uppercase underline-offset-4 hover:underline"
 						>
 							Clear filters
 						</button>

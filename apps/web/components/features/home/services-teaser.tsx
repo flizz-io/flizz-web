@@ -115,19 +115,19 @@ export function ServicesTeaser({
 					<div className="relative lg:w-max lg:min-w-full lg:px-20">
 						<span
 							aria-hidden
-							className="absolute inset-x-0 top-1/2 hidden h-px bg-border lg:block"
+							className="absolute inset-x-0 top-1/2 hidden h-px bg-foreground/40 lg:block"
 						/>
 						{/* Inset past the edge fade so neither end label sits
 						    under it and half-disappears. */}
 						<span
 							aria-hidden
-							className="absolute top-1/2 left-16 hidden -translate-y-1/2 bg-background pr-3 font-mono text-[0.65rem] tracking-[0.3em] text-foreground/70 uppercase lg:block"
+							className="absolute top-1/2 left-16 hidden -translate-y-1/2 bg-background pr-3 font-mono text-sm tracking-[0.3em] text-foreground/70 uppercase lg:block"
 						>
 							Start
 						</span>
 						<span
 							aria-hidden
-							className="absolute top-1/2 right-16 hidden -translate-y-1/2 bg-background pl-3 font-mono text-[0.65rem] tracking-[0.3em] text-foreground/70 uppercase lg:block"
+							className="absolute top-1/2 right-16 hidden -translate-y-1/2 bg-background pl-3 font-mono text-sm tracking-[0.3em] text-foreground/70 uppercase lg:block"
 						>
 							Scale
 						</span>
