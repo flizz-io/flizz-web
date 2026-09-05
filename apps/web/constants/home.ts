@@ -37,7 +37,7 @@ export const heroDisciplinesSceneConfig: HeroDisciplinesSceneConfig = {
 	labelFontSize: 13,
 	captionFontSize: 15,
 	clusterPointCount: 20,
-	hasDisciplineBg: false
+	hasDisciplineBg: true
 };
 
 // Facts already in the Hero/Solution/Final-CTA copy, reframed as a stat strip — not invented business metrics
