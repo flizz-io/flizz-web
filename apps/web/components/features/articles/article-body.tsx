@@ -72,7 +72,7 @@ function renderBlock(block: ArticleBlock) {
 						{block.text}
 					</blockquote>
 					{block.attribution ? (
-						<figcaption className="mt-3 font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+						<figcaption className="mt-3 font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 							{block.attribution}
 						</figcaption>
 					) : null}

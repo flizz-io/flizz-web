@@ -58,7 +58,7 @@ export function ServiceDetailHero({
 					{showBackLink ? (
 						<Link
 							href="/services"
-							className="group/back mb-6 inline-flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase underline-offset-4 transition-colors hover:text-foreground hover:underline"
+							className="group/back mb-6 inline-flex items-center gap-2 font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase underline-offset-4 transition-colors hover:text-foreground hover:underline"
 						>
 							<ArrowLeft className="size-3.5 transition-transform group-hover/back:-translate-x-0.5" />
 							All services
@@ -96,7 +96,7 @@ export function ServiceDetailHero({
 						</Button>
 
 						{service.engagement ? (
-							<p className="font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+							<p className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 								Typical engagement
 								<span className="ml-3 text-foreground">
 									{service.engagement}
@@ -113,10 +113,10 @@ export function ServiceDetailHero({
 				>
 					<SchematicFrame className="border border-border bg-card/40 backdrop-blur-sm">
 						<div className="flex items-center justify-between border-b border-border px-5 py-3">
-							<span className="font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+							<span className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 								Specimen
 							</span>
-							<span className="flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+							<span className="flex items-center gap-2 font-mono text-sm tracking-[0.2em] text-primary uppercase">
 								<span className="size-1.5 rounded-full bg-primary" />
 								Live
 							</span>

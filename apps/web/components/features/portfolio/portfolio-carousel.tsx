@@ -113,7 +113,7 @@ export function PortfolioCarousel({
 						label="The reel"
 					/>
 
-					<p className="font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+					<p className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 						Frame
 						<span className="ml-3 text-foreground">
 							{String(current + 1).padStart(2, '0')}
@@ -202,7 +202,7 @@ export function PortfolioCarousel({
 
 											<div className="absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-x-10 gap-y-4 p-5 sm:p-8 lg:p-10">
 												<div className="min-w-0">
-													<p className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+													<p className="font-mono text-sm tracking-[0.2em] text-primary uppercase">
 														{project.sector}
 													</p>
 													<h3 className="mt-3 max-w-2xl font-heading text-[clamp(1.75rem,4.2vw,3.75rem)] leading-[0.98] font-semibold tracking-tight text-balance text-foreground">
@@ -238,7 +238,7 @@ export function PortfolioCarousel({
 											</p>
 
 											<div className="flex flex-wrap items-center gap-x-6 gap-y-3">
-												<p className="font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+												<p className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 													{project.service}
 													<span className="mx-2 text-border">
 														·
@@ -289,7 +289,7 @@ export function PortfolioCarousel({
 
 			<div className="relative mx-auto mt-10 max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="flex items-end justify-between gap-6 border-t border-border pt-4">
-					<p className="hidden font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase sm:block">
+					<p className="hidden font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase sm:block">
 						{active?.client}
 					</p>
 

@@ -55,10 +55,10 @@ export function ContactHero({ className }: { className?: string }) {
 				>
 					<SchematicFrame className="border border-border bg-card/60 backdrop-blur-sm">
 						<div className="flex items-center justify-between border-b border-border px-5 py-3">
-							<span className="font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+							<span className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 								What you get
 							</span>
-							<span className="flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+							<span className="flex items-center gap-2 font-mono text-sm tracking-[0.2em] text-primary uppercase">
 								<span className="relative flex size-1.5">
 									<span className="absolute inline-flex size-full rounded-full bg-primary opacity-75 motion-safe:animate-ping" />
 									<span className="relative inline-flex size-1.5 rounded-full bg-primary" />
@@ -73,7 +73,7 @@ export function ContactHero({ className }: { className?: string }) {
 									key={commitment.term}
 									className="flex items-baseline justify-between gap-4 px-5 py-3.5"
 								>
-									<dt className="font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+									<dt className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 										{commitment.term}
 									</dt>
 									<dd className="text-right text-sm text-foreground">

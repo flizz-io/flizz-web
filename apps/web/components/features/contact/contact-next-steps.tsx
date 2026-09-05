@@ -57,7 +57,7 @@ export function ContactNextSteps({
 									<span className="relative z-10 flex size-6 shrink-0 items-center justify-center border border-primary/40 bg-background font-mono text-[0.6rem] text-primary">
 										{String(index + 1).padStart(2, '0')}
 									</span>
-									<span className="bg-background pr-2 font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+									<span className="bg-background pr-2 font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 										{step.duration}
 									</span>
 								</div>

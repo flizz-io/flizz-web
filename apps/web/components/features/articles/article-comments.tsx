@@ -37,7 +37,7 @@ export function ArticleComments({ comments, className }: ArticleCommentsProps) {
 				<Reveal>
 					<h2 className="flex items-baseline gap-3 font-heading text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
 						Comments
-						<span className="font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+						<span className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 							{comments.length}
 						</span>
 					</h2>
@@ -126,7 +126,7 @@ function CommentBody({
 				aria-hidden
 				className={cn(
 					'flex shrink-0 items-center justify-center rounded-full border border-border bg-card font-heading font-semibold text-foreground/40',
-					isReply ? 'size-8 text-[0.65rem]' : 'size-10 text-xs'
+					isReply ? 'size-8 text-sm' : 'size-10 text-xs'
 				)}
 			>
 				{getInitials(comment.author)}

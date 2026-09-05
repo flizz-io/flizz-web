@@ -3,7 +3,7 @@
 import { Fragment, useEffect, useState } from 'react';
 
 import { Reveal } from '@/components/snippets/reveal/reveal';
-import { SectionTag } from '@/components/snippets/section-tag/section-tag';
+import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { testimonials } from '@/constants/home';
 import { Avatar, AvatarFallback } from '@workspace/ui/components/avatar';
 import {
@@ -121,14 +121,18 @@ export function Testimonials({
 			</span>
 
 			<div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-				<Reveal delay={80}>
-					<SectionTag
-						index={sectionIndex}
-						total={totalSections}
-						label="What Clients Say"
-						className="mb-14 text-center"
-					/>
+				{/* TODO: PM to confirm this headline — the requirements sheet
+				    supplies the quotes, not a title for the section. */}
+				<SectionHeader
+					index={sectionIndex}
+					total={totalSections}
+					eyebrow="What Clients Say"
+					title="What it's like to work with us"
+					align="center"
+					className="mb-14"
+				/>
 
+				<Reveal delay={80}>
 					<Carousel
 						setApi={setApi}
 						opts={{ align: 'start', loop: true }}
@@ -140,7 +144,7 @@ export function Testimonials({
 								return (
 									<CarouselItem key={testimonial.author}>
 										<figure className="relative mx-auto flex max-w-3xl flex-col items-center gap-8 py-4 text-center">
-											<blockquote className="relative font-serif text-3xl leading-tight text-pretty text-foreground italic sm:text-4xl">
+											<blockquote className="relative font-serif text-3xl leading-tight tracking-wide text-pretty text-foreground italic sm:text-4xl">
 												{splitOnHighlights(
 													testimonial.quote,
 													testimonial.highlights ?? []

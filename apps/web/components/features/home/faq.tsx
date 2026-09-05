@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { OpenIndicator } from '@/components/snippets/open-indicator/open-indicator';
 import { Reveal } from '@/components/snippets/reveal/reveal';
-import { SectionTag } from '@/components/snippets/section-tag/section-tag';
+import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { faqItems } from '@/constants/home';
 import {
 	Accordion,
@@ -27,19 +27,13 @@ export function Faq({ sectionIndex, totalSections, className }: FaqProps) {
 				className
 			)}
 		>
-			<Reveal>
-				<SectionTag
-					index={sectionIndex}
-					total={totalSections}
-					label="FAQs"
-				/>
-				<h2 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-					Questions, answered
-				</h2>
-				<p className="mt-4 max-w-xl text-base text-muted-foreground">
-					The things people ask before we start working together.
-				</p>
-			</Reveal>
+			<SectionHeader
+				index={sectionIndex}
+				total={totalSections}
+				eyebrow="FAQs"
+				title="Questions, answered"
+				description="The things people ask before we start working together"
+			/>
 
 			<Reveal
 				delay={80}

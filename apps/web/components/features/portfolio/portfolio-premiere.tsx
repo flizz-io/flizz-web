@@ -369,7 +369,7 @@ export function PortfolioPremiere({
 						label="The reel"
 					/>
 
-					<p className="flex items-center gap-5 font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+					<p className="flex items-center gap-5 font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 						<span>
 							Scene
 							<span className="ml-3 text-foreground">
@@ -480,7 +480,7 @@ export function PortfolioPremiere({
 							<div className="relative">
 								<motion.p
 									variants={lineVariants}
-									className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase"
+									className="font-mono text-sm tracking-[0.2em] text-primary uppercase"
 								>
 									{active.sector}
 								</motion.p>
@@ -526,7 +526,7 @@ export function PortfolioPremiere({
 										</Link>
 									</Button>
 
-									<p className="font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+									<p className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 										{active.service}
 										<span className="mx-2 text-border">
 											·
@@ -616,7 +616,7 @@ export function PortfolioPremiere({
 
 				{/* Bottom bar of the letterbox: the scrubber, the transport. */}
 				<div className="flex items-center justify-between gap-6 bg-black px-4 py-4 sm:px-6 lg:shrink-0 lg:px-8">
-					<p className="hidden min-w-0 truncate font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase md:block">
+					<p className="hidden min-w-0 truncate font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase md:block">
 						{active.client}
 					</p>
 

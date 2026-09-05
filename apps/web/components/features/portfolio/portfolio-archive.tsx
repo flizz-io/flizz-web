@@ -69,7 +69,7 @@ export function PortfolioArchive({
 						</h2>
 					</div>
 
-					<p className="font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+					<p className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 						Showing
 						<span className="mx-2 text-foreground">
 							{String(visible.length).padStart(2, '0')}

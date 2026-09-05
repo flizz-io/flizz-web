@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { AudienceList } from '@/components/features/home/audience-list';
 import { AudienceWall } from '@/components/features/home/audience-wall';
 import { Reveal } from '@/components/snippets/reveal/reveal';
-import { SectionTag } from '@/components/snippets/section-tag/section-tag';
+import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
 
@@ -41,29 +41,25 @@ export function WhoWeBuildFor({
 				}}
 			/>
 
-			<div className="relative mx-auto flex max-w-3xl flex-col items-center text-center">
-				<Reveal>
-					<SectionTag
-						index={sectionIndex}
-						total={totalSections}
-						label="Who we build for"
-					/>
-				</Reveal>
-
-				<Reveal
-					delay={90}
-					className="mt-6"
-				>
-					{/* TODO: PM to confirm this headline — no audience copy was
-					    supplied in the requirements sheet. */}
-					<h2 className="font-serif text-4xl leading-[1.05] text-balance text-foreground sm:text-5xl lg:text-6xl">
-						When your process is the advantage,{' '}
-						<span className="text-primary italic">
-							the software has to protect it
-						</span>
-						.
-					</h2>
-				</Reveal>
+			<div className="relative mx-auto flex max-w-4xl flex-col items-center text-center">
+				{/* TODO: PM to confirm this headline — no audience copy was
+				    supplied in the requirements sheet. */}
+				<SectionHeader
+					index={sectionIndex}
+					total={totalSections}
+					eyebrow="Who we build for"
+					title={
+						<>
+							When your process is the advantage, <br />
+							<span className="font-serif leading-1.5 tracking-wide text-primary italic">
+								the software has to protect it
+							</span>
+							.
+						</>
+					}
+					align="center"
+					className="w-full"
+				/>
 
 				{/* The wall is decorative and hidden from assistive tech, so
 				    this list is where the segments are actually stated. */}

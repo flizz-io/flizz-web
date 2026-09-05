@@ -41,7 +41,7 @@ export function ArticleDetailHero({
 				<Reveal trigger="mount">
 					<Link
 						href="/articles"
-						className="group/back inline-flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase underline-offset-4 transition-colors hover:text-foreground hover:underline"
+						className="group/back inline-flex items-center gap-2 font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase underline-offset-4 transition-colors hover:text-foreground hover:underline"
 					>
 						<ArrowLeft className="size-3.5 transition-transform group-hover/back:-translate-x-0.5" />
 						All articles
@@ -59,7 +59,7 @@ export function ArticleDetailHero({
 						{article.excerpt}
 					</p>
 
-					<p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-5 font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+					<p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-5 font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 						{showAuthor ? (
 							<>
 								<span className="text-foreground">

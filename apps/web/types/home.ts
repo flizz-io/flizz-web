@@ -4,6 +4,22 @@ export interface HeroDiscipline {
 	caption: string;
 }
 
+/** The tuning dials for the hero constellation, kept out of the component. */
+export interface HeroDisciplinesSceneConfig {
+	/** Size of the whole constellation, 0–100, where 50 is the composed size. */
+	sceneScale: number;
+	/** Size of the centre object on the same 0–100 scale. */
+	centerObjectScale: number;
+	/** Discipline label size, in px. */
+	labelFontSize: number;
+	/** Caption size under each label, in px. */
+	captionFontSize: number;
+	/** How many points scatter around each discipline's hub. */
+	clusterPointCount: number;
+	/** Whether to show the discipline's background. */
+	hasDisciplineBg: boolean;
+}
+
 export interface Stat {
 	value: string;
 	/** Unit, set smaller and italic beside the value. */

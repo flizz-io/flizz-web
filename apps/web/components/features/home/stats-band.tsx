@@ -82,7 +82,7 @@ export function StatsBand({ className }: { className?: string }) {
 
 							<dd
 								className={cn(
-									'mt-4 font-mono text-[0.6rem] tracking-[0.2em] uppercase transition-opacity delay-300 duration-700 group-data-[revealed=true]/reveal:opacity-100 sm:text-[0.65rem]',
+									'mt-4 font-mono text-[0.6rem] tracking-[0.2em] uppercase transition-opacity delay-300 duration-700 group-data-[revealed=true]/reveal:opacity-100 sm:text-sm',
 									'text-muted-foreground opacity-0'
 								)}
 							>

@@ -49,7 +49,7 @@ export function ArticleBylineCard({
 				<span className="block font-heading text-base font-semibold tracking-tight text-foreground">
 					{name}
 				</span>
-				<span className="mt-0.5 block font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+				<span className="mt-0.5 block font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 					{detail}
 				</span>
 			</span>

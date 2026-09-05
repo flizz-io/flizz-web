@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
 import { ConsoleFrame } from '@/components/snippets/console-frame/console-frame';
-import { SectionTag } from '@/components/snippets/section-tag/section-tag';
+import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { processSteps } from '@/constants/home';
 import { cn } from '@workspace/ui/lib/utils';
 
@@ -70,21 +70,14 @@ export function Solution({
 				className
 			)}
 		>
-			<div className="max-w-2xl">
-				<SectionTag
-					index={sectionIndex}
-					total={totalSections}
-					label="Our Process"
-				/>
-				{/* TODO: PM to confirm final headline — the sheet duplicated the Problem section's headline here */}
-				<h2 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-balance text-foreground sm:text-5xl">
-					How we get you there
-				</h2>
-				<p className="mt-4 text-base text-muted-foreground">
-					Five stages, one system of record. You can see exactly where
-					your project stands at every point.
-				</p>
-			</div>
+			<SectionHeader
+				index={sectionIndex}
+				total={totalSections}
+				eyebrow="Our Process"
+				title="How we get you there"
+				description="Five stages, one system of record. You can see exactly where your project stands at every point."
+				sectionTagWrapperClassName="max-w-2xl"
+			/>
 
 			<div
 				className="mt-14 grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-14"
@@ -163,13 +156,13 @@ export function Solution({
 											    size mid-transition. Measured max
 											    content is 142px across breakpoints. */}
 											<div className="h-40 pb-6 pl-10">
-												<p className="font-heading text-base font-semibold text-foreground">
+												<p className="font-heading text-lg font-semibold text-foreground">
 													{step.title}
 												</p>
-												<p className="mt-2 max-w-md text-sm text-muted-foreground">
+												<p className="mt-2 max-w-md text-base text-muted-foreground">
 													{step.compactDescription}
 												</p>
-												<p className="mt-3 font-mono text-[0.7rem] text-primary">
+												<p className="mt-3 font-mono text-sm text-primary">
 													What you get —{' '}
 													{step.whatYouGet}
 												</p>
@@ -186,7 +179,7 @@ export function Solution({
 					headerTitle={'flizz.build / northwind'}
 					footerContent={
 						<>
-							<span className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+							<span className="font-mono text-sm tracking-[0.2em] text-primary uppercase">
 								{String(activeIndex + 1).padStart(2, '0')} /{' '}
 								{activeStep?.shortLabel}
 							</span>

@@ -69,7 +69,7 @@ export function AboutHero({ className }: { className?: string }) {
 										</span>
 									) : null}
 								</dt>
-								<dd className="mt-2 font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+								<dd className="mt-2 font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 									{figure.label}
 								</dd>
 							</div>

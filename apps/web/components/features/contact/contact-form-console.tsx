@@ -52,7 +52,7 @@ function ConsoleRow({
 	children
 }: ConsoleRowProps) {
 	const labelClassName = cn(
-		'font-mono text-[0.65rem] tracking-[0.2em] uppercase',
+		'font-mono text-sm tracking-[0.2em] uppercase',
 		error ? 'text-destructive' : 'text-muted-foreground',
 		alignTop && 'sm:pt-1.5'
 	);
@@ -137,12 +137,12 @@ export function ContactFormConsole({
 				>
 					<SchematicFrame className="border border-border bg-card/50 backdrop-blur-sm">
 						<div className="flex items-center justify-between border-b border-border px-5 py-3 sm:px-6">
-							<span className="font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+							<span className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 								Open channel
 							</span>
 							<span
 								className={cn(
-									'font-mono text-[0.65rem] tracking-[0.2em] uppercase transition-colors',
+									'font-mono text-sm tracking-[0.2em] uppercase transition-colors',
 									isReady
 										? 'text-primary'
 										: 'text-muted-foreground'
@@ -356,7 +356,7 @@ export function ContactFormConsole({
 									)
 								)}
 							</span>
-							<span className="font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+							<span className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 								{completedCount} / {requiredCount} ready
 							</span>
 						</div>

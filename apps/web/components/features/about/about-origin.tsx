@@ -83,7 +83,7 @@ export function AboutOrigin({
 									)}
 								/>
 
-								<p className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+								<p className="font-mono text-sm tracking-[0.2em] text-primary uppercase">
 									{milestone.date}
 								</p>
 								<h3 className="mt-2 font-heading text-xl font-semibold tracking-tight text-foreground sm:text-2xl">

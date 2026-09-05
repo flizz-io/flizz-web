@@ -51,7 +51,7 @@ export function ServicesHero({ className }: { className?: string }) {
 						{serviceCategoryOrder.map((category) => (
 							<li
 								key={category}
-								className="font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase"
+								className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase"
 							>
 								{category}
 								<span className="ml-2 text-primary">

@@ -169,7 +169,7 @@ export const aboutTeam: TeamMember[] = [
 		name: 'Zahid Showarav',
 		role: 'Co-founder, Principal Engineer',
 		isFounder: true,
-		photo: '/team-members/zahid.png',
+		photo: '/team-members/showrav.png',
 		links: {
 			linkedin: 'https://www.linkedin.com/in/arman-chowdhury',
 			x: 'https://x.com/armanchowdhury',
@@ -180,7 +180,7 @@ export const aboutTeam: TeamMember[] = [
 		name: 'Abdur Rahman',
 		role: 'Co-founder, CTO',
 		isFounder: true,
-		photo: '/team-members/riyad.png',
+		photo: '/team-members/riyad-3.png',
 		links: {
 			linkedin: 'https://www.linkedin.com/in/nabila-rahman',
 			x: 'https://x.com/nabilarahman',
@@ -190,7 +190,7 @@ export const aboutTeam: TeamMember[] = [
 	{
 		name: 'Meer Estiyak',
 		role: 'Co-founder, Lead AI/ML Engineer',
-		photo: '/team-members/meer.jpg',
+		photo: '/team-members/rifat.png',
 		isFounder: true,
 		links: {
 			linkedin: 'https://www.linkedin.com/in/tanvir-hasan',
@@ -200,7 +200,7 @@ export const aboutTeam: TeamMember[] = [
 	{
 		name: 'Imran Hossain',
 		role: 'Co-founder, Head of Product & Marketing',
-		photo: '/team-members/imran-hossain.jpeg',
+		photo: '/team-members/imran.png',
 		isFounder: true,
 		links: {
 			linkedin: 'https://www.linkedin.com/in/tanvir-hasan',
@@ -208,19 +208,21 @@ export const aboutTeam: TeamMember[] = [
 		}
 	},
 	{
-		name: 'Rifat Ahmed',
-		role: 'Senior Full-stack Engineer',
-		links: {
-			linkedin: 'https://www.linkedin.com/in/rifat-ahmed',
-			x: 'https://x.com/rifatahmed'
-		}
-	},
-	{
-		name: 'Mehjabin Islam',
+		name: 'Sifat Chowdhury',
 		role: 'Lead Product Designer',
+		// photo: '/team-members/sifat.jpg',
 		links: {
 			linkedin: 'https://www.linkedin.com/in/mehjabin-islam',
 			portfolio: 'https://mehjabin.ai'
+		}
+	},
+	{
+		name: 'Rihadul Islam',
+		role: 'Senior Full-stack Engineer',
+		// photo: '/team-members/rihadul.png',
+		links: {
+			linkedin: 'https://www.linkedin.com/in/rifat-ahmed',
+			x: 'https://x.com/rifatahmed'
 		}
 	},
 	{
