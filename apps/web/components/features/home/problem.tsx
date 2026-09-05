@@ -371,7 +371,7 @@ export function Problem({
 																		isActive
 																	}
 																/>
-																<p className="font-serif text-lg leading-snug text-foreground sm:text-xl lg:text-2xl">
+																<p className="font-heading text-lg leading-snug text-foreground sm:text-xl lg:text-2xl">
 																	{item.line}
 																</p>
 															</div>
@@ -483,7 +483,7 @@ function ProblemStack({
 									kind={item.diagram}
 									active={false}
 								/>
-								<p className="font-serif text-lg leading-snug text-foreground sm:text-xl">
+								<p className="font-heading text-lg leading-snug text-foreground sm:text-xl">
 									{item.line}
 								</p>
 							</li>
