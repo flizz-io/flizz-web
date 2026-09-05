@@ -1,8 +1,7 @@
 import Link from 'next/link';
 
 import { ProjectStrip } from '@/components/features/home/project-strip';
-import { Reveal } from '@/components/snippets/reveal/reveal';
-import { SectionTag } from '@/components/snippets/section-tag/section-tag';
+import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { portfolioMeta } from '@/constants/portfolio';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
@@ -28,25 +27,15 @@ export function PortfolioTeaser({
 			)}
 		>
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-				<Reveal className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-					<SectionTag
-						index={sectionIndex}
-						total={totalSections}
-						label="Our Work"
-					/>
-					<p className="font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase sm:text-[0.65rem]">
-						{portfolioMeta}
-					</p>
-				</Reveal>
-
-				<Reveal
-					delay={80}
-					className="mt-6"
-				>
-					<h2 className="max-w-3xl font-serif text-4xl leading-[1.05] text-balance text-foreground sm:text-5xl lg:text-6xl">
-						Work we&apos;ve designed and built
-					</h2>
-				</Reveal>
+				<SectionHeader
+					index={sectionIndex}
+					total={totalSections}
+					eyebrow="Our Work"
+					title="Work we've designed and built"
+					description="A snapshot of what we do — the full list lives on the Services page."
+					metaInfo={portfolioMeta}
+					sectionTagWrapperClassName="w-full"
+				/>
 			</div>
 
 			<ProjectStrip className="mt-10" />

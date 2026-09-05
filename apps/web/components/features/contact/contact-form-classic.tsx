@@ -50,7 +50,7 @@ function ClassicField({
 	className
 }: ClassicFieldProps) {
 	const labelClassName = cn(
-		'font-mono text-[0.65rem] tracking-[0.2em] uppercase',
+		'font-mono text-sm tracking-[0.2em] uppercase',
 		error ? 'text-destructive' : 'text-muted-foreground'
 	);
 

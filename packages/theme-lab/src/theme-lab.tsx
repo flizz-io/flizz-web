@@ -161,7 +161,7 @@ export function ThemeLab() {
 								<p className="font-heading text-sm font-semibold">
 									Theme Lab
 								</p>
-								<p className="font-mono text-[0.65rem] tracking-wide text-muted-foreground uppercase">
+								<p className="font-mono text-sm tracking-wide text-muted-foreground uppercase">
 									Browser only · {changedCount} changed
 								</p>
 							</div>
@@ -195,7 +195,7 @@ export function ThemeLab() {
 
 						<div className="min-h-0 flex-1 overflow-y-auto">
 							<div className="border-b border-border p-4">
-								<p className="font-mono text-[0.65rem] tracking-[0.15em] text-muted-foreground uppercase">
+								<p className="font-mono text-sm tracking-[0.15em] text-muted-foreground uppercase">
 									Presets
 								</p>
 								<div className="mt-3 flex flex-wrap gap-2">
@@ -224,7 +224,7 @@ export function ThemeLab() {
 									key={group.title}
 									className="border-b border-border p-4"
 								>
-									<p className="font-mono text-[0.65rem] tracking-[0.15em] text-muted-foreground uppercase">
+									<p className="font-mono text-sm tracking-[0.15em] text-muted-foreground uppercase">
 										{group.title}
 									</p>
 
@@ -292,7 +292,7 @@ export function ThemeLab() {
 							<button
 								type="button"
 								onClick={() => setShowAdvanced((show) => !show)}
-								className="w-full px-4 py-3 text-left font-mono text-[0.65rem] tracking-[0.15em] text-muted-foreground uppercase transition-colors hover:text-foreground"
+								className="w-full px-4 py-3 text-left font-mono text-sm tracking-[0.15em] text-muted-foreground uppercase transition-colors hover:text-foreground"
 							>
 								{showAdvanced ? '− Hide' : '+ Show'} chart &
 								sidebar

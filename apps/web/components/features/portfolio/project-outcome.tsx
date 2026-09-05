@@ -78,7 +78,7 @@ export function ProjectOutcome({
 							<blockquote className="font-serif text-2xl leading-snug text-pretty text-foreground italic sm:text-3xl">
 								{quote.text}
 							</blockquote>
-							<figcaption className="mt-6 font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+							<figcaption className="mt-6 font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 								{quote.attribution}
 							</figcaption>
 						</figure>

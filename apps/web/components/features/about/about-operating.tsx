@@ -49,7 +49,7 @@ export function AboutOperating({
 							delay={index * 70}
 							className="border-t border-border pt-5"
 						>
-							<dt className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+							<dt className="font-mono text-sm tracking-[0.2em] text-primary uppercase">
 								{principle.term}
 							</dt>
 							<dd className="mt-3 text-sm text-pretty text-muted-foreground">

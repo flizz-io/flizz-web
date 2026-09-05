@@ -68,7 +68,7 @@ export function ArticleRelated({
 								>
 									<time
 										dateTime={article.publishedAt}
-										className="font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase"
+										className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase"
 									>
 										{formatArticleDate(article.publishedAt)}
 									</time>

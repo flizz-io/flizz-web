@@ -62,7 +62,7 @@ export function ProjectBuild({
 						delay={90}
 						className="lg:border-l lg:border-border lg:pl-16"
 					>
-						<p className="font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+						<p className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 							What we handed over
 						</p>
 
@@ -79,7 +79,7 @@ export function ProjectBuild({
 
 						{stack.length ? (
 							<>
-								<p className="mt-10 font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+								<p className="mt-10 font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 									Built with
 								</p>
 

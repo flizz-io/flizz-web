@@ -46,10 +46,10 @@ export function AboutGuarantees({
 				<Reveal delay={120}>
 					<SchematicFrame className="border border-border bg-card/50">
 						<div className="flex items-center justify-between border-b border-border px-5 py-3 sm:px-7">
-							<span className="font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+							<span className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 								Standard terms
 							</span>
-							<span className="font-mono text-[0.65rem] tracking-[0.2em] text-primary uppercase">
+							<span className="font-mono text-sm tracking-[0.2em] text-primary uppercase">
 								Every project
 							</span>
 						</div>
@@ -60,7 +60,7 @@ export function AboutGuarantees({
 									key={guarantee.term}
 									className="flex flex-col gap-1 px-5 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6 sm:px-7"
 								>
-									<dt className="font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase">
+									<dt className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 										{guarantee.term}
 									</dt>
 									<dd className="text-sm text-pretty text-foreground sm:text-right">

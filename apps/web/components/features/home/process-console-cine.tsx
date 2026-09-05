@@ -152,7 +152,7 @@ function DiscoverStage() {
 					>
 						<span className="flex items-baseline justify-between text-xs text-muted-foreground">
 							{signal.label}
-							<span className="font-mono text-[0.65rem] text-primary">
+							<span className="font-mono text-sm text-primary">
 								<CountUp
 									to={signal.value}
 									suffix="%"
@@ -382,7 +382,7 @@ function BuildStage() {
 				variants={row}
 				className="flex min-h-0 flex-1 flex-col"
 			>
-				<p className="mb-2 font-mono text-[0.55rem] tracking-[0.15em] text-muted-foreground uppercase">
+				<p className="mb-2 font-mono text-xs tracking-[0.15em] text-muted-foreground uppercase">
 					Velocity
 				</p>
 				<div className="flex flex-1 items-end gap-1">
@@ -486,7 +486,7 @@ function LaunchStage() {
 								suffix={metric.suffix}
 							/>
 						</p>
-						<p className="font-mono text-[0.55rem] tracking-[0.15em] text-muted-foreground uppercase">
+						<p className="font-mono text-xs tracking-[0.15em] text-muted-foreground uppercase">
 							{metric.label}
 						</p>
 					</div>
@@ -528,7 +528,7 @@ function HandoverStage() {
 						<span className="flex-1 text-xs text-foreground">
 							{doc.label}
 						</span>
-						<span className="rounded bg-muted-foreground/10 px-1.5 py-0.5 font-mono text-[0.55rem] text-muted-foreground">
+						<span className="rounded bg-muted-foreground/10 px-1.5 py-0.5 font-mono text-xs text-muted-foreground">
 							{doc.kind}
 						</span>
 					</motion.div>

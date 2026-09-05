@@ -44,7 +44,7 @@ export function ConsoleFrame({
 						className="size-2 rounded-full bg-muted-foreground/30"
 					/>
 				))}
-				<span className="ml-2 font-mono text-[0.65rem] text-muted-foreground">
+				<span className="ml-2 font-mono text-sm text-muted-foreground">
 					{headerTitle}
 				</span>
 			</div>

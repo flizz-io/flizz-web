@@ -8,12 +8,13 @@ import { useEffect, useRef, useState } from 'react';
 import { CostDiagram } from '@/components/features/home/cost-diagrams';
 import { ProblemScene } from '@/components/features/home/problem-scenes';
 import { Reveal } from '@/components/snippets/reveal/reveal';
-import { SectionTag } from '@/components/snippets/section-tag/section-tag';
+import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { problemItems, realCostItems } from '@/constants/home';
 import { useScrollProgress } from '@/hooks/use-scroll-progress';
 import type { ProblemItem } from '@/types/home';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { cn } from '@workspace/ui/lib/utils';
+import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 
 // Three.js is heavy and only the closing stage needs it.
 const CostScene = dynamic(
@@ -75,7 +76,7 @@ function StageEyebrow({
 }) {
 	return (
 		<p
-			className="font-mono text-[0.65rem] tracking-[0.22em] text-primary uppercase sm:text-xs"
+			className="font-mono text-base tracking-[0.2em] text-primary uppercase"
 			style={{ opacity: 0.45 + drain * 0.55 }}
 		>
 			{children}
@@ -93,7 +94,7 @@ function CostCallout({ item, drain }: { item: ProblemItem; drain: number }) {
 				)}%, transparent)`
 			}}
 		>
-			<p className="font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase">
+			<p className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 				What it costs you
 			</p>
 			<p className="mt-2 font-serif text-lg text-foreground italic sm:text-xl">
@@ -123,7 +124,7 @@ function ProblemBody({
 
 			<div className="max-w-2xl">
 				<StageEyebrow drain={drain}>{item.eyebrow}</StageEyebrow>
-				<h3 className="mt-3 font-serif text-3xl leading-[1.05] text-balance text-foreground sm:text-4xl lg:text-5xl">
+				<h3 className="mt-3 font-heading text-4xl leading-[1.05] font-semibold text-balance text-foreground sm:text-4xl lg:text-5xl">
 					{item.title}
 				</h3>
 				<p className="mt-5 max-w-xl text-base text-pretty text-muted-foreground sm:text-lg">
@@ -317,28 +318,22 @@ export function Problem({
 								<div className="mx-auto w-full max-w-7xl">
 									{stage.key === 'intro' ? (
 										<div className="max-w-3xl">
-											<SectionTag
+											<SectionHeader
 												index={sectionIndex}
 												total={totalSections}
-												label="The Problem"
+												eyebrow="The Problem"
+												title="Is this how you're building your digital solutions?"
+												description="Most businesses face the same frustrating choices when building software."
+												descriptionClassName="max-w-xl"
 											/>
-											<h2 className="mt-5 font-heading text-4xl font-semibold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
-												Is this how you&apos;re building
-												your digital solutions?
-											</h2>
-											<p className="mt-5 max-w-xl text-lg text-muted-foreground">
-												Most businesses face the same
-												frustrating choices when
-												building software.
-											</p>
-											<p className="mt-12 flex items-center gap-3 font-mono text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase">
+											<p className="mt-12 flex items-center gap-3 font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
 												<span className="h-px w-10 bg-primary/60" />
 												Keep scrolling
 											</p>
 										</div>
 									) : stage.key === 'cost' ? (
 										<div className="max-w-3xl">
-											<p className="font-mono text-[0.65rem] tracking-[0.22em] text-primary uppercase sm:text-xs">
+											<p className="font-mono text-base tracking-[0.22em] text-primary uppercase">
 												The real cost
 											</p>
 
@@ -376,7 +371,7 @@ export function Problem({
 																		isActive
 																	}
 																/>
-																<p className="font-serif text-lg leading-snug text-foreground sm:text-xl lg:text-2xl">
+																<p className="font-heading text-lg leading-snug text-foreground sm:text-xl lg:text-2xl">
 																	{item.line}
 																</p>
 															</div>
@@ -404,7 +399,7 @@ export function Problem({
 						<button
 							type="button"
 							onClick={skipSequence}
-							className="absolute inset-x-0 bottom-10 mx-auto flex w-fit items-center gap-2 font-mono text-[0.65rem] tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-primary"
+							className="absolute inset-x-0 bottom-10 mx-auto flex w-fit cursor-pointer items-center gap-2 font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-primary"
 						>
 							Skip the problem
 							<span aria-hidden>&darr;</span>
@@ -453,20 +448,14 @@ function ProblemStack({
 	return (
 		<section className={cn('border-y border-border', className)}>
 			<div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-				<Reveal className="max-w-3xl">
-					<SectionTag
-						index={sectionIndex}
-						total={totalSections}
-						label="The Problem"
-					/>
-					<h2 className="mt-5 font-heading text-4xl font-semibold tracking-tight text-balance text-foreground sm:text-5xl">
-						Is this how you&apos;re building your digital solutions?
-					</h2>
-					<p className="mt-5 text-lg text-muted-foreground">
-						Most businesses face the same frustrating choices when
-						building software.
-					</p>
-				</Reveal>
+				<SectionHeader
+					index={sectionIndex}
+					total={totalSections}
+					eyebrow="The Problem"
+					title="Is this how you're building your digital solutions?"
+					description="Most businesses face the same frustrating choices when building software."
+					className="max-w-3xl"
+				/>
 
 				<div className="mt-16 flex flex-col gap-16">
 					{problemItems.map((item, index) => (
@@ -481,7 +470,7 @@ function ProblemStack({
 				</div>
 
 				<Reveal className="mt-16 max-w-4xl border-t border-border pt-10">
-					<p className="font-mono text-xs tracking-[0.22em] text-primary uppercase">
+					<p className="font-mono text-base tracking-[0.22em] text-primary uppercase">
 						The real cost
 					</p>
 					<ul className="mt-6">
@@ -494,7 +483,7 @@ function ProblemStack({
 									kind={item.diagram}
 									active={false}
 								/>
-								<p className="font-serif text-lg leading-snug text-foreground sm:text-xl">
+								<p className="font-heading text-lg leading-snug text-foreground sm:text-xl">
 									{item.line}
 								</p>
 							</li>

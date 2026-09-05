@@ -79,7 +79,7 @@ export function ArticlesControls() {
 				/>
 
 				<div className="flex min-w-0 flex-1 items-center gap-3 sm:ml-auto sm:flex-none">
-					<span className="hidden font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase sm:inline">
+					<span className="hidden font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase sm:inline">
 						Sort
 					</span>
 					<Select
@@ -166,7 +166,7 @@ function CategoryFilter({
 				<Button
 					variant="outline"
 					className={cn(
-						'h-11 min-w-0 flex-1 justify-between gap-3 font-mono text-[0.65rem] tracking-[0.15em] uppercase sm:w-52 sm:flex-none',
+						'h-11 min-w-0 flex-1 justify-between gap-3 font-mono text-sm tracking-[0.15em] uppercase sm:w-52 sm:flex-none',
 						selected.length && 'border-primary/50 text-primary'
 					)}
 				>

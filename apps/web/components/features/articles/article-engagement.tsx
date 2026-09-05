@@ -92,7 +92,7 @@ export function ArticleEngagementBar({
 					type="button"
 					disabled
 					title="Reactions arrive with the API"
-					className="group/heart inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase disabled:cursor-not-allowed"
+					className="group/heart inline-flex items-center gap-2 rounded-full border border-border px-3.5 py-1.5 font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase disabled:cursor-not-allowed"
 				>
 					<Heart className="size-3.5 text-primary" />
 					{formatCount(engagement.reactions)}
@@ -100,7 +100,7 @@ export function ArticleEngagementBar({
 			) : null}
 
 			{showViews ? (
-				<span className="inline-flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+				<span className="inline-flex items-center gap-2 font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 					<Eye className="size-3.5" />
 					{formatCount(engagement.views)} views
 				</span>
@@ -108,7 +108,7 @@ export function ArticleEngagementBar({
 
 			{showShare ? (
 				<div className="ml-auto flex items-center gap-2">
-					<span className="mr-1 font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+					<span className="mr-1 font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 						Share
 					</span>
 					{shareLinks.map((link) => (

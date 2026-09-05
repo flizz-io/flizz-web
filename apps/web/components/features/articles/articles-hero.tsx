@@ -52,7 +52,7 @@ export function ArticlesHero({ children, className }: ArticlesHeroProps) {
 						    is actually judging on an articles index. The count
 						    lives on the index header, where it answers to the
 						    filters. */}
-						<p className="font-mono text-[0.65rem] tracking-[0.18em] text-muted-foreground uppercase">
+						<p className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
 							Last updated
 							<span className="ml-3 text-foreground">
 								{new Date(
