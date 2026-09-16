@@ -3,6 +3,10 @@
 import { ThemeProvider as NextThemesProvider, useTheme } from 'next-themes';
 import * as React from 'react';
 
+// Versioned so a stale preference saved under an older key can't keep pinning
+// a returning visitor to light mode — bump the suffix to reset everyone again.
+const THEME_STORAGE_KEY = 'flizz-theme-v2';
+
 function ThemeProvider({
 	children,
 	...props
@@ -10,6 +14,7 @@ function ThemeProvider({
 	return (
 		<NextThemesProvider
 			attribute="class"
+			storageKey={THEME_STORAGE_KEY}
 			defaultTheme="dark"
 			enableSystem={false}
 			disableTransitionOnChange

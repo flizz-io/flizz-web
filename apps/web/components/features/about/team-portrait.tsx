@@ -30,7 +30,7 @@ export function TeamPortrait({ name, photo, className }: TeamPortraitProps) {
 					// Biased above centre: the only vertical crop happens on
 					// the mobile 4:5 card, and it should take it off the chin
 					// rather than the top of the head.
-					'object-cover [object-position:50%_35%]',
+					'object-cover object-[50%_35%]',
 					'transition-transform duration-700 ease-power-on group-hover/slat:scale-[1.03]',
 					className
 				)}
