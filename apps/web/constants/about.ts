@@ -164,6 +164,89 @@ export const showTeamSection = true;
  * demo content, and `photo` is deliberately unset on every row — each frame
  * shows an initials plate until a real photograph is dropped in.
  */
+export const aboutTeamFounder: TeamMember[] = [
+	{
+		name: 'Zahid Showarav',
+		role: 'Co-founder, Principal Engineer',
+		isFounder: true,
+		photo: '/team-members/showrav.png',
+		links: {
+			linkedin: 'https://www.linkedin.com/in/arman-chowdhury',
+			x: 'https://x.com/armanchowdhury',
+			portfolio: 'https://armanchowdhury.dev'
+		}
+	},
+	{
+		name: 'Abdur Rahman',
+		role: 'Co-founder, CTO',
+		isFounder: true,
+		photo: '/team-members/riyad-3.png',
+		links: {
+			linkedin: 'https://www.linkedin.com/in/nabila-rahman',
+			x: 'https://x.com/nabilarahman',
+			portfolio: 'https://nabilarahman.dev'
+		}
+	},
+	{
+		name: 'Meer Estiyak',
+		role: 'Co-founder, Lead AI/ML Engineer',
+		photo: '/team-members/rifat.png',
+		isFounder: true,
+		links: {
+			linkedin: 'https://www.linkedin.com/in/tanvir-hasan',
+			x: 'https://x.com/tanvirhasan'
+		}
+	},
+	{
+		name: 'Imran Hossain',
+		role: 'Co-founder, Head of Product & Marketing',
+		photo: '/team-members/imran-2.png',
+		isFounder: true,
+		links: {
+			linkedin: 'https://www.linkedin.com/in/tanvir-hasan',
+			x: 'https://x.com/tanvirhasan'
+		}
+	},
+	{
+		name: 'Sifat Chowdhury',
+		role: 'Lead Product Designer',
+		photo: '/team-members/sifat-4.png',
+		links: {
+			linkedin: 'https://www.linkedin.com/in/mehjabin-islam',
+			portfolio: 'https://mehjabin.ai'
+		}
+	},
+	{
+		name: 'Rihadul Islam',
+		role: 'Senior Full-stack Engineer',
+		// photo: '/team-members/riyad-4.png',
+		links: {
+			linkedin: 'https://www.linkedin.com/in/rifat-ahmed',
+			x: 'https://x.com/rifatahmed'
+		}
+	}
+	// {
+	// 	name: 'Hasan Attar',
+	// 	role: 'Frontend Engineer',
+	// 	links: {
+	// 		linkedin: 'https://www.linkedin.com/in/zayan-kabir'
+	// 	}
+	// }
+	// {
+	// 	name: 'Fahad Abrar',
+	// 	role: 'UI Design',
+	// 	links: {
+	// 		linkedin: 'https://www.linkedin.com/in/zayan-kabir'
+	// 	}
+	// }
+	// {
+	// 	name: 'Kabir Mridha',
+	// 	role: 'QA & Release Engineer',
+	// 	links: {
+	// 		linkedin: 'https://www.linkedin.com/in/zayan-kabir'
+	// 	}
+	// }
+];
 export const aboutTeam: TeamMember[] = [
 	{
 		name: 'Zahid Showarav',
@@ -200,7 +283,7 @@ export const aboutTeam: TeamMember[] = [
 	{
 		name: 'Imran Hossain',
 		role: 'Co-founder, Head of Product & Marketing',
-		photo: '/team-members/imran.png',
+		photo: '/team-members/imran-2.png',
 		isFounder: true,
 		links: {
 			linkedin: 'https://www.linkedin.com/in/tanvir-hasan',
@@ -210,7 +293,7 @@ export const aboutTeam: TeamMember[] = [
 	{
 		name: 'Sifat Chowdhury',
 		role: 'Lead Product Designer',
-		// photo: '/team-members/sifat.jpg',
+		photo: '/team-members/sifat-4.png',
 		links: {
 			linkedin: 'https://www.linkedin.com/in/mehjabin-islam',
 			portfolio: 'https://mehjabin.ai'
@@ -224,14 +307,14 @@ export const aboutTeam: TeamMember[] = [
 			linkedin: 'https://www.linkedin.com/in/rifat-ahmed',
 			x: 'https://x.com/rifatahmed'
 		}
-	},
-	{
-		name: 'Zayan Kabir',
-		role: 'QA & Release Engineer',
-		links: {
-			linkedin: 'https://www.linkedin.com/in/zayan-kabir'
-		}
 	}
+	// {
+	// 	name: 'Zayan Kabir',
+	// 	role: 'QA & Release Engineer',
+	// 	links: {
+	// 		linkedin: 'https://www.linkedin.com/in/zayan-kabir'
+	// 	}
+	// }
 ];
 
 export const aboutCtaHeading = 'Now tell us what you are building';
