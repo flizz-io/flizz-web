@@ -7,8 +7,9 @@ import { useEffect, type RefObject } from 'react';
  * How far a tall element has been scrolled through, as 0 → 1.
  *
  * Measured from the element's own rect on every frame rather than from
- * Framer's `useScroll`: Lenis owns the scroll position here, and the values
- * `useScroll` reports under it stay pinned at 0. The loop only runs while the
+ * Framer's `useScroll`: ScrollSmoother eases the content behind the native
+ * scroll position, so a value read from the window runs ahead of what is
+ * actually on screen, while the rect tracks it. The loop only runs while the
  * element is on screen.
  */
 export function useScrollProgress(ref: RefObject<HTMLElement | null>) {

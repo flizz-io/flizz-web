@@ -26,7 +26,7 @@ export function Header() {
 	}, []);
 
 	return (
-		<header className="sticky top-4 z-40 px-0 sm:px-6 lg:px-8">
+		<header className="fixed inset-x-0 top-4 z-40 px-0 sm:px-6 lg:px-8">
 			<div
 				className={cn(
 					'mx-auto px-4 transition-[max-width] duration-500 ease-out sm:px-8',

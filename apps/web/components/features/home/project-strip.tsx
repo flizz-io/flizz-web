@@ -167,23 +167,6 @@ export function ProjectStrip({ className }: { className?: string }) {
 		}
 	};
 
-	/**
-	 * Horizontal gestures are claimed here rather than via `data-lenis-prevent`:
-	 * that attribute makes Lenis ignore the element, so vertical scrolling over
-	 * the strip turns native and instant while the rest of the page eases, and
-	 * Lenis reasserts its own position every frame. The two fight, and it reads
-	 * as flicker.
-	 */
-	const onWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-		const viewport = viewportRef.current;
-		if (!viewport) return;
-
-		// Vertical and diagonal intent stays with the page.
-		if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
-
-		viewport.scrollLeft += event.deltaX;
-	};
-
 	// A drag that ended over a card shouldn't also open it.
 	const onClickCapture = (event: React.MouseEvent<HTMLDivElement>) => {
 		if (dragRef.current.moved > DRAG_THRESHOLD) {
@@ -232,7 +215,6 @@ export function ProjectStrip({ className }: { className?: string }) {
 				<div
 					ref={viewportRef}
 					onScroll={readScroll}
-					onWheel={onWheel}
 					onPointerDown={onPointerDown}
 					onPointerMove={onPointerMove}
 					onPointerUp={endDrag}

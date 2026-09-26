@@ -1,7 +1,6 @@
 'use client';
 
 import { motion, type Variants } from 'framer-motion';
-import { useLenis } from 'lenis/react';
 import { ArrowDown, Sparkle } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -10,6 +9,8 @@ import {
 	heroDisciplinesSceneConfig,
 	heroScrollTargetId
 } from '@/constants/home';
+import { useSmoother } from '@/contexts/smooth-scroll-context';
+import { scrollToElement } from '@/utils/scroll';
 import { Button } from '@workspace/ui/components/button';
 import { Particles } from '@workspace/ui/components/particles';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
@@ -45,19 +46,14 @@ const item: Variants = {
  */
 export function HeroConstellation() {
 	const reduceMotion = usePrefersReducedMotion();
-	const lenis = useLenis();
+	const smoother = useSmoother();
 
 	const scrollToNext = () => {
 		const target = document.getElementById(heroScrollTargetId);
 		if (!target) return;
 
 		// Header clearance comes from the target's own `scroll-mt-*`.
-		if (lenis) {
-			lenis.scrollTo(target);
-			return;
-		}
-
-		target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		scrollToElement(smoother, target);
 	};
 
 	return (

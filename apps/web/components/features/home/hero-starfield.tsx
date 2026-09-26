@@ -1,12 +1,13 @@
 'use client';
 
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import { useLenis } from 'lenis/react';
 import { ArrowDown, Sparkle } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 import { heroScrollTargetId } from '@/constants/home';
+import { useSmoother } from '@/contexts/smooth-scroll-context';
+import { scrollToElement } from '@/utils/scroll';
 import { Button } from '@workspace/ui/components/button';
 import { useIsDarkTheme } from '@workspace/ui/hooks/use-is-dark-theme';
 
@@ -36,23 +37,15 @@ const item: Variants = {
 export function HeroStarfield() {
 	const reduceMotion = useReducedMotion();
 	const isDark = useIsDarkTheme();
-	const lenis = useLenis();
+	const smoother = useSmoother();
 
 	function scrollToNextSection() {
 		const target = document.getElementById(heroScrollTargetId);
 		if (!target) return;
 
-		// Header clearance comes from the target's own `scroll-mt-*`, which both
-		// Lenis and native scrolling honour — passing an offset here too would
-		// double-compensate.
-		if (lenis) {
-			lenis.scrollTo(target);
-			return;
-		}
-
-		// Lenis is skipped for reduced-motion visitors — fall back to the
-		// platform's own scrolling, which honours that preference too.
-		target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		// Header clearance comes from the target's own `scroll-mt-*` —
+		// passing an offset here too would double-compensate.
+		scrollToElement(smoother, target);
 	}
 
 	return (

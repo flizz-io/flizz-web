@@ -1,28 +1,25 @@
 'use client';
 
-import { useLenis } from 'lenis/react';
 import { useCallback } from 'react';
 
+import { useSmoother } from '@/contexts/smooth-scroll-context';
+import { scrollToElement } from '@/utils/scroll';
+
 /**
- * Scrolls to an element by id, through Lenis where it is mounted so the motion
+ * Scrolls to an element by id, through ScrollSmoother where it is mounted so the motion
  * matches the rest of the page. Header clearance comes from the target's own
  * `scroll-mt-*`.
  */
 export function useScrollToId() {
-	const lenis = useLenis();
+	const smoother = useSmoother();
 
 	return useCallback(
 		(id: string) => {
 			const target = document.getElementById(id);
 			if (!target) return;
 
-			if (lenis) {
-				lenis.scrollTo(target);
-				return;
-			}
-
-			target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			scrollToElement(smoother, target);
 		},
-		[lenis]
+		[smoother]
 	);
 }

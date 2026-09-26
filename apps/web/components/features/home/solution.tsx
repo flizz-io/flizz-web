@@ -4,8 +4,10 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
 import { ConsoleFrame } from '@/components/snippets/console-frame/console-frame';
+import { Pinned } from '@/components/snippets/pinned/pinned';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { processSteps } from '@/constants/home';
+import { PinOffset } from '@/enums/scroll';
 import { cn } from '@workspace/ui/lib/utils';
 
 import { ProcessConsoleCine } from './process-console-cine';
@@ -38,7 +40,7 @@ export function Solution({
 
 		// Cycling off screen isn't just wasted work: each stage remount makes
 		// Motion measure percentage keyframes, and that measurement scrolls the
-		// window and restores it — which Lenis doesn't recover from, so the
+		// window and restores it — which a smooth scroller doesn't recover from, so the
 		// page creeps upward while the reader is somewhere else entirely.
 		const observer = new IntersectionObserver(([entry]) =>
 			setIsInView(Boolean(entry?.isIntersecting))
@@ -175,55 +177,59 @@ export function Solution({
 					})}
 				</ul>
 
-				<ConsoleFrame
-					headerTitle={'flizz.build / northwind'}
-					footerContent={
-						<>
-							<span className="font-mono text-sm tracking-[0.2em] text-primary uppercase">
-								{String(activeIndex + 1).padStart(2, '0')} /{' '}
-								{activeStep?.shortLabel}
-							</span>
-							<span className="flex gap-1.5">
-								{processSteps.map((step, i) => (
-									<span
-										key={step.title}
-										className={cn(
-											'h-1 rounded-full transition-all duration-500',
-											i === activeIndex
-												? 'w-6 bg-primary'
-												: 'w-1.5 bg-muted-foreground/30'
-										)}
-									/>
-								))}
-							</span>
-						</>
-					}
-					className="lg:sticky lg:top-28"
+				<Pinned
+					offset={PinOffset.BELOW_HEADER}
+					desktopOnly
 				>
-					<AnimatePresence mode="wait">
-						<motion.div
-							key={activeIndex}
-							initial="hidden"
-							animate="show"
-							exit="exit"
-							className="h-full"
-						>
-							{/* One scan sweep per stage change. */}
-							<motion.span
-								key={`sweep-${activeIndex}`}
-								aria-hidden
-								className="pointer-events-none absolute inset-x-0 z-10 h-24 bg-linear-to-b from-transparent via-primary/12 to-transparent"
-								initial={{ y: '-100%', opacity: 0.9 }}
-								animate={{ y: '420%', opacity: 0 }}
-								transition={{
-									duration: 1.1,
-									ease: 'easeOut'
-								}}
-							/>
-							<ProcessConsoleCine index={activeIndex} />
-						</motion.div>
-					</AnimatePresence>
-				</ConsoleFrame>
+					<ConsoleFrame
+						headerTitle={'flizz.build / northwind'}
+						footerContent={
+							<>
+								<span className="font-mono text-sm tracking-[0.2em] text-primary uppercase">
+									{String(activeIndex + 1).padStart(2, '0')} /{' '}
+									{activeStep?.shortLabel}
+								</span>
+								<span className="flex gap-1.5">
+									{processSteps.map((step, i) => (
+										<span
+											key={step.title}
+											className={cn(
+												'h-1 rounded-full transition-all duration-500',
+												i === activeIndex
+													? 'w-6 bg-primary'
+													: 'w-1.5 bg-muted-foreground/30'
+											)}
+										/>
+									))}
+								</span>
+							</>
+						}
+					>
+						<AnimatePresence mode="wait">
+							<motion.div
+								key={activeIndex}
+								initial="hidden"
+								animate="show"
+								exit="exit"
+								className="h-full"
+							>
+								{/* One scan sweep per stage change. */}
+								<motion.span
+									key={`sweep-${activeIndex}`}
+									aria-hidden
+									className="pointer-events-none absolute inset-x-0 z-10 h-24 bg-linear-to-b from-transparent via-primary/12 to-transparent"
+									initial={{ y: '-100%', opacity: 0.9 }}
+									animate={{ y: '420%', opacity: 0 }}
+									transition={{
+										duration: 1.1,
+										ease: 'easeOut'
+									}}
+								/>
+								<ProcessConsoleCine index={activeIndex} />
+							</motion.div>
+						</AnimatePresence>
+					</ConsoleFrame>
+				</Pinned>
 			</div>
 		</section>
 	);

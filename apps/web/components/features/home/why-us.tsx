@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import { Pinned } from '@/components/snippets/pinned/pinned';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { valueProps } from '@/constants/home';
+import { PinOffset } from '@/enums/scroll';
 import { Text3DFlip } from '@workspace/ui/components/text-3d-flip';
 import { cn } from '@workspace/ui/lib/utils';
 
@@ -69,7 +71,11 @@ export function WhyUs({
 				    void beside the list. Deliberately shorter than the viewport:
 				    a full-height sticky in a container only a little taller than
 				    the screen has almost no travel and unsticks immediately. */}
-				<div className="lg:sticky lg:top-[calc((100svh-500px)/2)] lg:flex lg:h-125 lg:flex-col lg:justify-center lg:self-start">
+				<Pinned
+					offset={PinOffset.CENTER}
+					desktopOnly
+					className="lg:flex lg:h-125 lg:flex-col lg:justify-center lg:self-start"
+				>
 					<SectionHeader
 						index={sectionIndex}
 						total={totalSections}
@@ -135,7 +141,7 @@ export function WhyUs({
 						</span>{' '}
 						/ {String(valueProps.length).padStart(2, '0')}
 					</p>
-				</div>
+				</Pinned>
 
 				<ol
 					ref={listRef}
