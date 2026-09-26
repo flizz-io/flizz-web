@@ -173,6 +173,15 @@ export const processSteps: ProcessStep[] = [
  */
 export const serviceCards = homeTeaserServices;
 
+// Copy for the services strip's edge arrows and pointer badge.
+export const servicesRailLabels = {
+	moreAfter: 'more',
+	moreBefore: 'earlier',
+	nextAria: 'Show later services',
+	previousAria: 'Show earlier services',
+	viewDetails: 'Click to view details'
+};
+
 /**
  * The strip's roster, derived from the canonical list in
  * `constants/portfolio.ts` so the home page and `/portfolio` can never disagree
