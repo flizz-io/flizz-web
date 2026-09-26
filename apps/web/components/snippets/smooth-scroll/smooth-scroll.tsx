@@ -7,13 +7,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
+import { smoothScrollEase, smoothScrollSeconds } from '@/constants/scroll';
 import { SmoothScrollContext } from '@/contexts/smooth-scroll-context';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollSmoother);
-
-/** Seconds the content takes to catch up with the native scroll position. */
-const SMOOTH_SECONDS = 1;
 
 interface SmoothScrollProps {
 	children: React.ReactNode;
@@ -47,7 +45,8 @@ export function SmoothScroll({ children, fixed }: SmoothScrollProps) {
 				content: contentRef.current,
 				// Reduced motion keeps the structure (pins still need it) but
 				// drops the easing, so the page tracks the scroll exactly.
-				smooth: reducedMotion ? 0 : SMOOTH_SECONDS,
+				smooth: reducedMotion ? 0 : smoothScrollSeconds,
+				ease: smoothScrollEase,
 				smoothTouch: false
 			});
 
@@ -77,7 +76,17 @@ export function SmoothScroll({ children, fixed }: SmoothScrollProps) {
 		<SmoothScrollContext.Provider value={smoother}>
 			{fixed}
 			<div ref={wrapperRef}>
-				<div ref={contentRef}>{children}</div>
+				{/* Opaque on purpose. The transform makes this its own
+				    compositing group, so blend modes inside it (the heroes'
+				    soft-light film grain) blend against this layer rather than
+				    the body — left transparent, the grain renders as raw noise
+				    and lifts every blended section off the page colour. */}
+				<div
+					ref={contentRef}
+					className="bg-background"
+				>
+					{children}
+				</div>
 			</div>
 		</SmoothScrollContext.Provider>
 	);

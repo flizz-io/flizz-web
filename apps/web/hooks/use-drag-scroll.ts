@@ -1,6 +1,10 @@
 'use client';
 
-import { useRef, type PointerEvent as ReactPointerEvent } from 'react';
+import {
+	useEffect,
+	useRef,
+	type PointerEvent as ReactPointerEvent
+} from 'react';
 
 import type { SmoothScroller } from '@/hooks/use-smooth-scroll';
 
@@ -9,12 +13,14 @@ const DRAG_THRESHOLD = 6;
 const VELOCITY_WINDOW_MS = 100;
 /** How far a flick carries, as ms of travel at the release velocity. */
 const MOMENTUM_MS = 320;
+/** Pixels per line, for wheels that report in lines (Firefox, some mice). */
+const LINE_HEIGHT_PX = 16;
 
 interface DragScrollOptions {
 	/**
-	 * Routes drag and flick momentum through an eased scroller instead
-	 * of writing `scrollLeft` directly, so the strip glides rather than
-	 * tracking the pointer pixel for pixel.
+	 * Routes drag, flick momentum and horizontal wheel/trackpad input
+	 * through an eased scroller instead of writing `scrollLeft` directly,
+	 * so the strip glides rather than tracking input pixel for pixel.
 	 */
 	scroller?: SmoothScroller;
 }
@@ -127,6 +133,39 @@ export function useDragScroll(
 			node.releasePointerCapture(event.pointerId);
 		}
 	};
+
+	useEffect(() => {
+		const node = ref.current;
+		if (!node || !scroller) return;
+
+		// Native and non-passive, because the default has to be cancelled:
+		// left alone, the browser would scroll the strip instantly underneath
+		// the glide. Only clearly horizontal intent is claimed — a trackpad
+		// swipe, a tilt wheel, or shift+wheel — so vertical and diagonal
+		// scrolling always stays with the page.
+		const onWheel = (event: WheelEvent) => {
+			if (node.scrollWidth <= node.clientWidth) return;
+
+			const horizontal =
+				event.shiftKey && event.deltaX === 0
+					? event.deltaY
+					: Math.abs(event.deltaX) > Math.abs(event.deltaY)
+						? event.deltaX
+						: 0;
+			if (horizontal === 0) return;
+
+			event.preventDefault();
+			scroller.scrollBy(
+				event.deltaMode === WheelEvent.DOM_DELTA_LINE
+					? horizontal * LINE_HEIGHT_PX
+					: horizontal
+			);
+		};
+
+		node.addEventListener('wheel', onWheel, { passive: false });
+
+		return () => node.removeEventListener('wheel', onWheel);
+	}, [ref, scroller]);
 
 	/** A drag that ended over a link shouldn't also open it. */
 	const onClickCapture = (

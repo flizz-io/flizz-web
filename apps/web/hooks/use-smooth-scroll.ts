@@ -1,13 +1,13 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { useCallback, useMemo, useRef } from 'react';
 
+import { smoothScrollEase, smoothScrollSeconds } from '@/constants/scroll';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 
-/** Share of the remaining distance covered each frame — lower glides longer. */
-const EASE = 0.12;
-/** Close enough to call the glide finished, in px. */
-const SETTLE_DISTANCE = 0.5;
+gsap.registerPlugin(useGSAP);
 
 export interface SmoothScroller {
 	/** Glide to an absolute `scrollLeft`, clamped to the scrollable range. */
@@ -19,66 +19,50 @@ export interface SmoothScroller {
 }
 
 /**
- * Eased horizontal scrolling for a container, driven by one rAF loop that
- * chases a target position.
+ * GSAP-eased horizontal scrolling for a container — the same duration and
+ * curve ScrollSmoother gives the page, so a strip glides like everything
+ * around it.
  *
- * Everything that moves the strip — drag, inertia, wheel, arrow buttons —
- * writes the target rather than `scrollLeft`, so input from any of them
- * blends into the same glide instead of each one jumping on its own. The
- * position is tracked here rather than re-read from `scrollLeft`, because
- * browsers round that to device pixels and a sub-pixel step would never land.
+ * Everything that moves the strip — drag, flick momentum, wheel, arrow
+ * buttons — retargets one `quickTo` tween rather than writing `scrollLeft`,
+ * so input from any of them blends into a single glide instead of each one
+ * jumping on its own.
  */
 export function useSmoothScroll(
 	ref: React.RefObject<HTMLElement | null>
 ): SmoothScroller {
 	const reducedMotion = usePrefersReducedMotion();
-	const frame = useRef<number | null>(null);
-	const current = useRef(0);
+	const glide = useRef<gsap.QuickToFunc | null>(null);
 	const target = useRef(0);
 
-	const stop = useCallback(() => {
-		if (frame.current === null) return;
+	useGSAP(
+		() => {
+			const node = ref.current;
+			if (!node || reducedMotion) return;
 
-		cancelAnimationFrame(frame.current);
-		frame.current = null;
-	}, []);
+			glide.current = gsap.quickTo(node, 'scrollLeft', {
+				duration: smoothScrollSeconds,
+				ease: smoothScrollEase
+			});
+
+			return () => {
+				glide.current = null;
+			};
+		},
+		{ dependencies: [reducedMotion] }
+	);
 
 	const clamp = useCallback(
 		(left: number) => {
 			const node = ref.current;
 			if (!node) return left;
 
-			const max = node.scrollWidth - node.clientWidth;
+			const max = Math.max(node.scrollWidth - node.clientWidth, 0);
 
-			return Math.min(Math.max(left, 0), Math.max(max, 0));
+			return Math.min(Math.max(left, 0), max);
 		},
 		[ref]
 	);
-
-	/** Starts the chase loop; a named inner step lets it re-queue itself. */
-	const run = useCallback(() => {
-		const step = () => {
-			const node = ref.current;
-			if (!node) {
-				frame.current = null;
-				return;
-			}
-
-			const distance = target.current - current.current;
-
-			if (Math.abs(distance) < SETTLE_DISTANCE) {
-				node.scrollLeft = target.current;
-				frame.current = null;
-				return;
-			}
-
-			current.current += distance * EASE;
-			node.scrollLeft = current.current;
-			frame.current = requestAnimationFrame(step);
-		};
-
-		frame.current = requestAnimationFrame(step);
-	}, [ref]);
 
 	const scrollTo = useCallback(
 		(left: number) => {
@@ -87,19 +71,10 @@ export function useSmoothScroll(
 
 			target.current = clamp(left);
 
-			if (reducedMotion) {
-				node.scrollLeft = target.current;
-				return;
-			}
-
-			if (frame.current !== null) return;
-
-			// Starting fresh: pick up wherever the strip really is, in case
-			// something outside this hook (keyboard, scrollbar) moved it.
-			current.current = node.scrollLeft;
-			run();
+			if (glide.current) glide.current(target.current);
+			else node.scrollLeft = target.current;
 		},
-		[clamp, reducedMotion, ref, run]
+		[clamp, ref]
 	);
 
 	const scrollBy = useCallback(
@@ -107,14 +82,26 @@ export function useSmoothScroll(
 			const node = ref.current;
 			if (!node) return;
 
-			const base =
-				frame.current === null ? node.scrollLeft : target.current;
+			// Mid-glide, stack onto where it's heading rather than where it
+			// happens to be, so quick repeated input adds up instead of
+			// being partly swallowed.
+			const base = gsap.isTweening(node)
+				? target.current
+				: node.scrollLeft;
 			scrollTo(base + delta);
 		},
 		[ref, scrollTo]
 	);
 
-	useEffect(() => stop, [stop]);
+	const stop = useCallback(() => {
+		const node = ref.current;
+		if (!node || !glide.current) return;
+
+		// Retarget onto the current position, starting from it: the tween
+		// settles instantly without being killed, so it stays reusable.
+		target.current = node.scrollLeft;
+		glide.current(node.scrollLeft, node.scrollLeft);
+	}, [ref]);
 
 	return useMemo(
 		() => ({ scrollTo, scrollBy, stop }),
