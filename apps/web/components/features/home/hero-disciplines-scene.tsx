@@ -50,6 +50,10 @@ const IDLE_HANDOVER_RATE = 2;
 // Hover: a node counts as pointed at within this many px of its hub, or
 // anywhere over its label. Emphasis eases in at this rate per second.
 const HOVER_RADIUS = 44;
+// The grab hand only appears once the pointer has rested on the scene this
+// long — an invitation for someone lingering, not a cursor that flickers
+// under everyone just passing over.
+const GRAB_HINT_DELAY_MS = 1500;
 const ACTIVE_EASE_RATE = 8;
 const ACTIVE_HUB_GROWTH = 0.45;
 const ACTIVE_POINT_GROWTH = 0.3;
@@ -328,6 +332,25 @@ export function HeroDisciplinesScene({
 			pointer.y = event.clientY - rect.top;
 		};
 
+		let grabHintTimer: number | null = null;
+
+		const clearGrabHint = () => {
+			if (grabHintTimer !== null) {
+				window.clearTimeout(grabHintTimer);
+				grabHintTimer = null;
+			}
+			delete container.dataset.grabHint;
+		};
+
+		// Any movement puts the regular cursor back and restarts the wait.
+		const scheduleGrabHint = () => {
+			clearGrabHint();
+			grabHintTimer = window.setTimeout(() => {
+				grabHintTimer = null;
+				container.dataset.grabHint = 'true';
+			}, GRAB_HINT_DELAY_MS);
+		};
+
 		const onPointerDown = (event: PointerEvent) => {
 			if (event.pointerType === 'mouse' && event.button !== 0) return;
 
@@ -340,12 +363,15 @@ export function HeroDisciplinesScene({
 			velocity.y = 0;
 			lastInteractionAt = performance.now();
 			container.setPointerCapture(event.pointerId);
+			clearGrabHint();
 			container.dataset.dragging = 'true';
 		};
 
 		const onPointerMove = (event: PointerEvent) => {
 			readPointer(event);
 			pointer.inside = true;
+			if (drag.active) clearGrabHint();
+			else scheduleGrabHint();
 
 			if (drag.active) {
 				const turnX =
@@ -374,6 +400,8 @@ export function HeroDisciplinesScene({
 
 			drag.active = false;
 			delete container.dataset.dragging;
+			// Let go and left resting: the hand comes back after the same wait.
+			scheduleGrabHint();
 			if (container.hasPointerCapture(event.pointerId)) {
 				container.releasePointerCapture(event.pointerId);
 			}
@@ -388,6 +416,7 @@ export function HeroDisciplinesScene({
 		const onPointerLeave = () => {
 			if (drag.active) return;
 
+			clearGrabHint();
 			pointer.inside = false;
 			if (prefersReducedMotion) renderStill();
 		};
@@ -947,6 +976,7 @@ export function HeroDisciplinesScene({
 			container.removeEventListener('pointerup', onPointerUp);
 			container.removeEventListener('pointercancel', onPointerUp);
 			container.removeEventListener('pointerleave', onPointerLeave);
+			clearGrabHint();
 			core.dispose();
 			clusterMaterial.dispose();
 			clusters.forEach(({ cloud, cloudMaterial, hub }) => {
@@ -981,7 +1011,7 @@ export function HeroDisciplinesScene({
 			ref={containerRef}
 			// `touch-pan-y`: on touch a sideways drag turns the scene while an
 			// upward one still scrolls the page.
-			className="absolute inset-0 cursor-grab touch-pan-y select-none data-dragging:cursor-grabbing lg:top-12"
+			className="absolute inset-0 touch-pan-y select-none data-dragging:cursor-grabbing data-grab-hint:cursor-grab lg:top-12"
 		>
 			{heroDisciplines.map((discipline, index) => (
 				<div
