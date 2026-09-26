@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 import { ProjectStrip } from '@/components/features/home/project-strip';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
+import { heroScrollTargetId } from '@/constants/home';
 import { portfolioMeta } from '@/constants/portfolio';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
@@ -21,8 +22,11 @@ export function PortfolioTeaser({
 		// Clipped rather than hidden: the strip runs to the viewport edges while
 		// the header stays on the page container.
 		<section
+			// The hero's "See the works" cue lands here; the scroll margin
+			// clears the floating header.
+			id={heroScrollTargetId}
 			className={cn(
-				'overflow-x-clip border-t border-border py-20 sm:py-28',
+				'scroll-mt-24 overflow-x-clip border-t border-border py-20 sm:py-28',
 				className
 			)}
 		>

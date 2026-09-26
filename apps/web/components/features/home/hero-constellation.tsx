@@ -53,7 +53,7 @@ export function HeroConstellation() {
 		if (!target) return;
 
 		// Header clearance comes from the target's own `scroll-mt-*`.
-		scrollToElement(smoother, target);
+		scrollToElement(smoother, target, { cinematic: true });
 	};
 
 	return (
@@ -159,9 +159,9 @@ export function HeroConstellation() {
 						<button
 							type="button"
 							onClick={scrollToNext}
-							className="group inline-flex items-center gap-2.5 font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-primary"
+							className="group inline-flex cursor-pointer items-center gap-2.5 font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-primary"
 						>
-							<ArrowDown className="size-3.5 text-primary transition-transform group-hover:translate-y-0.5" />
+							<ArrowDown className="size-3.5 text-primary drop-shadow-[0_0_6px_var(--color-primary)] group-hover:paused motion-safe:animate-float-cue" />
 							See the works
 						</button>
 					</motion.div>

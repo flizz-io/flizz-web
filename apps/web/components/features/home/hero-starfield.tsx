@@ -45,7 +45,7 @@ export function HeroStarfield() {
 
 		// Header clearance comes from the target's own `scroll-mt-*` —
 		// passing an offset here too would double-compensate.
-		scrollToElement(smoother, target);
+		scrollToElement(smoother, target, { cinematic: true });
 	}
 
 	return (
@@ -150,7 +150,7 @@ export function HeroStarfield() {
 					// Centred with `mx-auto` rather than a translate, because
 					// Framer Motion writes an inline `transform` that would
 					// override a Tailwind translate class.
-					className="group absolute inset-x-0 bottom-8 mx-auto hidden w-fit items-center gap-2.5 rounded-full border border-border bg-card/70 px-4 py-2.5 font-mono text-[0.7rem] tracking-[0.2em] text-foreground/90 uppercase backdrop-blur-sm transition-colors hover:border-primary/50 hover:text-foreground sm:flex dark:text-white/85 dark:hover:text-white"
+					className="group absolute inset-x-0 bottom-8 mx-auto hidden w-fit cursor-pointer items-center gap-2.5 rounded-full border border-border bg-card/70 px-4 py-2.5 font-mono text-[0.7rem] tracking-[0.2em] text-foreground/90 uppercase backdrop-blur-sm transition-colors hover:border-primary/50 hover:text-foreground sm:flex dark:text-white/85 dark:hover:text-white"
 				>
 					<motion.span
 						className="flex"

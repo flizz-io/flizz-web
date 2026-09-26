@@ -13,8 +13,9 @@ import type {
 	ValueProp
 } from '@/types/home';
 
-// Anchor the hero's scroll cue targets — shared so the id can't drift apart.
-export const heroScrollTargetId = 'highlights';
+// Anchor the hero's "See the works" cue scrolls to — the Our Work section.
+// Shared so the id can't drift apart.
+export const heroScrollTargetId = 'our-work';
 
 // The three disciplines the alternate hero orbits — labels track their own node
 // as the constellation turns.

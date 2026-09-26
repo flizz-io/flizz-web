@@ -142,6 +142,8 @@
 
 	--animate-marquee: marquee 34s linear infinite;
 	--animate-aurora: aurora-drift 26s ease-in-out infinite;
+	--animate-float-cue: float-cue 2.4s var(--ease-float) infinite;
+	--ease-float: cubic-bezier(0.45, 0, 0.55, 1);
 	--ease-power-on: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -158,6 +160,20 @@
 	48%,
 	100% {
 		transform: translateX(530%);
+	}
+}
+
+/* A scroll cue drifting on its own breath: sinks and brightens, then rises and
+   fades back, as if it were floating rather than bouncing. */
+@keyframes float-cue {
+	0%,
+	100% {
+		transform: translateY(-2px);
+		opacity: 0.55;
+	}
+	50% {
+		transform: translateY(4px);
+		opacity: 1;
 	}
 }
 

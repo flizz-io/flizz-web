@@ -5,7 +5,7 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
 import { Fragment } from 'react';
 
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
-import { heroScrollTargetId, socialProofLogos, stats } from '@/constants/home';
+import { socialProofLogos, stats } from '@/constants/home';
 
 const REVEAL_EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -45,10 +45,7 @@ export function Proof() {
 			};
 
 	return (
-		<section
-			id={heroScrollTargetId}
-			className="relative scroll-mt-24 overflow-hidden border-b border-border"
-		>
+		<section className="relative overflow-hidden border-b border-border">
 			{/* The starfield ends just above, so this panel reads as the horizon
 			    we descend to rather than a hard cut: a lit atmospheric rim, a
 			    wide glow bleeding in from off-screen, then haze thinning out. */}
