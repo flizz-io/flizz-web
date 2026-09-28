@@ -2,14 +2,21 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { RailCursor } from '@/components/features/home/rail-cursor';
 import { ServiceSpecimen } from '@/components/features/home/service-specimen';
+import { SpineArrow } from '@/components/features/home/spine-arrow';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
-import { serviceCards } from '@/constants/home';
+import { serviceCards, servicesRailLabels } from '@/constants/home';
+import { ScrollDirection } from '@/enums/scroll';
 import { useDragScroll } from '@/hooks/use-drag-scroll';
+import { useScrollEdges } from '@/hooks/use-scroll-edges';
+import { useSmoothScroll } from '@/hooks/use-smooth-scroll';
 import { cn } from '@workspace/ui/lib/utils';
 
 /** Grace period before a popover closes, so crossing a gap doesn't flicker it. */
 const HIDE_DELAY_MS = 1000;
+/** Share of the visible strip an arrow click advances by. */
+const ARROW_STEP = 0.7;
 
 interface ServicesTeaserProps {
 	sectionIndex: number;
@@ -32,8 +39,11 @@ export function ServicesTeaser({
 	// siblings too, which only a common owner can coordinate.
 	const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
 	const viewportRef = useRef<HTMLDivElement>(null);
+	const listRef = useRef<HTMLUListElement>(null);
 	const hideTimer = useRef<number | null>(null);
-	const dragHandlers = useDragScroll(viewportRef);
+	const scroller = useSmoothScroll(viewportRef);
+	const dragHandlers = useDragScroll(viewportRef, { scroller });
+	const { hiddenBefore, hiddenAfter } = useScrollEdges(viewportRef, listRef);
 
 	const displayServices = useMemo(
 		() => (limit ? serviceCards.slice(0, limit) : serviceCards),
@@ -68,6 +78,16 @@ export function ServicesTeaser({
 		[]
 	);
 
+	const handleArrowClick = useCallback(
+		(direction: ScrollDirection) => {
+			const width = viewportRef.current?.clientWidth ?? 0;
+			const sign = direction === ScrollDirection.NEXT ? 1 : -1;
+
+			scroller.scrollBy(sign * width * ARROW_STEP);
+		},
+		[scroller]
+	);
+
 	useEffect(() => clearHideTimer, []);
 
 	return (
@@ -94,14 +114,43 @@ export function ServicesTeaser({
 				/>
 
 				{/* Edge fades as overlays rather than a mask on the scroller:
-				    a mask would also fade any popover that opened near an edge. */}
+				    a mask would also fade any popover that opened near an edge.
+				    They deepen while that side hides something, seating the
+				    arrow in shadow like a frame edge. */}
 				<span
 					aria-hidden
-					className="pointer-events-none absolute inset-y-0 left-0 z-20 hidden w-14 bg-gradient-to-r from-background to-transparent lg:block"
+					className={cn(
+						'pointer-events-none absolute inset-y-0 left-0 z-20 hidden bg-linear-to-r from-background to-transparent transition-[width] duration-700 ease-power-on lg:block',
+						hiddenBefore > 0 ? 'w-48' : 'w-14'
+					)}
 				/>
 				<span
 					aria-hidden
-					className="pointer-events-none absolute inset-y-0 right-0 z-20 hidden w-14 bg-gradient-to-l from-background to-transparent lg:block"
+					className={cn(
+						'pointer-events-none absolute inset-y-0 right-0 z-20 hidden bg-linear-to-l from-background to-transparent transition-[width] duration-700 ease-power-on lg:block',
+						hiddenAfter > 0 ? 'w-48' : 'w-14'
+					)}
+				/>
+
+				<SpineArrow
+					direction={ScrollDirection.PREVIOUS}
+					count={hiddenBefore}
+					label={servicesRailLabels.moreBefore}
+					ariaLabel={servicesRailLabels.previousAria}
+					onClick={() => handleArrowClick(ScrollDirection.PREVIOUS)}
+				/>
+				<SpineArrow
+					direction={ScrollDirection.NEXT}
+					count={hiddenAfter}
+					label={servicesRailLabels.moreAfter}
+					ariaLabel={servicesRailLabels.nextAria}
+					onClick={() => handleArrowClick(ScrollDirection.NEXT)}
+				/>
+
+				<RailCursor
+					targetRef={viewportRef}
+					canScrollPrevious={hiddenBefore > 0}
+					canScrollNext={hiddenAfter > 0}
 				/>
 
 				<div
@@ -110,7 +159,8 @@ export function ServicesTeaser({
 					// `overflow-x: auto` computes `overflow-y` from visible to auto, so a
 					// focused specimen's scale transform made this a vertical scroll
 					// container too and the wheel got captured mid-page.
-					className="lg:overflow-x-auto lg:overflow-y-hidden lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden"
+					// Mid-pan the grab wins over each specimen's link pointer.
+					className="select-none lg:overflow-x-auto lg:overflow-y-hidden lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] lg:data-panning:cursor-grabbing lg:data-panning:[&_*]:cursor-grabbing lg:[&::-webkit-scrollbar]:hidden"
 				>
 					<div className="relative lg:w-max lg:min-w-full lg:px-20">
 						<span
@@ -134,7 +184,10 @@ export function ServicesTeaser({
 
 						{/* `w-max` + `mx-auto`: a short list centres on the
 						    spine, a long one fills the track and scrolls. */}
-						<ul className="mx-auto flex max-w-7xl flex-col gap-12 px-4 sm:gap-14 sm:px-6 lg:h-145 lg:w-max lg:max-w-none lg:flex-row lg:gap-0 lg:px-0 xl:h-165">
+						<ul
+							ref={listRef}
+							className="mx-auto flex max-w-7xl flex-col gap-12 px-4 sm:gap-14 sm:px-6 lg:h-145 lg:w-max lg:max-w-none lg:flex-row lg:gap-0 lg:px-0 xl:h-165"
+						>
 							{displayServices.map((service, index) => (
 								<ServiceSpecimen
 									key={`${service.title}-${index}`}
