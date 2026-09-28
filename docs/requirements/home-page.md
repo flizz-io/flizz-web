@@ -103,9 +103,16 @@ Backed by the Testimonial CRUD feature (see [progress-report.md](progress-report
     - You own all code and IP from day one
 - **Content:** `[Contact Form]` — fields not specified in the sheet. **Open question for PM.**
 
-## Scroll entrances
+## Scroll motion
 
-Every section below the hero carries `data-section-reveal`. `<SectionReveals />` (mounted once at the end of the home page) fades and rises each section's direct children in turn as the section's top comes into view, and `<Reveal>` items inside cascade in after — both GSAP, both tuned in `scrollReveal` (`constants/animation.ts`), both played once. Pins (`data-pinned`) and anything wrapping one only fade, never move, so pins measure true; a reveal the page jumps clean past (End key, anchor links) completes instead of staying hidden. Off under reduced motion.
+Modelled on forgeautomotive.co.uk: nothing plays on a clock — every entrance, exit and fill is scrubbed to the scroll, so it moves exactly as fast as the reader, stops when they stop, and runs backwards when they scroll up. All tuning lives in `scrollReveal` (`constants/animation.ts`); all of it is off under reduced motion, and phones get shorter travel.
+
+- **Smoothing** — ScrollSmoother at `1.2s` expo.out, matched to Lenis `lerp: 0.09` (`constants/scroll.ts`).
+- **Hero exit** (large screens) — the copy swells, blurs and fades while the scene dims (`heroParallax.exit`).
+- **Section entrance** — every `data-section-reveal` section's direct children rise and fade in over their own stretch of scroll; `<Reveal>` items inside do the same (`SectionReveals`, `Reveal`).
+- **Curtain** — each section slides up over the one before, which sinks at half the scroll speed and dims toward the page colour (the stacking and the `::after` veil are CSS on `[data-section-reveal]` in `globals.css`). Pins (`data-pinned`) and anything wrapping one only dim, never move, so pins measure true.
+- **Headings** — `SectionHeader` titles fill letter by letter (`FillHeading`, GSAP SplitText, screen readers get the whole phrase).
+- **Media** — `[data-reveal-media]` plates wipe open from an inset while a `[data-media-zoom]` layer inside settles from a zoom (project cards, the Solution console).
 
 ## Design reference notes (from `Home Ref` tab)
 

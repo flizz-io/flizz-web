@@ -89,6 +89,36 @@ export function useHeroParallax({
 				);
 			});
 
+			// Pinned (large screens) only: below `lg` the copy sits under the
+			// scene and is still being read as the page starts to move.
+			if (handOff) {
+				const { exit: leave } = heroParallax;
+				const [copy] = plane(HeroDepth.COPY);
+				const [scene] = plane(HeroDepth.SCENE);
+
+				if (copy) {
+					exit.fromTo(
+						copy,
+						{ autoAlpha: 1, scale: 1, filter: 'blur(0px)' },
+						{
+							autoAlpha: 0,
+							scale: leave.copyScale,
+							filter: `blur(${leave.copyBlur}px)`,
+							duration: leave.copyShare
+						},
+						0
+					);
+				}
+				if (scene) {
+					exit.fromTo(
+						scene,
+						{ autoAlpha: 1 },
+						{ autoAlpha: leave.sceneOpacity },
+						0
+					);
+				}
+			}
+
 			if (handOff) {
 				const drift = gsap.timeline({
 					defaults: { ease: 'none', duration: 1 },

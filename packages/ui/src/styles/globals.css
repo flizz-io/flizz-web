@@ -133,6 +133,25 @@
 		@apply bg-background text-foreground;
 	}
 
+	/* Section-to-section curtain (apps/web SectionReveals). Each section is
+	   opaque and its own stacking context, so the next one — later in the
+	   DOM — slides up over it; the veil fades it toward the page colour as it
+	   falls away. In the base layer, so a section's own bg utility wins. */
+	[data-section-reveal] {
+		position: relative;
+		isolation: isolate;
+		background-color: var(--color-background);
+	}
+	[data-section-reveal]::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 60;
+		pointer-events: none;
+		background-color: var(--color-background);
+		opacity: var(--curtain-dim, 0);
+	}
+
 	/* The home intro gate (see apps/web constants/intro.ts). Skipped: the
 	   loader never shows. Playing: the header waits for its entrance — only on
 	   a page that actually has a loader, so every other page is untouched. */

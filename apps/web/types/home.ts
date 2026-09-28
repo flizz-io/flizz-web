@@ -43,6 +43,17 @@ export interface HeroParallaxConfig {
 	layers: Record<HeroDepth, HeroParallaxLayer>;
 	/** Seconds the pointer planes take to catch the cursor. */
 	pointerFollowSeconds: number;
+	/**
+	 * Large screens, as the hero leaves: the copy swells to `copyScale`,
+	 * blurs to `copyBlur` px and fades out over the first `copyShare` of the
+	 * exit; the scene dims to `sceneOpacity`.
+	 */
+	exit: {
+		copyScale: number;
+		copyBlur: number;
+		copyShare: number;
+		sceneOpacity: number;
+	};
 }
 
 export interface HeroDisciplinesSceneConfig {

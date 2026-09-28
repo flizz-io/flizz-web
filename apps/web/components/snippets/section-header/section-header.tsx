@@ -2,6 +2,7 @@ import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 
+import { FillHeading } from '@/components/snippets/fill-heading/fill-heading';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { cn } from '@workspace/ui/lib/utils';
@@ -70,14 +71,14 @@ export function SectionHeader({
 					label={eyebrow}
 					metaInfo={metaInfo}
 				/>
-				<h2
+				<FillHeading
 					className={cn(
 						titleClassName,
 						'mt-4 font-heading text-4xl font-semibold tracking-tight text-balance text-foreground sm:text-5xl'
 					)}
 				>
 					{title}
-				</h2>
+				</FillHeading>
 				{description ? (
 					<p
 						className={cn(

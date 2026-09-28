@@ -14,7 +14,10 @@ const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 
 interface RevealProps {
 	children: React.ReactNode;
-	/** Extra wait before it plays, in ms. */
+	/**
+	 * Stagger, in ms. Scrubbed reveals have no clock, so this shifts where in
+	 * the scroll the item starts — later items rise a little further down.
+	 */
 	delay?: number;
 	trigger?: 'view' | 'mount';
 	/** Anchor target, for sections that get linked to directly. */
@@ -23,13 +26,13 @@ interface RevealProps {
 }
 
 /**
- * Rises and sharpens into place once it scrolls into view (or on mount) — the
- * site's one item reveal, in GSAP so it shares the page's clock and speed.
+ * Rises and fades into place with the scroll — scrubbed, so it moves exactly
+ * as fast as the reader does and sinks back out when they scroll up. `mount`
+ * is for above-the-fold content, where there's no scroll to follow: it plays
+ * once, on a clock.
  *
- * Carries `data-revealed` once it has played, for children that finish their
- * own flourish off it (`group-data-[revealed=true]/reveal:*`). Everything it
- * animated is cleared afterwards, so no stray transform is left creating a
- * containing block around the content.
+ * Carries `data-revealed` while it's in, for children that finish their own
+ * flourish off it (`group-data-[revealed=true]/reveal:*`).
  */
 export function Reveal({
 	children,
@@ -45,39 +48,66 @@ export function Reveal({
 			const node = ref.current;
 			if (!node) return;
 
-			const markRevealed = () => {
-				node.dataset.revealed = 'true';
+			const setRevealed = (revealed: boolean) => {
+				node.dataset.revealed = String(revealed);
 			};
 
 			if (window.matchMedia(REDUCED_MOTION_QUERY).matches) {
-				markRevealed();
+				setRevealed(true);
+				return;
+			}
+
+			setRevealed(false);
+
+			if (trigger === 'mount') {
+				const { mount } = scrollReveal;
+
+				gsap.fromTo(
+					node,
+					{
+						autoAlpha: 0,
+						y: mount.y,
+						filter: `blur(${mount.blur}px)`
+					},
+					{
+						autoAlpha: 1,
+						y: 0,
+						filter: 'blur(0px)',
+						duration: mount.duration,
+						ease: mount.ease,
+						delay: delay / 1000,
+						clearProps: 'opacity,visibility,transform,filter',
+						onStart: () => setRevealed(true)
+					}
+				);
 				return;
 			}
 
 			const { item } = scrollReveal;
-			node.dataset.revealed = 'false';
+			const shift = (delay / 100) * item.percentPer100ms;
 
+			// `yPercent`, not `y`: a Reveal that is itself a section part
+			// also sinks with the section's curtain, which moves `y`.
 			gsap.fromTo(
 				node,
-				{ autoAlpha: 0, y: item.y, filter: `blur(${item.blur}px)` },
+				{
+					autoAlpha: 0,
+					yPercent: () =>
+						(item.y / Math.max(node.offsetHeight, 1)) * 100
+				},
 				{
 					autoAlpha: 1,
-					y: 0,
-					filter: 'blur(0px)',
-					duration: item.duration,
+					yPercent: 0,
 					ease: item.ease,
-					delay: delay / 1000,
-					clearProps: 'opacity,visibility,transform,filter',
-					onStart: markRevealed,
-					scrollTrigger:
-						trigger === 'view'
-							? {
-									trigger: node,
-									start: item.start,
-									toggleActions: scrollReveal.toggleActions,
-									once: true
-								}
-							: undefined
+					scrollTrigger: {
+						trigger: node,
+						invalidateOnRefresh: true,
+						start: `top ${item.enterAt - shift}%`,
+						end: `top ${item.settleAt - shift}%`,
+						scrub: true,
+						onEnter: () => setRevealed(true),
+						onLeaveBack: () => setRevealed(false)
+					}
 				}
 			);
 		},
@@ -88,6 +118,8 @@ export function Reveal({
 		<div
 			ref={ref}
 			id={id}
+			// Section reveals leave this to animate its own entrance.
+			data-reveal
 			className={cn('group/reveal', className)}
 		>
 			{children}

@@ -5,7 +5,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useRef } from 'react';
 
-import { scrollReveal } from '@/constants/animation';
 import { audienceSegments } from '@/constants/home';
 import { cn } from '@workspace/ui/lib/utils';
 
@@ -25,20 +24,21 @@ export function AudienceList({ className }: { className?: string }) {
 
 			// Each name rises into its own clipped row. The trigger sits on
 			// the list, never the clipped names, which start out of view.
+			// Each name rises into its own clipped row, scrubbed to the
+			// scroll. The trigger sits on the list, never the clipped names,
+			// which start out of view.
 			gsap.fromTo(
 				gsap.utils.toArray<HTMLElement>('[data-audience-name]', list),
 				{ yPercent: 120 },
 				{
 					yPercent: 0,
-					duration: 0.7,
-					ease: 'expo.out',
-					delay: 0.12,
-					stagger: 0.09,
+					ease: 'power2.out',
+					stagger: 0.12,
 					scrollTrigger: {
 						trigger: list,
-						start: 'top 80%',
-						toggleActions: scrollReveal.toggleActions,
-						once: true
+						start: 'top 92%',
+						end: 'top 55%',
+						scrub: true
 					}
 				}
 			);

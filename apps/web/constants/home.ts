@@ -56,7 +56,8 @@ export const heroParallax: HeroParallaxConfig = {
 		[HeroDepth.SCENE]: { scroll: 0.18, pinned: 0, pointer: 12 },
 		[HeroDepth.COPY]: { scroll: -0.12, pinned: 0, pointer: 0 }
 	},
-	pointerFollowSeconds: 1.2
+	pointerFollowSeconds: 1.2,
+	exit: { copyScale: 1.08, copyBlur: 14, copyShare: 0.55, sceneOpacity: 0.3 }
 };
 
 // The cinematic hero's words. The headline's first two lines are set, the

@@ -253,14 +253,24 @@ export function ProjectStrip({ className }: { className?: string }) {
 									draggable={false}
 									className="group block"
 								>
-									<div className="relative aspect-620/388 overflow-hidden rounded-lg border border-border bg-card">
-										<MediaSlot
-											src={project.image}
-											alt={`${project.name} — ${project.service}`}
-											label="Screenshot pending"
-											sizes="(max-width: 640px) 85vw, 620px"
-											className="transition-transform duration-700 ease-power-on group-hover:scale-[1.03]"
-										/>
+									<div
+										data-reveal-media
+										className="relative aspect-620/388 overflow-hidden rounded-lg border border-border bg-card"
+									>
+										{/* The scroll zoom's own layer, so it never
+										    fights the image's hover scale. */}
+										<span
+											data-media-zoom
+											className="absolute inset-0"
+										>
+											<MediaSlot
+												src={project.image}
+												alt={`${project.name} — ${project.service}`}
+												label="Screenshot pending"
+												sizes="(max-width: 640px) 85vw, 620px"
+												className="transition-transform duration-700 ease-power-on group-hover:scale-[1.03]"
+											/>
+										</span>
 									</div>
 
 									<div className="mt-5 flex items-start gap-4">
