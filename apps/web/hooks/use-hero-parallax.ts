@@ -29,10 +29,10 @@ interface HeroParallaxOptions {
 /**
  * The cinematic hero's depth, in three GSAP layers:
  *
- * - **Exit** — as the hero scrolls away, each plane trails or leads the page
- *   by its own share (`scroll`), so the back of the frame lingers while the
- *   copy lifts off first. Starts where the pinned hand-off ends, or at the top
- *   when nothing pins.
+ * - **Exit** — large screens: the stage holds (`hold`) while Services slides
+ *   up over it, the copy blurring away. Small screens: each plane trails or
+ *   leads the page by its own share (`scroll`). Starts where the pinned
+ *   hand-off ends, or at the top when nothing pins.
  * - **Hand-off** — while pinned, the atmosphere drifts (`pinned`) so the stage
  *   never reads as a flat backdrop behind the moving scene.
  * - **Pointer** — the planes lean with the cursor (`pointer`). This moves
@@ -79,12 +79,23 @@ export function useHeroParallax({
 
 			Object.values(HeroDepth).forEach((depth) => {
 				const targets = plane(depth);
-				if (!targets.length || !layers[depth].scroll) return;
+				// Pinned: counter the exit scroll, so the stage holds while
+				// the next section covers it. Otherwise trail the page.
+				const share = handOff
+					? layers[depth].hold
+					: layers[depth].scroll;
+				if (!targets.length || !share) return;
 
 				exit.fromTo(
 					targets,
 					{ y: 0 },
-					{ y: () => layers[depth].scroll * section.offsetHeight },
+					{
+						y: () =>
+							share *
+							(handOff
+								? exitEnd() - exitStart()
+								: section.offsetHeight)
+					},
 					0
 				);
 			});

@@ -23,6 +23,7 @@ export function PortfolioTeaser({
 		// the header stays on the page container.
 		<section
 			data-section-reveal
+			data-section-hold
 			// The hero's "See the works" cue lands here; the scroll margin
 			// clears the floating header.
 			id={heroScrollTargetId}

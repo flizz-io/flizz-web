@@ -15,10 +15,17 @@ const SECTION_SELECTOR = '[data-section-reveal]';
 const DESKTOP_QUERY = '(min-width: 1024px)';
 /** A pin, or the spacer ScrollTrigger wraps one in. */
 const PIN_SELECTOR = '[data-pinned], .pin-spacer';
+/**
+ * The key sections (Services, Our Work, Problem): they hold still while the
+ * next one slides over, rather than sinking away.
+ */
+const HOLD_SELECTOR = '[data-section-hold]';
 /** A `<Reveal>`, which scrubs its own entrance. */
 const REVEAL_SELECTOR = '[data-reveal]';
 const MEDIA_SELECTOR = '[data-reveal-media]';
 const MEDIA_ZOOM_SELECTOR = '[data-media-zoom]';
+/** Refreshed after every pin (priority 0), so positions include pin spacing. */
+const AFTER_PINS = -1;
 /** Read by the section's `::after` veil in `@workspace/ui/globals.css`. */
 const DIM_PROPERTY = '--curtain-dim';
 
@@ -44,19 +51,21 @@ function canMove(part: HTMLElement) {
  * - **Entrance** — each direct child rises and fades in over its own stretch
  *   of scroll, so a section assembles top to bottom as it arrives.
  * - **Curtain** — as a section leaves, the next one slides up over it while
- *   it sinks at half the scroll speed and dims toward the page colour, so it
- *   reads as falling away behind rather than scrolling off. (The stacking and
- *   the veil are CSS on `[data-section-reveal]`.) The last section is left to
- *   scroll off under the footer normally.
+ *   it dims toward the page colour. Most sections sink at half the scroll
+ *   speed as they go, so they read as falling away behind; the key ones
+ *   (`[data-section-hold]`) hold perfectly still instead, like a panel the
+ *   next is laid over. The stacking, the
+ *   veil and the desktop full height are CSS on `[data-section-reveal]`. The
+ *   last section is left to scroll off under the footer normally.
  *
  * - **Media** — `[data-reveal-media]` plates wipe open from an inset, and a
  *   `[data-media-zoom]` layer inside settles from a zoom.
  *
  * Entrance moves `yPercent` and the curtain moves `y`, so the two compose
  * rather than fight when a short section is still arriving as it starts to
- * leave. The section element itself never moves, so anything that measures a
- * section (anchor jumps, "See the works") lands true. Mount once per page,
- * after the sections.
+ * leave. A section element only ever moves while it's being covered — never on
+ * its way in — so anything that measures a section on arrival (anchor jumps,
+ * "See the works") lands true. Mount once per page, after the sections.
  */
 export function SectionReveals() {
 	const smoother = useSmoother();
@@ -111,7 +120,8 @@ export function SectionReveals() {
 								start: section.start,
 								end: section.end,
 								scrub: true,
-								invalidateOnRefresh: true
+								invalidateOnRefresh: true,
+								refreshPriority: AFTER_PINS
 							}
 						}
 					);
@@ -126,7 +136,11 @@ export function SectionReveals() {
 						start: 'bottom bottom',
 						end: 'bottom top',
 						scrub: true,
-						invalidateOnRefresh: true
+						invalidateOnRefresh: true,
+						// A section's bottom depends on the spacing its own
+						// pins add, and this can start just before such a pin
+						// does — so measure after every pin, not in start order.
+						refreshPriority: AFTER_PINS
 					}
 				});
 
@@ -137,7 +151,18 @@ export function SectionReveals() {
 					0
 				);
 
-				if (moving.length) {
+				if (node.matches(HOLD_SELECTOR)) {
+					// Held: the whole section counters the scroll exactly, so
+					// it stays put under the veil while the next one covers
+					// it. By now its own pins have ended — this only moves a
+					// section that's already done with them.
+					leave.fromTo(
+						node,
+						{ y: 0 },
+						{ y: () => window.innerHeight },
+						0
+					);
+				} else if (moving.length) {
 					leave.fromTo(
 						moving,
 						{ y: 0 },
@@ -156,7 +181,8 @@ export function SectionReveals() {
 					trigger: plate,
 					start: media.start,
 					end: media.end,
-					scrub: true
+					scrub: true,
+					refreshPriority: AFTER_PINS
 				};
 
 				gsap.fromTo(

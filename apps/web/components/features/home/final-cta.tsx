@@ -22,7 +22,7 @@ export function FinalCta({
 		<section
 			data-section-reveal
 			className={cn(
-				'relative isolate flex min-h-[80svh] items-center overflow-hidden px-4 py-24 sm:px-6 sm:py-32 lg:px-8',
+				'relative isolate flex min-h-[80svh] items-center overflow-hidden px-4 py-24 sm:px-6 sm:py-32 lg:min-h-svh lg:px-8',
 				className
 			)}
 		>

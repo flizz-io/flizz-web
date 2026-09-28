@@ -47,14 +47,17 @@ export const heroCinematicConfig: HeroCinematicConfig = {
 
 // The cinematic hero's depth. Back planes trail the scroll and counter the
 // pointer; front planes lead and follow it — the gap between them is what
-// reads as depth. Keep the scene's `scroll` modest: it trails inside the
-// hero's clipped frame, so too much and its labels slide under the next section.
+// reads as depth. On large screens the hero is one of the held sections: its
+// planes counter the exit scroll (`hold`) so Services slides up over a still
+// stage, the back planes stiller than the front. Small screens keep `scroll`,
+// modest for the scene: it trails inside the hero's clipped frame, so too much
+// and its labels slide under the next section.
 export const heroParallax: HeroParallaxConfig = {
 	layers: {
-		[HeroDepth.FAR]: { scroll: 0.45, pinned: -10, pointer: -28 },
-		[HeroDepth.MID]: { scroll: 0.25, pinned: -18, pointer: 16 },
-		[HeroDepth.SCENE]: { scroll: 0.18, pinned: 0, pointer: 12 },
-		[HeroDepth.COPY]: { scroll: -0.12, pinned: 0, pointer: 0 }
+		[HeroDepth.FAR]: { scroll: 0.45, hold: 1, pinned: -10, pointer: -28 },
+		[HeroDepth.MID]: { scroll: 0.25, hold: 0.96, pinned: -18, pointer: 16 },
+		[HeroDepth.SCENE]: { scroll: 0.18, hold: 0.9, pinned: 0, pointer: 12 },
+		[HeroDepth.COPY]: { scroll: -0.12, hold: 0.82, pinned: 0, pointer: 0 }
 	},
 	pointerFollowSeconds: 1.2,
 	exit: { copyScale: 1.08, copyBlur: 14, copyShare: 0.55, sceneOpacity: 0.3 }

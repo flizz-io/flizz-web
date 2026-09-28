@@ -110,7 +110,8 @@ Modelled on forgeautomotive.co.uk: nothing plays on a clock — every entrance, 
 - **Smoothing** — ScrollSmoother at `1.2s` expo.out, matched to Lenis `lerp: 0.09` (`constants/scroll.ts`).
 - **Hero exit** (large screens) — the copy swells, blurs and fades while the scene dims (`heroParallax.exit`).
 - **Section entrance** — every `data-section-reveal` section's direct children rise and fade in over their own stretch of scroll; `<Reveal>` items inside do the same (`SectionReveals`, `Reveal`).
-- **Curtain** — each section slides up over the one before, which sinks at half the scroll speed and dims toward the page colour (the stacking and the `::after` veil are CSS on `[data-section-reveal]` in `globals.css`). Pins (`data-pinned`) and anything wrapping one only dim, never move, so pins measure true.
+- **Curtain** — each section slides up over the one before, which dims toward the page colour. The key sections — the hero, Services, Our Work and Problem (`data-section-hold`) — hold perfectly still while covered; the rest sink at half the scroll speed. Pins (`data-pinned`) and anything wrapping one only dim, never move, so pins measure true; section triggers refresh after every pin (`refreshPriority: -1`) so a section's exit accounts for its own pin spacing. Every section is opaque (a tinted section mixes its tint into the page colour) so nothing ever shows through the one covering it.
+- **Full height** (large screens) — every section is at least one screen tall, so each has a moment entirely in view; short content is centred. Held sections keep block layout — a pin with spacing inside a flex column loses its reserved scroll.
 - **Headings** — `SectionHeader` titles fill letter by letter (`FillHeading`, GSAP SplitText, screen readers get the whole phrase).
 - **Media** — `[data-reveal-media]` plates wipe open from an inset while a `[data-media-zoom]` layer inside settles from a zoom (project cards, the Solution console).
 

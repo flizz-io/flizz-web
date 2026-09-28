@@ -26,10 +26,17 @@ export interface HeroCinematicConfig {
 /** How one hero plane moves — see `heroParallax` in constants/home.ts. */
 export interface HeroParallaxLayer {
 	/**
-	 * As the hero scrolls away: how far the plane trails (+) or leads (−) the
-	 * page, as a share of the hero's height. 0 moves with the page.
+	 * Small screens, as the hero scrolls away: how far the plane trails (+)
+	 * or leads (−) the page, as a share of the hero's height. 0 moves with
+	 * the page.
 	 */
 	scroll: number;
+	/**
+	 * Large screens, as the Services section slides up over the hero: the
+	 * share of that scroll the plane counters. 1 holds it perfectly still;
+	 * a little under 1 lets it drift up a touch, for depth.
+	 */
+	hold: number;
 	/** During the pinned hand-off: a vertical drift, in % of its own height. */
 	pinned: number;
 	/**

@@ -142,6 +142,29 @@
 		isolation: isolate;
 		background-color: var(--color-background);
 	}
+	/* Large screens: every section is at least a full screen, so each has a
+	   moment entirely in view before the next covers it. Short content sits
+	   centred in a flex column — except in the held sections, which are
+	   taller than a screen anyway and must stay block layout: a ScrollTrigger
+	   pin with spacing inside a flex column gets its spacer's flex-basis set
+	   to the pin's own size, which swallows the scroll it reserves. In the
+	   column, children are held to full width, since `mx-auto` would
+	   otherwise shrink a `max-w-*` container to its content; anything with
+	   its own width utility keeps it (utilities outrank this layer). */
+	@media (min-width: 64rem) {
+		[data-section-reveal] {
+			min-height: 100svh;
+		}
+		[data-section-reveal]:not([data-section-hold]) {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+		[data-section-reveal]:not([data-section-hold]) > * {
+			width: 100%;
+			flex-shrink: 0;
+		}
+	}
 	[data-section-reveal]::after {
 		content: '';
 		position: absolute;
