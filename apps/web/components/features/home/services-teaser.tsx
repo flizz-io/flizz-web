@@ -179,7 +179,7 @@ export function ServicesTeaser({
 					// focused specimen's scale transform made this a vertical scroll
 					// container too and the wheel got captured mid-page.
 					// Mid-pan the grab wins over each specimen's link pointer.
-					className="select-none lg:overflow-x-auto lg:overflow-y-hidden lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] lg:data-panning:cursor-grabbing lg:data-panning:[&_*]:cursor-grabbing lg:[&::-webkit-scrollbar]:hidden"
+					className="lg:scrollbar-none select-none lg:overflow-x-auto lg:overflow-y-hidden lg:[-ms-overflow-style:none] lg:data-panning:cursor-grabbing lg:data-panning:[&_*]:cursor-grabbing lg:[&::-webkit-scrollbar]:hidden"
 				>
 					<div className="relative lg:w-max lg:min-w-full lg:px-20">
 						<span
