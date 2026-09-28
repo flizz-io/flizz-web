@@ -113,6 +113,9 @@ const LABEL_MIN_OPACITY = 0.45;
 // sitting on its node and swings to another side.
 const LABEL_OVERLAP_ALLOWANCE = 0.5;
 
+// How quickly a label glides round to a new side of its node, per second.
+const LABEL_GLIDE_RATE = 6;
+
 // Large enough to read at a glance against the moving canvas behind them,
 // rather than sized like a footnote on the artwork.
 const DEFAULT_LABEL_FONT_SIZE = 13;
@@ -222,7 +225,17 @@ export function HeroDisciplinesScene({
 			if (!label) return { width: 0, height: 0 };
 
 			label.style.width = `${widest}px`;
-			return { width: widest, height: label.offsetHeight };
+
+			// Sized as it stands open, so unfolding the caption on hover
+			// never shifts the block or lands it on its node.
+			const caption = label.querySelector<HTMLElement>(
+				'[data-label-caption] > p'
+			);
+			const folded = caption
+				? caption.scrollHeight - caption.offsetHeight
+				: 0;
+
+			return { width: widest, height: label.offsetHeight + folded };
 		});
 	}, []);
 
@@ -705,10 +718,20 @@ export function HeroDisciplinesScene({
 			halfHeight: 0
 		}));
 
-		// Which side of its node each label last settled on.
-		const labelSides = anchors.map(() => 0);
+		// Which fallback side each label last stepped round to.
+		const labelFallbacks = anchors.map(() => 0);
+		// Where each label sits relative to its node as drawn, eased toward
+		// where it should be. Only this offset glides — the node itself is
+		// followed exactly — so a swing to another side travels there instead
+		// of snapping, without the block trailing behind a fast drag.
+		const labelOffsets = anchors.map(() => ({ x: 0, y: 0, placed: false }));
 
-		const placeLabels = () => {
+		/**
+		 * `step` is the frame time from the draw loop, which eases a side
+		 * change in. Called without one — first paint, resize, a still frame —
+		 * each label snaps straight to its spot.
+		 */
+		const placeLabels = (step?: number) => {
 			const { clientWidth, clientHeight } = container;
 
 			anchors.forEach((anchor, index) => {
@@ -769,48 +792,68 @@ export function HeroDisciplinesScene({
 
 				// Holding it inside the frame can drag the block straight back
 				// over its own node near an edge, burying the words under the
-				// points. When that happens it swings to the next side that
-				// stays clear — keeping whichever side it was already on while
-				// that still works, so it doesn't flicker between them.
+				// points. The outward push always gets first call; only while it
+				// lands on the node does the block step round to the nearest
+				// clear side — outward vertically first, so it stays off the
+				// core — keeping that side while it still works so it doesn't
+				// flicker between two.
 				const clearsNode = (spot: { x: number; y: number }) =>
 					Math.abs(spot.x - screenX) >=
 						halfWidth + clearance * LABEL_OVERLAP_ALLOWANCE ||
 					Math.abs(spot.y - screenY) >=
 						halfHeight + clearance * LABEL_OVERLAP_ALLOWANCE;
 
-				const sides: [number, number][] = [
-					[directionX, directionY],
-					[0, -1],
-					[0, 1],
-					[-Math.sign(directionX) || -1, 0]
+				const outwardY = Math.sign(directionY) || -1;
+				const fallbacks: [number, number][] = [
+					[0, outwardY],
+					[0, -outwardY],
+					[-(Math.sign(directionX) || 1), 0]
 				];
-				const preferred = labelSides[index] ?? 0;
+				const preferred = labelFallbacks[index] ?? 0;
 				const order = [
 					preferred,
-					...sides
+					...fallbacks
 						.map((_, side) => side)
 						.filter((side) => side !== preferred)
 				];
-				// Nowhere clear at all falls back to the outward push.
-				let chosen = 0;
+
 				let placed = placeAlong(directionX, directionY);
 
-				for (const side of order) {
-					const [towardX, towardY] = sides[side] ?? [
-						directionX,
-						directionY
-					];
-					const spot = placeAlong(towardX, towardY);
-					if (clearsNode(spot)) {
-						chosen = side;
-						placed = spot;
-						break;
+				if (clearsNode(placed)) {
+					labelFallbacks[index] = 0;
+				} else {
+					for (const side of order) {
+						const [towardX, towardY] = fallbacks[side] ?? [
+							0,
+							outwardY
+						];
+						const spot = placeAlong(towardX, towardY);
+						if (clearsNode(spot)) {
+							labelFallbacks[index] = side;
+							placed = spot;
+							break;
+						}
 					}
 				}
 
-				labelSides[index] = chosen;
-				const placedX = placed.x;
-				const placedY = placed.y;
+				const offset = labelOffsets[index];
+				if (!offset) return;
+
+				const targetX = placed.x - screenX;
+				const targetY = placed.y - screenY;
+
+				if (step === undefined || !offset.placed) {
+					offset.x = targetX;
+					offset.y = targetY;
+					offset.placed = true;
+				} else {
+					const ease = 1 - Math.exp(-step * LABEL_GLIDE_RATE);
+					offset.x += (targetX - offset.x) * ease;
+					offset.y += (targetY - offset.y) * ease;
+				}
+
+				const placedX = screenX + offset.x;
+				const placedY = screenY + offset.y;
 
 				hubsOnScreen[index] = { x: screenX, y: screenY };
 				labelsOnScreen[index] = {
@@ -995,7 +1038,7 @@ export function HeroDisciplinesScene({
 			signalGeometry.attributes.position!.needsUpdate = true;
 
 			scene.updateMatrixWorld();
-			placeLabels();
+			placeLabels(step);
 			updateHover();
 			applyEmphasis(step, elapsed);
 			renderer.render(scene, camera);
@@ -1101,7 +1144,9 @@ export function HeroDisciplinesScene({
 						labelRefs.current[index] = node;
 					}}
 					className={cn(
-						'group pointer-events-none absolute top-0 left-0 w-max rounded-3xl p-3 text-center ring-1 ring-transparent transition-[opacity,scale,background-color,box-shadow] duration-500 ease-power-on',
+						// Resting a touch smaller with only its title showing; hover
+						// grows it back to full size and unfolds the caption.
+						'group pointer-events-none absolute top-0 left-0 w-max scale-90 rounded-3xl p-3 text-center ring-1 ring-transparent transition-[opacity,scale,background-color,box-shadow] duration-500 ease-power-on',
 						hasDisciplineBg && 'bg-primary/5',
 						// Lit by the scene when its node or the block itself
 						// is under the pointer.
@@ -1117,12 +1162,17 @@ export function HeroDisciplinesScene({
 					{/* The caption used to sit on `muted-foreground`, which all but
 					    disappeared against the canvas behind it — this holds its own
 					    over both the dark field and the light one. */}
-					<p
-						className="mt-1.5 leading-snug text-foreground/80 transition-colors duration-500 group-data-active:text-foreground dark:text-white/80 dark:group-data-active:text-white"
-						style={{ fontSize: `${captionFontSize}px` }}
+					<div
+						data-label-caption
+						className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-power-on group-data-active:grid-rows-[1fr]"
 					>
-						{discipline.caption}
-					</p>
+						<p
+							className="translate-y-1 overflow-hidden pt-1.5 leading-snug text-foreground/80 opacity-0 transition-[opacity,translate,color] duration-500 ease-power-on group-data-active:translate-y-0 group-data-active:text-foreground group-data-active:opacity-100 dark:text-white/80 dark:group-data-active:text-white"
+							style={{ fontSize: `${captionFontSize}px` }}
+						>
+							{discipline.caption}
+						</p>
+					</div>
 				</div>
 			))}
 		</div>
