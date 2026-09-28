@@ -132,6 +132,16 @@
 	body {
 		@apply bg-background text-foreground;
 	}
+
+	/* The home intro gate (see apps/web constants/intro.ts). Skipped: the
+	   loader never shows. Playing: the header waits for its entrance — only on
+	   a page that actually has a loader, so every other page is untouched. */
+	html[data-intro='skip'] [data-intro-loader] {
+		display: none;
+	}
+	html[data-intro='play']:has([data-intro-loader]) [data-intro-header] {
+		visibility: hidden;
+	}
 }
 
 @theme {

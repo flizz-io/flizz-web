@@ -109,6 +109,10 @@ const NODE_CLEARANCE = 40;
 // fade bottoms out well short of transparent.
 const LABEL_MIN_OPACITY = 0.45;
 
+// Share of the node clearance a label may still overlap before it counts as
+// sitting on its node and swings to another side.
+const LABEL_OVERLAP_ALLOWANCE = 0.5;
+
 // Large enough to read at a glance against the moving canvas behind them,
 // rather than sized like a footnote on the artwork.
 const DEFAULT_LABEL_FONT_SIZE = 13;
@@ -167,6 +171,11 @@ interface HeroDisciplinesSceneProps {
 	/** How many points scatter around each discipline's hub. */
 	clusterPointCount?: number;
 	hasDisciplineBg?: boolean;
+	/**
+	 * Called once the scene has drawn its first frame at a real size (or
+	 * found there is no WebGL to draw with) — what a loader waits on.
+	 */
+	onReady?: () => void;
 }
 
 export function HeroDisciplinesScene({
@@ -176,11 +185,15 @@ export function HeroDisciplinesScene({
 	labelFontSize = DEFAULT_LABEL_FONT_SIZE,
 	captionFontSize = DEFAULT_CAPTION_FONT_SIZE,
 	clusterPointCount = DEFAULT_CLUSTER_POINTS,
-	hasDisciplineBg = true
+	hasDisciplineBg = true,
+	onReady
 }: HeroDisciplinesSceneProps = {}) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const labelRefs = useRef<(HTMLDivElement | null)[]>([]);
 	const labelSizesRef = useRef<{ width: number; height: number }[]>([]);
+	// Latest callback without re-running the scene effect when it changes.
+	const onReadyRef = useRef(onReady);
+	const readyReportedRef = useRef(false);
 	const isDark = useIsDarkTheme();
 	const prefersReducedMotion = usePrefersReducedMotion();
 	const themeColorVersion = useThemeColorVersion(THEMED_VARIABLES);
@@ -220,6 +233,10 @@ export function HeroDisciplinesScene({
 	}, [captionFontSize, labelFontSize, measureLabels]);
 
 	useEffect(() => {
+		onReadyRef.current = onReady;
+	}, [onReady]);
+
+	useEffect(() => {
 		const container = containerRef.current;
 		if (!container) return;
 
@@ -230,7 +247,12 @@ export function HeroDisciplinesScene({
 				antialias: true
 			});
 		} catch {
-			// No WebGL — the labels still render as a plain list.
+			// No WebGL — the labels still render as a plain list, and there is
+			// nothing more to wait for.
+			if (!readyReportedRef.current) {
+				readyReportedRef.current = true;
+				onReadyRef.current?.();
+			}
 			return;
 		}
 
@@ -666,6 +688,11 @@ export function HeroDisciplinesScene({
 		const reveal = () => {
 			if (!sized) return;
 			renderer.domElement.style.opacity = '1';
+
+			if (!readyReportedRef.current) {
+				readyReportedRef.current = true;
+				onReadyRef.current?.();
+			}
 		};
 
 		const projected = new THREE.Vector3();
@@ -677,6 +704,9 @@ export function HeroDisciplinesScene({
 			halfWidth: 0,
 			halfHeight: 0
 		}));
+
+		// Which side of its node each label last settled on.
+		const labelSides = anchors.map(() => 0);
 
 		const placeLabels = () => {
 			const { clientWidth, clientHeight } = container;
@@ -713,23 +743,74 @@ export function HeroDisciplinesScene({
 					labelSizesRef.current[index] ?? {};
 				const halfWidth = width / 2;
 				const halfHeight = height / 2;
-				const push =
-					NODE_CLEARANCE * sceneFactor +
-					Math.abs(directionX) * halfWidth +
-					Math.abs(directionY) * halfHeight;
+				const clearance = NODE_CLEARANCE * sceneFactor;
 
 				// Held inside the frame, or a node swinging wide throws its
 				// label past the square the scene is drawn in.
-				const placedX = clamp(
-					screenX + directionX * push,
-					halfWidth,
-					clientWidth - halfWidth
-				);
-				const placedY = clamp(
-					screenY + directionY * push,
-					halfHeight,
-					clientHeight - halfHeight
-				);
+				const placeAlong = (towardX: number, towardY: number) => {
+					const push =
+						clearance +
+						Math.abs(towardX) * halfWidth +
+						Math.abs(towardY) * halfHeight;
+
+					return {
+						x: clamp(
+							screenX + towardX * push,
+							halfWidth,
+							clientWidth - halfWidth
+						),
+						y: clamp(
+							screenY + towardY * push,
+							halfHeight,
+							clientHeight - halfHeight
+						)
+					};
+				};
+
+				// Holding it inside the frame can drag the block straight back
+				// over its own node near an edge, burying the words under the
+				// points. When that happens it swings to the next side that
+				// stays clear — keeping whichever side it was already on while
+				// that still works, so it doesn't flicker between them.
+				const clearsNode = (spot: { x: number; y: number }) =>
+					Math.abs(spot.x - screenX) >=
+						halfWidth + clearance * LABEL_OVERLAP_ALLOWANCE ||
+					Math.abs(spot.y - screenY) >=
+						halfHeight + clearance * LABEL_OVERLAP_ALLOWANCE;
+
+				const sides: [number, number][] = [
+					[directionX, directionY],
+					[0, -1],
+					[0, 1],
+					[-Math.sign(directionX) || -1, 0]
+				];
+				const preferred = labelSides[index] ?? 0;
+				const order = [
+					preferred,
+					...sides
+						.map((_, side) => side)
+						.filter((side) => side !== preferred)
+				];
+				// Nowhere clear at all falls back to the outward push.
+				let chosen = 0;
+				let placed = placeAlong(directionX, directionY);
+
+				for (const side of order) {
+					const [towardX, towardY] = sides[side] ?? [
+						directionX,
+						directionY
+					];
+					const spot = placeAlong(towardX, towardY);
+					if (clearsNode(spot)) {
+						chosen = side;
+						placed = spot;
+						break;
+					}
+				}
+
+				labelSides[index] = chosen;
+				const placedX = placed.x;
+				const placedY = placed.y;
 
 				hubsOnScreen[index] = { x: screenX, y: screenY };
 				labelsOnScreen[index] = {
@@ -1024,7 +1105,7 @@ export function HeroDisciplinesScene({
 						hasDisciplineBg && 'bg-primary/5',
 						// Lit by the scene when its node or the block itself
 						// is under the pointer.
-						'data-active:scale-105 data-active:bg-primary/15 data-active:shadow-[0_0_40px_-8px_var(--color-primary)] data-active:ring-primary/50'
+						'data-active:z-10 data-active:scale-105 data-active:bg-background/85 data-active:shadow-[0_0_40px_-8px_var(--color-primary)] data-active:ring-primary/50 data-active:backdrop-blur-sm'
 					)}
 				>
 					<p

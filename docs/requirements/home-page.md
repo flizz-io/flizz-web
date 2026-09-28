@@ -6,6 +6,8 @@ Public marketing homepage for `apps/web`. Sections below are in page order.
 
 ## Hero
 
+> Hero v3 ("cinematic" — intro loader, reveal, scroll hand-off) is specified in [home-hero-cinematic.md](home-hero-cinematic.md). The copy below applies to every variation.
+
 - **Heading:** Your Technology Partner for What's Next
 - **Subheading:** We build transparent, maintainable systems that give you freedom to pivot, scale, or switch vendors without starting over.
 - **Text:** Technology decisions have long-term consequences. We bring both technical expertise and business perspective to every project, building solutions that align with where you're going, not just where you are.

@@ -5,6 +5,22 @@ export interface HeroDiscipline {
 }
 
 /** The tuning dials for the hero constellation, kept out of the component. */
+/** Controls for the cinematic hero — see docs/requirements/home-hero-cinematic.md. */
+export interface HeroCinematicConfig {
+	/** Minimum loader time in seconds, clamped 3–5. */
+	loaderSeconds: number;
+	/** Off skips straight to the reveal. */
+	showLoader: boolean;
+	/** Pinned scroll travel, as % of the viewport height. */
+	scrollDistance: number;
+	/** Idle seconds before the hand-off plays itself; 0 disables. */
+	autoAdvanceSeconds: number;
+	/** The headline's rotating third line; the first is the accessible one. */
+	rotatingPhrases: string[];
+	/** How long each phrase holds, in seconds. */
+	phraseHoldSeconds: number;
+}
+
 export interface HeroDisciplinesSceneConfig {
 	/** Size of the whole constellation, 0–100, where 50 is the composed size. */
 	sceneScale: number;

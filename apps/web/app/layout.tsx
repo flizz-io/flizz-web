@@ -10,6 +10,7 @@ import localFont from 'next/font/local';
 import '@workspace/ui/globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { siteConfig } from '@/configs/site';
+import { introGateScript } from '@/constants/intro';
 import { cn } from '@workspace/ui/lib/utils';
 
 export const metadata: Metadata = {
@@ -79,6 +80,11 @@ export default function RootLayout({
 				'font-sans'
 			)}
 		>
+			<head>
+				{/* Decides before first paint whether the home intro plays, so
+				    neither the loader nor the held-back header ever flashes. */}
+				<script dangerouslySetInnerHTML={{ __html: introGateScript }} />
+			</head>
 			<body>
 				<ThemeProvider>{children}</ThemeProvider>
 			</body>

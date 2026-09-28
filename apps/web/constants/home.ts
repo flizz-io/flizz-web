@@ -1,7 +1,8 @@
-import { homeTeaserProjects } from '@/constants/portfolio';
+import { homeTeaserProjects, projects } from '@/constants/portfolio';
 import { homeTeaserServices } from '@/constants/services';
 import type {
 	FaqItem,
+	HeroCinematicConfig,
 	HeroDiscipline,
 	HeroDisciplinesSceneConfig,
 	ProblemItem,
@@ -32,6 +33,40 @@ export const heroDisciplines: HeroDiscipline[] = [
 // 0–100 with 50 as the size the scene was composed at, so they read like
 // sliders rather than raw multipliers. 100 is whatever still fits the frame,
 // measured at runtime — no setting can clip the artwork.
+// The cinematic hero's one place to tune timing and the rotating line.
+export const heroCinematicConfig: HeroCinematicConfig = {
+	loaderSeconds: 3.5,
+	showLoader: true,
+	scrollDistance: 120,
+	autoAdvanceSeconds: 4,
+	rotatingPhrases: ['what\u2019s next.', 'what scales.', 'what lasts.'],
+	phraseHoldSeconds: 3
+};
+
+// The cinematic hero's words. The headline's first two lines are set, the
+// third rotates (see `heroCinematicConfig.rotatingPhrases`).
+export const heroCinematicCopy = {
+	headlineLines: ['Your technology', 'partner for'],
+	subtext:
+		'We build transparent, maintainable systems that give you freedom to pivot, scale, or switch vendors without starting over.',
+	primaryAction: 'Schedule a discovery call',
+	secondaryAction: 'See the works',
+	// TODO: swap for a quarterly availability line if the PM wants one.
+	availability: 'Replies within one business day.',
+	caption: 'Software engineering partner',
+	scrollCue: 'Scroll to begin'
+};
+
+// Computed from the portfolio itself, so the hero's facts line can't go stale.
+export const heroCinematicFacts = {
+	projectCount: projects.length,
+	sinceYear: projects.reduce(
+		(earliest, project) =>
+			project.year < earliest ? project.year : earliest,
+		projects[0]?.year ?? ''
+	)
+};
+
 export const heroDisciplinesSceneConfig: HeroDisciplinesSceneConfig = {
 	sceneScale: 100,
 	centerObjectScale: 50,
