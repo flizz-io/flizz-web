@@ -224,7 +224,10 @@ export function Problem({
 	];
 
 	return (
-		<section className={cn('border-y border-border', className)}>
+		<section
+			data-section-reveal
+			className={cn('border-y border-border', className)}
+		>
 			<div
 				ref={trackRef}
 				className="relative"
@@ -443,7 +446,10 @@ function ProblemStack({
 	totalSections
 }: Omit<ProblemProps, 'stageScrollVh'>) {
 	return (
-		<section className={cn('border-y border-border', className)}>
+		<section
+			data-section-reveal
+			className={cn('border-y border-border', className)}
+		>
 			<div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
 				<SectionHeader
 					index={sectionIndex}

@@ -95,6 +95,7 @@ export function Testimonials({
 
 	return (
 		<section
+			data-section-reveal
 			className={cn(
 				'relative overflow-hidden border-t border-border bg-secondary/30',
 				className

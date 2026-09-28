@@ -54,6 +54,8 @@ Public marketing homepage for `apps/web`. Sections below are in page order.
 >
 > The original sheet content that used to be transcribed per-service in `landing-pages/` has been removed — the PM has the source backup and will (re)author each service's content through the admin CRUD, or write it fresh. For the static Stage 2 build, use placeholder/dummy service cards here; do not hand-transcribe the old sheet copy.
 
+**Rail behaviour (large screens):** the teaser's horizontal rail pins mid-viewport and the page's own vertical scroll pans it, 1:1 — scrolling down moves forward, scrolling up moves back. Dragging, the edge arrows and horizontal wheel input all move the _page_ scroll to the matching position, so every input glides the same way (`hooks/use-pinned-rail.ts`). Small screens keep the stacked list; reduced motion keeps the free-scrolling strip.
+
 The sheet grouped candidate services into four categories, kept here only as a naming/scope reference for what the Services CRUD will eventually contain — not as content to build against:
 
 - **Custom Software Development** — MVP Development, SaaS Application Development, Custom Software Development, API development, legacy modernization, Progressive Web Apps, interactive prototyping
@@ -100,6 +102,10 @@ Backed by the Testimonial CRUD feature (see [progress-report.md](progress-report
     - Clear proposal with realistic timeline and transparent pricing
     - You own all code and IP from day one
 - **Content:** `[Contact Form]` — fields not specified in the sheet. **Open question for PM.**
+
+## Scroll entrances
+
+Every section below the hero carries `data-section-reveal`. `<SectionReveals />` (mounted once at the end of the home page) fades and rises each section's direct children in turn as the section's top comes into view, and `<Reveal>` items inside cascade in after — both GSAP, both tuned in `scrollReveal` (`constants/animation.ts`), both played once. Pins (`data-pinned`) and anything wrapping one only fade, never move, so pins measure true; a reveal the page jumps clean past (End key, anchor links) completes instead of staying hidden. Off under reduced motion.
 
 ## Design reference notes (from `Home Ref` tab)
 

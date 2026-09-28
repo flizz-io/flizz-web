@@ -68,6 +68,7 @@ export function WhyUs({
 
 	return (
 		<section
+			data-section-reveal
 			className={cn(
 				'border-b border-border px-4 py-20 sm:px-6 sm:py-28 lg:px-8',
 				className

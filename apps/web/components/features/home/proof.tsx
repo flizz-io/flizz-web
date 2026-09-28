@@ -46,7 +46,10 @@ export function Proof() {
 			};
 
 	return (
-		<section className="relative overflow-hidden border-b border-border">
+		<section
+			data-section-reveal
+			className="relative overflow-hidden border-b border-border"
+		>
 			{/* The starfield ends just above, so this panel reads as the horizon
 			    we descend to rather than a hard cut: a lit atmospheric rim, a
 			    wide glow bleeding in from off-screen, then haze thinning out. */}

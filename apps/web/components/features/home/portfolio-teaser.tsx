@@ -22,6 +22,7 @@ export function PortfolioTeaser({
 		// Clipped rather than hidden: the strip runs to the viewport edges while
 		// the header stays on the page container.
 		<section
+			data-section-reveal
 			// The hero's "See the works" cue lands here; the scroll margin
 			// clears the floating header.
 			id={heroScrollTargetId}

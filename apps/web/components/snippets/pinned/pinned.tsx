@@ -84,6 +84,9 @@ export function Pinned({
 	return (
 		<div
 			ref={ref}
+			// Scroll reveals read this: nothing may transform a pin or its
+			// ancestors, or the pin measures against a moved box.
+			data-pinned
 			{...props}
 		>
 			{children}

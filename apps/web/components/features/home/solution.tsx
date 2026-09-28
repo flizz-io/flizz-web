@@ -67,6 +67,7 @@ export function Solution({
 
 	return (
 		<section
+			data-section-reveal
 			ref={sectionRef}
 			className={cn(
 				'mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8',
