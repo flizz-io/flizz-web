@@ -8,23 +8,30 @@ import { cn } from '@workspace/ui/lib/utils';
 
 const REVEAL_EASE = [0.16, 1, 0.3, 1] as const;
 
+// Stages cross-fade — the outgoing one is still leaving while the next
+// arrives (see ProcessConsole) — so the two halves are near mirror images:
+// long, soft, and only a breath of scale and blur, never a snap.
+const SOFT_EASE = [0.22, 1, 0.36, 1] as const;
+
 const stageVariants: Variants = scaleVariants({
-	hidden: { opacity: 0, scale: 0.98, filter: 'blur(6px)' },
+	hidden: { opacity: 0, scale: 0.985, y: 10, filter: 'blur(8px)' },
 	show: {
 		opacity: 1,
 		scale: 1,
+		y: 0,
 		filter: 'blur(0px)',
 		transition: {
-			duration: 0.55,
-			ease: REVEAL_EASE,
+			duration: 0.8,
+			ease: SOFT_EASE,
 			staggerChildren: 0.08
 		}
 	},
 	exit: {
 		opacity: 0,
-		scale: 1.02,
-		filter: 'blur(6px)',
-		transition: { duration: 0.3 }
+		scale: 1.01,
+		y: -10,
+		filter: 'blur(8px)',
+		transition: { duration: 0.6, ease: SOFT_EASE }
 	}
 });
 

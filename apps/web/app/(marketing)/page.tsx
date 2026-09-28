@@ -41,6 +41,7 @@ export default function HomePage() {
 			/>
 			<StatsBand />
 			<Solution
+				variation="scroll"
 				sectionIndex={6}
 				totalSections={totalSections}
 			/>

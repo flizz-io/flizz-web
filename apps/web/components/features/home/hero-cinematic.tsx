@@ -333,8 +333,9 @@ export function HeroCinematic({
 				defaults: { ease: 'none' },
 				scrollTrigger: {
 					trigger: section,
-					// The section sits under the header's reserved space, so
-					// it pins from the very first pixel of scroll.
+					// Pins from the very first pixel of scroll: pulled up under
+					// the header, its offset is 0 — still read, in case a page
+					// ever puts something above it.
 					start: () => `top top+=${section.offsetTop}`,
 					end: () =>
 						`+=${(window.innerHeight * scrollDistance) / 100}`,
@@ -444,13 +445,17 @@ export function HeroCinematic({
 				onDone={onLoaderDone}
 			/>
 
+			{/* Pulled up under the floating header like every other hero, so the
+			    atmosphere fills the header's 4rem too — left out, that strip is
+			    bare page colour and reads as a dark band above the hero. The
+			    content pads back down by the same 4rem. */}
 			<section
 				ref={sectionRef}
-				className="relative overflow-hidden lg:h-[calc(100svh-4rem)] lg:min-h-160"
+				className="relative -mt-16 overflow-hidden lg:h-svh lg:min-h-176"
 			>
 				<HeroAtmosphere />
 
-				<div className="relative mx-auto grid h-full max-w-8xl grid-cols-1 items-center gap-12 px-4 pt-12 pb-24 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16 lg:px-8 lg:py-0">
+				<div className="relative mx-auto grid h-full max-w-8xl grid-cols-1 items-center gap-12 px-4 pt-28 pb-24 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16 lg:px-8 lg:pt-16 lg:pb-0">
 					<div
 						ref={copyRef}
 						data-hero-depth={HeroDepth.COPY}

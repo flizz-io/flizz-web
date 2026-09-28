@@ -170,6 +170,16 @@ export const realCostItems: RealCostItem[] = [
 	}
 ];
 
+// The Our Process section's words, shared by both of its variations.
+export const processSectionCopy = {
+	eyebrow: 'Our Process',
+	title: 'How we get you there',
+	description:
+		'Five stages, one system of record. You can see exactly where your project stands at every point.',
+	consoleTitle: 'flizz.build / northwind',
+	skip: 'Skip the process'
+};
+
 export const processSteps: ProcessStep[] = [
 	{
 		shortLabel: 'Discover',

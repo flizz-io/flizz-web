@@ -48,6 +48,11 @@ Public marketing homepage for `apps/web`. Sections below are in page order.
 5. **Training, Documentation & Support** — Complete handoff with documentation, team training, and optional ongoing support. You're never dependent on us, but we're here when you need us.
    _What You Get:_ Knowledge transfer, technical documentation, support options
 
+**Variations** (`<Solution variation>`; words in `processSectionCopy`, shared parts in `solution-parts.tsx`):
+
+- `carousel` (default) — the stages advance on a timer (paused on hover) and can be picked from the rail.
+- `scroll` (the home page) — pinned like the Problem section: the page's scroll walks the five stages (70vh each), the rail and console changing together, with a progress line filling beside the rail. The rail moves on one continuous position (`stepPosition`): each step rests fully open for most of its stretch and eases into the next across the boundary, with neighbouring rows always sharing exactly one detail slot, so the rail's height — and everything around it — never shifts. A scroll that stops mid-hand-over settles onto the nearest resting step (`restingProgress`); the console cross-fades between stages rather than emptying between them. Clicking a step glides the page to that step's stretch of scroll, so scroll stays the one thing deciding what's active; "Skip the process" jumps to the end (hidden on the last step). A held section in the curtain. Short screens (≤ 50rem tall) drop the description and tighten the rail so it fits one screen. Large screens only — the carousel stands in below `lg` and under reduced motion, chosen in CSS so nothing swaps after hydration.
+
 ## Services
 
 > **Superseded by the Services CRUD feature** (see [progress-report.md](progress-report.md)) — Services are no longer static content. This section shows the home page's "Services" teaser section (a curated subset of cards, each linking to its Single Service detail page), which will pull from the Services list once the feature is built.

@@ -107,6 +107,21 @@ export interface RealCostItem {
 	diagram: RealCostDiagram;
 }
 
+/**
+ * `carousel` — the stages advance on a timer, picked from the rail.
+ * `scroll` — the section pins like Problem and the page's scroll drives the
+ *   stages (large screens; the carousel stands in below `lg` and under
+ *   reduced motion).
+ */
+export type SolutionVariation = 'carousel' | 'scroll';
+
+/** What every Our Process variation takes from the page. */
+export interface SolutionVariationProps {
+	sectionIndex: number;
+	totalSections?: number;
+	className?: string;
+}
+
 export interface ProcessStep {
 	/** Punchy one-word label for the process rail. */
 	shortLabel: string;
