@@ -9,7 +9,10 @@ import localFont from 'next/font/local';
 
 import '@workspace/ui/globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
+import { animationConfig } from '@/configs/animation';
 import { siteConfig } from '@/configs/site';
+import { animationScaleProperty } from '@/constants/animation';
+import { introGateScript } from '@/constants/intro';
 import { cn } from '@workspace/ui/lib/utils';
 
 export const metadata: Metadata = {
@@ -78,7 +81,19 @@ export default function RootLayout({
 				proximaNova.variable,
 				'font-sans'
 			)}
+			// Every CSS duration and delay is multiplied by this — see the
+			// `duration-*` overrides in `@workspace/ui/globals.css`.
+			style={
+				{
+					[animationScaleProperty]: animationConfig.durationScale
+				} as React.CSSProperties
+			}
 		>
+			<head>
+				{/* Decides before first paint whether the home intro plays, so
+				    neither the loader nor the held-back header ever flashes. */}
+				<script dangerouslySetInnerHTML={{ __html: introGateScript }} />
+			</head>
 			<body>
 				<ThemeProvider>{children}</ThemeProvider>
 			</body>

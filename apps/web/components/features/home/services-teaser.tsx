@@ -9,6 +9,7 @@ import { SectionHeader } from '@/components/snippets/section-header/section-head
 import { serviceCards, servicesRailLabels } from '@/constants/home';
 import { ScrollDirection } from '@/enums/scroll';
 import { useDragScroll } from '@/hooks/use-drag-scroll';
+import { usePinnedRail } from '@/hooks/use-pinned-rail';
 import { useScrollEdges } from '@/hooks/use-scroll-edges';
 import { useSmoothScroll } from '@/hooks/use-smooth-scroll';
 import { cn } from '@workspace/ui/lib/utils';
@@ -38,10 +39,15 @@ export function ServicesTeaser({
 	// One shared index rather than per-item state: focusing one has to dim its
 	// siblings too, which only a common owner can coordinate.
 	const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+	const railRef = useRef<HTMLDivElement>(null);
 	const viewportRef = useRef<HTMLDivElement>(null);
 	const listRef = useRef<HTMLUListElement>(null);
 	const hideTimer = useRef<number | null>(null);
-	const scroller = useSmoothScroll(viewportRef);
+	const stripScroller = useSmoothScroll(viewportRef);
+	// Large screens: the page's vertical scroll drives the rail, and drag,
+	// arrows and wheel all move the page. Elsewhere the strip scrolls itself.
+	const railScroller = usePinnedRail(railRef, viewportRef);
+	const scroller = railScroller ?? stripScroller;
 	const dragHandlers = useDragScroll(viewportRef, { scroller });
 	const { hiddenBefore, hiddenAfter } = useScrollEdges(viewportRef, listRef);
 
@@ -83,15 +89,24 @@ export function ServicesTeaser({
 			const width = viewportRef.current?.clientWidth ?? 0;
 			const sign = direction === ScrollDirection.NEXT ? 1 : -1;
 
-			scroller.scrollBy(sign * width * ARROW_STEP);
+			const delta = sign * width * ARROW_STEP;
+
+			// Pinned, an arrow glides the page like a scroll would; the free
+			// strip already eases every move on its own.
+			if (railScroller) railScroller.glideBy(delta);
+			else scroller.scrollBy(delta);
 		},
-		[scroller]
+		[railScroller, scroller]
 	);
 
 	useEffect(() => clearHideTimer, []);
 
 	return (
-		<section className={cn(className, 'overflow-x-clip py-20 sm:py-28')}>
+		<section
+			data-section-reveal
+			data-section-hold
+			className={cn(className, 'overflow-x-clip py-20 sm:py-28')}
+		>
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 				<SectionHeader
 					index={sectionIndex}
@@ -104,7 +119,11 @@ export function ServicesTeaser({
 				/>
 			</div>
 
-			<div className="relative mt-16 lg:mt-24">
+			<div
+				ref={railRef}
+				data-pinned
+				className="relative mt-16 lg:mt-24"
+			>
 				{/* Stacked layout keeps its spine on the left; the scrolling
 				    layout carries its own inside the track, so the spine spans
 				    every item rather than stopping at the viewport edge. */}
@@ -160,7 +179,7 @@ export function ServicesTeaser({
 					// focused specimen's scale transform made this a vertical scroll
 					// container too and the wheel got captured mid-page.
 					// Mid-pan the grab wins over each specimen's link pointer.
-					className="select-none lg:overflow-x-auto lg:overflow-y-hidden lg:[-ms-overflow-style:none] lg:[scrollbar-width:none] lg:data-panning:cursor-grabbing lg:data-panning:[&_*]:cursor-grabbing lg:[&::-webkit-scrollbar]:hidden"
+					className="lg:scrollbar-none select-none lg:overflow-x-auto lg:overflow-y-hidden lg:[-ms-overflow-style:none] lg:data-panning:cursor-grabbing lg:data-panning:[&_*]:cursor-grabbing lg:[&::-webkit-scrollbar]:hidden"
 				>
 					<div className="relative lg:w-max lg:min-w-full lg:px-20">
 						<span

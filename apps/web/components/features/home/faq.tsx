@@ -22,6 +22,7 @@ interface FaqProps {
 export function Faq({ sectionIndex, totalSections, className }: FaqProps) {
 	return (
 		<section
+			data-section-reveal
 			className={cn(
 				'mx-auto max-w-4xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8',
 				className

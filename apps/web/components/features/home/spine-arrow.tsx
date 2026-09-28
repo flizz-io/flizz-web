@@ -54,6 +54,7 @@ export function SpineArrow({
 			/>
 
 			<button
+				data-glide-control
 				type="button"
 				tabIndex={visible ? 0 : -1}
 				aria-label={ariaLabel}

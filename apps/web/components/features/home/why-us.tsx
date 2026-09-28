@@ -2,10 +2,20 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import { Pinned } from '@/components/snippets/pinned/pinned';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { valueProps } from '@/constants/home';
+import { PinOffset } from '@/enums/scroll';
+import { scaleSeconds, scaleTransition } from '@/utils/animation';
 import { Text3DFlip } from '@workspace/ui/components/text-3d-flip';
 import { cn } from '@workspace/ui/lib/utils';
+
+// Text3DFlip's own spring, slowed to the configured animation speed.
+const flipTransition = scaleTransition({
+	type: 'spring',
+	damping: 30,
+	stiffness: 300
+} as const);
 
 /**
  * The headline is a sentence stem — "We create solutions that" — and each value
@@ -58,6 +68,7 @@ export function WhyUs({
 
 	return (
 		<section
+			data-section-reveal
 			className={cn(
 				'border-b border-border px-4 py-20 sm:px-6 sm:py-28 lg:px-8',
 				className
@@ -69,7 +80,11 @@ export function WhyUs({
 				    void beside the list. Deliberately shorter than the viewport:
 				    a full-height sticky in a container only a little taller than
 				    the screen has almost no travel and unsticks immediately. */}
-				<div className="lg:sticky lg:top-[calc((100svh-500px)/2)] lg:flex lg:h-125 lg:flex-col lg:justify-center lg:self-start">
+				<Pinned
+					offset={PinOffset.CENTER}
+					desktopOnly
+					className="lg:flex lg:h-125 lg:flex-col lg:justify-center lg:self-start"
+				>
 					<SectionHeader
 						index={sectionIndex}
 						total={totalSections}
@@ -135,7 +150,7 @@ export function WhyUs({
 						</span>{' '}
 						/ {String(valueProps.length).padStart(2, '0')}
 					</p>
-				</div>
+				</Pinned>
 
 				<ol
 					ref={listRef}
@@ -167,7 +182,8 @@ export function WhyUs({
 										active={isActive}
 										flipOnHover={false}
 										rotateDirection="top"
-										staggerDuration={0.012}
+										staggerDuration={scaleSeconds(0.012)}
+										transition={flipTransition}
 										className={cn(
 											'font-heading text-2xl font-semibold tracking-tight transition-colors duration-500 sm:text-3xl lg:text-4xl',
 											isActive

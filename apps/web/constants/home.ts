@@ -1,9 +1,12 @@
-import { homeTeaserProjects } from '@/constants/portfolio';
+import { homeTeaserProjects, projects } from '@/constants/portfolio';
 import { homeTeaserServices } from '@/constants/services';
+import { HeroDepth } from '@/enums/home';
 import type {
 	FaqItem,
+	HeroCinematicConfig,
 	HeroDiscipline,
 	HeroDisciplinesSceneConfig,
+	HeroParallaxConfig,
 	ProblemItem,
 	ProcessStep,
 	RealCostItem,
@@ -13,8 +16,9 @@ import type {
 	ValueProp
 } from '@/types/home';
 
-// Anchor the hero's scroll cue targets — shared so the id can't drift apart.
-export const heroScrollTargetId = 'highlights';
+// Anchor the hero's "See the works" cue scrolls to — the Our Work section.
+// Shared so the id can't drift apart.
+export const heroScrollTargetId = 'our-work';
 
 // The three disciplines the alternate hero orbits — labels track their own node
 // as the constellation turns.
@@ -31,6 +35,58 @@ export const heroDisciplines: HeroDiscipline[] = [
 // 0–100 with 50 as the size the scene was composed at, so they read like
 // sliders rather than raw multipliers. 100 is whatever still fits the frame,
 // measured at runtime — no setting can clip the artwork.
+// The cinematic hero's one place to tune timing and the rotating line.
+export const heroCinematicConfig: HeroCinematicConfig = {
+	loaderSeconds: 3.5,
+	showLoader: true,
+	scrollDistance: 120,
+	autoAdvanceSeconds: 4,
+	rotatingPhrases: ['what\u2019s next.', 'what scales.', 'what lasts.'],
+	phraseHoldSeconds: 3
+};
+
+// The cinematic hero's depth. Back planes trail the scroll and counter the
+// pointer; front planes lead and follow it — the gap between them is what
+// reads as depth. On large screens the hero is one of the held sections: its
+// planes counter the exit scroll (`hold`) so Services slides up over a still
+// stage, the back planes stiller than the front. Small screens keep `scroll`,
+// modest for the scene: it trails inside the hero's clipped frame, so too much
+// and its labels slide under the next section.
+export const heroParallax: HeroParallaxConfig = {
+	layers: {
+		[HeroDepth.FAR]: { scroll: 0.45, hold: 1, pinned: -10, pointer: -28 },
+		[HeroDepth.MID]: { scroll: 0.25, hold: 0.96, pinned: -18, pointer: 16 },
+		[HeroDepth.SCENE]: { scroll: 0.18, hold: 0.9, pinned: 0, pointer: 12 },
+		[HeroDepth.COPY]: { scroll: -0.12, hold: 0.82, pinned: 0, pointer: 0 }
+	},
+	pointerFollowSeconds: 1.2,
+	exit: { copyScale: 1.08, copyBlur: 14, copyShare: 0.55, sceneOpacity: 0.3 }
+};
+
+// The cinematic hero's words. The headline's first two lines are set, the
+// third rotates (see `heroCinematicConfig.rotatingPhrases`).
+export const heroCinematicCopy = {
+	headlineLines: ['Your technology', 'partner for'],
+	// Heads the logo strip that sits under the headline.
+	logosLabel: 'Trusted by teams at',
+	primaryAction: 'Schedule a discovery call',
+	secondaryAction: 'See the works',
+	// TODO: swap for a quarterly availability line if the PM wants one.
+	availability: 'Replies within one business day.',
+	caption: 'Software engineering partner',
+	scrollCue: 'Scroll to begin'
+};
+
+// Computed from the portfolio itself, so the hero's facts line can't go stale.
+export const heroCinematicFacts = {
+	projectCount: projects.length,
+	sinceYear: projects.reduce(
+		(earliest, project) =>
+			project.year < earliest ? project.year : earliest,
+		projects[0]?.year ?? ''
+	)
+};
+
 export const heroDisciplinesSceneConfig: HeroDisciplinesSceneConfig = {
 	sceneScale: 100,
 	centerObjectScale: 50,
@@ -113,6 +169,16 @@ export const realCostItems: RealCostItem[] = [
 		diagram: 'friction'
 	}
 ];
+
+// The Our Process section's words, shared by both of its variations.
+export const processSectionCopy = {
+	eyebrow: 'Our Process',
+	title: 'How we get you there',
+	description:
+		'Five stages, one system of record. You can see exactly where your project stands at every point.',
+	consoleTitle: 'flizz.build / northwind',
+	skip: 'Skip the process'
+};
 
 export const processSteps: ProcessStep[] = [
 	{

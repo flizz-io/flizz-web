@@ -1,12 +1,14 @@
 'use client';
 
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import { useLenis } from 'lenis/react';
 import { ArrowDown, Sparkle } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 import { heroScrollTargetId } from '@/constants/home';
+import { useSmoother } from '@/contexts/smooth-scroll-context';
+import { scaleTransition, scaleVariants } from '@/utils/animation';
+import { scrollToElement } from '@/utils/scroll';
 import { Button } from '@workspace/ui/components/button';
 import { useIsDarkTheme } from '@workspace/ui/hooks/use-is-dark-theme';
 
@@ -16,14 +18,14 @@ const HeroScene = dynamic(
 	{ ssr: false }
 );
 
-const container: Variants = {
+const container: Variants = scaleVariants({
 	hidden: {},
 	show: {
 		transition: { staggerChildren: 0.12, delayChildren: 0.05 }
 	}
-};
+});
 
-const item: Variants = {
+const item: Variants = scaleVariants({
 	hidden: { opacity: 0, y: 16, filter: 'blur(6px)' },
 	show: {
 		opacity: 1,
@@ -31,28 +33,20 @@ const item: Variants = {
 		filter: 'blur(0px)',
 		transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
 	}
-};
+});
 
 export function HeroStarfield() {
 	const reduceMotion = useReducedMotion();
 	const isDark = useIsDarkTheme();
-	const lenis = useLenis();
+	const smoother = useSmoother();
 
 	function scrollToNextSection() {
 		const target = document.getElementById(heroScrollTargetId);
 		if (!target) return;
 
-		// Header clearance comes from the target's own `scroll-mt-*`, which both
-		// Lenis and native scrolling honour — passing an offset here too would
-		// double-compensate.
-		if (lenis) {
-			lenis.scrollTo(target);
-			return;
-		}
-
-		// Lenis is skipped for reduced-motion visitors — fall back to the
-		// platform's own scrolling, which honours that preference too.
-		target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		// Header clearance comes from the target's own `scroll-mt-*` —
+		// passing an offset here too would double-compensate.
+		scrollToElement(smoother, target, { cinematic: true });
 	}
 
 	return (
@@ -70,11 +64,11 @@ export function HeroStarfield() {
 								scale: [1, 1.08, 0.96, 1]
 							}
 				}
-				transition={{
+				transition={scaleTransition({
 					duration: 22,
 					repeat: Infinity,
 					ease: 'easeInOut'
-				}}
+				})}
 			/>
 
 			{isDark ? (
@@ -157,16 +151,16 @@ export function HeroStarfield() {
 					// Centred with `mx-auto` rather than a translate, because
 					// Framer Motion writes an inline `transform` that would
 					// override a Tailwind translate class.
-					className="group absolute inset-x-0 bottom-8 mx-auto hidden w-fit items-center gap-2.5 rounded-full border border-border bg-card/70 px-4 py-2.5 font-mono text-[0.7rem] tracking-[0.2em] text-foreground/90 uppercase backdrop-blur-sm transition-colors hover:border-primary/50 hover:text-foreground sm:flex dark:text-white/85 dark:hover:text-white"
+					className="group absolute inset-x-0 bottom-8 mx-auto hidden w-fit cursor-pointer items-center gap-2.5 rounded-full border border-border bg-card/70 px-4 py-2.5 font-mono text-[0.7rem] tracking-[0.2em] text-foreground/90 uppercase backdrop-blur-sm transition-colors hover:border-primary/50 hover:text-foreground sm:flex dark:text-white/85 dark:hover:text-white"
 				>
 					<motion.span
 						className="flex"
 						animate={reduceMotion ? undefined : { y: [0, 3, 0] }}
-						transition={{
+						transition={scaleTransition({
 							duration: 1.6,
 							repeat: Infinity,
 							ease: 'easeInOut'
-						}}
+						})}
 					>
 						<ArrowDown className="size-3.5 text-primary" />
 					</motion.span>

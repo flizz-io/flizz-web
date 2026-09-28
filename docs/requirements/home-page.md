@@ -6,6 +6,8 @@ Public marketing homepage for `apps/web`. Sections below are in page order.
 
 ## Hero
 
+> Hero v3 ("cinematic" — intro loader, reveal, scroll hand-off) is specified in [home-hero-cinematic.md](home-hero-cinematic.md). The copy below applies to every variation.
+
 - **Heading:** Your Technology Partner for What's Next
 - **Subheading:** We build transparent, maintainable systems that give you freedom to pivot, scale, or switch vendors without starting over.
 - **Text:** Technology decisions have long-term consequences. We bring both technical expertise and business perspective to every project, building solutions that align with where you're going, not just where you are.
@@ -46,11 +48,18 @@ Public marketing homepage for `apps/web`. Sections below are in page order.
 5. **Training, Documentation & Support** — Complete handoff with documentation, team training, and optional ongoing support. You're never dependent on us, but we're here when you need us.
    _What You Get:_ Knowledge transfer, technical documentation, support options
 
+**Variations** (`<Solution variation>`; words in `processSectionCopy`, shared parts in `solution-parts.tsx`):
+
+- `carousel` (default) — the stages advance on a timer (paused on hover) and can be picked from the rail.
+- `scroll` (the home page) — pinned like the Problem section: the page's scroll walks the five stages (70vh each), the rail and console changing together, with a progress line filling beside the rail. The rail moves on one continuous position (`stepPosition`): each step rests fully open for most of its stretch and eases into the next across the boundary, with neighbouring rows always sharing exactly one detail slot, so the rail's height — and everything around it — never shifts. A scroll that stops mid-hand-over settles onto the nearest resting step (`restingProgress`); the console cross-fades between stages rather than emptying between them. Clicking a step glides the page to that step's stretch of scroll, so scroll stays the one thing deciding what's active; "Skip the process" jumps to the end (hidden on the last step). A held section in the curtain. Short screens (≤ 50rem tall) drop the description and tighten the rail so it fits one screen. Large screens only — the carousel stands in below `lg` and under reduced motion, chosen in CSS so nothing swaps after hydration.
+
 ## Services
 
 > **Superseded by the Services CRUD feature** (see [progress-report.md](progress-report.md)) — Services are no longer static content. This section shows the home page's "Services" teaser section (a curated subset of cards, each linking to its Single Service detail page), which will pull from the Services list once the feature is built.
 >
 > The original sheet content that used to be transcribed per-service in `landing-pages/` has been removed — the PM has the source backup and will (re)author each service's content through the admin CRUD, or write it fresh. For the static Stage 2 build, use placeholder/dummy service cards here; do not hand-transcribe the old sheet copy.
+
+**Rail behaviour (large screens):** the teaser's horizontal rail pins mid-viewport and the page's own vertical scroll pans it, 1:1 — scrolling down moves forward, scrolling up moves back. Dragging, the edge arrows and horizontal wheel input all move the _page_ scroll to the matching position, so every input glides the same way (`hooks/use-pinned-rail.ts`). Small screens keep the stacked list; reduced motion keeps the free-scrolling strip.
 
 The sheet grouped candidate services into four categories, kept here only as a naming/scope reference for what the Services CRUD will eventually contain — not as content to build against:
 
@@ -98,6 +107,18 @@ Backed by the Testimonial CRUD feature (see [progress-report.md](progress-report
     - Clear proposal with realistic timeline and transparent pricing
     - You own all code and IP from day one
 - **Content:** `[Contact Form]` — fields not specified in the sheet. **Open question for PM.**
+
+## Scroll motion
+
+Modelled on forgeautomotive.co.uk: nothing plays on a clock — every entrance, exit and fill is scrubbed to the scroll, so it moves exactly as fast as the reader, stops when they stop, and runs backwards when they scroll up. All tuning lives in `scrollReveal` (`constants/animation.ts`); all of it is off under reduced motion, and phones get shorter travel.
+
+- **Smoothing** — ScrollSmoother at `1.2s` expo.out, matched to Lenis `lerp: 0.09` (`constants/scroll.ts`).
+- **Hero exit** (large screens) — the copy swells, blurs and fades while the scene dims (`heroParallax.exit`).
+- **Section entrance** — every `data-section-reveal` section's direct children rise and fade in over their own stretch of scroll; `<Reveal>` items inside do the same (`SectionReveals`, `Reveal`).
+- **Curtain** — each section slides up over the one before, which dims toward the page colour. The key sections — the hero, Services, Our Work and Problem (`data-section-hold`) — hold perfectly still while covered; the rest sink at half the scroll speed. Pins (`data-pinned`) and anything wrapping one only dim, never move, so pins measure true; section triggers refresh after every pin (`refreshPriority: -1`) so a section's exit accounts for its own pin spacing. Every section is opaque (a tinted section mixes its tint into the page colour) so nothing ever shows through the one covering it.
+- **Full height** (large screens) — every section is at least one screen tall, so each has a moment entirely in view; short content is centred. Held sections keep block layout — a pin with spacing inside a flex column loses its reserved scroll.
+- **Headings** — `SectionHeader` titles fill letter by letter (`FillHeading`, GSAP SplitText, screen readers get the whole phrase).
+- **Media** — `[data-reveal-media]` plates wipe open from an inset while a `[data-media-zoom]` layer inside settles from a zoom (project cards, the Solution console).
 
 ## Design reference notes (from `Home Ref` tab)
 

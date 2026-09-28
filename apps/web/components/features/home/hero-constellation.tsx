@@ -1,17 +1,19 @@
 'use client';
 
 import { motion, type Variants } from 'framer-motion';
-import { useLenis } from 'lenis/react';
 import { ArrowDown, Sparkle } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
+import { HeroAtmosphere } from '@/components/features/home/hero-atmosphere';
 import {
 	heroDisciplinesSceneConfig,
 	heroScrollTargetId
 } from '@/constants/home';
+import { useSmoother } from '@/contexts/smooth-scroll-context';
+import { scaleVariants } from '@/utils/animation';
+import { scrollToElement } from '@/utils/scroll';
 import { Button } from '@workspace/ui/components/button';
-import { Particles } from '@workspace/ui/components/particles';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 
 // Three.js is heavy — keep it out of the initial bundle.
@@ -23,12 +25,12 @@ const HeroDisciplinesScene = dynamic(
 	{ ssr: false }
 );
 
-const container: Variants = {
+const container: Variants = scaleVariants({
 	hidden: {},
 	show: { transition: { staggerChildren: 0.12, delayChildren: 0.05 } }
-};
+});
 
-const item: Variants = {
+const item: Variants = scaleVariants({
 	hidden: { opacity: 0, y: 16, filter: 'blur(6px)' },
 	show: {
 		opacity: 1,
@@ -36,7 +38,7 @@ const item: Variants = {
 		filter: 'blur(0px)',
 		transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
 	}
-};
+});
 
 /**
  * Split hero: the copy holds one side and the practice itself turns on the
@@ -45,74 +47,19 @@ const item: Variants = {
  */
 export function HeroConstellation() {
 	const reduceMotion = usePrefersReducedMotion();
-	const lenis = useLenis();
+	const smoother = useSmoother();
 
 	const scrollToNext = () => {
 		const target = document.getElementById(heroScrollTargetId);
 		if (!target) return;
 
 		// Header clearance comes from the target's own `scroll-mt-*`.
-		if (lenis) {
-			lenis.scrollTo(target);
-			return;
-		}
-
-		target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		scrollToElement(smoother, target, { cinematic: true });
 	};
 
 	return (
 		<section className="relative overflow-hidden">
-			{/* Atmosphere, in three soft layers. All of it is blurred and
-			    low-frequency on purpose: the constellation is crisp lines and
-			    points, so anything sharp back here would compete with it
-			    rather than give it somewhere to sit. */}
-			<span
-				aria-hidden
-				className="pointer-events-none absolute top-1/2 right-0 h-[46rem] w-[46rem] translate-x-1/4 -translate-y-1/2 rounded-full blur-3xl motion-safe:animate-aurora"
-				style={{
-					background:
-						'radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--color-primary) 22%, transparent), transparent 68%)'
-				}}
-			/>
-			<span
-				aria-hidden
-				className="pointer-events-none absolute -bottom-40 left-0 h-[34rem] w-[34rem] rounded-full blur-3xl motion-safe:animate-aurora"
-				style={{
-					animationDelay: '-13s',
-					background:
-						'radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--color-primary) 12%, transparent), transparent 70%)'
-				}}
-			/>
-
-			{/* Framing: the edges fall away the way a lens would. */}
-			<span
-				aria-hidden
-				className="pointer-events-none absolute inset-0"
-				style={{
-					background:
-						'radial-gradient(ellipse 78% 78% at 50% 45%, transparent 40%, color-mix(in oklab, var(--color-background) 85%, transparent) 100%)'
-				}}
-			/>
-
-			{/* Film grain — the one texture that reads as cinematic without
-			    putting a second geometry into the frame. */}
-			<span
-				aria-hidden
-				className="pointer-events-none absolute inset-0 opacity-[0.18] mix-blend-soft-light"
-				style={{
-					backgroundImage:
-						"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E\")",
-					backgroundSize: '160px 160px'
-				}}
-			/>
-
-			<Particles
-				className="pointer-events-none absolute inset-0 z-0"
-				quantity={100}
-				ease={80}
-				color="#ffffff"
-				refresh
-			/>
+			<HeroAtmosphere />
 
 			<div className="relative mx-auto grid min-h-[calc(100svh-4rem)] max-w-8xl grid-cols-1 items-center gap-12 px-4 pt-20 pb-28 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16 lg:px-8">
 				<motion.div
@@ -163,9 +110,9 @@ export function HeroConstellation() {
 						<button
 							type="button"
 							onClick={scrollToNext}
-							className="group inline-flex items-center gap-2.5 font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-primary"
+							className="group inline-flex cursor-pointer items-center gap-2.5 font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase transition-colors hover:text-primary"
 						>
-							<ArrowDown className="size-3.5 text-primary transition-transform group-hover:translate-y-0.5" />
+							<ArrowDown className="size-3.5 text-primary drop-shadow-[0_0_6px_var(--color-primary)] group-hover:paused motion-safe:animate-float-cue" />
 							See the works
 						</button>
 					</motion.div>

@@ -95,8 +95,12 @@ export function Testimonials({
 
 	return (
 		<section
+			data-section-reveal
 			className={cn(
-				'relative overflow-hidden border-t border-border bg-secondary/30',
+				// Opaque on purpose: the next section's curtain slides this
+				// over the one before, and a see-through tint lets that one
+				// show through. Same tint, mixed into the page colour.
+				'relative overflow-hidden border-t border-border bg-[color-mix(in_oklab,var(--color-secondary)_30%,var(--color-background))]',
 				className
 			)}
 		>
@@ -115,7 +119,7 @@ export function Testimonials({
 			    its own overflow, which swallowed the glyph entirely. */}
 			<span
 				aria-hidden
-				className="pointer-events-none absolute top-20 left-1/2 -translate-x-1/2 font-serif text-[16rem] leading-none text-primary/[0.08] select-none sm:top-24"
+				className="pointer-events-none absolute top-20 left-1/2 -translate-x-1/2 text-center font-serif text-[16rem] leading-none text-primary/8 select-none sm:top-24"
 			>
 				&ldquo;
 			</span>

@@ -1,20 +1,23 @@
 'use client';
 
 import { motion, useTransform } from 'framer-motion';
-import { useLenis } from 'lenis/react';
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 
 import { CostDiagram } from '@/components/features/home/cost-diagrams';
 import { ProblemScene } from '@/components/features/home/problem-scenes';
+import { Pinned } from '@/components/snippets/pinned/pinned';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
+import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { problemItems, realCostItems } from '@/constants/home';
+import { useSmoother } from '@/contexts/smooth-scroll-context';
 import { useScrollProgress } from '@/hooks/use-scroll-progress';
 import type { ProblemItem } from '@/types/home';
+import { scaleMs, scaleTransition } from '@/utils/animation';
+import { scrollToPosition } from '@/utils/scroll';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { cn } from '@workspace/ui/lib/utils';
-import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 
 // Three.js is heavy and only the closing stage needs it.
 const CostScene = dynamic(
@@ -148,7 +151,7 @@ export function Problem({
 	showSkip = true
 }: ProblemProps) {
 	const reduceMotion = usePrefersReducedMotion();
-	const lenis = useLenis();
+	const smoother = useSmoother();
 	const trackRef = useRef<HTMLDivElement>(null);
 	const progress = useScrollProgress(trackRef);
 	const [activeIndex, setActiveIndex] = useState(0);
@@ -195,12 +198,7 @@ export function Problem({
 			track.getBoundingClientRect().bottom -
 			window.innerHeight;
 
-		if (lenis) {
-			lenis.scrollTo(target);
-			return;
-		}
-
-		window.scrollTo({ top: target, behavior: 'smooth' });
+		scrollToPosition(smoother, target);
 	};
 
 	if (reduceMotion) {
@@ -226,7 +224,11 @@ export function Problem({
 	];
 
 	return (
-		<section className={cn('border-y border-border', className)}>
+		<section
+			data-section-reveal
+			data-section-hold
+			className={cn('border-y border-border', className)}
+		>
 			<div
 				ref={trackRef}
 				className="relative"
@@ -234,7 +236,7 @@ export function Problem({
 					height: `calc(100svh + ${stageCount * stageScrollVh}svh)`
 				}}
 			>
-				<div className="sticky top-0 flex h-svh items-center overflow-hidden">
+				<Pinned className="flex h-svh items-center overflow-hidden">
 					{stages.map((stage, index) => (
 						<div
 							key={`scene-${stage.key}`}
@@ -287,7 +289,10 @@ export function Problem({
 						)}
 						initial={{ y: '-100%', opacity: 0.9 }}
 						animate={{ y: '300%', opacity: 0 }}
-						transition={{ duration: 1.2, ease: 'easeOut' }}
+						transition={scaleTransition({
+							duration: 1.2,
+							ease: 'easeOut'
+						})}
 					/>
 
 					{stages.map((stage, index) => {
@@ -356,11 +361,7 @@ export function Problem({
 																		: 'translate-y-full'
 																)}
 																style={{
-																	transitionDelay: `${
-																		200 +
-																		itemIndex *
-																			150
-																	}ms`
+																	transitionDelay: `${scaleMs(200 + itemIndex * 150)}ms`
 																}}
 															>
 																<CostDiagram
@@ -433,7 +434,7 @@ export function Problem({
 							style={{ y: dotY }}
 						/>
 					</div>
-				</div>
+				</Pinned>
 			</div>
 		</section>
 	);
@@ -446,7 +447,11 @@ function ProblemStack({
 	totalSections
 }: Omit<ProblemProps, 'stageScrollVh'>) {
 	return (
-		<section className={cn('border-y border-border', className)}>
+		<section
+			data-section-reveal
+			data-section-hold
+			className={cn('border-y border-border', className)}
+		>
 			<div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
 				<SectionHeader
 					index={sectionIndex}

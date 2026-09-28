@@ -1,39 +1,54 @@
 'use client';
 
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef } from 'react';
 
 import { audienceSegments } from '@/constants/home';
 import { cn } from '@workspace/ui/lib/utils';
 
-const REVEAL_EASE = [0.16, 1, 0.3, 1] as const;
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const listVariants: Variants = {
-	hidden: {},
-	show: {
-		transition: { delayChildren: 0.12, staggerChildren: 0.09 }
-	}
-};
-
-const itemVariants: Variants = {
-	hidden: { y: '120%' },
-	show: {
-		y: '0%',
-		transition: { duration: 0.7, ease: REVEAL_EASE }
-	}
-};
+const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 
 export function AudienceList({ className }: { className?: string }) {
-	const reduceMotion = useReducedMotion();
+	const listRef = useRef<HTMLUListElement>(null);
+
+	useGSAP(
+		() => {
+			const list = listRef.current;
+			if (!list || window.matchMedia(REDUCED_MOTION_QUERY).matches) {
+				return;
+			}
+
+			// Each name rises into its own clipped row. The trigger sits on
+			// the list, never the clipped names, which start out of view.
+			// Each name rises into its own clipped row, scrubbed to the
+			// scroll. The trigger sits on the list, never the clipped names,
+			// which start out of view.
+			gsap.fromTo(
+				gsap.utils.toArray<HTMLElement>('[data-audience-name]', list),
+				{ yPercent: 120 },
+				{
+					yPercent: 0,
+					ease: 'power2.out',
+					stagger: 0.12,
+					scrollTrigger: {
+						trigger: list,
+						start: 'top 92%',
+						end: 'top 55%',
+						scrub: true
+					}
+				}
+			);
+		},
+		{ scope: listRef }
+	);
 
 	return (
-		<motion.ul
-			// The trigger sits on the list itself, never on the clipped items:
-			// an element parked outside its own `overflow-hidden` parent never
-			// reports as intersecting, so it would never animate in.
-			variants={reduceMotion ? undefined : listVariants}
-			initial={reduceMotion ? undefined : 'hidden'}
-			whileInView={reduceMotion ? undefined : 'show'}
-			viewport={{ once: true, amount: 0.6 }}
+		<ul
+			ref={listRef}
 			className={cn(
 				// A fixed grid rather than a wrapping row: six names of very
 				// different lengths break into ragged lines when centred.
@@ -46,8 +61,8 @@ export function AudienceList({ className }: { className?: string }) {
 					key={segment}
 					className="overflow-hidden py-1"
 				>
-					<motion.span
-						variants={reduceMotion ? undefined : itemVariants}
+					<span
+						data-audience-name
 						// Top-aligned, not centred: a name that wraps to two
 						// lines would otherwise float its dot into the gap.
 						className="flex items-start gap-2 text-sm text-foreground sm:text-base"
@@ -57,9 +72,9 @@ export function AudienceList({ className }: { className?: string }) {
 							className="mt-2 size-1 shrink-0 rounded-full bg-primary sm:mt-2.5"
 						/>
 						{segment}
-					</motion.span>
+					</span>
 				</li>
 			))}
-		</motion.ul>
+		</ul>
 	);
 }
