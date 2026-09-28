@@ -15,6 +15,7 @@ import { cn } from '@workspace/ui/lib/utils';
 export function StatsBand({ className }: { className?: string }) {
 	return (
 		<section
+			data-section-reveal
 			className={cn(
 				'relative overflow-hidden border-y border-border py-20 sm:py-24',
 				className

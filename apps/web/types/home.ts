@@ -1,3 +1,5 @@
+import type { HeroDepth } from '@/enums/home';
+
 export interface HeroDiscipline {
 	label: string;
 	/** One line on what the discipline actually contributes. */
@@ -5,6 +7,62 @@ export interface HeroDiscipline {
 }
 
 /** The tuning dials for the hero constellation, kept out of the component. */
+/** Controls for the cinematic hero — see docs/requirements/home-hero-cinematic.md. */
+export interface HeroCinematicConfig {
+	/** Minimum loader time in seconds, clamped 3–5. */
+	loaderSeconds: number;
+	/** Off skips straight to the reveal. */
+	showLoader: boolean;
+	/** Pinned scroll travel, as % of the viewport height. */
+	scrollDistance: number;
+	/** Idle seconds before the hand-off plays itself; 0 disables. */
+	autoAdvanceSeconds: number;
+	/** The headline's rotating third line; the first is the accessible one. */
+	rotatingPhrases: string[];
+	/** How long each phrase holds, in seconds. */
+	phraseHoldSeconds: number;
+}
+
+/** How one hero plane moves — see `heroParallax` in constants/home.ts. */
+export interface HeroParallaxLayer {
+	/**
+	 * Small screens, as the hero scrolls away: how far the plane trails (+)
+	 * or leads (−) the page, as a share of the hero's height. 0 moves with
+	 * the page.
+	 */
+	scroll: number;
+	/**
+	 * Large screens, as the Services section slides up over the hero: the
+	 * share of that scroll the plane counters. 1 holds it perfectly still;
+	 * a little under 1 lets it drift up a touch, for depth.
+	 */
+	hold: number;
+	/** During the pinned hand-off: a vertical drift, in % of its own height. */
+	pinned: number;
+	/**
+	 * With the pointer at the hero's edge: px the plane follows (+) or
+	 * counters (−) it. Fine pointers only; 0 holds the plane still.
+	 */
+	pointer: number;
+}
+
+export interface HeroParallaxConfig {
+	layers: Record<HeroDepth, HeroParallaxLayer>;
+	/** Seconds the pointer planes take to catch the cursor. */
+	pointerFollowSeconds: number;
+	/**
+	 * Large screens, as the hero leaves: the copy swells to `copyScale`,
+	 * blurs to `copyBlur` px and fades out over the first `copyShare` of the
+	 * exit; the scene dims to `sceneOpacity`.
+	 */
+	exit: {
+		copyScale: number;
+		copyBlur: number;
+		copyShare: number;
+		sceneOpacity: number;
+	};
+}
+
 export interface HeroDisciplinesSceneConfig {
 	/** Size of the whole constellation, 0–100, where 50 is the composed size. */
 	sceneScale: number;
@@ -47,6 +105,21 @@ export interface RealCostItem {
 	line: string;
 	/** Which moving figure plays out this line. */
 	diagram: RealCostDiagram;
+}
+
+/**
+ * `carousel` — the stages advance on a timer, picked from the rail.
+ * `scroll` — the section pins like Problem and the page's scroll drives the
+ *   stages (large screens; the carousel stands in below `lg` and under
+ *   reduced motion).
+ */
+export type SolutionVariation = 'carousel' | 'scroll';
+
+/** What every Our Process variation takes from the page. */
+export interface SolutionVariationProps {
+	sectionIndex: number;
+	totalSections?: number;
+	className?: string;
 }
 
 export interface ProcessStep {

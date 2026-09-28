@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 
+import { scaleTransition } from '@/utils/animation';
 import { cn } from '@workspace/ui/lib/utils';
 
 /**
@@ -79,11 +80,11 @@ function RigidGridScene({ active }: { active: boolean }) {
 				animate={
 					active ? { rotate: [-9, -13, -9], x: [0, 3, 0] } : undefined
 				}
-				transition={{
+				transition={scaleTransition({
 					duration: 11,
 					repeat: Infinity,
 					ease: 'easeInOut'
-				}}
+				})}
 			>
 				<path
 					d={PROCESS_OUTLINE}
@@ -101,12 +102,12 @@ function RigidGridScene({ active }: { active: boolean }) {
 						animate={
 							active ? { opacity: [0.2, 1, 0.2] } : undefined
 						}
-						transition={{
+						transition={scaleTransition({
 							duration: 2.6,
 							repeat: Infinity,
 							delay: point.x / 60,
 							ease: 'easeInOut'
-						}}
+						})}
 					>
 						<line
 							x1={point.x - 1.6}
@@ -177,11 +178,11 @@ function ScatteredScene({ active }: { active: boolean }) {
 									}
 								: undefined
 						}
-						transition={{
+						transition={scaleTransition({
 							duration: 5 + link * 0.9,
 							repeat: Infinity,
 							ease: 'easeInOut'
-						}}
+						})}
 					/>
 				);
 			})}
@@ -197,11 +198,11 @@ function ScatteredScene({ active }: { active: boolean }) {
 								}
 							: undefined
 					}
-					transition={{
+					transition={scaleTransition({
 						duration: 13,
 						repeat: Infinity,
 						ease: 'easeInOut'
-					}}
+					})}
 				>
 					<circle
 						cx={node.x}
@@ -252,24 +253,24 @@ function SlippingScene({ active }: { active: boolean }) {
 							: undefined
 					}
 					width={bar.width}
-					transition={{
+					transition={scaleTransition({
 						duration: 7 + index * 1.3,
 						repeat: Infinity,
 						repeatType: 'reverse',
 						ease: 'easeInOut'
-					}}
+					})}
 				/>
 			))}
 
 			{/* The date everyone agreed on, walking away from the plan. */}
 			<motion.g
 				animate={active ? { x: [0, 46] } : undefined}
-				transition={{
+				transition={scaleTransition({
 					duration: 16,
 					repeat: Infinity,
 					repeatType: 'reverse',
 					ease: 'easeInOut'
-				}}
+				})}
 			>
 				<line
 					x1="96"

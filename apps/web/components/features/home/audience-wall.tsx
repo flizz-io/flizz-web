@@ -4,6 +4,7 @@ import { useReducedMotion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 
 import { audienceSegments } from '@/constants/home';
+import { scaleSeconds } from '@/utils/animation';
 import { cn } from '@workspace/ui/lib/utils';
 
 // Seconds per loop at speed 1. Co-prime so the rows never phase-lock into a
@@ -62,9 +63,9 @@ function Rows({
 						style={
 							animate
 								? {
-										animation: `marquee ${
+										animation: `marquee ${scaleSeconds(
 											marqueeRow.duration / speed
-										}s linear infinite${
+										)}s linear infinite${
 											marqueeRow.reverse ? ' reverse' : ''
 										}`
 									}

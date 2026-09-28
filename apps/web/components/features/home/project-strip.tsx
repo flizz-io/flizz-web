@@ -167,23 +167,6 @@ export function ProjectStrip({ className }: { className?: string }) {
 		}
 	};
 
-	/**
-	 * Horizontal gestures are claimed here rather than via `data-lenis-prevent`:
-	 * that attribute makes Lenis ignore the element, so vertical scrolling over
-	 * the strip turns native and instant while the rest of the page eases, and
-	 * Lenis reasserts its own position every frame. The two fight, and it reads
-	 * as flicker.
-	 */
-	const onWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-		const viewport = viewportRef.current;
-		if (!viewport) return;
-
-		// Vertical and diagonal intent stays with the page.
-		if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
-
-		viewport.scrollLeft += event.deltaX;
-	};
-
 	// A drag that ended over a card shouldn't also open it.
 	const onClickCapture = (event: React.MouseEvent<HTMLDivElement>) => {
 		if (dragRef.current.moved > DRAG_THRESHOLD) {
@@ -232,7 +215,6 @@ export function ProjectStrip({ className }: { className?: string }) {
 				<div
 					ref={viewportRef}
 					onScroll={readScroll}
-					onWheel={onWheel}
 					onPointerDown={onPointerDown}
 					onPointerMove={onPointerMove}
 					onPointerUp={endDrag}
@@ -271,14 +253,24 @@ export function ProjectStrip({ className }: { className?: string }) {
 									draggable={false}
 									className="group block"
 								>
-									<div className="relative aspect-620/388 overflow-hidden rounded-lg border border-border bg-card">
-										<MediaSlot
-											src={project.image}
-											alt={`${project.name} — ${project.service}`}
-											label="Screenshot pending"
-											sizes="(max-width: 640px) 85vw, 620px"
-											className="transition-transform duration-700 ease-power-on group-hover:scale-[1.03]"
-										/>
+									<div
+										data-reveal-media
+										className="relative aspect-620/388 overflow-hidden rounded-lg border border-border bg-card"
+									>
+										{/* The scroll zoom's own layer, so it never
+										    fights the image's hover scale. */}
+										<span
+											data-media-zoom
+											className="absolute inset-0"
+										>
+											<MediaSlot
+												src={project.image}
+												alt={`${project.name} — ${project.service}`}
+												label="Screenshot pending"
+												sizes="(max-width: 640px) 85vw, 620px"
+												className="transition-transform duration-700 ease-power-on group-hover:scale-[1.03]"
+											/>
+										</span>
 									</div>
 
 									<div className="mt-5 flex items-start gap-4">

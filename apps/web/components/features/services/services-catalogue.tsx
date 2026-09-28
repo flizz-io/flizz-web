@@ -4,10 +4,12 @@ import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 
+import { Pinned } from '@/components/snippets/pinned/pinned';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SchematicFrame } from '@/components/snippets/schematic-frame/schematic-frame';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { services } from '@/constants/services';
+import { PinOffset } from '@/enums/scroll';
 import { serviceCategoryAnchors, serviceCategoryOrder } from '@/enums/services';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { ServiceVisual } from '@workspace/service-visuals';
@@ -184,7 +186,10 @@ export function ServicesCatalogue({
 					{/* Pointer-driven, so desktop only — below `lg` every row
 					    already carries its own summary. */}
 					{isDesktop ? (
-						<div className="sticky top-28 self-start">
+						<Pinned
+							offset={PinOffset.BELOW_HEADER}
+							className="self-start"
+						>
 							<SchematicFrame className="border border-border bg-card/40">
 								<div className="flex items-center justify-between border-b border-border px-5 py-3">
 									<span className="font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
@@ -222,7 +227,7 @@ export function ServicesCatalogue({
 									</>
 								) : null}
 							</SchematicFrame>
-						</div>
+						</Pinned>
 					) : null}
 				</div>
 			</div>

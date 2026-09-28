@@ -1,6 +1,5 @@
 'use client';
 
-import { useLenis } from 'lenis/react';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -8,10 +7,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ProjectShift } from '@/components/features/portfolio/project-shift';
 import { Atmosphere } from '@/components/snippets/atmosphere/atmosphere';
 import { DotField } from '@/components/snippets/dot-field/dot-field';
+import { Pinned } from '@/components/snippets/pinned/pinned';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { featuredProjects, projectSectorVisuals } from '@/constants/portfolio';
+import { useSmoother } from '@/contexts/smooth-scroll-context';
 import { projectSectorOrder } from '@/enums/portfolio';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { scrollToPosition } from '@/utils/scroll';
 import { ServiceVisual } from '@workspace/service-visuals';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
@@ -76,7 +78,7 @@ export function PortfolioReel({
 	totalSections,
 	className
 }: PortfolioReelProps) {
-	const lenis = useLenis();
+	const smoother = useSmoother();
 	// `hidden lg:block` would still mount the specimen and burn a WebGL context
 	// on phones that never see it, so the scene is gated on the query instead.
 	const isDesktop = useMediaQuery('(min-width: 1024px)');
@@ -98,14 +100,9 @@ export function PortfolioReel({
 				marker.offsetHeight / 2 -
 				window.innerHeight / 2;
 
-			if (lenis) {
-				lenis.scrollTo(top);
-				return;
-			}
-
-			window.scrollTo({ top, behavior: 'smooth' });
+			scrollToPosition(smoother, top);
 		},
-		[lenis]
+		[smoother]
 	);
 
 	useEffect(() => {
@@ -180,7 +177,7 @@ export function PortfolioReel({
 					height: `calc(${reel.length} * ${frameHeight})`
 				}}
 			>
-				<div className="sticky top-0 h-svh overflow-hidden">
+				<Pinned className="h-svh overflow-hidden">
 					<Atmosphere intensity="quiet" />
 					<DotField spacing={26} />
 
@@ -357,7 +354,7 @@ export function PortfolioReel({
 							}}
 						/>
 					</span>
-				</div>
+				</Pinned>
 
 				{/* One per frame, stacked down the track — what the scrubber
 				    measures a jump against. */}

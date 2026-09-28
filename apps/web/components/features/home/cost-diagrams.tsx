@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 
 import type { RealCostDiagram } from '@/types/home';
+import { scaleTransition } from '@/utils/animation';
 
 /**
  * A moving figure for each line of the real cost. Each one plays out the
@@ -25,12 +26,12 @@ function Diagram({ children }: { children: React.ReactNode }) {
 /** Reaches forward, runs out of tether, gets dragged home. Repeat. */
 function HeldBackDiagram({ active }: { active: boolean }) {
 	const travel = { x: [0, 26, 26, 0, 0] };
-	const timing = {
+	const timing = scaleTransition({
 		duration: 3.6,
 		times: [0, 0.5, 0.62, 0.72, 1],
 		repeat: Infinity,
 		ease: 'easeInOut' as const
-	};
+	});
 
 	return (
 		<Diagram>
@@ -104,11 +105,11 @@ function MissedDiagram({ active }: { active: boolean }) {
 
 			<motion.g
 				animate={active ? { x: [0, 46] } : undefined}
-				transition={{
+				transition={scaleTransition({
 					duration: 2.8,
 					repeat: Infinity,
 					ease: 'linear'
-				}}
+				})}
 			>
 				<circle
 					cx="6"
@@ -120,11 +121,11 @@ function MissedDiagram({ active }: { active: boolean }) {
 
 			<motion.g
 				animate={active ? { x: [0, 9, 8, 9.5, 8.5, 9] } : undefined}
-				transition={{
+				transition={scaleTransition({
 					duration: 2.8,
 					repeat: Infinity,
 					ease: 'easeOut'
-				}}
+				})}
 			>
 				<circle
 					cx="6"
@@ -178,13 +179,13 @@ function ForkedDiagram({ active }: { active: boolean }) {
 								? { strokeOpacity: [0.85, 0.85, 0.06, 0.85] }
 								: undefined
 						}
-						transition={{
+						transition={scaleTransition({
 							duration: 4,
 							times: [0, 0.3, 0.62, 1],
 							repeat: Infinity,
 							delay: index * 0.18,
 							ease: 'easeInOut'
-						}}
+						})}
 					/>
 				);
 			})}
@@ -221,13 +222,13 @@ function FrictionDiagram({ active }: { active: boolean }) {
 					/>
 					<motion.g
 						animate={active ? { x: [0, 28, 28, 0] } : undefined}
-						transition={{
+						transition={scaleTransition({
 							duration: 2.8,
 							times: [0, 0.42, 0.5, 0.78],
 							repeat: Infinity,
 							delay: index * 0.45,
 							ease: 'easeInOut'
-						}}
+						})}
 					>
 						<rect
 							x="6"

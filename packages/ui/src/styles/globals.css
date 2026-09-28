@@ -132,6 +132,58 @@
 	body {
 		@apply bg-background text-foreground;
 	}
+
+	/* Section-to-section curtain (apps/web SectionReveals). Each section is
+	   opaque and its own stacking context, so the next one — later in the
+	   DOM — slides up over it; the veil fades it toward the page colour as it
+	   falls away. In the base layer, so a section's own bg utility wins. */
+	[data-section-reveal] {
+		position: relative;
+		isolation: isolate;
+		background-color: var(--color-background);
+	}
+	/* Large screens: every section is at least a full screen, so each has a
+	   moment entirely in view before the next covers it. Short content sits
+	   centred in a flex column — except in the held sections, which are
+	   taller than a screen anyway and must stay block layout: a ScrollTrigger
+	   pin with spacing inside a flex column gets its spacer's flex-basis set
+	   to the pin's own size, which swallows the scroll it reserves. In the
+	   column, children are held to full width, since `mx-auto` would
+	   otherwise shrink a `max-w-*` container to its content; anything with
+	   its own width utility keeps it (utilities outrank this layer). */
+	@media (min-width: 64rem) {
+		[data-section-reveal] {
+			min-height: 100svh;
+		}
+		[data-section-reveal]:not([data-section-hold]) {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+		[data-section-reveal]:not([data-section-hold]) > * {
+			width: 100%;
+			flex-shrink: 0;
+		}
+	}
+	[data-section-reveal]::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 60;
+		pointer-events: none;
+		background-color: var(--color-background);
+		opacity: var(--curtain-dim, 0);
+	}
+
+	/* The home intro gate (see apps/web constants/intro.ts). Skipped: the
+	   loader never shows. Playing: the header waits for its entrance — only on
+	   a page that actually has a loader, so every other page is untouched. */
+	html[data-intro='skip'] [data-intro-loader] {
+		display: none;
+	}
+	html[data-intro='play']:has([data-intro-loader]) [data-intro-header] {
+		visibility: hidden;
+	}
 }
 
 @theme {
@@ -140,9 +192,33 @@
 	--container-9xl: 96rem;
 	--container-10xl: 104rem;
 
-	--animate-marquee: marquee 34s linear infinite;
-	--animate-aurora: aurora-drift 26s ease-in-out infinite;
+	--animate-marquee: marquee calc(34s * var(--motion-scale, 1)) linear
+		infinite;
+	--animate-aurora: aurora-drift calc(26s * var(--motion-scale, 1))
+		ease-in-out infinite;
+	--animate-float-cue: float-cue calc(2.4s * var(--motion-scale, 1))
+		var(--ease-float) infinite;
+	--ease-float: cubic-bezier(0.45, 0, 0.55, 1);
 	--ease-power-on: cubic-bezier(0.16, 1, 0.3, 1);
+	/* What a bare `transition` / `transition-colors` runs for. */
+	--default-transition-duration: calc(150ms * var(--motion-scale, 1));
+}
+
+/* Every transition duration and delay scales with `--motion-scale` — one
+   dial for how fast the whole app moves. An app sets it on `<html>` (the web
+   app from `NEXT_PUBLIC_ANIMATION_SPEED`); left unset it's 1, as authored.
+   These extend the core utilities: Tailwind merges them into the same rule,
+   and the later declarations win. */
+@utility duration-* {
+	--tw-duration: calc(--value(integer) * 1ms * var(--motion-scale, 1));
+	transition-duration: calc(--value(integer) * 1ms * var(--motion-scale, 1));
+	--tw-duration: calc(--value([*]) * var(--motion-scale, 1));
+	transition-duration: calc(--value([*]) * var(--motion-scale, 1));
+}
+
+@utility delay-* {
+	transition-delay: calc(--value(integer) * 1ms * var(--motion-scale, 1));
+	transition-delay: calc(--value([*]) * var(--motion-scale, 1));
 }
 
 /* Slow enough to be felt rather than watched — atmosphere behind a scene,
@@ -158,6 +234,20 @@
 	48%,
 	100% {
 		transform: translateX(530%);
+	}
+}
+
+/* A scroll cue drifting on its own breath: sinks and brightens, then rises and
+   fades back, as if it were floating rather than bouncing. */
+@keyframes float-cue {
+	0%,
+	100% {
+		transform: translateY(-2px);
+		opacity: 0.55;
+	}
+	50% {
+		transform: translateY(4px);
+		opacity: 1;
 	}
 }
 

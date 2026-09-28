@@ -23,8 +23,9 @@ export function WhoWeBuildFor({
 }: WhoWeBuildForProps) {
 	return (
 		<section
+			data-section-reveal
 			className={cn(
-				'relative isolate flex min-h-[70svh] items-center overflow-hidden border-y border-border px-4 py-24 sm:min-h-[85svh] sm:px-6 sm:py-32 lg:px-8',
+				'relative isolate flex min-h-[70svh] items-center overflow-hidden border-y border-border px-4 py-24 sm:min-h-[85svh] sm:px-6 sm:py-32 lg:min-h-svh lg:px-8',
 				className
 			)}
 		>

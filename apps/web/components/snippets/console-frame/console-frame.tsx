@@ -18,6 +18,7 @@ export function ConsoleFrame({
 }) {
 	return (
 		<div
+			data-reveal-media
 			className={cn(
 				'relative overflow-hidden rounded-xl border border-border bg-card shadow-2xl',
 				className

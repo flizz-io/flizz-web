@@ -10,14 +10,15 @@ import { StatsBand } from '@/components/features/home/stats-band';
 import { Testimonials } from '@/components/features/home/testimonials';
 import { WhoWeBuildFor } from '@/components/features/home/who-we-build-for';
 import { WhyUs } from '@/components/features/home/why-us';
+import { SectionReveals } from '@/components/snippets/section-reveals/section-reveals';
 
 export default function HomePage() {
 	const totalSections = 9;
 
 	return (
 		<>
-			<Hero variation="constellation" />
-			<Proof />
+			<Hero variation="cinematic" />
+			{/* <Proof /> */}
 			<ServicesTeaser
 				sectionIndex={1}
 				totalSections={totalSections}
@@ -40,6 +41,7 @@ export default function HomePage() {
 			/>
 			<StatsBand />
 			<Solution
+				variation="scroll"
 				sectionIndex={6}
 				totalSections={totalSections}
 			/>
@@ -56,6 +58,8 @@ export default function HomePage() {
 				sectionIndex={9}
 				totalSections={totalSections}
 			/>
+			{/* After the sections, so it finds them all mounted. */}
+			<SectionReveals />
 		</>
 	);
 }
