@@ -1,10 +1,12 @@
 import { homeTeaserProjects, projects } from '@/constants/portfolio';
 import { homeTeaserServices } from '@/constants/services';
+import { HeroDepth } from '@/enums/home';
 import type {
 	FaqItem,
 	HeroCinematicConfig,
 	HeroDiscipline,
 	HeroDisciplinesSceneConfig,
+	HeroParallaxConfig,
 	ProblemItem,
 	ProcessStep,
 	RealCostItem,
@@ -41,6 +43,20 @@ export const heroCinematicConfig: HeroCinematicConfig = {
 	autoAdvanceSeconds: 4,
 	rotatingPhrases: ['what\u2019s next.', 'what scales.', 'what lasts.'],
 	phraseHoldSeconds: 3
+};
+
+// The cinematic hero's depth. Back planes trail the scroll and counter the
+// pointer; front planes lead and follow it — the gap between them is what
+// reads as depth. Keep the scene's `scroll` modest: it trails inside the
+// hero's clipped frame, so too much and its labels slide under the next section.
+export const heroParallax: HeroParallaxConfig = {
+	layers: {
+		[HeroDepth.FAR]: { scroll: 0.45, pinned: -10, pointer: -28 },
+		[HeroDepth.MID]: { scroll: 0.25, pinned: -18, pointer: 16 },
+		[HeroDepth.SCENE]: { scroll: 0.18, pinned: 0, pointer: 12 },
+		[HeroDepth.COPY]: { scroll: -0.12, pinned: 0, pointer: 0 }
+	},
+	pointerFollowSeconds: 1.2
 };
 
 // The cinematic hero's words. The headline's first two lines are set, the

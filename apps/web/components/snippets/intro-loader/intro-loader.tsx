@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { useEffect, useRef } from 'react';
 
 import { Logo } from '@/components/snippets/logo/logo';
+import { animationConfig } from '@/configs/animation';
 
 gsap.registerPlugin(useGSAP);
 
@@ -114,7 +115,10 @@ export function IntroLoader({
 			};
 
 			const tick = () => {
-				const elapsed = (performance.now() - start) / 1000;
+				// Counts at the same speed as the GSAP half of the loader.
+				const elapsed =
+					((performance.now() - start) / 1000) *
+					animationConfig.speed;
 				const timeProgress = Math.min(elapsed / minSeconds, 1);
 				const target = readyRef.current
 					? timeProgress

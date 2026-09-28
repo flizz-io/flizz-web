@@ -14,6 +14,7 @@ import { problemItems, realCostItems } from '@/constants/home';
 import { useSmoother } from '@/contexts/smooth-scroll-context';
 import { useScrollProgress } from '@/hooks/use-scroll-progress';
 import type { ProblemItem } from '@/types/home';
+import { scaleMs, scaleTransition } from '@/utils/animation';
 import { scrollToPosition } from '@/utils/scroll';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { cn } from '@workspace/ui/lib/utils';
@@ -284,7 +285,10 @@ export function Problem({
 						)}
 						initial={{ y: '-100%', opacity: 0.9 }}
 						animate={{ y: '300%', opacity: 0 }}
-						transition={{ duration: 1.2, ease: 'easeOut' }}
+						transition={scaleTransition({
+							duration: 1.2,
+							ease: 'easeOut'
+						})}
 					/>
 
 					{stages.map((stage, index) => {
@@ -353,11 +357,7 @@ export function Problem({
 																		: 'translate-y-full'
 																)}
 																style={{
-																	transitionDelay: `${
-																		200 +
-																		itemIndex *
-																			150
-																	}ms`
+																	transitionDelay: `${scaleMs(200 + itemIndex * 150)}ms`
 																}}
 															>
 																<CostDiagram

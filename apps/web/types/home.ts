@@ -1,3 +1,5 @@
+import type { HeroDepth } from '@/enums/home';
+
 export interface HeroDiscipline {
 	label: string;
 	/** One line on what the discipline actually contributes. */
@@ -19,6 +21,28 @@ export interface HeroCinematicConfig {
 	rotatingPhrases: string[];
 	/** How long each phrase holds, in seconds. */
 	phraseHoldSeconds: number;
+}
+
+/** How one hero plane moves — see `heroParallax` in constants/home.ts. */
+export interface HeroParallaxLayer {
+	/**
+	 * As the hero scrolls away: how far the plane trails (+) or leads (−) the
+	 * page, as a share of the hero's height. 0 moves with the page.
+	 */
+	scroll: number;
+	/** During the pinned hand-off: a vertical drift, in % of its own height. */
+	pinned: number;
+	/**
+	 * With the pointer at the hero's edge: px the plane follows (+) or
+	 * counters (−) it. Fine pointers only; 0 holds the plane still.
+	 */
+	pointer: number;
+}
+
+export interface HeroParallaxConfig {
+	layers: Record<HeroDepth, HeroParallaxLayer>;
+	/** Seconds the pointer planes take to catch the cursor. */
+	pointerFollowSeconds: number;
 }
 
 export interface HeroDisciplinesSceneConfig {

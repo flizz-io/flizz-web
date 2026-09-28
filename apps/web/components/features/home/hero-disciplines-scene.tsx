@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+import { animationConfig } from '@/configs/animation';
 import { heroDisciplines } from '@/constants/home';
 import { serviceVisualRegistry } from '@workspace/service-visuals';
 import { useIsDarkTheme } from '@workspace/ui/hooks/use-is-dark-theme';
@@ -980,7 +981,10 @@ export function HeroDisciplinesScene({
 
 		const draw = () => {
 			const now = performance.now();
-			const elapsed = (now - start) / 1000;
+			// The ambient clock — drift, pulses, signals — runs at the
+			// configured animation speed. The hand's response (`step`)
+			// stays real-time so dragging never feels sluggish.
+			const elapsed = ((now - start) / 1000) * animationConfig.speed;
 			const step = Math.min(
 				(now - lastFrameAt) / 1000,
 				MAX_FRAME_SECONDS
@@ -1012,7 +1016,7 @@ export function HeroDisciplinesScene({
 			spinShare +=
 				((engaged ? 0 : 1) - spinShare) *
 				(1 - Math.exp(-step * IDLE_HANDOVER_RATE));
-			spin += IDLE_SPIN * spinShare * step;
+			spin += IDLE_SPIN * spinShare * step * animationConfig.speed;
 
 			group.rotation.y = spin;
 			group.rotation.x =

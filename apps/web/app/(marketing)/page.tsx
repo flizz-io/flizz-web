@@ -17,7 +17,7 @@ export default function HomePage() {
 	return (
 		<>
 			<Hero variation="cinematic" />
-			<Proof />
+			{/* <Proof /> */}
 			<ServicesTeaser
 				sectionIndex={1}
 				totalSections={totalSections}

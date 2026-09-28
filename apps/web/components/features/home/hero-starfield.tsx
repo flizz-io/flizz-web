@@ -7,6 +7,7 @@ import Link from 'next/link';
 
 import { heroScrollTargetId } from '@/constants/home';
 import { useSmoother } from '@/contexts/smooth-scroll-context';
+import { scaleTransition, scaleVariants } from '@/utils/animation';
 import { scrollToElement } from '@/utils/scroll';
 import { Button } from '@workspace/ui/components/button';
 import { useIsDarkTheme } from '@workspace/ui/hooks/use-is-dark-theme';
@@ -17,14 +18,14 @@ const HeroScene = dynamic(
 	{ ssr: false }
 );
 
-const container: Variants = {
+const container: Variants = scaleVariants({
 	hidden: {},
 	show: {
 		transition: { staggerChildren: 0.12, delayChildren: 0.05 }
 	}
-};
+});
 
-const item: Variants = {
+const item: Variants = scaleVariants({
 	hidden: { opacity: 0, y: 16, filter: 'blur(6px)' },
 	show: {
 		opacity: 1,
@@ -32,7 +33,7 @@ const item: Variants = {
 		filter: 'blur(0px)',
 		transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
 	}
-};
+});
 
 export function HeroStarfield() {
 	const reduceMotion = useReducedMotion();
@@ -63,11 +64,11 @@ export function HeroStarfield() {
 								scale: [1, 1.08, 0.96, 1]
 							}
 				}
-				transition={{
+				transition={scaleTransition({
 					duration: 22,
 					repeat: Infinity,
 					ease: 'easeInOut'
-				}}
+				})}
 			/>
 
 			{isDark ? (
@@ -155,11 +156,11 @@ export function HeroStarfield() {
 					<motion.span
 						className="flex"
 						animate={reduceMotion ? undefined : { y: [0, 3, 0] }}
-						transition={{
+						transition={scaleTransition({
 							duration: 1.6,
 							repeat: Infinity,
 							ease: 'easeInOut'
-						}}
+						})}
 					>
 						<ArrowDown className="size-3.5 text-primary" />
 					</motion.span>

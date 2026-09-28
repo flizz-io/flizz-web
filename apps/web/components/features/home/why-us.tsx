@@ -6,8 +6,16 @@ import { Pinned } from '@/components/snippets/pinned/pinned';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { valueProps } from '@/constants/home';
 import { PinOffset } from '@/enums/scroll';
+import { scaleSeconds, scaleTransition } from '@/utils/animation';
 import { Text3DFlip } from '@workspace/ui/components/text-3d-flip';
 import { cn } from '@workspace/ui/lib/utils';
+
+// Text3DFlip's own spring, slowed to the configured animation speed.
+const flipTransition = scaleTransition({
+	type: 'spring',
+	damping: 30,
+	stiffness: 300
+} as const);
 
 /**
  * The headline is a sentence stem — "We create solutions that" — and each value
@@ -173,7 +181,8 @@ export function WhyUs({
 										active={isActive}
 										flipOnHover={false}
 										rotateDirection="top"
-										staggerDuration={0.012}
+										staggerDuration={scaleSeconds(0.012)}
+										transition={flipTransition}
 										className={cn(
 											'font-heading text-2xl font-semibold tracking-tight transition-colors duration-500 sm:text-3xl lg:text-4xl',
 											isActive

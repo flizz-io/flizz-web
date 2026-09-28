@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import { scaleMs } from '@/utils/animation';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface RevealProps {
@@ -55,7 +56,9 @@ export function Reveal({
 			ref={ref}
 			id={id}
 			data-revealed={isVisible}
-			style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+			style={
+				delay ? { transitionDelay: `${scaleMs(delay)}ms` } : undefined
+			}
 			className={cn(
 				'group/reveal motion-safe:transition-[opacity,transform,filter] motion-safe:duration-500 motion-safe:ease-power-on',
 				isVisible

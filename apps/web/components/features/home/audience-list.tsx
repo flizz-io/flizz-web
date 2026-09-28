@@ -3,24 +3,25 @@
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
 
 import { audienceSegments } from '@/constants/home';
+import { scaleVariants } from '@/utils/animation';
 import { cn } from '@workspace/ui/lib/utils';
 
 const REVEAL_EASE = [0.16, 1, 0.3, 1] as const;
 
-const listVariants: Variants = {
+const listVariants: Variants = scaleVariants({
 	hidden: {},
 	show: {
 		transition: { delayChildren: 0.12, staggerChildren: 0.09 }
 	}
-};
+});
 
-const itemVariants: Variants = {
+const itemVariants: Variants = scaleVariants({
 	hidden: { y: '120%' },
 	show: {
 		y: '0%',
 		transition: { duration: 0.7, ease: REVEAL_EASE }
 	}
-};
+});
 
 export function AudienceList({ className }: { className?: string }) {
 	const reduceMotion = useReducedMotion();

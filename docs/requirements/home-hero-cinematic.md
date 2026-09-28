@@ -37,6 +37,15 @@ Copy source of truth stays in [home-page.md § Hero](home-page.md#hero). Selecte
 - The real layout is the **final** one (copy left, scene right). The centred start is a measured offset the timeline animates back to zero, so it stays correct at every width and the "See the works" jump still lands on the right section.
 - **Auto-advance:** if the reader hasn't scrolled `autoAdvanceSeconds` (default 4) after the reveal, the page scrolls itself — slowly, via the cinematic scroll — to the end of the pin, so nobody is left without the headline and CTA. Any wheel/touch/key input cancels it. `0` disables it.
 
+### 4. Parallax
+
+Four depth planes — `HeroDepth` (`enums/home.ts`): the aurora glows (`FAR`), the particles (`MID`), the scene (`SCENE`) and the copy (`COPY`). Built with GSAP in `hooks/use-hero-parallax.ts`; every depth lives in `heroParallax` (`constants/home.ts`).
+
+- **Exit** (all sizes): as the hero scrolls away, each plane trails (+) or leads (−) the page by its `scroll` share of the hero's height. Starts where the pin ends (or at the top when nothing pins).
+- **Hand-off** (large screens): while pinned, `FAR` and `MID` drift by their `pinned` % so the stage never reads as a flat backdrop.
+- **Pointer** (fine pointers only): planes lean with the cursor by `pointer` px; negative counters it. Paused while a button is held so it never fights a drag on the scene. It moves each plane's inner `[data-hero-pointer]` layer, so it never shares a transform with the scroll layers.
+- Off under reduced motion.
+
 ### Small screens and reduced motion
 
 - Below `lg`: no pin, no travel. The scene sits above the copy; the copy plays one short entrance after the reveal.
@@ -63,6 +72,10 @@ One bold element — the headline's rotating third line. Everything around it st
 | `rotatingPhrases`    | `["what's next.", "what scales.", "what lasts."]` | Third headline line, in order; the first is the accessible one. |
 | `phraseHoldSeconds`  | `3`                                               | How long each phrase holds.                                     |
 
+## Animation speed
+
+The whole landing site's animation speed is one dial: `NEXT_PUBLIC_ANIMATION_SPEED` (`1` = as authored, `0.5` = half speed), clamped 0.1–3, falling back to `defaultAnimationSpeed` (`0.7`) in `constants/animation.ts`. Resolved in `configs/animation.ts`, it drives GSAP's global time scale, a `--motion-scale` CSS variable on `<html>` (which the `duration-*` / `delay-*` utilities and the `animate-*` keyframe tokens multiply by), Motion transitions (via `scaleTransition` / `scaleVariants` in `utils/animation.ts`), and the Three.js scene clocks. Scroll smoothing, drag response, and timer-based waits (the hand-off auto-advance, carousel autoplay) stay in real time; holds built into GSAP timelines, like the rotating phrase's, slow down with everything else.
+
 ## Files
 
 | File                                                   | Role                                                      |
@@ -73,6 +86,7 @@ One bold element — the headline's rotating third line. Everything around it st
 | `components/features/home/hero-atmosphere.tsx`         | Background layers, extracted from v2 and shared by both.  |
 | `components/features/home/hero-cinematic.tsx`          | The variation: stage, pin, scroll timeline, auto-advance. |
 | `components/features/home/hero-cinematic-copy.tsx`     | The copy block and its rotating line.                     |
+| `hooks/use-hero-parallax.ts`                           | Exit, hand-off and pointer parallax.                      |
 | `components/features/home/hero-disciplines-scene.tsx`  | Adds `onReady`.                                           |
 | `components/snippets/header/header.tsx`                | Intro entrance.                                           |
 | `app/layout.tsx`, `packages/ui/src/styles/globals.css` | `data-intro` pre-paint script and gating CSS.             |

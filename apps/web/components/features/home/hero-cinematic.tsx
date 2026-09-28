@@ -25,7 +25,9 @@ import {
 import { introQueryParam, introSessionKey } from '@/constants/intro';
 import { useIntro } from '@/contexts/intro-context';
 import { useSmoother } from '@/contexts/smooth-scroll-context';
+import { HeroDepth } from '@/enums/home';
 import { IntroGate, IntroPhase } from '@/enums/intro';
+import { useHeroParallax } from '@/hooks/use-hero-parallax';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import type { HeroCinematicConfig } from '@/types/home';
 import { scrollToElement, scrollToPosition } from '@/utils/scroll';
@@ -423,6 +425,15 @@ export function HeroCinematic({
 		{ dependencies: [pinned, smoother, scrollDistance], scope: sectionRef }
 	);
 
+	// Declared after the hand-off so it measures from the pin's real end.
+	useHeroParallax({
+		sectionRef,
+		handOffRef,
+		enabled: !reduceMotion && Boolean(smoother),
+		pinned,
+		dependencies: [smoother, scrollDistance]
+	});
+
 	return (
 		<>
 			<IntroLoader
@@ -442,6 +453,7 @@ export function HeroCinematic({
 				<div className="relative mx-auto grid h-full max-w-8xl grid-cols-1 items-center gap-12 px-4 pt-12 pb-24 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16 lg:px-8 lg:py-0">
 					<div
 						ref={copyRef}
+						data-hero-depth={HeroDepth.COPY}
 						className="relative z-10"
 					>
 						<HeroCinematicCopy
@@ -459,10 +471,12 @@ export function HeroCinematic({
 					    the copy for reading order; shown first on phones. */}
 					<div
 						ref={travelRef}
+						data-hero-depth={HeroDepth.SCENE}
 						className="relative order-first aspect-square w-full max-w-xl justify-self-center lg:order-none lg:w-[min(100%,calc(100svh-10rem))] lg:max-w-none"
 					>
 						<div
 							ref={revealRef}
+							data-hero-pointer={HeroDepth.SCENE}
 							className={cn(
 								'absolute inset-0',
 								!reduceMotion && 'opacity-0'

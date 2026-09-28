@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+import { animationConfig } from '@/configs/animation';
 import { useIsDarkTheme } from '@workspace/ui/hooks/use-is-dark-theme';
 import { useThemeColorVersion } from '@workspace/ui/hooks/use-theme-color-version';
 import { readThemeColor } from '@workspace/ui/lib/css-color';
@@ -300,15 +301,18 @@ export function CostScene({ active }: { active: boolean }) {
 
 		const render = () => {
 			const now = performance.now();
-			const delta = Math.min((now - lastTime) / 1000, 0.05);
+			const delta =
+				Math.min((now - lastTime) / 1000, 0.05) * animationConfig.speed;
 			lastTime = now;
+			// Scene time, at the configured animation speed.
+			const clock = now * animationConfig.speed;
 
-			material.uniforms.uTime!.value = now / 1000;
+			material.uniforms.uTime!.value = clock / 1000;
 			stepGapParticles(delta);
 
 			// A drift just large enough to keep the frame from feeling printed.
-			camera.position.x = Math.sin(now / 9000) * 0.35;
-			camera.position.y = Math.cos(now / 11000) * 0.2;
+			camera.position.x = Math.sin(clock / 9000) * 0.35;
+			camera.position.y = Math.cos(clock / 11000) * 0.2;
 
 			renderer.render(scene, camera);
 			animationFrame = requestAnimationFrame(render);
@@ -333,7 +337,8 @@ export function CostScene({ active }: { active: boolean }) {
 
 		resize();
 		stepGapParticles(0);
-		material.uniforms.uTime!.value = performance.now() / 1000;
+		material.uniforms.uTime!.value =
+			(performance.now() * animationConfig.speed) / 1000;
 		renderer.render(scene, camera);
 
 		const observer = new IntersectionObserver(([entry]) =>

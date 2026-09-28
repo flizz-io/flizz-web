@@ -5,6 +5,7 @@ import gsap from 'gsap';
 import { useCallback, useMemo, useRef } from 'react';
 
 import { smoothScrollEase, smoothScrollSeconds } from '@/constants/scroll';
+import { realTimeSeconds } from '@/utils/animation';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 
 gsap.registerPlugin(useGSAP);
@@ -41,7 +42,7 @@ export function useSmoothScroll(
 			if (!node || reducedMotion) return;
 
 			glide.current = gsap.quickTo(node, 'scrollLeft', {
-				duration: smoothScrollSeconds,
+				duration: realTimeSeconds(smoothScrollSeconds),
 				ease: smoothScrollEase
 			});
 

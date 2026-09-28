@@ -6,28 +6,29 @@ import { Fragment } from 'react';
 
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { socialProofLogos, stats } from '@/constants/home';
+import { scaleTransition, scaleVariants } from '@/utils/animation';
 
 const REVEAL_EASE = [0.16, 1, 0.3, 1] as const;
 
-const ruleVariants: Variants = {
+const ruleVariants: Variants = scaleVariants({
 	hidden: { scaleX: 0 },
 	show: { scaleX: 1, transition: { duration: 0.7, ease: REVEAL_EASE } }
-};
+});
 
-const numeralVariants: Variants = {
+const numeralVariants: Variants = scaleVariants({
 	hidden: { y: '110%' },
 	show: { y: '0%', transition: { duration: 0.85, ease: REVEAL_EASE } }
-};
+});
 
-const labelVariants: Variants = {
+const labelVariants: Variants = scaleVariants({
 	hidden: { opacity: 0, y: 12 },
 	show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: REVEAL_EASE } }
-};
+});
 
-const glowVariants: Variants = {
+const glowVariants: Variants = scaleVariants({
 	hidden: { opacity: 0 },
 	show: { opacity: 1, transition: { duration: 1.1, ease: REVEAL_EASE } }
-};
+});
 
 export function Proof() {
 	const reduceMotion = useReducedMotion();
@@ -69,7 +70,9 @@ export function Proof() {
 							key={stat.label}
 							className="relative flex flex-col items-center gap-3 px-6 py-14 text-center sm:py-16"
 							{...inView}
-							transition={{ delayChildren: index * 0.12 }}
+							transition={scaleTransition({
+								delayChildren: index * 0.12
+							})}
 						>
 							{index > 0 ? (
 								<span
@@ -121,7 +124,10 @@ export function Proof() {
 					initial={reduceMotion ? undefined : { scaleX: 0 }}
 					whileInView={reduceMotion ? undefined : { scaleX: 1 }}
 					viewport={{ once: true, margin: '-40px' }}
-					transition={{ duration: 1.1, ease: REVEAL_EASE }}
+					transition={scaleTransition({
+						duration: 1.1,
+						ease: REVEAL_EASE
+					})}
 				/>
 
 				<motion.div
@@ -131,7 +137,10 @@ export function Proof() {
 						reduceMotion ? undefined : { opacity: 1, y: 0 }
 					}
 					viewport={{ once: true, margin: '-60px' }}
-					transition={{ duration: 0.6, ease: REVEAL_EASE }}
+					transition={scaleTransition({
+						duration: 0.6,
+						ease: REVEAL_EASE
+					})}
 				>
 					<SectionTag
 						index={3}

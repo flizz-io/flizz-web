@@ -11,6 +11,7 @@ import {
 	heroScrollTargetId
 } from '@/constants/home';
 import { useSmoother } from '@/contexts/smooth-scroll-context';
+import { scaleVariants } from '@/utils/animation';
 import { scrollToElement } from '@/utils/scroll';
 import { Button } from '@workspace/ui/components/button';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
@@ -24,12 +25,12 @@ const HeroDisciplinesScene = dynamic(
 	{ ssr: false }
 );
 
-const container: Variants = {
+const container: Variants = scaleVariants({
 	hidden: {},
 	show: { transition: { staggerChildren: 0.12, delayChildren: 0.05 } }
-};
+});
 
-const item: Variants = {
+const item: Variants = scaleVariants({
 	hidden: { opacity: 0, y: 16, filter: 'blur(6px)' },
 	show: {
 		opacity: 1,
@@ -37,7 +38,7 @@ const item: Variants = {
 		filter: 'blur(0px)',
 		transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
 	}
-};
+});
 
 /**
  * Split hero: the copy holds one side and the practice itself turns on the

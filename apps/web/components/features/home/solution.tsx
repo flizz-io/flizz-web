@@ -8,6 +8,7 @@ import { Pinned } from '@/components/snippets/pinned/pinned';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { processSteps } from '@/constants/home';
 import { PinOffset } from '@/enums/scroll';
+import { scaleTransition } from '@/utils/animation';
 import { cn } from '@workspace/ui/lib/utils';
 
 import { ProcessConsoleCine } from './process-console-cine';
@@ -144,10 +145,10 @@ export function Solution({
 													? undefined
 													: { height: 0, opacity: 0 }
 											}
-											transition={{
+											transition={scaleTransition({
 												duration: 0.45,
 												ease: REVEAL_EASE
-											}}
+											})}
 											className="overflow-hidden"
 										>
 											{/* Fixed slot height, not `auto`: the
@@ -220,10 +221,10 @@ export function Solution({
 									className="pointer-events-none absolute inset-x-0 z-10 h-24 bg-linear-to-b from-transparent via-primary/12 to-transparent"
 									initial={{ y: '-100%', opacity: 0.9 }}
 									animate={{ y: '420%', opacity: 0 }}
-									transition={{
+									transition={scaleTransition({
 										duration: 1.1,
 										ease: 'easeOut'
-									}}
+									})}
 								/>
 								<ProcessConsoleCine index={activeIndex} />
 							</motion.div>

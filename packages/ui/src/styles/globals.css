@@ -150,11 +150,33 @@
 	--container-9xl: 96rem;
 	--container-10xl: 104rem;
 
-	--animate-marquee: marquee 34s linear infinite;
-	--animate-aurora: aurora-drift 26s ease-in-out infinite;
-	--animate-float-cue: float-cue 2.4s var(--ease-float) infinite;
+	--animate-marquee: marquee calc(34s * var(--motion-scale, 1)) linear
+		infinite;
+	--animate-aurora: aurora-drift calc(26s * var(--motion-scale, 1))
+		ease-in-out infinite;
+	--animate-float-cue: float-cue calc(2.4s * var(--motion-scale, 1))
+		var(--ease-float) infinite;
 	--ease-float: cubic-bezier(0.45, 0, 0.55, 1);
 	--ease-power-on: cubic-bezier(0.16, 1, 0.3, 1);
+	/* What a bare `transition` / `transition-colors` runs for. */
+	--default-transition-duration: calc(150ms * var(--motion-scale, 1));
+}
+
+/* Every transition duration and delay scales with `--motion-scale` — one
+   dial for how fast the whole app moves. An app sets it on `<html>` (the web
+   app from `NEXT_PUBLIC_ANIMATION_SPEED`); left unset it's 1, as authored.
+   These extend the core utilities: Tailwind merges them into the same rule,
+   and the later declarations win. */
+@utility duration-* {
+	--tw-duration: calc(--value(integer) * 1ms * var(--motion-scale, 1));
+	transition-duration: calc(--value(integer) * 1ms * var(--motion-scale, 1));
+	--tw-duration: calc(--value([*]) * var(--motion-scale, 1));
+	transition-duration: calc(--value([*]) * var(--motion-scale, 1));
+}
+
+@utility delay-* {
+	transition-delay: calc(--value(integer) * 1ms * var(--motion-scale, 1));
+	transition-delay: calc(--value([*]) * var(--motion-scale, 1));
 }
 
 /* Slow enough to be felt rather than watched — atmosphere behind a scene,

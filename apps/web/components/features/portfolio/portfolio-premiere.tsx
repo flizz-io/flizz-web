@@ -21,6 +21,7 @@ import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { featuredProjects } from '@/constants/portfolio';
 import { projectSectorOrder } from '@/enums/portfolio';
+import { scaleTransition, scaleVariants } from '@/utils/animation';
 import { Button } from '@workspace/ui/components/button';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { cn } from '@workspace/ui/lib/utils';
@@ -72,7 +73,7 @@ const reel = projectSectorOrder.flatMap((sector) =>
 
 const pad = (value: number) => String(value).padStart(2, '0');
 
-const sceneVariants: Variants = {
+const sceneVariants: Variants = scaleVariants({
 	enter: (direction: number) => ({ opacity: 0, x: 48 * direction }),
 	center: {
 		opacity: 1,
@@ -89,15 +90,15 @@ const sceneVariants: Variants = {
 		x: -40 * direction,
 		transition: { duration: 0.35, ease: 'easeIn' }
 	})
-};
+});
 
-const lineVariants: Variants = {
+const lineVariants: Variants = scaleVariants({
 	enter: { opacity: 0, y: 18 },
 	center: { opacity: 1, y: 0, transition: { duration: 0.6, ease: powerOn } },
 	exit: { opacity: 0, y: -8, transition: { duration: 0.2 } }
-};
+});
 
-const plateVariants: Variants = {
+const plateVariants: Variants = scaleVariants({
 	enter: (direction: number) => ({
 		opacity: 0,
 		x: 90 * direction,
@@ -118,7 +119,7 @@ const plateVariants: Variants = {
 		scale: 0.96,
 		transition: { duration: 0.4, ease: 'easeIn' }
 	})
-};
+});
 
 /**
  * The highlighted work as a premiere: a letterboxed stage that plays.
@@ -426,7 +427,7 @@ export function PortfolioPremiere({
 							initial={{ opacity: 0 }}
 							animate={{ opacity: 1 }}
 							exit={{ opacity: 0 }}
-							transition={{ duration: 0.6 }}
+							transition={scaleTransition({ duration: 0.6 })}
 							className="pointer-events-none absolute inset-x-0 top-[8%] select-none lg:top-1/2 lg:-translate-y-1/2"
 						>
 							<motion.div
@@ -435,11 +436,11 @@ export function PortfolioPremiere({
 										? undefined
 										: { x: ['0%', '-50%'] }
 								}
-								transition={{
+								transition={scaleTransition({
 									duration: 34,
 									ease: 'linear',
 									repeat: Infinity
-								}}
+								})}
 								className="flex w-max font-heading text-[clamp(5rem,16vw,15rem)] leading-none font-semibold tracking-tight whitespace-nowrap"
 								style={{
 									color: 'transparent',
@@ -574,11 +575,11 @@ export function PortfolioPremiere({
 												aria-hidden
 												initial={{ x: '-140%' }}
 												animate={{ x: '180%' }}
-												transition={{
+												transition={scaleTransition({
 													duration: 1.4,
 													delay: 0.35,
 													ease: 'easeInOut'
-												}}
+												})}
 												className="pointer-events-none absolute inset-y-[-20%] w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent mix-blend-screen"
 											/>
 										) : null}
@@ -605,10 +606,10 @@ export function PortfolioPremiere({
 							animate={{
 								x: scene.direction > 0 ? '640%' : '-140%'
 							}}
-							transition={{
+							transition={scaleTransition({
 								duration: 0.8,
 								ease: [0.7, 0, 0.3, 1]
-							}}
+							})}
 							className="pointer-events-none absolute inset-y-0 left-0 z-20 w-[20%] -skew-x-12 bg-gradient-to-r from-transparent via-primary/60 to-transparent blur-[2px]"
 						/>
 					) : null}

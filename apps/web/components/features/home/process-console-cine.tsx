@@ -3,11 +3,12 @@
 import { animate, motion, useMotionValue, type Variants } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
+import { scaleTransition, scaleVariants } from '@/utils/animation';
 import { cn } from '@workspace/ui/lib/utils';
 
 const REVEAL_EASE = [0.16, 1, 0.3, 1] as const;
 
-const stageVariants: Variants = {
+const stageVariants: Variants = scaleVariants({
 	hidden: { opacity: 0, scale: 0.98, filter: 'blur(6px)' },
 	show: {
 		opacity: 1,
@@ -25,16 +26,16 @@ const stageVariants: Variants = {
 		filter: 'blur(6px)',
 		transition: { duration: 0.3 }
 	}
-};
+});
 
-const row: Variants = {
+const row: Variants = scaleVariants({
 	hidden: { opacity: 0, x: -12 },
 	show: {
 		opacity: 1,
 		x: 0,
 		transition: { duration: 0.45, ease: REVEAL_EASE }
 	}
-};
+});
 
 /** Animates a number up to its target whenever the stage mounts. */
 function CountUp({
@@ -50,10 +51,11 @@ function CountUp({
 	const [display, setDisplay] = useState('0');
 
 	useEffect(() => {
-		const controls = animate(value, to, {
-			duration: 1.2,
-			ease: REVEAL_EASE
-		});
+		const controls = animate(
+			value,
+			to,
+			scaleTransition({ duration: 1.2, ease: REVEAL_EASE })
+		);
 		// Subscription callback, so this stays out of the render path.
 		const unsubscribe = value.on('change', (current) =>
 			setDisplay(current.toFixed(decimals))
@@ -122,11 +124,11 @@ function DiscoverStage() {
 						className="overflow-hidden font-mono text-[0.6rem] whitespace-nowrap text-muted-foreground"
 						initial={{ width: 0 }}
 						animate={{ width: '100%' }}
-						transition={{
+						transition={scaleTransition({
 							duration: 0.45,
 							delay: 0.25 + i * 0.4,
 							ease: 'linear'
-						}}
+						})}
 					>
 						<span className="text-primary">›</span> {line}
 					</motion.p>
@@ -135,11 +137,11 @@ function DiscoverStage() {
 					aria-hidden
 					className="block h-2.5 w-1.5 bg-primary"
 					animate={{ opacity: [1, 0.1, 1] }}
-					transition={{
+					transition={scaleTransition({
 						duration: 1.1,
 						repeat: Infinity,
 						ease: 'linear'
-					}}
+					})}
 				/>
 			</motion.div>
 
@@ -164,10 +166,10 @@ function DiscoverStage() {
 								className="block h-full rounded-full bg-primary"
 								initial={{ width: 0 }}
 								animate={{ width: `${signal.value}%` }}
-								transition={{
+								transition={scaleTransition({
 									duration: 1.1,
 									ease: REVEAL_EASE
-								}}
+								})}
 							/>
 						</span>
 					</motion.div>
@@ -181,10 +183,10 @@ function DiscoverStage() {
 							key={phase}
 							initial={{ opacity: 0, y: 6 }}
 							animate={{ opacity: 1, y: 0 }}
-							transition={{
+							transition={scaleTransition({
 								delay: 0.4 + i * 0.08,
 								duration: 0.4
-							}}
+							})}
 							className={cn(
 								'flex-1 rounded px-2 py-1.5 text-center font-mono text-[0.6rem]',
 								i === 0
@@ -236,11 +238,11 @@ function DesignStage() {
 								strokeOpacity="0.35"
 								initial={{ pathLength: 0 }}
 								animate={{ pathLength: 1 }}
-								transition={{
+								transition={scaleTransition({
 									duration: 0.8,
 									delay: i * 0.1,
 									ease: REVEAL_EASE
-								}}
+								})}
 								vectorEffect="non-scaling-stroke"
 							/>
 							{/* Packets flowing toward the hub. */}
@@ -254,12 +256,12 @@ function DesignStage() {
 								strokeDasharray="3 14"
 								vectorEffect="non-scaling-stroke"
 								animate={{ strokeDashoffset: [0, -17] }}
-								transition={{
+								transition={scaleTransition({
 									duration: 1.4,
 									repeat: Infinity,
 									ease: 'linear',
 									delay: i * 0.25
-								}}
+								})}
 							/>
 						</g>
 					))}
@@ -290,11 +292,11 @@ function DesignStage() {
 								aria-hidden
 								className="absolute inset-0 -z-10 rounded-full bg-primary/30 blur-xl"
 								animate={{ opacity: [0.4, 0.9, 0.4] }}
-								transition={{
+								transition={scaleTransition({
 									duration: 2.4,
 									repeat: Infinity,
 									ease: 'easeInOut'
-								}}
+								})}
 							/>
 						) : null}
 					</div>
@@ -347,22 +349,22 @@ function BuildStage() {
 							className="absolute inset-y-0 w-16 bg-gradient-to-r from-transparent via-primary/15 to-transparent"
 							initial={{ x: '-100%' }}
 							animate={{ x: '600%' }}
-							transition={{
+							transition={scaleTransition({
 								duration: 1.6,
 								delay: 0.3 + i * 0.15,
 								ease: 'easeInOut'
-							}}
+							})}
 						/>
 						<motion.span
 							className="flex size-4 shrink-0 items-center justify-center rounded-full bg-primary/25 text-[0.6rem] text-primary"
 							initial={{ scale: 0 }}
 							animate={{ scale: 1 }}
-							transition={{
+							transition={scaleTransition({
 								delay: 0.35 + i * 0.15,
 								type: 'spring',
 								stiffness: 400,
 								damping: 18
-							}}
+							})}
 						>
 							✓
 						</motion.span>
@@ -392,11 +394,11 @@ function BuildStage() {
 							className="flex-1 rounded-t bg-primary/60"
 							initial={{ height: 0 }}
 							animate={{ height: `${height}%` }}
-							transition={{
+							transition={scaleTransition({
 								duration: 0.6,
 								delay: 0.3 + i * 0.06,
 								ease: REVEAL_EASE
-							}}
+							})}
 						/>
 					))}
 				</div>
@@ -430,7 +432,10 @@ function LaunchStage() {
 					className="absolute top-2 bottom-2 left-2 w-px origin-top bg-border"
 					initial={{ scaleY: 0 }}
 					animate={{ scaleY: 1 }}
-					transition={{ duration: 0.9, ease: REVEAL_EASE }}
+					transition={scaleTransition({
+						duration: 0.9,
+						ease: REVEAL_EASE
+					})}
 				/>
 				{checks.map((check, i) => (
 					<motion.div
@@ -442,12 +447,12 @@ function LaunchStage() {
 							className="flex size-4 shrink-0 items-center justify-center rounded-full border border-primary/70 bg-card text-[0.6rem] text-primary"
 							initial={{ scale: 0, rotate: -90 }}
 							animate={{ scale: 1, rotate: 0 }}
-							transition={{
+							transition={scaleTransition({
 								delay: 0.3 + i * 0.14,
 								type: 'spring',
 								stiffness: 380,
 								damping: 16
-							}}
+							})}
 						>
 							✓
 						</motion.span>
@@ -458,7 +463,9 @@ function LaunchStage() {
 							className="font-mono text-[0.6rem] text-primary"
 							initial={{ opacity: 0 }}
 							animate={{ opacity: 1 }}
-							transition={{ delay: 0.45 + i * 0.14 }}
+							transition={scaleTransition({
+								delay: 0.45 + i * 0.14
+							})}
 						>
 							pass
 						</motion.span>
@@ -544,11 +551,11 @@ function HandoverStage() {
 					className="absolute inset-y-0 w-24 bg-gradient-to-r from-transparent via-primary/25 to-transparent"
 					initial={{ x: '-120%' }}
 					animate={{ x: '520%' }}
-					transition={{
+					transition={scaleTransition({
 						duration: 2,
 						delay: 0.5,
 						ease: 'easeInOut'
-					}}
+					})}
 				/>
 				<p className="relative font-mono text-[0.6rem] tracking-[0.15em] text-primary uppercase">
 					Ownership transferred

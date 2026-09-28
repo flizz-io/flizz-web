@@ -9,9 +9,13 @@ import { useEffect, useRef, useState } from 'react';
 
 import { smoothScrollEase, smoothScrollSeconds } from '@/constants/scroll';
 import { SmoothScrollContext } from '@/contexts/smooth-scroll-context';
+import { applyAnimationSpeed, realTimeSeconds } from '@/utils/animation';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollSmoother);
+// Every landing page renders inside this shell, so its module is the one
+// place guaranteed to run before any page builds a tween.
+applyAnimationSpeed();
 
 interface SmoothScrollProps {
 	children: React.ReactNode;
@@ -45,7 +49,9 @@ export function SmoothScroll({ children, fixed }: SmoothScrollProps) {
 				content: contentRef.current,
 				// Reduced motion keeps the structure (pins still need it) but
 				// drops the easing, so the page tracks the scroll exactly.
-				smooth: reducedMotion ? 0 : smoothScrollSeconds,
+				smooth: reducedMotion
+					? 0
+					: realTimeSeconds(smoothScrollSeconds),
 				ease: smoothScrollEase,
 				smoothTouch: false
 			});
