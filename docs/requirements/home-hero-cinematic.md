@@ -33,7 +33,7 @@ Copy source of truth stays in [home-page.md § Hero](home-page.md#hero). Selecte
 - Over that travel:
     - the stage-A caption lifts away first;
     - the scene slides from centre into the right column and eases to its resting scale;
-    - the copy builds from the left: headline lines rise out of masks, the subtext resolves word by word from blur, then the actions and the facts line.
+    - the copy builds from the left: headline lines rise out of masks, the client logo strip (placeholder wordmarks from `socialProofLogos`, looping marquee that pauses on hover) resolves from blur, then the actions and the facts line.
 - The real layout is the **final** one (copy left, scene right). The centred start is a measured offset the timeline animates back to zero, so it stays correct at every width and the "See the works" jump still lands on the right section.
 - **Auto-advance:** if the reader hasn't scrolled `autoAdvanceSeconds` (default 4) after the reveal, the page scrolls itself — slowly, via the cinematic scroll — to the end of the pin, so nobody is left without the headline and CTA. Any wheel/touch/key input cancels it. `0` disables it.
 

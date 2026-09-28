@@ -6,7 +6,7 @@ import { ArrowDown } from 'lucide-react';
 import Link from 'next/link';
 import { Fragment, useRef } from 'react';
 
-import { heroCinematicCopy } from '@/constants/home';
+import { heroCinematicCopy, socialProofLogos } from '@/constants/home';
 import { Button } from '@workspace/ui/components/button';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { cn } from '@workspace/ui/lib/utils';
@@ -175,6 +175,9 @@ function Magnetic({ children }: MagneticProps) {
 	);
 }
 
+// Twice over, so the marquee's half-width loop lands back on the start.
+const heroLogos = [...socialProofLogos, ...socialProofLogos];
+
 interface HeroCinematicCopyProps {
 	phrases: string[];
 	phraseHoldSeconds: number;
@@ -201,8 +204,6 @@ export function HeroCinematicCopy({
 	onSeeWorks,
 	className
 }: HeroCinematicCopyProps) {
-	const subtextWords = heroCinematicCopy.subtext.split(' ');
-
 	return (
 		<div
 			data-copy
@@ -236,18 +237,39 @@ export function HeroCinematicCopy({
 				</span>
 			</h1>
 
-			<p className="mt-8 max-w-md text-lg leading-relaxed text-pretty text-muted-foreground dark:text-white/70">
-				{subtextWords.map((word, index) => (
-					<Fragment key={`${word}-${index}`}>
-						<span
-							data-copy-word
-							className="inline-block"
-						>
-							{word}
-						</span>{' '}
-					</Fragment>
-				))}
-			</p>
+			{/* Takes the subtext's slot in the entrance — it resolves from blur
+			    on the same `data-copy-word` beat the words used to. */}
+			<div
+				data-copy-word
+				className="mt-8 w-full max-w-md"
+			>
+				<p className="font-mono text-xs tracking-[0.16em] text-muted-foreground uppercase dark:text-white/50">
+					{heroCinematicCopy.logosLabel}
+				</p>
+				{/* Hovering holds the strip still so a name can be read. */}
+				<div className="group/logos mt-4 overflow-hidden mask-[linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
+					<ul className="flex w-max items-center gap-8 group-hover/logos:[animation-play-state:paused] motion-safe:animate-marquee">
+						{heroLogos.map((logo, index) => (
+							<Fragment key={`${logo}-${index}`}>
+								<li
+									// The second pass only exists to close the loop.
+									aria-hidden={
+										index >= socialProofLogos.length ||
+										undefined
+									}
+									className="font-heading text-2xl font-semibold whitespace-nowrap text-muted-foreground/70 transition-colors duration-300 hover:text-primary dark:text-white/70 dark:hover:text-primary"
+								>
+									{logo}
+								</li>
+								<li
+									aria-hidden
+									className="size-1 shrink-0 rounded-full bg-primary/40"
+								/>
+							</Fragment>
+						))}
+					</ul>
+				</div>
+			</div>
 
 			<div
 				data-copy-reveal

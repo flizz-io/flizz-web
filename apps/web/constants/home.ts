@@ -47,8 +47,8 @@ export const heroCinematicConfig: HeroCinematicConfig = {
 // third rotates (see `heroCinematicConfig.rotatingPhrases`).
 export const heroCinematicCopy = {
 	headlineLines: ['Your technology', 'partner for'],
-	subtext:
-		'We build transparent, maintainable systems that give you freedom to pivot, scale, or switch vendors without starting over.',
+	// Heads the logo strip that sits under the headline.
+	logosLabel: 'Trusted by teams at',
 	primaryAction: 'Schedule a discovery call',
 	secondaryAction: 'See the works',
 	// TODO: swap for a quarterly availability line if the PM wants one.
