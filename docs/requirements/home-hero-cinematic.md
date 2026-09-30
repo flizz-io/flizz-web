@@ -24,7 +24,7 @@ Copy source of truth stays in [home-page.md § Hero](home-page.md#hero). Selecte
 
 - **Header** (shared by every page): the pill opens from its centre outward (clip-path), un-blurring as it drops in, then the nav items settle in one after another. It only runs when the intro played — every other page and every skipped load shows the header exactly as today.
 - **Scene**: arrives in the centre of the hero, easing up from 0.9 scale out of a blur.
-- **Stage-A caption** under the scene: "Software engineering partner" and a scroll cue with the floating arrow.
+- **Stage-A caption** under the scene: "Your Technology Partner" and a scroll cue with the floating arrow.
 - Coordinated through `contexts/intro-context.tsx` — phase `PENDING → REVEALING → DONE`.
 
 ### 3. Scroll hand-off (large screens)

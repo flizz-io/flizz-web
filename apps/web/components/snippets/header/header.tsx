@@ -105,7 +105,7 @@ export function Header() {
 					<Link
 						data-header-item
 						href="/"
-						className="shrink-0"
+						className="flex shrink-0"
 					>
 						<Logo />
 					</Link>
