@@ -7,7 +7,11 @@ import { useMemo, useState } from 'react';
 
 import { useSmoother } from '@/contexts/smooth-scroll-context';
 import type { SmoothScroller } from '@/hooks/use-smooth-scroll';
-import { pendingScrollTop, scrollToPosition } from '@/utils/scroll';
+import {
+	pendingScrollTop,
+	queueScrollRefresh,
+	scrollToPosition
+} from '@/utils/scroll';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -82,7 +86,7 @@ export function usePinnedRail(
 				// Created after the triggers below it, so re-measure them all
 				// with this pin's spacing in place.
 				ScrollTrigger.sort();
-				ScrollTrigger.refresh();
+				queueScrollRefresh();
 
 				return () => setTrigger(null);
 			});

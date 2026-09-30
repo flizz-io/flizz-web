@@ -2,19 +2,22 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 
 import { Logo } from '@/components/snippets/logo/logo';
-import { animationConfig } from '@/configs/animation';
+import {
+	introPageAttribute,
+	loaderTickerScript,
+	loaderWaitingCap
+} from '@/constants/intro';
+import { realTimeSeconds } from '@/utils/animation';
 
 gsap.registerPlugin(useGSAP);
 
-/** Where the count waits while assets are still loading. */
-const WAITING_CAP = 0.9;
 /** Past the minimum, give up waiting on assets after this long. */
-const MAX_EXTRA_SECONDS = 4;
+const MAX_EXTRA_SECONDS = 1.5;
 /** Share of the gap the shown count closes each frame — keeps it rolling. */
-const COUNT_EASE = 0.08;
+const COUNT_EASE = 0.12;
 const DONE_THRESHOLD = 0.995;
 
 interface IntroLoaderProps {
@@ -50,6 +53,15 @@ export function IntroLoader({
 	const readyRef = useRef(ready);
 	const callbacksRef = useRef({ onReveal, onDone });
 
+	// The ticker script marks the page on a full load; this covers a
+	// client-side arrival, and clears the mark when the page is left.
+	useLayoutEffect(() => {
+		const html = document.documentElement;
+		html.setAttribute(introPageAttribute, '');
+
+		return () => html.removeAttribute(introPageAttribute);
+	}, []);
+
 	useEffect(() => {
 		readyRef.current = ready;
 		callbacksRef.current = { onReveal, onDone };
@@ -65,20 +77,12 @@ export function IntroLoader({
 			const [line] = q('[data-loader-line]');
 			if (!count || !line) return;
 
-			gsap.fromTo(
-				q('[data-loader-mark]'),
-				{ clipPath: 'inset(0% 100% 0% 0%)', opacity: 0.4 },
-				{
-					clipPath: 'inset(0% 0% 0% 0%)',
-					opacity: 1,
-					duration: 1.6,
-					ease: 'expo.out',
-					delay: 0.2
-				}
-			);
-
-			const start = performance.now();
-			let shown = 0;
+			// Take over from the pre-hydration ticker where it got to. It
+			// counts from navigation start, so its progress says how long
+			// the visitor has already waited — nothing restarts at hydration.
+			root.dataset.loaderLive = '';
+			let shown = Number(count.textContent) / 100 || 0;
+			const start = performance.now() - shown * minSeconds * 1000;
 			let frame = 0;
 
 			const exit = () => {
@@ -91,38 +95,53 @@ export function IntroLoader({
 					.to(q('[data-loader-lift]'), {
 						yPercent: -60,
 						opacity: 0,
-						duration: 0.7,
+						duration: realTimeSeconds(0.45),
 						ease: 'power3.in',
-						stagger: 0.08
+						stagger: realTimeSeconds(0.05)
 					})
 					.to(
 						line,
-						{ scaleX: 1, duration: 0.3, ease: 'power2.out' },
+						{
+							scaleX: 1,
+							duration: realTimeSeconds(0.25),
+							ease: 'power2.out'
+						},
 						'<'
 					)
-					.add(() => callbacksRef.current.onReveal())
-					.to(line, { opacity: 0, duration: 0.5 })
+					// The split starts as the count lifts away, not after.
+					.add(
+						() => callbacksRef.current.onReveal(),
+						`-=${realTimeSeconds(0.15)}`
+					)
+					.to(line, { opacity: 0, duration: realTimeSeconds(0.4) })
 					.to(
 						q('[data-loader-panel="top"]'),
-						{ yPercent: -100, duration: 1.4, ease: 'expo.inOut' },
+						{
+							yPercent: -100,
+							duration: realTimeSeconds(1.1),
+							ease: 'expo.inOut'
+						},
 						'<'
 					)
 					.to(
 						q('[data-loader-panel="bottom"]'),
-						{ yPercent: 100, duration: 1.4, ease: 'expo.inOut' },
+						{
+							yPercent: 100,
+							duration: realTimeSeconds(1.1),
+							ease: 'expo.inOut'
+						},
 						'<'
 					);
 			};
 
 			const tick = () => {
-				// Counts at the same speed as the GSAP half of the loader.
-				const elapsed =
-					((performance.now() - start) / 1000) *
-					animationConfig.speed;
+				// Real seconds: this is how long the visitor waits, so the
+				// animation-speed dial doesn't stretch it.
+				const elapsed = (performance.now() - start) / 1000;
 				const timeProgress = Math.min(elapsed / minSeconds, 1);
 				const target = readyRef.current
 					? timeProgress
-					: Math.min(timeProgress, WAITING_CAP);
+					: Math.min(timeProgress, loaderWaitingCap);
 
 				shown += (target - shown) * COUNT_EASE;
 				count.textContent = String(Math.round(shown * 100)).padStart(
@@ -157,6 +176,7 @@ export function IntroLoader({
 		<div
 			ref={rootRef}
 			data-intro-loader
+			data-min-seconds={minSeconds}
 			aria-hidden
 			className="fixed inset-x-0 top-0 z-50 h-svh overflow-hidden"
 		>
@@ -171,6 +191,7 @@ export function IntroLoader({
 
 			<span
 				data-loader-line
+				suppressHydrationWarning
 				className="absolute inset-x-0 top-1/2 h-px origin-left scale-x-0 bg-primary shadow-[0_0_18px_var(--color-primary)]"
 			/>
 
@@ -178,10 +199,7 @@ export function IntroLoader({
 				data-loader-lift
 				className="absolute inset-x-0 top-1/2 flex -translate-y-[calc(100%+2.5rem)] justify-center"
 			>
-				<span
-					data-loader-mark
-					className="inline-flex scale-[1.6]"
-				>
+				<span className="inline-flex scale-[1.6] animate-loader-mark">
 					<Logo />
 				</span>
 			</div>
@@ -189,10 +207,15 @@ export function IntroLoader({
 			<span
 				data-loader-lift
 				data-loader-count
+				suppressHydrationWarning
 				className="absolute right-6 bottom-4 font-heading text-[clamp(4.5rem,13vw,11rem)] leading-none font-semibold tracking-tight text-foreground/90 tabular-nums sm:right-10 sm:bottom-6"
 			>
 				000
 			</span>
+
+			{/* Rolls the count from the first paint, before this component has
+			    hydrated — see `loaderTickerScript`. */}
+			<script dangerouslySetInnerHTML={{ __html: loaderTickerScript }} />
 		</div>
 	);
 }

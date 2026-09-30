@@ -14,6 +14,111 @@ const MAX_PIXEL_RATIO = 2;
 const THEMED_VARIABLES = ['--primary', '--foreground'];
 const FALLBACK_ACCENT = '#8b5cf6';
 const FALLBACK_INK = '#e7e4f0';
+/** How far outside the viewport a canvas starts building. */
+const BUILD_AHEAD_MARGIN = '50% 0px';
+
+interface SceneOptions {
+	build: ServiceVisualBuilder;
+	isDark: boolean;
+	prefersReducedMotion: boolean;
+	focusedRef: React.RefObject<boolean>;
+}
+
+/** Builds the renderer and scene into `container`; returns its teardown. */
+function mountScene(
+	container: HTMLDivElement,
+	{ build, isDark, prefersReducedMotion, focusedRef }: SceneOptions
+): (() => void) | undefined {
+	let renderer: THREE.WebGLRenderer;
+	try {
+		renderer = new THREE.WebGLRenderer({
+			alpha: true,
+			antialias: true,
+			powerPreference: 'low-power'
+		});
+	} catch {
+		// No WebGL — the card still has its label; nothing more to do.
+		return;
+	}
+
+	const accent = new THREE.Color(
+		readThemeColor('--primary', FALLBACK_ACCENT)
+	);
+	const ink = new THREE.Color(readThemeColor('--foreground', FALLBACK_INK));
+
+	const scene = new THREE.Scene();
+	// Framed tight: at z=6 every specimen floated in the middle of its
+	// canvas with dead space all round, which is what made them read as
+	// thumbnails rather than objects.
+	const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50);
+	camera.position.set(0, 0, 4.6);
+
+	const pixelRatio = Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO);
+	renderer.setPixelRatio(pixelRatio);
+	renderer.setClearColor(0x000000, 0);
+	container.append(renderer.domElement);
+	renderer.domElement.style.width = '100%';
+	renderer.domElement.style.height = '100%';
+
+	const handle = build(scene, { accent, ink }, isDark);
+
+	const resize = () => {
+		const { clientWidth, clientHeight } = container;
+		if (!clientWidth || !clientHeight) return;
+
+		camera.aspect = clientWidth / clientHeight;
+		camera.updateProjectionMatrix();
+		renderer.setSize(clientWidth, clientHeight, false);
+	};
+
+	let animationFrame = 0;
+	const startTime = performance.now();
+
+	const render = () => {
+		handle.update(
+			(performance.now() - startTime) / 1000,
+			focusedRef.current
+		);
+		renderer.render(scene, camera);
+		animationFrame = requestAnimationFrame(render);
+	};
+
+	const start = () => {
+		if (animationFrame || prefersReducedMotion) return;
+		animationFrame = requestAnimationFrame(render);
+	};
+
+	const stop = () => {
+		if (!animationFrame) return;
+		cancelAnimationFrame(animationFrame);
+		animationFrame = 0;
+	};
+
+	resize();
+	handle.update(0, focusedRef.current);
+	renderer.render(scene, camera);
+
+	const observer = new IntersectionObserver(([entry]) =>
+		entry?.isIntersecting ? start() : stop()
+	);
+	observer.observe(container);
+
+	const onVisibilityChange = () => (document.hidden ? stop() : start());
+
+	window.addEventListener('resize', resize);
+	document.addEventListener('visibilitychange', onVisibilityChange);
+
+	return () => {
+		stop();
+		observer.disconnect();
+		window.removeEventListener('resize', resize);
+		document.removeEventListener('visibilitychange', onVisibilityChange);
+
+		handle.dispose();
+		renderer.dispose();
+		renderer.domElement.remove();
+	};
+}
 
 /**
  * Lifecycle for one small specimen canvas. Sized to its own container rather
@@ -44,99 +149,29 @@ export function useServiceVisualScene(
 		const container = containerRef.current;
 		if (!container) return;
 
-		let renderer: THREE.WebGLRenderer;
-		try {
-			renderer = new THREE.WebGLRenderer({
-				alpha: true,
-				antialias: true,
-				powerPreference: 'low-power'
-			});
-		} catch {
-			// No WebGL — the card still has its label; nothing more to do.
-			return;
-		}
+		// Built only once the card is about to scroll in: a page lists a dozen
+		// of these, and creating every WebGL context up front blocked the main
+		// thread for seconds on load, for canvases nobody could see yet.
+		let teardown: (() => void) | undefined;
+		const approach = new IntersectionObserver(
+			([entry]) => {
+				if (!entry?.isIntersecting) return;
 
-		const accent = new THREE.Color(
-			readThemeColor('--primary', FALLBACK_ACCENT)
+				approach.disconnect();
+				teardown = mountScene(container, {
+					build,
+					isDark,
+					prefersReducedMotion,
+					focusedRef
+				});
+			},
+			{ rootMargin: BUILD_AHEAD_MARGIN }
 		);
-		const ink = new THREE.Color(
-			readThemeColor('--foreground', FALLBACK_INK)
-		);
-
-		const scene = new THREE.Scene();
-		// Framed tight: at z=6 every specimen floated in the middle of its
-		// canvas with dead space all round, which is what made them read as
-		// thumbnails rather than objects.
-		const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50);
-		camera.position.set(0, 0, 4.6);
-
-		const pixelRatio = Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO);
-		renderer.setPixelRatio(pixelRatio);
-		renderer.setClearColor(0x000000, 0);
-		container.append(renderer.domElement);
-		renderer.domElement.style.width = '100%';
-		renderer.domElement.style.height = '100%';
-
-		const handle = build(scene, { accent, ink }, isDark);
-
-		const resize = () => {
-			const { clientWidth, clientHeight } = container;
-			if (!clientWidth || !clientHeight) return;
-
-			camera.aspect = clientWidth / clientHeight;
-			camera.updateProjectionMatrix();
-			renderer.setSize(clientWidth, clientHeight, false);
-		};
-
-		let animationFrame = 0;
-		const startTime = performance.now();
-
-		const render = () => {
-			handle.update(
-				(performance.now() - startTime) / 1000,
-				focusedRef.current
-			);
-			renderer.render(scene, camera);
-			animationFrame = requestAnimationFrame(render);
-		};
-
-		const start = () => {
-			if (animationFrame || prefersReducedMotion) return;
-			animationFrame = requestAnimationFrame(render);
-		};
-
-		const stop = () => {
-			if (!animationFrame) return;
-			cancelAnimationFrame(animationFrame);
-			animationFrame = 0;
-		};
-
-		resize();
-		handle.update(0, focusedRef.current);
-		renderer.render(scene, camera);
-
-		const observer = new IntersectionObserver(([entry]) =>
-			entry?.isIntersecting ? start() : stop()
-		);
-		observer.observe(container);
-
-		const onVisibilityChange = () => (document.hidden ? stop() : start());
-
-		window.addEventListener('resize', resize);
-		document.addEventListener('visibilitychange', onVisibilityChange);
+		approach.observe(container);
 
 		return () => {
-			stop();
-			observer.disconnect();
-			window.removeEventListener('resize', resize);
-			document.removeEventListener(
-				'visibilitychange',
-				onVisibilityChange
-			);
-
-			handle.dispose();
-			renderer.dispose();
-			renderer.domElement.remove();
+			approach.disconnect();
+			teardown?.();
 		};
 		// `focused` is read through `focusedRef` inside the render loop, not
 		// referenced here, so the scene isn't torn down and rebuilt on hover.

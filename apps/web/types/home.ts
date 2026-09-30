@@ -9,7 +9,7 @@ export interface HeroDiscipline {
 /** The tuning dials for the hero constellation, kept out of the component. */
 /** Controls for the cinematic hero — see docs/requirements/home-hero-cinematic.md. */
 export interface HeroCinematicConfig {
-	/** Minimum loader time in seconds, clamped 3–5. */
+	/** Minimum loader time in real seconds from navigation start, clamped 1.5–4. */
 	loaderSeconds: number;
 	/** Off skips straight to the reveal. */
 	showLoader: boolean;

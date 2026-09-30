@@ -40,7 +40,7 @@ export const heroDisciplines: HeroDiscipline[] = [
 // measured at runtime — no setting can clip the artwork.
 // The cinematic hero's one place to tune timing and the rotating line.
 export const heroCinematicConfig: HeroCinematicConfig = {
-	loaderSeconds: 3.5,
+	loaderSeconds: 1.8,
 	showLoader: true,
 	scrollDistance: 200,
 	autoAdvanceSeconds: 10,

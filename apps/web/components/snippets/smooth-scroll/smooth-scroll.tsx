@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import { smoothScrollEase, smoothScrollSeconds } from '@/constants/scroll';
 import { SmoothScrollContext } from '@/contexts/smooth-scroll-context';
 import { applyAnimationSpeed, realTimeSeconds } from '@/utils/animation';
+import { queueScrollRefresh } from '@/utils/scroll';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollSmoother);
@@ -73,9 +74,7 @@ export function SmoothScroll({ children, fixed }: SmoothScrollProps) {
 		// eased up from wherever the last one was left. Jump instead, then
 		// re-measure every trigger against the new content.
 		smoother.scrollTop(0);
-		const frame = requestAnimationFrame(() => ScrollTrigger.refresh());
-
-		return () => cancelAnimationFrame(frame);
+		queueScrollRefresh();
 	}, [pathname, smoother]);
 
 	return (
