@@ -32,7 +32,9 @@ export const projects: ProjectDetail[] = [
 	{
 		slug: 'northwind-ops-platform',
 		featured: true,
-		name: 'Northwind Ops Platform',
+		// name: 'Northwind Ops Platform',
+		name: 'ProductPeersBD',
+		image: '/projects/product-peers-bd.png',
 		client: 'A 40-person operations team running a national parts network',
 		sector: ProjectSector.OPERATIONS,
 		service: ServiceCategory.CUSTOM_SOFTWARE,
@@ -86,7 +88,8 @@ export const projects: ProjectDetail[] = [
 	},
 	{
 		slug: 'marlin-co-dashboard',
-		name: 'Marlin & Co Dashboard',
+		name: 'ProductPeersBD',
+		image: '/projects/product-peers-bd.png',
 		client: 'A distributed logistics team working across four vendor systems',
 		sector: ProjectSector.OPERATIONS,
 		service: ServiceCategory.CUSTOM_SOFTWARE,
