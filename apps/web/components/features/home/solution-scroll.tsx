@@ -8,9 +8,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
 	ProcessConsole,
-	ProcessStepItem,
-	restingProgress,
-	stepPosition
+	ProcessStepItem
 } from '@/components/features/home/solution-parts';
 import { Pinned } from '@/components/snippets/pinned/pinned';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
@@ -19,6 +17,7 @@ import { useSmoother } from '@/contexts/smooth-scroll-context';
 import { useScrollProgress } from '@/hooks/use-scroll-progress';
 import type { SolutionVariationProps } from '@/types/home';
 import { scrollToPosition } from '@/utils/scroll';
+import { restingProgress, stepPosition } from '@/utils/scroll-steps';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { cn } from '@workspace/ui/lib/utils';
 
