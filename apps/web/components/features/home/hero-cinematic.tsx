@@ -45,8 +45,8 @@ const HeroDisciplinesScene = dynamic(
 	{ ssr: false }
 );
 
-const MIN_LOADER_SECONDS = 3;
-const MAX_LOADER_SECONDS = 5;
+const MIN_LOADER_SECONDS = 1.5;
+const MAX_LOADER_SECONDS = 4;
 /** How much larger the scene holds while it has the stage to itself. */
 const CENTRED_SCALE = 1.12;
 /** Any of these counts as the reader taking over from the auto-advance. */

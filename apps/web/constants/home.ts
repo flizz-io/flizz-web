@@ -25,10 +25,13 @@ export const heroScrollTargetId = 'our-work';
 export const heroDisciplines: HeroDiscipline[] = [
 	{
 		label: 'Product discovery',
-		caption: 'Building what matters' //'Deciding what is worth building'
+		caption: 'Deciding what is worth building' // 'Building what matters'
 	},
-	{ label: 'AI-assisted delivery', caption: 'Building in less time' },
-	{ label: 'Systems engineering', caption: 'Making it hold up' }
+	{
+		label: 'AI-Augmented Delivery',
+		caption: 'Building with advanced intelligence'
+	},
+	{ label: 'Systems engineering', caption: 'Building it to scale and last' }
 ];
 
 // The one place to resize the hero constellation or its labels. Both scales run
@@ -37,10 +40,10 @@ export const heroDisciplines: HeroDiscipline[] = [
 // measured at runtime — no setting can clip the artwork.
 // The cinematic hero's one place to tune timing and the rotating line.
 export const heroCinematicConfig: HeroCinematicConfig = {
-	loaderSeconds: 3.5,
+	loaderSeconds: 1.8,
 	showLoader: true,
-	scrollDistance: 120,
-	autoAdvanceSeconds: 4,
+	scrollDistance: 200,
+	autoAdvanceSeconds: 10,
 	rotatingPhrases: ['what\u2019s next.', 'what scales.', 'what lasts.'],
 	phraseHoldSeconds: 3
 };
@@ -73,7 +76,7 @@ export const heroCinematicCopy = {
 	secondaryAction: 'See the works',
 	// TODO: swap for a quarterly availability line if the PM wants one.
 	availability: 'Replies within one business day.',
-	caption: 'Software engineering partner',
+	caption: 'Your Technology Partner',
 	scrollCue: 'Scroll to begin'
 };
 

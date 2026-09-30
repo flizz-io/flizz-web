@@ -16,8 +16,12 @@ import { cn } from '@workspace/ui/lib/utils';
 
 /** Grace period before a popover closes, so crossing a gap doesn't flicker it. */
 const HIDE_DELAY_MS = 1000;
-/** Share of the visible strip an arrow click advances by. */
+/** Share of the visible strip an arrow click advances by (unpinned strip). */
 const ARROW_STEP = 0.7;
+/** Page scroll each service holds the pinned rail for, in viewport heights. */
+const ITEM_SCROLL_VH = 60;
+/** Quiet time after the rail's last move before hover counts again. */
+const SCROLL_SETTLE_MS = 200;
 
 interface ServicesTeaserProps {
 	sectionIndex: number;
@@ -27,6 +31,25 @@ interface ServicesTeaserProps {
 	/** Opens a detail panel across the spine on hover. Off leaves the
 	    focus/dim behaviour intact without the panel. */
 	showPopover?: boolean;
+	/**
+	 * Pinned rail (large screens): how much page scroll each service holds
+	 * the rail still for, in viewport heights (vh). Higher reads as a longer
+	 * stop on each item; the whole run is this × the number of services.
+	 */
+	itemScrollVh?: number;
+	/**
+	 * Pinned rail (large screens): stop on each service as the page scrolls
+	 * and open its popover while the rail rests there. Off, the rail pans
+	 * 1:1 with the scroll and popovers open on hover only.
+	 */
+	stepOnScroll?: boolean;
+	/**
+	 * With `stepOnScroll`: whether scrolling back up opens popovers too.
+	 * Off, they only open on the way down. The rail still stops on each
+	 * service both ways — its position follows the page's, so it can't
+	 * differ by direction without jumping.
+	 */
+	stepOnReverse?: boolean;
 }
 
 export function ServicesTeaser({
@@ -34,22 +57,25 @@ export function ServicesTeaser({
 	sectionIndex,
 	totalSections,
 	limit = 8,
-	showPopover = true
+	showPopover = true,
+	itemScrollVh = ITEM_SCROLL_VH,
+	stepOnScroll = true,
+	stepOnReverse = true
 }: ServicesTeaserProps) {
 	// One shared index rather than per-item state: focusing one has to dim its
 	// siblings too, which only a common owner can coordinate.
-	const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+	const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+	// The service the page's scroll has reached while the rail is pinned.
+	const [scrolledIndex, setScrolledIndex] = useState<number | null>(null);
+	// The page is scrolling the rail right now — the scroll's service wins.
+	const [scrolling, setScrolling] = useState(false);
+	const scrollingRef = useRef(false);
+	const settleTimer = useRef<number | null>(null);
 	const railRef = useRef<HTMLDivElement>(null);
 	const viewportRef = useRef<HTMLDivElement>(null);
 	const listRef = useRef<HTMLUListElement>(null);
 	const hideTimer = useRef<number | null>(null);
 	const stripScroller = useSmoothScroll(viewportRef);
-	// Large screens: the page's vertical scroll drives the rail, and drag,
-	// arrows and wheel all move the page. Elsewhere the strip scrolls itself.
-	const railScroller = usePinnedRail(railRef, viewportRef);
-	const scroller = railScroller ?? stripScroller;
-	const dragHandlers = useDragScroll(viewportRef, { scroller });
-	const { hiddenBefore, hiddenAfter } = useScrollEdges(viewportRef, listRef);
 
 	const displayServices = useMemo(
 		() => (limit ? serviceCards.slice(0, limit) : serviceCards),
@@ -63,20 +89,79 @@ export function ServicesTeaser({
 		hideTimer.current = null;
 	};
 
+	/** Hover is set aside while the rail moves, and waits for a real pointer
+	    move afterwards — a pointer parked on the rail never takes over. */
+	const markScrolling = useCallback(() => {
+		if (!scrollingRef.current) {
+			scrollingRef.current = true;
+			setScrolling(true);
+			clearHideTimer();
+			setHoveredIndex(null);
+		}
+
+		if (settleTimer.current !== null) {
+			window.clearTimeout(settleTimer.current);
+		}
+		settleTimer.current = window.setTimeout(() => {
+			settleTimer.current = null;
+			scrollingRef.current = false;
+			setScrolling(false);
+		}, SCROLL_SETTLE_MS);
+	}, []);
+
+	// The rail rests on one service at a time, so its popover is open for as
+	// long as the rail holds there; it hands over halfway through the move.
+	const handleRailPosition = useCallback(
+		(position: number | null, direction: number) => {
+			if (position === null) {
+				setScrolledIndex(null);
+				return;
+			}
+
+			markScrolling();
+			setScrolledIndex(
+				direction < 0 && !stepOnReverse ? null : Math.round(position)
+			);
+		},
+		[markScrolling, stepOnReverse]
+	);
+
+	// Large screens: the page's vertical scroll walks the rail one service at
+	// a time, and drag, arrows and wheel all move the page. Elsewhere the
+	// strip scrolls itself.
+	const railScroller = usePinnedRail(railRef, viewportRef, {
+		steps: displayServices.length,
+		stepped: stepOnScroll,
+		stepScrollVh: itemScrollVh,
+		onPosition: stepOnScroll ? handleRailPosition : undefined
+	});
+	const scroller = railScroller ?? stripScroller;
+	const dragHandlers = useDragScroll(viewportRef, { scroller });
+	const { hiddenBefore, hiddenAfter } = useScrollEdges(viewportRef, listRef);
+	// While the page scrolls the rail, the scroll's service wins; at rest, a
+	// hovered (or keyboard-focused) service does.
+	const focusedIndex = scrolling
+		? scrolledIndex
+		: (hoveredIndex ?? scrolledIndex);
+
 	const handleFocusChange = useCallback(
 		(index: number, focusing: boolean) => {
+			// Mid-scroll the rail is sliding under a still pointer — that
+			// isn't the reader choosing a service.
+			if (focusing && scrollingRef.current) return;
+
 			// Entering anything cancels a pending close, so moving between
 			// services swaps the popover rather than blinking it off and on.
 			clearHideTimer();
 
 			if (focusing) {
-				setFocusedIndex(index);
+				setHoveredIndex(index);
 				return;
 			}
 
 			hideTimer.current = window.setTimeout(() => {
 				hideTimer.current = null;
-				setFocusedIndex((current) =>
+				setHoveredIndex((current) =>
 					current === index ? null : current
 				);
 			}, HIDE_DELAY_MS);
@@ -86,20 +171,30 @@ export function ServicesTeaser({
 
 	const handleArrowClick = useCallback(
 		(direction: ScrollDirection) => {
-			const width = viewportRef.current?.clientWidth ?? 0;
 			const sign = direction === ScrollDirection.NEXT ? 1 : -1;
 
-			const delta = sign * width * ARROW_STEP;
-
-			// Pinned, an arrow glides the page like a scroll would; the free
+			// Pinned, an arrow glides the page on to the next stop; the free
 			// strip already eases every move on its own.
-			if (railScroller) railScroller.glideBy(delta);
-			else scroller.scrollBy(delta);
+			if (railScroller) {
+				railScroller.stepBy(sign);
+				return;
+			}
+
+			const width = viewportRef.current?.clientWidth ?? 0;
+			scroller.scrollBy(sign * width * ARROW_STEP);
 		},
 		[railScroller, scroller]
 	);
 
-	useEffect(() => clearHideTimer, []);
+	useEffect(
+		() => () => {
+			clearHideTimer();
+			if (settleTimer.current !== null) {
+				window.clearTimeout(settleTimer.current);
+			}
+		},
+		[]
+	);
 
 	return (
 		<section
@@ -112,7 +207,8 @@ export function ServicesTeaser({
 					index={sectionIndex}
 					total={totalSections}
 					eyebrow="What We Build"
-					title="Services for every build stage"
+					title="Services for wherever your business is going"
+					// title="Services for every build stage"
 					description="A snapshot of what we do — the full list lives on the Services page."
 					seeAllLabel="View all services"
 					seeAllHref="/services"

@@ -9,7 +9,8 @@ Copy source of truth stays in [home-page.md § Hero](home-page.md#hero). Selecte
 ### 1. Intro loader
 
 - Covers the first screen while the hero loads underneath it. The hero is fully server-rendered behind it, so crawlers and screen readers get the real content.
-- Ends at the **latest** of: `loaderSeconds` (3–5s, clamped), web fonts ready, and the scene's first frame drawn (`HeroDisciplinesScene` `onReady`). A hard ceiling of `loaderSeconds + 4s` stops a stalled asset from holding the page hostage.
+- Ends at the **latest** of: `loaderSeconds` (1.5–4s, clamped — real seconds counted from navigation start, not scaled by the animation-speed dial), web fonts ready, and the scene's first frame drawn (`HeroDisciplinesScene` `onReady`). A hard ceiling of `loaderSeconds + 1.5s` stops a stalled asset from holding the page hostage. Target: the split has started within ~2.5s of navigation on a production build.
+- Starts moving at the **first paint**, not at hydration: the wordmark mask is a CSS animation, and a small inline script (`loaderTickerScript`) rolls the count and hairline until the component hydrates and takes over from the same value. A count frozen at 000 while the JavaScript loads reads as a site that isn't responding.
 - Content, and nothing else:
     - the Flizzio wordmark, revealed by a light-pass mask;
     - a hairline across the vertical centre whose length **is** the progress;
@@ -24,7 +25,7 @@ Copy source of truth stays in [home-page.md § Hero](home-page.md#hero). Selecte
 
 - **Header** (shared by every page): the pill opens from its centre outward (clip-path), un-blurring as it drops in, then the nav items settle in one after another. It only runs when the intro played — every other page and every skipped load shows the header exactly as today.
 - **Scene**: arrives in the centre of the hero, easing up from 0.9 scale out of a blur.
-- **Stage-A caption** under the scene: "Software engineering partner" and a scroll cue with the floating arrow.
+- **Stage-A caption** under the scene: "Your Technology Partner" and a scroll cue with the floating arrow.
 - Coordinated through `contexts/intro-context.tsx` — phase `PENDING → REVEALING → DONE`.
 
 ### 3. Scroll hand-off (large screens)
@@ -65,7 +66,7 @@ One bold element — the headline's rotating third line. Everything around it st
 
 | Prop                 | Default                                           | Meaning                                                         |
 | -------------------- | ------------------------------------------------- | --------------------------------------------------------------- |
-| `loaderSeconds`      | `3.5`                                             | Minimum loader time, clamped 3–5.                               |
+| `loaderSeconds`      | `1.8`                                             | Minimum loader time in real seconds, clamped 1.5–4.             |
 | `showLoader`         | `true`                                            | Off skips straight to the reveal.                               |
 | `scrollDistance`     | `120`                                             | Pinned scroll travel, % of the viewport height.                 |
 | `autoAdvanceSeconds` | `4`                                               | Idle time before the hand-off plays itself; `0` disables.       |

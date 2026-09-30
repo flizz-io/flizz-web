@@ -1,5 +1,6 @@
 import gsap from 'gsap';
 import type { ScrollSmoother } from 'gsap/ScrollSmoother';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 interface GlideProfile {
 	minSeconds: number;
@@ -153,4 +154,34 @@ export function scrollToElement(
 		: target.getBoundingClientRect().top + window.scrollY;
 
 	scrollToPosition(smoother, top - margin, options);
+}
+
+let refreshFrame = 0;
+let refreshStale = false;
+let refreshWatched = false;
+
+/**
+ * Asks for one full ScrollTrigger re-measure on the next frame, instead of a
+ * synchronous `ScrollTrigger.refresh()`. A refresh reverts and re-measures
+ * every trigger on the page — a full-document style and layout pass per
+ * trigger — so a few components each refreshing as they mount stacked into
+ * seconds of blocked main thread on load. Calls in the same frame share one
+ * refresh, and it's skipped altogether if GSAP ran its own (pins queue one)
+ * after the request.
+ */
+export function queueScrollRefresh() {
+	if (!refreshWatched) {
+		refreshWatched = true;
+		ScrollTrigger.addEventListener('refresh', () => {
+			refreshStale = false;
+		});
+	}
+
+	refreshStale = true;
+	if (refreshFrame) return;
+
+	refreshFrame = requestAnimationFrame(() => {
+		refreshFrame = 0;
+		if (refreshStale) ScrollTrigger.refresh();
+	});
 }

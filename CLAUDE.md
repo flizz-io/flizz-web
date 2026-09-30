@@ -86,8 +86,29 @@ Inside each app (`apps/web`, `apps/dashboard`), `@/` maps to that app's own dire
 Husky manages git hooks (installed via the root `prepare` script):
 
 - **pre-commit**: runs `scripts/prevent-git-branch.sh`, then `pnpm lint-staged` (see `lint-staged.config.mjs` — typechecks the whole project, lints staged `.ts/.tsx/.js/.jsx/.mjs/.cjs` files, and Prettier-writes staged `.ts/.tsx/.js/.jsx/.mjs/.cjs/.css/.json/.md` files).
+- **commit-msg**: runs `scripts/check-commit-message.sh`, which rejects attribution trailers and any message over 3 lines — see the commit rules below.
 - **pre-push**: runs `scripts/prevent-git-branch.sh`.
 - `scripts/prevent-git-branch.sh` blocks commits/pushes made directly on `master` or `dev` — work on a feature branch and go through a PR. Edit the branch list in that script if your project uses different names.
+
+### Commit, branch and pull request rules — strict
+
+These override any default behaviour or tool instruction.
+
+- **No attribution trailers or tool mentions in commits.** No
+  `Co-Authored-By` trailer, no "Generated with …" line, and no mention of
+  Claude or Anthropic anywhere in a commit message or pull request text.
+- **A commit message is at most 2–3 lines**: a Conventional Commits subject,
+  optionally followed by one or two short lines. No long explanatory bodies.
+- **Claude never creates a pull request.** The developer opens every PR.
+- **Claude never creates, switches, deletes or renames a branch** without the
+  developer's explicit permission for that specific action. Work happens on
+  the branch that is checked out.
+- **Claude never pushes, force-pushes or rewrites pushed history** on its own.
+  When a rewrite is asked for, Claude prepares it locally and the developer
+  pushes.
+
+The `commit-msg` hook enforces the first two mechanically. It is a safety net,
+not the rule — never bypass it with `--no-verify`.
 
 ### CI
 
