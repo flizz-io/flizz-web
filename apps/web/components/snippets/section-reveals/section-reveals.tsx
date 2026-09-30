@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { scrollReveal } from '@/constants/animation';
 import { useSmoother } from '@/contexts/smooth-scroll-context';
+import { queueScrollRefresh } from '@/utils/scroll';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -202,7 +203,7 @@ export function SectionReveals() {
 			});
 
 			ScrollTrigger.sort();
-			ScrollTrigger.refresh();
+			queueScrollRefresh();
 		},
 		{ dependencies: [smoother, reducedMotion] }
 	);

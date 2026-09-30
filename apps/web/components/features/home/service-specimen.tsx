@@ -20,6 +20,11 @@ interface ServiceSpecimenProps {
 	onFocusChange: (focusing: boolean) => void;
 }
 
+/** A real pointer move — not the synthetic one a browser sends after scroll. */
+function movedPointer(event: React.MouseEvent) {
+	return event.movementX !== 0 || event.movementY !== 0;
+}
+
 export function ServiceSpecimen({
 	service,
 	index,
@@ -45,11 +50,18 @@ export function ServiceSpecimen({
 			<Link
 				href={`/services/${service.slug}`}
 				onMouseEnter={() => onFocusChange(true)}
+				// Re-claims focus once the reader moves the pointer again
+				// after a scroll, which ignores hover while it runs.
+				onMouseMove={(event) =>
+					movedPointer(event) && onFocusChange(true)
+				}
 				onMouseLeave={() => onFocusChange(false)}
 				onFocus={() => onFocusChange(true)}
 				onBlur={() => onFocusChange(false)}
 				className={cn(
-					'group flex h-full items-center gap-5 pl-12 transition-[opacity,transform] duration-1500 ease-power-on lg:gap-3 lg:pl-0',
+					// `translate` listed on its own: Tailwind's translate
+					// utilities set that property, not `transform`.
+					'group flex h-full items-center gap-5 pl-12 transition-[opacity,translate] duration-1500 ease-power-on lg:gap-3 lg:pl-0',
 					// Specimen always ends up nearest the spine.
 					above
 						? 'lg:flex-col-reverse lg:justify-start'
@@ -115,8 +127,10 @@ export function ServiceSpecimen({
 					<span
 						aria-hidden
 						className={cn(
-							'pointer-events-none absolute left-1/2 hidden h-7.5 w-px bg-primary transition-transform duration-400 ease-power-on lg:block',
-							revealed ? 'scale-y-100' : 'scale-y-0',
+							'pointer-events-none absolute left-1/2 hidden h-7.5 w-px bg-primary transition-transform ease-power-on lg:block',
+							revealed
+								? 'scale-y-100 duration-700'
+								: 'scale-y-0 duration-300',
 							above
 								? 'top-[calc(100%+30px)] origin-top'
 								: 'bottom-[calc(100%+30px)] origin-bottom'
@@ -125,22 +139,24 @@ export function ServiceSpecimen({
 
 					{/* Absolutely positioned and fixed-size, so opening it can
 					    never move anything. Duplicates copy already in the DOM
-					    for the stacked layout, so it stays out of the a11y tree. */}
+					    for the stacked layout, so it stays out of the a11y tree.
+					    Opens slow and soft, a beat after the thread starts;
+					    closes quicker, so a hand-over overlaps into a
+					    cross-fade instead of one panel punching out as the
+					    next punches in. */}
 					<div
 						aria-hidden
 						className={cn(
-							'pointer-events-none absolute left-1/2 hidden w-75 rounded-xl border border-primary/40 bg-card/95 px-5 py-4 shadow-2xl backdrop-blur-sm transition-[opacity,transform] duration-400 ease-power-on lg:block',
+							'pointer-events-none absolute left-1/2 hidden w-75 -translate-x-1/2 rounded-xl border border-primary/40 bg-card/95 px-5 py-4 shadow-2xl backdrop-blur-sm transition-[opacity,translate,scale,filter] lg:block',
 							revealed
-								? '-translate-x-1/2 translate-y-0 opacity-100'
-								: 'opacity-0',
+								? 'translate-y-0 scale-100 opacity-100 blur-none delay-100 duration-700 ease-power-on'
+								: 'scale-98 opacity-0 blur-[3px] duration-300 ease-out',
 							above
-								? 'top-[calc(100%+60px)]'
-								: 'bottom-[calc(100%+60px)]',
+								? 'top-[calc(100%+60px)] origin-top'
+								: 'bottom-[calc(100%+60px)] origin-bottom',
 							// Emerges from the spine, so it travels outward.
 							!revealed &&
-								(above
-									? '-translate-x-1/2 -translate-y-2'
-									: '-translate-x-1/2 translate-y-2')
+								(above ? '-translate-y-1.5' : 'translate-y-1.5')
 						)}
 					>
 						<p className="font-mono text-xs tracking-[0.2em] text-primary uppercase">

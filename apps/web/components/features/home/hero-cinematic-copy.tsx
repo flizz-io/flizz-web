@@ -241,7 +241,7 @@ export function HeroCinematicCopy({
 			    on the same `data-copy-word` beat the words used to. */}
 			<div
 				data-copy-word
-				className="mt-8 w-full max-w-md"
+				className="mt-8 w-full max-w-lg"
 			>
 				<p className="font-mono text-xs tracking-[0.16em] text-muted-foreground uppercase dark:text-white/50">
 					{heroCinematicCopy.logosLabel}

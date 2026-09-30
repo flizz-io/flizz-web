@@ -11,6 +11,8 @@ import { cn } from '@workspace/ui/lib/utils';
 
 /** How long the pointer rests before the drag badge fades back out. */
 const IDLE_MS = 700;
+/** How long the pointer must rest on a service before "view details" shows. */
+const DETAILS_REST_MS = 3000;
 /** Share of the gap to the pointer closed each frame — the badge trails a touch. */
 const FOLLOW_EASE = 0.3;
 
@@ -28,7 +30,9 @@ interface RailCursorProps {
  *
  * While the pointer moves it shows which way the strip can be dragged, then
  * fades out once the pointer rests. Over a specimen link it says the card
- * opens its details instead, next to the native pointer hand. A real CSS
+ * opens its details instead, next to the native pointer hand — but only once
+ * the pointer has rested on it for `DETAILS_REST_MS`. Any movement or wheel
+ * scroll hides it and starts the wait again, on every hover. A real CSS
  * cursor can't do either: it can't animate in or out, and it would replace
  * the pointer hand that marks a link as clickable.
  */
@@ -57,6 +61,7 @@ export function RailCursor({
 		let placed = false;
 		let frame: number | null = null;
 		let idleTimer: number | null = null;
+		let restTimer: number | null = null;
 
 		const follow = () => {
 			frame = null;
@@ -81,6 +86,32 @@ export function RailCursor({
 
 			window.clearTimeout(idleTimer);
 			idleTimer = null;
+		};
+
+		const clearRest = () => {
+			if (restTimer === null) return;
+
+			window.clearTimeout(restTimer);
+			restTimer = null;
+		};
+
+		// Checked when the wait ends, not when it starts: a scroll can carry a
+		// different service (or none) under a pointer that never moved.
+		const pointerOnLink = () => {
+			const element = document.elementFromPoint(pointer.x, pointer.y);
+			const link = element?.closest('a[href]');
+
+			return !!link && target.contains(link);
+		};
+
+		const scheduleRest = () => {
+			clearRest();
+			restTimer = window.setTimeout(() => {
+				restTimer = null;
+				if (!target.dataset.panning && pointerOnLink()) {
+					setMode(RailCursorMode.DETAILS);
+				}
+			}, DETAILS_REST_MS);
 		};
 
 		const scheduleIdle = () => {
@@ -114,16 +145,32 @@ export function RailCursor({
 
 			if (overLink) {
 				clearIdle();
-				setMode(RailCursorMode.DETAILS);
+				setMode(RailCursorMode.IDLE);
+				scheduleRest();
 				return;
 			}
 
+			clearRest();
 			setMode(RailCursorMode.DRAG);
 			scheduleIdle();
 		};
 
+		// The page scroll pans the rail under a still pointer, so a wheel
+		// counts as movement: hide the prompt and wait for a fresh rest.
+		const onWheel = () => {
+			if (!placed) return;
+
+			setMode((current) =>
+				current === RailCursorMode.DETAILS
+					? RailCursorMode.IDLE
+					: current
+			);
+			if (pointerOnLink()) scheduleRest();
+		};
+
 		const onLeave = () => {
 			clearIdle();
+			clearRest();
 			placed = false;
 			setHeld(false);
 			setMode(RailCursorMode.IDLE);
@@ -142,14 +189,17 @@ export function RailCursor({
 		target.addEventListener('pointerleave', onLeave);
 		target.addEventListener('pointerdown', onDown);
 		target.addEventListener('pointerup', onUp);
+		target.addEventListener('wheel', onWheel, { passive: true });
 
 		return () => {
 			clearIdle();
+			clearRest();
 			if (frame !== null) cancelAnimationFrame(frame);
 			target.removeEventListener('pointermove', onMove);
 			target.removeEventListener('pointerleave', onLeave);
 			target.removeEventListener('pointerdown', onDown);
 			target.removeEventListener('pointerup', onUp);
+			target.removeEventListener('wheel', onWheel);
 		};
 	}, [reducedMotion, targetRef]);
 

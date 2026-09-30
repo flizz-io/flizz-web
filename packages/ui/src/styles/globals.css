@@ -177,11 +177,14 @@
 
 	/* The home intro gate (see apps/web constants/intro.ts). Skipped: the
 	   loader never shows. Playing: the header waits for its entrance — only on
-	   a page that actually has a loader, so every other page is untouched. */
+	   a page that actually has a loader (the loader marks `<html>` with
+	   `data-intro-page`), so every other page is untouched. Not `:has()`: a
+	   `:has()` anchored on `<html>` re-checks on every DOM insertion, and on
+	   load that forced ~90 full-page style recalcs — seconds of frozen page. */
 	html[data-intro='skip'] [data-intro-loader] {
 		display: none;
 	}
-	html[data-intro='play']:has([data-intro-loader]) [data-intro-header] {
+	html[data-intro='play'][data-intro-page] [data-intro-header] {
 		visibility: hidden;
 	}
 }
@@ -198,6 +201,9 @@
 		ease-in-out infinite;
 	--animate-float-cue: float-cue calc(2.4s * var(--motion-scale, 1))
 		var(--ease-float) infinite;
+	/* Real time, deliberately unscaled: the loader measures a wait, and a
+	   slower motion dial shouldn't make visitors wait longer. */
+	--animate-loader-mark: loader-mark 1.2s var(--ease-power-on) 0.1s both;
 	--ease-float: cubic-bezier(0.45, 0, 0.55, 1);
 	--ease-power-on: cubic-bezier(0.16, 1, 0.3, 1);
 	/* What a bare `transition` / `transition-colors` runs for. */
@@ -247,6 +253,19 @@
 	}
 	50% {
 		transform: translateY(4px);
+		opacity: 1;
+	}
+}
+
+/* The intro wordmark lit left to right through a mask. CSS, so it runs from
+   the very first paint instead of waiting for the page's JavaScript. */
+@keyframes loader-mark {
+	from {
+		clip-path: inset(0% 100% 0% 0%);
+		opacity: 0.4;
+	}
+	to {
+		clip-path: inset(0% 0% 0% 0%);
 		opacity: 1;
 	}
 }

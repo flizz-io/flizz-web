@@ -160,6 +160,12 @@ These apply project-wide — worth deciding early, before the first few features
 
 - Work on feature branches; never commit directly to `master` or `dev` (enforced by git hooks).
 - Commit messages follow Conventional Commits: `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `style:`, `test:` — a short single-line summary.
+- **A commit message is at most 2–3 lines**: the subject, plus one or two short lines if needed.
+- **No attribution trailers or tool mentions.** No `Co-Authored-By` trailer, no "Generated with …" line, no mention of Claude or Anthropic in a commit message. Enforced by the `commit-msg` hook (`scripts/check-commit-message.sh`); never bypass it with `--no-verify`.
+- **Claude does not create pull requests.** The developer opens every PR.
+- **Claude does not create, switch, delete or rename branches**, and does not push or rewrite pushed history, without the developer's explicit permission for that action.
+
+See "Commit, branch and pull request rules" in root `CLAUDE.md`.
 
 ## Testing
 
