@@ -1,8 +1,15 @@
+import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 
 import '@workspace/ui/globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
+import { TooltipProvider } from '@workspace/ui/components/tooltip';
 import { cn } from '@workspace/ui/lib/utils';
+
+export const metadata: Metadata = {
+	title: { default: 'Flizz Admin', template: '%s · Flizz Admin' },
+	robots: { index: false, follow: false }
+};
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -28,7 +35,9 @@ export default function RootLayout({
 			)}
 		>
 			<body>
-				<ThemeProvider>{children}</ThemeProvider>
+				<ThemeProvider>
+					<TooltipProvider>{children}</TooltipProvider>
+				</ThemeProvider>
 			</body>
 		</html>
 	);

@@ -154,7 +154,8 @@ These apply project-wide — worth deciding early, before the first few features
 - **Snapshot associations that must preserve history.** When an association can change over time but past state must remain accurate, model it as a dedicated snapshot/junction record tied to that point in time — not a live foreign key that silently rewrites history when the underlying data changes.
 - **All file/image uploads go through one shared package** (e.g. `packages/media-library`) — no feature implements its own one-off upload handling.
 - **All rich text fields use one shared editor package** (e.g. `packages/text-editor`). Content is persisted as JSON, never raw HTML.
-- **Entity deletion policy is feature-specific — don't assume one universal rule.** Some entities should block deletion while in use; others should allow deletion and simply detach from referencing records instead. Decide per entity, and document the decision where the entity's requirements live.
+- **Nothing is ever hard-deleted** (decided 2026-10-02). Every table has `deleted_at` + `deleted_by_id`; "delete" sets them, and lists and public APIs exclude deleted rows. What else happens on delete is still feature-specific — some entities should block deletion while in use, others detach from referencing records — decide per entity and document it where the entity's requirements live.
+- **Every table records authorship**: `created_by_id` and `updated_by_id` → `users.id`, set by the API from the signed-in user, never from the request body. The dashboard shows who created and last changed each record. See `docs/requirements/users-and-permissions.md`.
 
 ## Git conventions
 
