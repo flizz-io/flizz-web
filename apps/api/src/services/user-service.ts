@@ -7,6 +7,7 @@ import type {
 	GoogleProfile
 } from '../types/user.js';
 import { HttpError } from '../utils/http-error.js';
+import { avatarUrlOf } from '../utils/media-url.js';
 import { permissionMap } from '../utils/permissions.js';
 
 /** Same message for "not listed", "removed" and "suspended" — don't reveal which. */
@@ -14,7 +15,7 @@ const NO_ACCESS_MESSAGE =
 	"This Google account doesn't have access. Ask an admin to add you.";
 
 const withPermissions = {
-	include: { permissions: true }
+	include: { permissions: true, photo: true }
 } satisfies Prisma.UserDefaultArgs;
 
 type UserWithPermissions = Prisma.UserGetPayload<typeof withPermissions>;
@@ -33,7 +34,7 @@ export function toCurrentUser(user: UserWithPermissions): CurrentUser {
 		firstName: user.firstName,
 		lastName: user.lastName,
 		designation: user.designation,
-		avatarUrl: user.photoUrl ?? user.googleAvatarUrl,
+		avatarUrl: avatarUrlOf(user),
 		permissions: permissionMap(user.role, user.permissions)
 	};
 }

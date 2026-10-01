@@ -28,7 +28,7 @@ Packages are created per feature/functionality; each has its own `src/` folder w
     - `src/models` — API payload, response, and query-param types.
     - `src/enums` — API-related enums and parameter options.
 - **`packages/utils`** _(example)_ — common utility functions shared across apps (debounce, throttle, date helpers, etc.).
-- **`packages/media-library`** _(example)_ — shared file/image upload and picker, built as a pluggable storage-provider interface (local disk to start, S3 or another provider later) so calling code doesn't need to change when the backend changes.
+- **`packages/media-library`** _(scaffolded 2026-10-02)_ — shared file/image upload, built as a pluggable storage-provider interface (Cloudinary free tier by default, local disk for offline development, others later) so calling code doesn't need to change when the backend changes. The database stores storage keys in `media_files`, never URLs. A dashboard picker component is still to come.
 - **`packages/text-editor`** _(example)_ — shared rich-text editor component (e.g. Tiptap), JSON output, used for all rich text fields across apps.
 - **`packages/payments`** _(example)_ — payment handling, built as a pluggable provider interface so a new gateway can be added later without reworking calling code.
 

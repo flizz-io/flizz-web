@@ -43,6 +43,7 @@ This is a **pnpm + Turborepo monorepo** with two workspace groups:
 - `apps/dashboard` — Next.js app, same stack/scaffold as `web`, dev server on port 3400. Example admin/internal app.
 - `apps/api` — Express + TypeScript backend API, dev server on port 3500 (see `.claude/rules/conventions.md` for its structure and stack notes).
 - `packages/ui` — Shared component library (shadcn/ui, Radix UI, CVA).
+- `packages/media-library` — Server-side uploads for `apps/api`: a pluggable `StorageProvider` (Cloudinary by default, local disk for offline dev — `MEDIA_PROVIDER`), image validation and resizing to presets (`sharp`, WebP out). Built to `dist/` (Turbo builds it before `dev`/`build`); types come from `src/`.
 - `packages/typescript-config` — Shared `tsconfig` presets.
 - `packages/eslint-config` — Shared ESLint configs.
 

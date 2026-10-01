@@ -3,6 +3,7 @@ import cors from 'cors';
 import express from 'express';
 
 import { env } from './configs/env.js';
+import { mediaRootDir, servesMediaLocally } from './configs/media.js';
 import { errorHandler, notFoundHandler } from './middlewares/error-handler.js';
 import { router } from './routes/index.js';
 
@@ -14,6 +15,20 @@ app.use(cors({ origin: env.corsOrigins }));
 app.use(express.json());
 app.use(cookieParser());
 
+// Uploaded files, when stored on this server (MEDIA_PROVIDER=local); with
+// Cloudinary they're served from its CDN instead. Keys are unique and never
+// reused, so they can be cached forever; a missing file falls through to the
+// API's JSON 404.
+if (servesMediaLocally) {
+	app.use(
+		'/api/media',
+		express.static(mediaRootDir, {
+			immutable: true,
+			maxAge: '365d',
+			index: false
+		})
+	);
+}
 app.use('/api', router);
 app.use('/api', notFoundHandler);
 

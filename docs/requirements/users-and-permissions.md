@@ -74,6 +74,15 @@ Admins always have every permission; grants matter only for `TEAM_MEMBER`.
 
 The public API exposes **only** users who are Active, not removed, and shown on the website — and only their public profile (name, designation, photo, links, founder). Never email, role or permissions.
 
+### Photos
+
+- **Limit: 500 KB per upload** (decided 2026-10-02). Larger files are refused with a clear message.
+- Uploads go through `packages/media-library`: the bytes are decoded to prove they're an image (JPEG, PNG, WebP, AVIF or GIF — the file name and claimed type don't count), resized and re-encoded as WebP — typically 15–40 KB at the default size — which also strips EXIF data such as location.
+- **Output size is set per upload, 512×512 `cover` by default.** The dashboard uploader takes `width`, `height` and `fit` (`cover` crops to fill, `inside` keeps the whole image) as props and sends them with the file; each falls back to the default on its own. The API accepts 64–2048 px and rejects anything else, so a request can't make the server produce an enormous image.
+- **Stored on Cloudinary (free tier)** and served from its CDN. The processed file is what's uploaded, so Cloudinary stores and serves only the small final image and no transformation credits are spent. `MEDIA_PROVIDER=local` keeps files on the API server instead (served at `/api/media`) for offline development.
+- The upload happens before the database transaction that records it — a slow upload can't hold a transaction open.
+- Each upload is a `media_files` row (purpose `AVATAR`, provider, storage key, author, size, dimensions). Replacing or clearing a photo **retires** the old row (`deleted_at`); the file itself is never destroyed — nothing is hard-deleted.
+
 ## Audit trail (every CRUD table)
 
 A project-wide rule from 2026-10-02, recorded in `.claude/rules/conventions.md`:
@@ -87,25 +96,25 @@ A project-wide rule from 2026-10-02, recorded in `.claude/rules/conventions.md`:
 
 ### `users`
 
-| Column                                                               | Type                   | Notes                                       |
-| -------------------------------------------------------------------- | ---------------------- | ------------------------------------------- |
-| `id`                                                                 | int PK                 | Internal only                               |
-| `uuid`                                                               | uuid v7, unique        | Public id                                   |
-| `email`                                                              | text, unique           | Lower-cased; the sign-in key                |
-| `role`                                                               | enum `UserRole`        | `SUPER_ADMIN` / `ADMIN` / `TEAM_MEMBER`     |
-| `status`                                                             | enum `UserStatus`      | `ACTIVE` / `SUSPENDED`                      |
-| `first_name`, `last_name`                                            | text, null             |                                             |
-| `designation`                                                        | text, null             |                                             |
-| `photo_url`                                                          | text, null             | Uploaded photo                              |
-| `google_avatar_url`                                                  | text, null             | Refreshed each sign-in; the fallback        |
-| `linkedin_url`, `x_url`, `portfolio_url`                             | text, null             |                                             |
-| `show_on_website`, `is_founder`                                      | bool                   | Default `false`                             |
-| `display_order`                                                      | int                    | Default `0`                                 |
-| `google_sub`                                                         | text, unique, null     | Linked on first sign-in                     |
-| `first_login_at`, `last_login_at`                                    | timestamptz, null      | `first_login_at` null ⇒ Invited (removable) |
-| `suspended_at`                                                       | timestamptz, null      | With `suspended_by_id`                      |
-| `created_at`, `updated_at`, `deleted_at`                             | timestamptz            |                                             |
-| `created_by_id`, `updated_by_id`, `deleted_by_id`, `suspended_by_id` | int → `users.id`, null | Audit                                       |
+| Column                                                               | Type                         | Notes                                         |
+| -------------------------------------------------------------------- | ---------------------------- | --------------------------------------------- |
+| `id`                                                                 | int PK                       | Internal only                                 |
+| `uuid`                                                               | uuid v7, unique              | Public id                                     |
+| `email`                                                              | text, unique                 | Lower-cased; the sign-in key                  |
+| `role`                                                               | enum `UserRole`              | `SUPER_ADMIN` / `ADMIN` / `TEAM_MEMBER`       |
+| `status`                                                             | enum `UserStatus`            | `ACTIVE` / `SUSPENDED`                        |
+| `first_name`, `last_name`                                            | text, null                   |                                               |
+| `designation`                                                        | text, null                   |                                               |
+| `photo_id`                                                           | int → `media_files.id`, null | Uploaded photo (stored via the media library) |
+| `google_avatar_url`                                                  | text, null                   | Refreshed each sign-in; the fallback          |
+| `linkedin_url`, `x_url`, `portfolio_url`                             | text, null                   |                                               |
+| `show_on_website`, `is_founder`                                      | bool                         | Default `false`                               |
+| `display_order`                                                      | int                          | Default `0`                                   |
+| `google_sub`                                                         | text, unique, null           | Linked on first sign-in                       |
+| `first_login_at`, `last_login_at`                                    | timestamptz, null            | `first_login_at` null ⇒ Invited (removable)   |
+| `suspended_at`                                                       | timestamptz, null            | With `suspended_by_id`                        |
+| `created_at`, `updated_at`, `deleted_at`                             | timestamptz                  |                                               |
+| `created_by_id`, `updated_by_id`, `deleted_by_id`, `suspended_by_id` | int → `users.id`, null       | Audit                                         |
 
 ### `user_permissions`
 
@@ -113,18 +122,19 @@ One row per Team Member × feature: `user_id`, `feature` (enum `Feature`), `can_
 
 ## API
 
-| Endpoint                                       | Who       | Purpose                                       |
-| ---------------------------------------------- | --------- | --------------------------------------------- |
-| `GET /api/auth/me`                             | Signed in | Now also returns `role` and `permissions`     |
-| `GET /api/me/profile`, `PATCH /api/me/profile` | Signed in | Own profile                                   |
-| `GET /api/users`                               | Admins    | Team list (search, role/status filters)       |
-| `GET /api/users/:uuid`                         | Admins    | One team member                               |
-| `POST /api/users`                              | Admins    | Add by email + role (+ designation)           |
-| `PATCH /api/users/:uuid`                       | Admins    | Role, designation, website settings           |
-| `POST /api/users/:uuid/suspend`, `/reactivate` | Admins    |                                               |
-| `DELETE /api/users/:uuid`                      | Admins    | Soft remove — `409` if they've ever signed in |
-| `PUT /api/users/:uuid/permissions`             | Admins    | Replace a Team Member's whole permission grid |
-| `GET /api/public/team`                         | Public    | About page team section                       |
+| Endpoint                                       | Who       | Purpose                                              |
+| ---------------------------------------------- | --------- | ---------------------------------------------------- |
+| `GET /api/auth/me`                             | Signed in | Now also returns `role` and `permissions`            |
+| `GET /api/me/profile`, `PATCH /api/me/profile` | Signed in | Own profile                                          |
+| `POST /api/me/photo`, `DELETE /api/me/photo`   | Signed in | Upload (multipart `file`, ≤ 8 MB) or clear own photo |
+| `GET /api/users`                               | Admins    | Team list (search, role/status filters)              |
+| `GET /api/users/:uuid`                         | Admins    | One team member                                      |
+| `POST /api/users`                              | Admins    | Add by email + role (+ designation)                  |
+| `PATCH /api/users/:uuid`                       | Admins    | Role, designation, website settings                  |
+| `POST /api/users/:uuid/suspend`, `/reactivate` | Admins    |                                                      |
+| `DELETE /api/users/:uuid`                      | Admins    | Soft remove — `409` if they've ever signed in        |
+| `PUT /api/users/:uuid/permissions`             | Admins    | Replace a Team Member's whole permission grid        |
+| `GET /api/public/team`                         | Public    | About page team section                              |
 
 ## Dashboard
 

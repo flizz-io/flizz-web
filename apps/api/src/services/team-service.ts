@@ -9,6 +9,7 @@ import {
 import type { TeamUserResponse } from '../types/team.js';
 import type { CurrentUser, FeatureGrant } from '../types/user.js';
 import { HttpError } from '../utils/http-error.js';
+import { avatarUrlOf } from '../utils/media-url.js';
 import { normaliseGrant, permissionMap } from '../utils/permissions.js';
 import { toUserReference } from '../utils/user-display.js';
 
@@ -18,6 +19,7 @@ const referenceFields = {
 
 const teamUserInclude = {
 	permissions: true,
+	photo: true,
 	createdBy: referenceFields,
 	updatedBy: referenceFields,
 	suspendedBy: referenceFields
@@ -40,7 +42,7 @@ function toTeamUserResponse(user: TeamUser): TeamUserResponse {
 		firstName: user.firstName,
 		lastName: user.lastName,
 		designation: user.designation,
-		avatarUrl: user.photoUrl ?? user.googleAvatarUrl,
+		avatarUrl: avatarUrlOf(user),
 		linkedinUrl: user.linkedinUrl,
 		xUrl: user.xUrl,
 		portfolioUrl: user.portfolioUrl,

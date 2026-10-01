@@ -1,6 +1,7 @@
 import { prisma } from '../configs/database.js';
 import { UserStatus } from '../generated/prisma/enums.js';
 import type { PublicTeamMemberResponse } from '../types/team.js';
+import { avatarUrlOf } from '../utils/media-url.js';
 
 /**
  * The About page roster: active, not removed, and shown on the website by an
@@ -13,6 +14,7 @@ export async function listPublicTeam(): Promise<PublicTeamMemberResponse[]> {
 			status: UserStatus.ACTIVE,
 			deletedAt: null
 		},
+		include: { photo: true },
 		orderBy: [{ displayOrder: 'asc' }, { createdAt: 'asc' }]
 	});
 
@@ -21,7 +23,7 @@ export async function listPublicTeam(): Promise<PublicTeamMemberResponse[]> {
 		firstName: member.firstName,
 		lastName: member.lastName,
 		designation: member.designation,
-		photoUrl: member.photoUrl ?? member.googleAvatarUrl,
+		photoUrl: avatarUrlOf(member),
 		isFounder: member.isFounder,
 		links: {
 			linkedin: member.linkedinUrl,
