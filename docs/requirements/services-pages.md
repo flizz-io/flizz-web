@@ -38,20 +38,22 @@ Shopify and Payment fold under E-commerce; SaaS and Legacy Modernisation under C
 
 `visualKind` refers to a scene in `@workspace/service-visuals`. Summaries are placeholder copy in the site's voice — one line, plain, slightly contrarian.
 
-| Slug                            | Title                         | Category        | Visual kind        |
-| ------------------------------- | ----------------------------- | --------------- | ------------------ |
-| `mvp-development`               | MVP Development               | Custom Software | `mvp-ascent`       |
-| `saas-application-development`  | SaaS Application Development  | Custom Software | `tenant-column`    |
-| `legacy-modernisation`          | Legacy Modernisation          | Custom Software | `layered-stack`    |
-| `api-development`               | API Development               | Custom Software | `grid-lattice`     |
-| `ai-integration`                | AI Integration                | AI & Automation | `neural-layers`    |
-| `chatbots-conversational-ai`    | Chatbots & Conversational AI  | AI & Automation | `dialogue-bubbles` |
-| `intelligent-automation`        | Intelligent Automation        | AI & Automation | `particle-swarm`   |
-| `online-store-development`      | Online Store Development      | E-commerce      | `catalog-checkout` |
-| `shopify-app-development`       | Shopify App Development       | E-commerce      | `plugin-socket`    |
-| `payment-integration`           | Payment Integration           | E-commerce      | `secure-rail`      |
-| `native-mobile-app-development` | Native Mobile App Development | Mobile          | `dual-handset`     |
-| `app-modernisation`             | App Modernisation             | Mobile          | `device-frame`     |
+| Slug                            | Title                          | Category        | Visual kind        |
+| ------------------------------- | ------------------------------ | --------------- | ------------------ |
+| `mvp-development`               | MVP Development                | Custom Software | `mvp-ascent`       |
+| `saas-application-development`  | SaaS Applications              | Custom Software | `tenant-column`    |
+| `legacy-modernisation`          | Legacy Modernization           | Custom Software | `layered-stack`    |
+| `api-development`               | API Development                | Custom Software | `grid-lattice`     |
+| `ai-integration`                | AI Integration                 | AI & Automation | `neural-layers`    |
+| `chatbots-conversational-ai`    | Chatbots & Conversational AI   | AI & Automation | `dialogue-bubbles` |
+| `workflow-automation`           | Workflow Automation            | AI & Automation | `particle-swarm`   |
+| `online-store-development`      | Online Store Development       | E-commerce      | `catalog-checkout` |
+| `shopify-app-development`       | Shopify App Development        | E-commerce      | `plugin-socket`    |
+| `payment-integration`           | Payment Integration            | E-commerce      | `secure-rail`      |
+| `native-mobile-app-development` | Native Mobile Apps Development | Mobile          | `dual-handset`     |
+| `app-modernisation`             | App Modernisation              | Mobile          | `device-frame`     |
+
+> **Renamed 2026-10-01 (PM):** SaaS Application Development → SaaS Applications, Legacy Modernisation → Legacy Modernization, Intelligent Automation → Workflow Automation, Native Mobile App Development → Native Mobile Apps Development. Titles only — slugs are unchanged, so existing URLs still work.
 
 Eight already exist in `constants/home.ts`. Four are new to this stage — Legacy Modernisation, API Development, Intelligent Automation, App Modernisation — with draft summaries:
 
@@ -132,7 +134,7 @@ Worth knowing before touching either page again:
 - **The detail hero keeps the specimen beside the headline, not in a full-width band below it.** Run edge to edge and the hero splits into a text block and an unrelated strip; these scenes are also small by design, so at full width the geometry reads as a wireframe box adrift rather than a specimen. It uses the same frame as the list page's viewer, so following a link lands somewhere that looks like where it came from.
 - **Both routes back to the catalogue are built**, switched by `serviceDetailBackNav` in `constants/services.ts`:
     - `LINK` — "All services" above the title; an explicit step up.
-    - `CATEGORY` — the category eyebrow links to `/services#<category>`; a lateral move into the rest of that group.
+    - `CATEGORY` — the category eyebrow links to `/services?section=<category>`; a lateral move into the rest of that group.
     - `BOTH` (current) or `NONE`.
 
     The four category groups on the list page carry anchor ids (`serviceCategoryAnchors`) with `scroll-mt-28` to clear the sticky header. Cross-page hash navigation was checked against Lenis and lands correctly.

@@ -420,7 +420,7 @@ export const projects: ProjectDetail[] = [
 		client: 'A mutual insurer with a claims queue growing faster than the team',
 		sector: ProjectSector.FINANCE,
 		service: ServiceCategory.AI_AUTOMATION,
-		serviceSlug: 'intelligent-automation',
+		serviceSlug: 'workflow-automation',
 		year: '2026',
 		summary:
 			'Sorted a claims backlog that was growing faster than the team could read it.',

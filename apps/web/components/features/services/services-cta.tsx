@@ -50,7 +50,7 @@ export function ServicesCta({
 						<SectionTag
 							index={sectionIndex}
 							total={totalSections}
-							label="Next"
+							label="Discuss Your Project"
 						/>
 					</div>
 					<h2 className="mt-6 font-heading text-4xl font-semibold tracking-tight text-balance text-foreground sm:text-5xl">

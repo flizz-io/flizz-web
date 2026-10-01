@@ -89,7 +89,7 @@ export function WhyUs({
 						index={sectionIndex}
 						total={totalSections}
 						eyebrow="Why Flizzio"
-						title="We create solutions that"
+						title="We build solutions that"
 					/>
 
 					{/* The stem's other half. Set in the serif and in the
