@@ -40,6 +40,8 @@ interface ScrollOptions {
 	cinematic?: boolean;
 	/** A shorter eased move, for stepping through something (rail arrows). */
 	glide?: boolean;
+	/** No easing at all — for landing on a page section, not travelling to it. */
+	instant?: boolean;
 }
 
 let glideTween: gsap.core.Tween | null = null;
@@ -123,8 +125,14 @@ function prefersReducedMotion() {
 export function scrollToPosition(
 	smoother: ScrollSmoother | null,
 	top: number,
-	{ cinematic = false, glide = false }: ScrollOptions = {}
+	{ cinematic = false, glide = false, instant = false }: ScrollOptions = {}
 ) {
+	if (instant) {
+		if (smoother) smoother.scrollTop(top);
+		else window.scrollTo({ top });
+		return;
+	}
+
 	if ((cinematic || glide) && !prefersReducedMotion()) {
 		glideScroll(smoother, top, cinematic ? CINEMATIC : GLIDE);
 		return;
@@ -184,4 +192,44 @@ export function queueScrollRefresh() {
 		refreshFrame = 0;
 		if (refreshStale) ScrollTrigger.refresh();
 	});
+}
+
+/** Any of these means the reader has taken over the scroll themselves. */
+const READER_SCROLL_EVENTS = ['wheel', 'touchstart', 'keydown', 'pointerdown'];
+/** How long a hash landing keeps re-aiming as the new page settles. */
+const HASH_SETTLE_MS = 1500;
+
+/**
+ * Lands on the element the URL's hash names (`/services#mobile`), honouring
+ * its `scroll-mt-*`. ScrollSmoother moves the content with a transform, so the
+ * browser's own jump to an anchor can't be trusted — and the page shell resets
+ * to the top on every navigation — so this does it once the page is measured.
+ * Pins and reveals on the new page can still shift it as they set up, so it
+ * re-aims on each ScrollTrigger refresh for a moment, until the reader scrolls
+ * for themselves. Returns a cleanup; a no-op when there's no matching hash.
+ */
+export function scrollToHash(smoother: ScrollSmoother | null) {
+	const id = decodeURIComponent(window.location.hash.slice(1));
+	const target = id ? document.getElementById(id) : null;
+	if (!target) return () => {};
+
+	const land = () => scrollToElement(smoother, target, { instant: true });
+	const frame = requestAnimationFrame(() => requestAnimationFrame(land));
+
+	const release = () => {
+		cancelAnimationFrame(frame);
+		window.clearTimeout(timeout);
+		ScrollTrigger.removeEventListener('refresh', land);
+		READER_SCROLL_EVENTS.forEach((type) =>
+			window.removeEventListener(type, release)
+		);
+	};
+	const timeout = window.setTimeout(release, HASH_SETTLE_MS);
+
+	ScrollTrigger.addEventListener('refresh', land);
+	READER_SCROLL_EVENTS.forEach((type) =>
+		window.addEventListener(type, release, { passive: true })
+	);
+
+	return release;
 }
