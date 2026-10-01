@@ -6,6 +6,7 @@ import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SchematicFrame } from '@/components/snippets/schematic-frame/schematic-frame';
 import { ServiceBackNav, serviceCategoryAnchors } from '@/enums/services';
 import type { ServiceDetail } from '@/types/services';
+import { sectionHref } from '@/utils/navigation';
 import { ServiceVisual } from '@workspace/service-visuals';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
@@ -40,7 +41,10 @@ export function ServiceDetailHero({
 		backNav === ServiceBackNav.LINK || backNav === ServiceBackNav.BOTH;
 	const showCategoryLink =
 		backNav === ServiceBackNav.CATEGORY || backNav === ServiceBackNav.BOTH;
-	const categoryHref = `/services#${serviceCategoryAnchors[service.category]}`;
+	const categoryHref = sectionHref(
+		'/services',
+		serviceCategoryAnchors[service.category]
+	);
 
 	return (
 		<section

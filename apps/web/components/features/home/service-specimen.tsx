@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { servicesRailLabels } from '@/constants/home';
 import { serviceCategoryAnchors } from '@/enums/services';
 import type { ServiceCategoryCard } from '@/types/home';
+import { sectionHref } from '@/utils/navigation';
 import { ServiceVisual } from '@workspace/service-visuals';
 import { cn } from '@workspace/ui/lib/utils';
 
@@ -56,7 +57,10 @@ function ExploreLink({
 }) {
 	return (
 		<Link
-			href={`/services#${serviceCategoryAnchors[card.category]}`}
+			href={sectionHref(
+				'/services',
+				serviceCategoryAnchors[card.category]
+			)}
 			className={cn(
 				'group/explore inline-flex items-center gap-2 text-sm font-medium text-primary',
 				className
@@ -70,7 +74,7 @@ function ExploreLink({
 
 /**
  * One service category on the rail. The card opens the category's group on
- * the Services page; on large screens its popover — opened by hover, focus
+ * the Services page (`?section=`, see `sectionQueryParam`); on large screens its popover — opened by hover, focus
  * or the pinned scroll — lists the category's services as links, plus a link
  * on to the group. Small screens have no hover, so the same content sits
  * inline under the card instead.
@@ -109,7 +113,10 @@ export function ServiceSpecimen({
 			)}
 		>
 			<Link
-				href={`/services#${serviceCategoryAnchors[card.category]}`}
+				href={sectionHref(
+					'/services',
+					serviceCategoryAnchors[card.category]
+				)}
 				className={cn(
 					// `translate` listed on its own: Tailwind's translate
 					// utilities set that property, not `transform`.

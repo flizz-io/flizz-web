@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import { smoothScrollEase, smoothScrollSeconds } from '@/constants/scroll';
 import { SmoothScrollContext } from '@/contexts/smooth-scroll-context';
 import { applyAnimationSpeed, realTimeSeconds } from '@/utils/animation';
-import { queueScrollRefresh, scrollToHash } from '@/utils/scroll';
+import { queueScrollRefresh, settleNavigation } from '@/utils/scroll';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, ScrollSmoother);
@@ -72,12 +72,12 @@ export function SmoothScroll({ children, fixed }: SmoothScrollProps) {
 
 		// The layout survives navigation, so the new page would otherwise be
 		// eased up from wherever the last one was left. Jump instead, then
-		// re-measure every trigger against the new content — and land on the
-		// section a `#hash` asks for, which the reset would otherwise lose.
+		// re-measure every trigger against the new content — then land on the
+		// section a `#hash` asks for, or catch up with a back/forward restore.
 		smoother.scrollTop(0);
 		queueScrollRefresh();
 
-		return scrollToHash(smoother);
+		return settleNavigation(smoother);
 	}, [pathname, smoother]);
 
 	return (

@@ -134,7 +134,7 @@ Worth knowing before touching either page again:
 - **The detail hero keeps the specimen beside the headline, not in a full-width band below it.** Run edge to edge and the hero splits into a text block and an unrelated strip; these scenes are also small by design, so at full width the geometry reads as a wireframe box adrift rather than a specimen. It uses the same frame as the list page's viewer, so following a link lands somewhere that looks like where it came from.
 - **Both routes back to the catalogue are built**, switched by `serviceDetailBackNav` in `constants/services.ts`:
     - `LINK` — "All services" above the title; an explicit step up.
-    - `CATEGORY` — the category eyebrow links to `/services#<category>`; a lateral move into the rest of that group.
+    - `CATEGORY` — the category eyebrow links to `/services?section=<category>`; a lateral move into the rest of that group.
     - `BOTH` (current) or `NONE`.
 
     The four category groups on the list page carry anchor ids (`serviceCategoryAnchors`) with `scroll-mt-28` to clear the sticky header. Cross-page hash navigation was checked against Lenis and lands correctly.
