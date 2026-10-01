@@ -2,7 +2,12 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import {
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useSyncExternalStore
+} from 'react';
 
 import { Logo } from '@/components/snippets/logo/logo';
 import {
@@ -19,6 +24,8 @@ const MAX_EXTRA_SECONDS = 1.5;
 /** Share of the gap the shown count closes each frame — keeps it rolling. */
 const COUNT_EASE = 0.12;
 const DONE_THRESHOLD = 0.995;
+
+const subscribeNever = () => () => {};
 
 interface IntroLoaderProps {
 	/** Whether to run at all. Off, it stays hidden (the CSS gate hides it). */
@@ -52,6 +59,13 @@ export function IntroLoader({
 	const rootRef = useRef<HTMLDivElement>(null);
 	const readyRef = useRef(ready);
 	const callbacksRef = useRef({ onReveal, onDone });
+	// False on the server and while hydrating (the server snapshot), true for
+	// a mount on the client — a client-side return to the page.
+	const clientMount = useSyncExternalStore(
+		subscribeNever,
+		() => true,
+		() => false
+	);
 
 	// The ticker script marks the page on a full load; this covers a
 	// client-side arrival, and clears the mark when the page is left.
@@ -214,8 +228,15 @@ export function IntroLoader({
 			</span>
 
 			{/* Rolls the count from the first paint, before this component has
-			    hydrated — see `loaderTickerScript`. */}
-			<script dangerouslySetInnerHTML={{ __html: loaderTickerScript }} />
+			    hydrated — see `loaderTickerScript`. Server-rendered only: a
+			    script React creates on the client never runs (React warns),
+			    and a client-side arrival is already hydrated, so the
+			    component's own tick covers it from the first frame. */}
+			{clientMount ? null : (
+				<script
+					dangerouslySetInnerHTML={{ __html: loaderTickerScript }}
+				/>
+			)}
 		</div>
 	);
 }

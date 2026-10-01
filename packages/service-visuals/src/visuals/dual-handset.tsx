@@ -4,7 +4,7 @@ import { roundedRectOutline, signalDot, centerGroup } from '../visual-helpers';
 import type { ServiceVisualBuilder } from '../types';
 
 /**
- * Native Mobile App Development — two handsets, one build. A pulse crosses
+ * Native Mobile Apps Development — two handsets, one build. A pulse crosses
  * between them to say both platforms are first-class rather than one being a
  * port of the other.
  */

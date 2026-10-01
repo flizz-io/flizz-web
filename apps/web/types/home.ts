@@ -1,4 +1,7 @@
 import type { HeroDepth } from '@/enums/home';
+import type { ServiceCategory } from '@/enums/services';
+import type { Service } from '@/types/services';
+import type { ServiceVisualKind } from '@workspace/service-visuals';
 
 export interface HeroDiscipline {
 	label: string;
@@ -156,4 +159,16 @@ export interface FaqItem {
 
 export interface RiskReversal {
 	text: string;
+}
+
+/** One category on the home teaser's rail. */
+export interface ServiceCategoryCard {
+	category: ServiceCategory;
+	/** The teaser's name for it — may read longer than the category label. */
+	title: string;
+	/** One sentence, shown in the popover. */
+	summary: string;
+	visualKind: ServiceVisualKind;
+	/** Its services, listed as links in the popover. */
+	services: Service[];
 }

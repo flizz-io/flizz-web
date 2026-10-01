@@ -6,7 +6,7 @@ import type { ServiceVisualBuilder } from '../types';
 const FRAME_HEIGHT = 1.9;
 const FRAME_WIDTH = 1;
 
-/** Native Mobile App Development — a device outline with a live scanline. */
+/** Native Mobile Apps Development — a device outline with a live scanline. */
 export const buildDeviceFrame: ServiceVisualBuilder = (
 	scene,
 	{ accent, ink }

@@ -2,6 +2,8 @@ import gsap from 'gsap';
 import type { ScrollSmoother } from 'gsap/ScrollSmoother';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+import { sectionQueryParam } from '@/constants/scroll';
+
 interface GlideProfile {
 	minSeconds: number;
 	maxSeconds: number;
@@ -40,19 +42,18 @@ interface ScrollOptions {
 	cinematic?: boolean;
 	/** A shorter eased move, for stepping through something (rail arrows). */
 	glide?: boolean;
+	/** No easing at all — for landing on a page section, not travelling to it. */
+	instant?: boolean;
 }
 
 let glideTween: gsap.core.Tween | null = null;
 let glideTarget = 0;
 
-function glideScroll(
-	smoother: ScrollSmoother | null,
-	top: number,
-	profile: GlideProfile
-) {
+function glideScroll(top: number, profile: GlideProfile) {
 	glideTween?.kill();
 
-	const from = smoother ? smoother.scrollTop() : window.scrollY;
+	// From the native position — the one this tween drives.
+	const from = window.scrollY;
 	const position = { y: from };
 	const duration = Math.min(
 		Math.max(
@@ -86,16 +87,17 @@ function glideScroll(
 	);
 
 	// The native position is what's tweened; ScrollSmoother still eases the
-	// content after it, which softens the landing further.
+	// content after it, which softens the landing further. Not through
+	// `smoother.scrollTop()`: set every frame from inside a GSAP tween, that
+	// leaves ScrollSmoother ignoring every later programmatic scroll — the
+	// browser's back/forward restore included — so pins and scrubs froze
+	// until the reader scrolled by hand.
 	glideTarget = top;
 	glideTween = gsap.to(position, {
 		y: top,
 		duration,
 		ease: profile.ease,
-		onUpdate: () => {
-			if (smoother) smoother.scrollTop(position.y);
-			else window.scrollTo(0, position.y);
-		},
+		onUpdate: () => window.scrollTo(0, position.y),
 		onComplete: release,
 		onInterrupt: release
 	});
@@ -123,10 +125,16 @@ function prefersReducedMotion() {
 export function scrollToPosition(
 	smoother: ScrollSmoother | null,
 	top: number,
-	{ cinematic = false, glide = false }: ScrollOptions = {}
+	{ cinematic = false, glide = false, instant = false }: ScrollOptions = {}
 ) {
+	if (instant) {
+		if (smoother) smoother.scrollTop(top);
+		else window.scrollTo({ top });
+		return;
+	}
+
 	if ((cinematic || glide) && !prefersReducedMotion()) {
-		glideScroll(smoother, top, cinematic ? CINEMATIC : GLIDE);
+		glideScroll(top, cinematic ? CINEMATIC : GLIDE);
 		return;
 	}
 
@@ -184,4 +192,75 @@ export function queueScrollRefresh() {
 		refreshFrame = 0;
 		if (refreshStale) ScrollTrigger.refresh();
 	});
+}
+
+/** Any of these means the reader has taken over the scroll themselves. */
+const READER_SCROLL_EVENTS = ['wheel', 'touchstart', 'keydown', 'pointerdown'];
+/** How long after a navigation the page keeps settling as it sets up. */
+const NAVIGATION_SETTLE_MS = 2000;
+
+/**
+ * Settles the page after a navigation, once its triggers are measured:
+ *
+ * - With `?section=<id>` (see `sectionHref` in `utils/navigation.ts`) or a `#hash` on a full load,
+ *   lands on that element, honouring its `scroll-mt-*`. ScrollSmoother moves
+ *   the content with a transform, so the browser's own jump to an anchor
+ *   can't be trusted — and the page shell resets to the top on every
+ *   navigation — so it's done here.
+ * - Otherwise, re-syncs ScrollSmoother to the native scroll. A back/forward
+ *   restore moves the native position while the new page is still setting up,
+ *   and the re-measure that follows cuts the smoother's ease short — left
+ *   there, it sat mid-way with every pin and scrub stale until the reader
+ *   scrolled by hand.
+ *
+ * Pins and reveals keep shifting things as they set up, so it re-settles
+ * after each ScrollTrigger refresh (a frame later, never inside one) and once
+ * more at the end, until the reader scrolls for themselves. Returns a cleanup.
+ */
+export function settleNavigation(smoother: ScrollSmoother | null) {
+	const id =
+		new URLSearchParams(window.location.search).get(sectionQueryParam) ??
+		decodeURIComponent(window.location.hash.slice(1));
+	const target = id ? document.getElementById(id) : null;
+	const frames = new Set<number>();
+
+	const settle = () => {
+		if (target) {
+			scrollToElement(smoother, target, { instant: true });
+			return;
+		}
+
+		if (smoother && Math.abs(smoother.scrollTop() - window.scrollY) > 1) {
+			smoother.scrollTop(window.scrollY);
+		}
+	};
+	const settleSoon = () => {
+		const frame = requestAnimationFrame(() => {
+			frames.delete(frame);
+			settle();
+		});
+		frames.add(frame);
+	};
+
+	const release = () => {
+		frames.forEach((frame) => cancelAnimationFrame(frame));
+		frames.clear();
+		window.clearTimeout(timeout);
+		ScrollTrigger.removeEventListener('refresh', settleSoon);
+		READER_SCROLL_EVENTS.forEach((type) =>
+			window.removeEventListener(type, release)
+		);
+	};
+	const timeout = window.setTimeout(() => {
+		settle();
+		release();
+	}, NAVIGATION_SETTLE_MS);
+
+	settleSoon();
+	ScrollTrigger.addEventListener('refresh', settleSoon);
+	READER_SCROLL_EVENTS.forEach((type) =>
+		window.addEventListener(type, release, { passive: true })
+	);
+
+	return release;
 }

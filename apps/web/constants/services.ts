@@ -36,10 +36,10 @@ export const services: ServiceDetail[] = [
 	},
 	{
 		slug: 'saas-application-development',
-		title: 'SaaS Application Development',
+		title: 'SaaS Applications',
 		category: ServiceCategory.CUSTOM_SOFTWARE,
 		summary:
-			'Multi-tenant platforms built to scale with your customer base.',
+			'Scalable SaaS products built to grow with your customers and business.',
 		visualKind: 'tenant-column',
 		intro: 'Multi-tenant platforms where the tenth customer costs less to serve than the first. Built around the billing, permissions and isolation problems that only appear once you have real accounts.',
 		problem:
@@ -59,10 +59,10 @@ export const services: ServiceDetail[] = [
 	},
 	{
 		slug: 'legacy-modernisation',
-		title: 'Legacy Modernisation',
+		title: 'Legacy Modernization',
 		category: ServiceCategory.CUSTOM_SOFTWARE,
 		summary:
-			'Move off a system you can no longer hire for, in stages rather than one risky rewrite.',
+			'Modernise outdated systems in stages—without the risk of rebuilding everything at once.',
 		visualKind: 'layered-stack',
 		intro: 'Move off a system nobody left can maintain, without betting the company on a rewrite. In stages, with the old system running until the new one has earned the traffic.',
 		problem:
@@ -85,7 +85,7 @@ export const services: ServiceDetail[] = [
 		title: 'API Development',
 		category: ServiceCategory.CUSTOM_SOFTWARE,
 		summary:
-			'Interfaces other teams can build against without booking a meeting first.',
+			'Reliable APIs that connect systems seamlessly and make your technology easier to extend.',
 		visualKind: 'grid-lattice',
 		intro: "Interfaces other teams can build against without asking anyone for help — yours, your customers', your partners'. Documented, versioned, and stable enough to depend on.",
 		problem:
@@ -127,6 +127,29 @@ export const services: ServiceDetail[] = [
 		engagement: '6–12 weeks, starting with one process'
 	},
 	{
+		slug: 'workflow-automation',
+		title: 'Workflow Automation',
+		category: ServiceCategory.AI_AUTOMATION,
+		summary:
+			'Automate repetitive work while keeping your processes visible and in control.',
+		visualKind: 'particle-swarm',
+		intro: 'Take repetitive work off people who cost more than the software, and keep a record of every decision it made on their behalf.',
+		problem:
+			"The work worth automating is usually the work nobody wrote down — a spreadsheet, a set of rules in someone's head, and a monthly scramble. Automating it starts by documenting it.",
+		deliverables: [
+			'The current process documented as it actually runs',
+			'Automation for the repeatable path',
+			'Exception handling that escalates to a person',
+			'An audit trail of every automated decision'
+		],
+		outcomes: [
+			'Hours per week returned to the team',
+			'Fewer errors on the high-volume, boring path',
+			'A process that survives someone leaving'
+		],
+		engagement: '4–10 weeks per process'
+	},
+	{
 		slug: 'chatbots-conversational-ai',
 		title: 'Chatbots & Conversational AI',
 		category: ServiceCategory.AI_AUTOMATION,
@@ -148,28 +171,6 @@ export const services: ServiceDetail[] = [
 			'A record of what customers keep asking for'
 		],
 		engagement: '6–10 weeks'
-	},
-	{
-		slug: 'intelligent-automation',
-		title: 'Intelligent Automation',
-		category: ServiceCategory.AI_AUTOMATION,
-		summary: 'Take repetitive work off people, and keep the audit trail.',
-		visualKind: 'particle-swarm',
-		intro: 'Take repetitive work off people who cost more than the software, and keep a record of every decision it made on their behalf.',
-		problem:
-			"The work worth automating is usually the work nobody wrote down — a spreadsheet, a set of rules in someone's head, and a monthly scramble. Automating it starts by documenting it.",
-		deliverables: [
-			'The current process documented as it actually runs',
-			'Automation for the repeatable path',
-			'Exception handling that escalates to a person',
-			'An audit trail of every automated decision'
-		],
-		outcomes: [
-			'Hours per week returned to the team',
-			'Fewer errors on the high-volume, boring path',
-			'A process that survives someone leaving'
-		],
-		engagement: '4–10 weeks per process'
 	},
 	{
 		slug: 'online-store-development',
@@ -239,7 +240,7 @@ export const services: ServiceDetail[] = [
 	},
 	{
 		slug: 'native-mobile-app-development',
-		title: 'Native Mobile App Development',
+		title: 'Native Mobile Apps Development',
 		category: ServiceCategory.MOBILE,
 		summary: 'iOS and Android apps that feel native because they are.',
 		visualKind: 'dual-handset',
@@ -264,9 +265,9 @@ export const services: ServiceDetail[] = [
 		title: 'App Modernisation',
 		category: ServiceCategory.MOBILE,
 		summary:
-			'Bring an app that still works onto a platform that still ships.',
+			'Bring existing apps up to date without rebuilding everything from scratch.',
 		visualKind: 'device-frame',
-		intro: 'Bring an app that still works onto a platform that still ships — current OS requirements, current tooling, and a release process that does not need an archaeologist.',
+		intro: 'Bring existing apps up to date without rebuilding everything from scratch — current OS requirements, current tooling, and a release process that does not need an archaeologist.',
 		problem:
 			'Mobile platforms deprecate on a schedule. An app untouched for two years is one store policy change away from being unlistable, and the original build environment may no longer exist.',
 		deliverables: [
@@ -284,32 +285,17 @@ export const services: ServiceDetail[] = [
 	}
 ];
 
-/** Which of the roster the home page teaser carries, in the order it shows them. */
-const homeTeaserSlugs = [
-	'mvp-development',
-	'saas-application-development',
-	'ai-integration',
-	'chatbots-conversational-ai',
-	'online-store-development',
-	'native-mobile-app-development',
-	'shopify-app-development',
-	'payment-integration'
-];
-
-/**
- * Derived rather than duplicated — the teaser is a strict subset of the roster,
- * so the two pages can never disagree about a title, summary or visual.
- */
-export const homeTeaserServices: ServiceDetail[] = homeTeaserSlugs.flatMap(
-	(slug) => services.find((service) => service.slug === slug) ?? []
-);
+/** The roster for one category, in roster order — what the home teaser lists. */
+export function servicesInCategory(category: ServiceCategory): ServiceDetail[] {
+	return services.filter((service) => service.category === category);
+}
 
 export const servicesHeroLead =
-	'Twelve services across four areas. If an off-the-shelf tool would do the job we will say so — this list is where custom actually earns its cost.';
+	'Digital products, intelligent systems, and scalable software that solve real business challenges and evolve with your business.';
 
-export const servicesCtaHeading = 'Not sure which of these you need?';
+export const servicesCtaHeading = 'Not sure what you need?';
 export const servicesCtaLead =
-	'Describe the problem instead of the solution. A free discovery call will tell you which of these applies, or whether none of them do.';
+	"Start with the problem, not the solution. Tell us what you're trying to achieve, and we'll help you figure out the right way forward.";
 
 /**
  * Which way back to the catalogue the service detail hero offers. Change this

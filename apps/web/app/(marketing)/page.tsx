@@ -22,7 +22,6 @@ export default function HomePage() {
 			<ServicesTeaser
 				sectionIndex={1}
 				totalSections={totalSections}
-				stepOnReverse={false}
 			/>
 			<PortfolioTeaser
 				sectionIndex={2}

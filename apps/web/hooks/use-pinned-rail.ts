@@ -45,7 +45,8 @@ interface PinnedRailOptions {
 	stepScrollVh: number;
 	/**
 	 * The rail's continuous position in items (0 → `steps - 1`) while it is
-	 * pinned, with the scroll's direction (1 down, −1 up) — or `null`
+	 * pinned, with the scroll's direction (1 down, −1 up, 0 while a snap is
+	 * settling it — that move is the rail's, not the reader's) — or `null`
 	 * whenever it isn't pinned (before, after, or with no pin).
 	 */
 	onPosition?: (position: number | null, direction: number) => void;
@@ -150,13 +151,19 @@ export function usePinnedRail(
 					mapping = railMapping(steps, stepped, stepScrollVh, travel);
 				};
 
+				// A settle can run either way, whichever item is nearer.
+				let snapping = false;
+
 				const apply = (self: ScrollTrigger) => {
 					const position = mapping.positionAt(self.progress);
 
 					viewport.scrollLeft =
 						steps > 1 ? (position / (steps - 1)) * travel : 0;
 					if (self.isActive) {
-						onPositionRef.current?.(position, self.direction);
+						onPositionRef.current?.(
+							position,
+							snapping ? 0 : self.direction
+						);
 					}
 				};
 
@@ -187,7 +194,16 @@ export function usePinnedRail(
 									restingProgress(value, steps, RAIL_BLEND),
 								delay: 0.12,
 								duration: { min: 0.35, max: 0.7 },
-								ease: 'power2.inOut'
+								ease: 'power2.inOut',
+								onStart: () => {
+									snapping = true;
+								},
+								onComplete: () => {
+									snapping = false;
+								},
+								onInterrupt: () => {
+									snapping = false;
+								}
 							}
 						: undefined
 				});
@@ -255,8 +271,16 @@ export function usePinnedRail(
 				scrollTo(
 					leftOfStep(clampStep(map().stepAt(offsetNow()))) + delta
 				),
-			// Settle the page on what's showing right now.
-			stop: () => scrollTo(viewportRef.current?.scrollLeft ?? 0),
+			// Settle the page on what's showing right now. Read from the pin's
+			// own progress (it follows the smoothed scroll), not `scrollLeft`:
+			// stepped, many page positions share one `scrollLeft`, and a rail
+			// that fits the screen never leaves 0 — so a press would yank the
+			// page back to the first item.
+			stop: () =>
+				smoother.scrollTop(
+					trigger.start +
+						trigger.progress * (trigger.end - trigger.start)
+				),
 			stepBy: (count: number) => {
 				const mapping = map();
 				const from = clampOffset(
