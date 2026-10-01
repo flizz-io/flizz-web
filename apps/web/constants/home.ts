@@ -192,7 +192,7 @@ export const processSteps: ProcessStep[] = [
 		description:
 			"We don't start coding on day one. We start by understanding your business — current operations, pain points, growth goals, technical constraints. Then we map solutions that actually fit.",
 		compactDescription:
-			'We map your operations, constraints and goals before a line of code is written.',
+			'We understand your business, challenges, constraints, and goals before deciding what to build.',
 		whatYouGet:
 			'Clear technical roadmap, realistic timeline, transparent pricing'
 	},
@@ -202,7 +202,7 @@ export const processSteps: ProcessStep[] = [
 		description:
 			'Smart architecture decisions now prevent expensive problems later. We design systems for your current needs and future growth — database schema, integrations, security, scalability built in from the start.',
 		compactDescription:
-			'Schema, integrations, security and scale decided up front, so later changes stay cheap.',
+			'Architecture, user experience, and key technical decisions planned upfront—reducing costly surprises later.',
 		whatYouGet: 'Technical blueprint, user flow designs, integration plan'
 	},
 	{
@@ -211,7 +211,7 @@ export const processSteps: ProcessStep[] = [
 		description:
 			'Agile development with weekly check-ins. You see working software regularly, provide feedback, and stay involved. No surprises. No black box development.',
 		compactDescription:
-			'Working software every two weeks — running builds you can use, not status decks.',
+			'Working software, regular demos, and a continuous feedback loop.',
 		whatYouGet: 'Working software every 2 weeks, continuous feedback loop'
 	},
 	{
@@ -351,11 +351,18 @@ export const testimonials: Testimonial[] = [
 // docs/requirements/home-page.md — TODO: PM to confirm the final segment list
 // and the "Who we build for" headline.
 export const audienceSegments: string[] = [
-	'SaaS & product teams',
-	'E-commerce & retail',
-	'Operations & automation',
-	'Founders shipping v1',
-	'Legacy replacements',
+	// 'SaaS & product teams',
+	// 'E-commerce & retail',
+	// 'Operations & automation',
+	// 'Founders shipping v1',
+	// 'Legacy replacements',
+	// 'Internal tools',
+	// Following are decided by PM
+	'Founders & Product Teams',
+	'Growing Businesses',
+	'Operations & Process Teams',
+	'E-commerce & Retail Businesses',
+	'Businesses Outgrowing Their Systems',
 	'Internal tools'
 ];
 

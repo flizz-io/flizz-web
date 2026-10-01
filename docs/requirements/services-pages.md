@@ -46,7 +46,7 @@ Shopify and Payment fold under E-commerce; SaaS and Legacy Modernisation under C
 | `api-development`               | API Development                | Custom Software | `grid-lattice`     |
 | `ai-integration`                | AI Integration                 | AI & Automation | `neural-layers`    |
 | `chatbots-conversational-ai`    | Chatbots & Conversational AI   | AI & Automation | `dialogue-bubbles` |
-| `intelligent-automation`        | Workflow Automation            | AI & Automation | `particle-swarm`   |
+| `workflow-automation`           | Workflow Automation            | AI & Automation | `particle-swarm`   |
 | `online-store-development`      | Online Store Development       | E-commerce      | `catalog-checkout` |
 | `shopify-app-development`       | Shopify App Development        | E-commerce      | `plugin-socket`    |
 | `payment-integration`           | Payment Integration            | E-commerce      | `secure-rail`      |
