@@ -11,7 +11,7 @@ const TENANTS = 5;
 const RADIUS = 1.05;
 
 /**
- * SaaS Application Development — one shared core with tenants arranged around
+ * SaaS Applications — one shared core with tenants arranged around
  * it, each provisioned in turn. Multi-tenancy is the shape of the thing.
  */
 export const buildTenantColumn: ServiceVisualBuilder = (

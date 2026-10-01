@@ -1,6 +1,7 @@
 import { homeTeaserProjects, projects } from '@/constants/portfolio';
-import { homeTeaserServices } from '@/constants/services';
+import { servicesInCategory } from '@/constants/services';
 import { HeroDepth } from '@/enums/home';
+import { ServiceCategory } from '@/enums/services';
 import type {
 	FaqItem,
 	HeroCinematicConfig,
@@ -10,6 +11,7 @@ import type {
 	ProblemItem,
 	ProcessStep,
 	RealCostItem,
+	ServiceCategoryCard,
 	RiskReversal,
 	Stat,
 	Testimonial,
@@ -234,13 +236,40 @@ export const processSteps: ProcessStep[] = [
 	}
 ];
 
-// Placeholder cards — Services content moves to a CRUD feature later (see docs/requirements/progress-report.md); do not treat as final copy
 /**
- * The teaser's roster, derived from the canonical list in `constants/services.ts`
- * so the home page and `/services` can never disagree about a title, summary or
- * visual. Re-exported under the old name to keep the teaser's import stable.
+ * The teaser's rail: the four categories, each listing its services from the
+ * canonical roster in `constants/services.ts`, so the home page and `/services`
+ * can never disagree about which services a category holds or what they're
+ * called. Titles and sentences are the PM's.
  */
-export const serviceCards = homeTeaserServices;
+export const serviceCategoryCards: ServiceCategoryCard[] = (
+	[
+		{
+			category: ServiceCategory.CUSTOM_SOFTWARE,
+			title: 'Custom Software',
+			summary: 'Build software tailored to your business.',
+			visualKind: 'mvp-ascent'
+		},
+		{
+			category: ServiceCategory.AI_AUTOMATION,
+			title: 'AI & Automation',
+			summary: 'Put AI and automation to work for your business.',
+			visualKind: 'neural-layers'
+		},
+		{
+			category: ServiceCategory.ECOMMERCE,
+			title: 'E-commerce Solutions',
+			summary: 'Build better digital commerce experiences.',
+			visualKind: 'catalog-checkout'
+		},
+		{
+			category: ServiceCategory.MOBILE,
+			title: 'Mobile Solutions',
+			summary: 'Bring your product to mobile.',
+			visualKind: 'dual-handset'
+		}
+	] satisfies Omit<ServiceCategoryCard, 'services'>[]
+).map((card) => ({ ...card, services: servicesInCategory(card.category) }));
 
 // Copy for the services strip's edge arrows and pointer badge.
 export const servicesRailLabels = {
@@ -248,7 +277,11 @@ export const servicesRailLabels = {
 	moreBefore: 'earlier',
 	nextAria: 'Show later services',
 	previousAria: 'Show earlier services',
-	viewDetails: 'Click to view details'
+	viewDetails: 'Click to view details',
+	/** Prefixes a category's title on the popover's link to its group. */
+	explore: 'Explore',
+	servicesCount: (count: number) =>
+		`${count} ${count === 1 ? 'service' : 'services'}`
 };
 
 /**
