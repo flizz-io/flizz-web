@@ -128,7 +128,7 @@ Branch: `feat/dashboard-auth-portfolio`. Tasks run one at a time, in order; upda
 | E1  | `/portfolio` and `/portfolio/[slug]` read from the API, statically generated and revalidated on edit                             | Done        |
 | E2  | Home portfolio strip reads from the API                                                                                          | Done        |
 | E3  | Retire the static roster (kept only as seed data); docs updated                                                                  | Done        |
-| E4  | About page team section reads public team members from the API (`show_on_website`)                                               | Not started |
+| E4  | About page team section reads public team members from the API (`show_on_website`)                                               | Done        |
 | E5  | Gallery section on `/portfolio/[slug]` — designed with the `frontend-design` skill; shown only when a project has gallery images | Not started |
 
 ## Open items for PM

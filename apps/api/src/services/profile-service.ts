@@ -5,7 +5,9 @@ import {
 } from '@workspace/media-library';
 
 import { recordImage, retireMedia, storeImage } from './media-service.js';
+import { revalidateSite } from './site-revalidation-service.js';
 import { prisma } from '../configs/database.js';
+import { RevalidationTag } from '../enums/revalidation-tag.js';
 import type { Prisma } from '../generated/prisma/client.js';
 import { MediaPurpose } from '../generated/prisma/enums.js';
 import type { ProfileResponse } from '../types/team.js';
@@ -54,13 +56,14 @@ export async function updateProfile(
 	user: CurrentUser,
 	input: UpdateProfileInput
 ) {
-	return toProfileResponse(
-		await prisma.user.update({
-			where: { id: user.id },
-			data: { ...input, updatedById: user.id },
-			include: profileInclude
-		})
-	);
+	const updated = await prisma.user.update({
+		where: { id: user.id },
+		data: { ...input, updatedById: user.id },
+		include: profileInclude
+	});
+	revalidateSite(RevalidationTag.TEAM);
+
+	return toProfileResponse(updated);
 }
 
 /**
@@ -97,6 +100,7 @@ export async function setProfilePhoto(
 			include: profileInclude
 		});
 	});
+	revalidateSite(RevalidationTag.TEAM);
 
 	return toProfileResponse(updated);
 }
@@ -116,6 +120,7 @@ export async function removeProfilePhoto(user: CurrentUser) {
 			include: profileInclude
 		});
 	});
+	revalidateSite(RevalidationTag.TEAM);
 
 	return toProfileResponse(updated);
 }

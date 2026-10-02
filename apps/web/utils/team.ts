@@ -9,3 +9,24 @@ export function getInitials(name: string): string {
 
 	return `${first}${last}`.toUpperCase();
 }
+
+const smallNumbers = [
+	'No',
+	'One',
+	'Two',
+	'Three',
+	'Four',
+	'Five',
+	'Six',
+	'Seven',
+	'Eight',
+	'Nine',
+	'Ten',
+	'Eleven',
+	'Twelve'
+];
+
+/** "Seven" for a heading — spelt out up to twelve, digits after. */
+export function countInWords(count: number): string {
+	return smallNumbers[count] ?? String(count);
+}

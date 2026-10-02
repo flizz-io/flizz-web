@@ -153,100 +153,12 @@ export const aboutGuarantees: Guarantee[] = [
 ];
 
 /**
- * Controls section 6. The roster below is placeholder content, so the section
- * can be switched off in one place if the page goes live before the real team
- * is confirmed.
+ * Article bylines only — the About page's team section reads the people
+ * admins show on the website from the API (Team › Edit in the dashboard).
+ *
+ * TODO: retire once the Articles CRUD links authors to users. Until then a
+ * byline matches an article's `author` against `name` here.
  */
-export const showTeamSection = true;
-
-/**
- * TODO: PM to replace with the real team. Names, roles, and profile URLs are
- * demo content, and `photo` is deliberately unset on every row — each frame
- * shows an initials plate until a real photograph is dropped in.
- */
-export const aboutTeamFounder: TeamMember[] = [
-	{
-		name: 'Zahid Showarav',
-		role: 'Co-founder, Principal Engineer',
-		isFounder: true,
-		photo: '/team-members/showrav.png',
-		links: {
-			linkedin: 'https://www.linkedin.com/in/arman-chowdhury',
-			x: 'https://x.com/armanchowdhury',
-			portfolio: 'https://armanchowdhury.dev'
-		}
-	},
-	{
-		name: 'Abdur Rahman',
-		role: 'Co-founder, CTO',
-		isFounder: true,
-		photo: '/team-members/riyad-3.png',
-		links: {
-			linkedin: 'https://www.linkedin.com/in/nabila-rahman',
-			x: 'https://x.com/nabilarahman',
-			portfolio: 'https://nabilarahman.dev'
-		}
-	},
-	{
-		name: 'Meer Estiyak',
-		role: 'Co-founder, Lead AI/ML Engineer',
-		photo: '/team-members/rifat.png',
-		isFounder: true,
-		links: {
-			linkedin: 'https://www.linkedin.com/in/tanvir-hasan',
-			x: 'https://x.com/tanvirhasan'
-		}
-	},
-	{
-		name: 'Imran Hossain',
-		role: 'Co-founder, Head of Product & Marketing',
-		photo: '/team-members/imran-2.png',
-		isFounder: true,
-		links: {
-			linkedin: 'https://www.linkedin.com/in/tanvir-hasan',
-			x: 'https://x.com/tanvirhasan'
-		}
-	},
-	{
-		name: 'Sifat Chowdhury',
-		role: 'Lead Product Designer',
-		photo: '/team-members/sifat-4.png',
-		links: {
-			linkedin: 'https://www.linkedin.com/in/mehjabin-islam',
-			portfolio: 'https://mehjabin.ai'
-		}
-	},
-	{
-		name: 'Rihadul Islam',
-		role: 'Senior Full-stack Engineer',
-		// photo: '/team-members/riyad-4.png',
-		links: {
-			linkedin: 'https://www.linkedin.com/in/rifat-ahmed',
-			x: 'https://x.com/rifatahmed'
-		}
-	}
-	// {
-	// 	name: 'Hasan Attar',
-	// 	role: 'Frontend Engineer',
-	// 	links: {
-	// 		linkedin: 'https://www.linkedin.com/in/zayan-kabir'
-	// 	}
-	// }
-	// {
-	// 	name: 'Fahad Abrar',
-	// 	role: 'UI Design',
-	// 	links: {
-	// 		linkedin: 'https://www.linkedin.com/in/zayan-kabir'
-	// 	}
-	// }
-	// {
-	// 	name: 'Kabir Mridha',
-	// 	role: 'QA & Release Engineer',
-	// 	links: {
-	// 		linkedin: 'https://www.linkedin.com/in/zayan-kabir'
-	// 	}
-	// }
-];
 export const aboutTeam: TeamMember[] = [
 	{
 		name: 'Zahid Showarav',

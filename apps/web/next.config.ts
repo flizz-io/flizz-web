@@ -1,11 +1,13 @@
 import type { NextConfig } from 'next';
 
 /**
- * Where project images come from: Cloudinary, plus the API's own media route
- * when it serves files from local disk (`MEDIA_PROVIDER=local`).
+ * Where API images come from: Cloudinary, Google avatars (a team member's
+ * fallback photo), and the API's own media route when it serves files from
+ * local disk (`MEDIA_PROVIDER=local`).
  */
 const mediaPatterns = [
 	new URL('https://res.cloudinary.com/**'),
+	new URL('https://lh3.googleusercontent.com/**'),
 	...(process.env.MEDIA_BASE_URL
 		? [new URL(`${process.env.MEDIA_BASE_URL}/**`)]
 		: [])
