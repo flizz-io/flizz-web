@@ -35,3 +35,35 @@ export async function clientApi<T>(
 	const { data } = (await response.json()) as { data: T };
 	return data;
 }
+
+/**
+ * Uploads a file (multipart) through the `/api` rewrite. Extra fields go
+ * alongside it — e.g. an image's `width` / `height` / `fit`.
+ */
+export async function clientUpload<T>(
+	path: string,
+	file: File,
+	fields: Record<string, string | number> = {}
+): Promise<T> {
+	const form = new FormData();
+	form.append('file', file);
+	for (const [key, value] of Object.entries(fields)) {
+		form.append(key, String(value));
+	}
+
+	const response = await fetch(`/api${path}`, {
+		method: 'POST',
+		body: form
+	}).catch(() => {
+		throw new ApiError(
+			0,
+			ApiErrorCode.INTERNAL,
+			"Can't reach the server right now. Try again in a moment."
+		);
+	});
+
+	if (!response.ok) throw await toApiError(response);
+
+	const { data } = (await response.json()) as { data: T };
+	return data;
+}

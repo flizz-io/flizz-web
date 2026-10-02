@@ -49,7 +49,7 @@ Work proceeds in this order. Update status inline as we move through them.
 | 6   | ~~Static Portfolio/Project pages — design + build~~                                                 | Built — pending PM content  |
 | 7   | ~~Static Articles pages — design + build~~ (Case Studies dropped)                                   | Built — pending PM content  |
 | 8   | Database design — schema for all CRUD features                                                      | **In progress** — see below |
-| 9   | Admin dashboard base structure, design, and authentication                                          | Done — awaiting review      |
+| 9   | Admin dashboard base structure, design, and authentication                                          | Done                        |
 | 10  | Build APIs — feature by feature                                                                     | Not started                 |
 | 11  | Frontend common API service functions, Zod schemas, models, enums & types (request/response/params) | Not started                 |
 | 12  | Admin dashboard CRUD feature design & API integration                                               | Not started                 |
@@ -91,18 +91,18 @@ Branch: `feat/dashboard-auth-portfolio`. Tasks run one at a time, in order; upda
 
 ### Phase U — Users, roles & permissions (Stage 9)
 
-| #   | Task                                                                                                                                                                 | Status      |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| U1  | Requirements doc — roles, lifecycle, permissions, profile, audit rule; conventions updated (no hard deletes, authorship on every table)                              | Done        |
-| U2  | Replace `admins` with `users` (role, status, profile, website fields, audit columns) + `user_permissions`; migration; seed the Super Admin from `SUPER_ADMIN_EMAIL`  | Done        |
-| U3  | Auth on `users`: sign-in refuses removed/suspended; session re-checks status each request; `/auth/me` returns role + permissions                                     | Done        |
-| U4  | API authorization: `requireAdmin`, `requirePermission(feature, action)`, and the guards (no self-actions, Super Admin untouchable)                                   | Done        |
-| U5  | Team API: list, add, update (role/designation/website), suspend/reactivate, remove-if-invited, replace permissions; own profile GET/PATCH — **review checkpoint**    | Done        |
-| U6  | `packages/media-library`: storage-provider interface + Cloudinary (default) and local-disk providers; 500 KB uploads; profile photo endpoints (project images later) | Done        |
-| U7  | Dashboard Team page — table, status badges, Add member dialog                                                                                                        | Done        |
-| U8  | Dashboard user actions — edit (role, designation, website settings), suspend/reactivate, remove                                                                      | Done        |
-| U9  | Dashboard permissions drawer — feature × action grid with "implies View"                                                                                             | Done        |
-| U10 | Dashboard My Profile (name, photo upload, social links); sidebar shows only what the user may use — **review checkpoint**                                            | Not started |
+| #   | Task                                                                                                                                                                 | Status |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| U1  | Requirements doc — roles, lifecycle, permissions, profile, audit rule; conventions updated (no hard deletes, authorship on every table)                              | Done   |
+| U2  | Replace `admins` with `users` (role, status, profile, website fields, audit columns) + `user_permissions`; migration; seed the Super Admin from `SUPER_ADMIN_EMAIL`  | Done   |
+| U3  | Auth on `users`: sign-in refuses removed/suspended; session re-checks status each request; `/auth/me` returns role + permissions                                     | Done   |
+| U4  | API authorization: `requireAdmin`, `requirePermission(feature, action)`, and the guards (no self-actions, Super Admin untouchable)                                   | Done   |
+| U5  | Team API: list, add, update (role/designation/website), suspend/reactivate, remove-if-invited, replace permissions; own profile GET/PATCH — **review checkpoint**    | Done   |
+| U6  | `packages/media-library`: storage-provider interface + Cloudinary (default) and local-disk providers; 500 KB uploads; profile photo endpoints (project images later) | Done   |
+| U7  | Dashboard Team page — table, status badges, Add member dialog                                                                                                        | Done   |
+| U8  | Dashboard user actions — edit (role, designation, website settings), suspend/reactivate, remove                                                                      | Done   |
+| U9  | Dashboard permissions drawer — feature × action grid with "implies View"                                                                                             | Done   |
+| U10 | Dashboard My Profile (name, photo upload, social links); sidebar shows only what the user may use — **review checkpoint**                                            | Done   |
 
 ### Phase C — Portfolio backend (Stage 10)
 

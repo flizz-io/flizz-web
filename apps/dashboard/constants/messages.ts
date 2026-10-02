@@ -17,6 +17,7 @@ export const loginMessages = {
 
 export const shellMessages = {
 	signOut: 'Sign out',
+	myProfile: 'My profile',
 	overviewTitle: 'Overview',
 	overviewLead:
 		"You're signed in. Content management screens land here feature by feature — Projects first."

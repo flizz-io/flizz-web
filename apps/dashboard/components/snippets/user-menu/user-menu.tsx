@@ -1,10 +1,11 @@
 'use client';
 
-import { LogOut } from 'lucide-react';
+import { LogOut, UserRound } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { loginPath } from '@/constants/auth';
+import { loginPath, profilePath } from '@/constants/auth';
 import { shellMessages } from '@/constants/messages';
 import type { AuthUser } from '@/types/user';
 import { displayName, initials } from '@/utils/user-display';
@@ -74,6 +75,12 @@ export function UserMenu({ user }: UserMenuProps) {
 					</span>
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
+				<DropdownMenuItem asChild>
+					<Link href={profilePath}>
+						<UserRound />
+						{shellMessages.myProfile}
+					</Link>
+				</DropdownMenuItem>
 				<DropdownMenuItem
 					disabled={signingOut}
 					onSelect={signOut}
