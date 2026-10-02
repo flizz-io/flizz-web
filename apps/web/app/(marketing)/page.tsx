@@ -14,9 +14,6 @@ import { SectionReveals } from '@/components/snippets/section-reveals/section-re
 import { portfolioMetaOf, sinceYearOf } from '@/utils/portfolio';
 import { getHomeProjects, getPortfolioProjects } from '@/utils/projects-api';
 
-/** Backstop for scheduled launches — edits revalidate on demand. */
-export const revalidate = 300;
-
 export default async function HomePage() {
 	const [homeProjects, projects] = await Promise.all([
 		getHomeProjects(),

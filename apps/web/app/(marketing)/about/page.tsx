@@ -16,9 +16,6 @@ export const metadata: Metadata = {
 		'Flizz started in 2024 building its own products, and moved into services from there. Seven people, four of them founders, and the terms of every engagement stated up front.'
 };
 
-/** Backstop — team changes in the dashboard revalidate on demand. */
-export const revalidate = 300;
-
 export default async function AboutPage() {
 	const team = await getAboutTeam();
 	// The team section drops out while nobody is shown on the website, so

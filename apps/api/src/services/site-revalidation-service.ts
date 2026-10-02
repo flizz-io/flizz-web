@@ -5,8 +5,7 @@ const REVALIDATE_TIMEOUT_MS = 5000;
 
 /**
  * Asks the public site to refresh pages built from this content. Fire and
- * forget: a site that's down or slow must never fail the dashboard change —
- * its pages still refresh on their own interval.
+ * forget: a site that's down or slow must never fail the dashboard change.
  */
 export function revalidateSite(...tags: RevalidationTag[]) {
 	const { url, revalidateSecret } = env.web;

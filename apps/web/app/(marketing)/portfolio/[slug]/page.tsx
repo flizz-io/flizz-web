@@ -18,9 +18,6 @@ interface ProjectPageProps {
 	params: Promise<{ slug: string }>;
 }
 
-/** Backstop for scheduled launches — edits revalidate on demand. */
-export const revalidate = 300;
-
 /**
  * Every visible project is built ahead; one published later renders on its
  * first visit and is cached from then on (`dynamicParams` stays on).

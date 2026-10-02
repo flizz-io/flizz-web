@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { CacheTag, contentRevalidateSeconds } from '@/constants/cache';
+import { CacheTag, contentRevalidate } from '@/constants/cache';
 import type { TeamMember, TeamMemberLinks } from '@/types/about';
 import {
 	getPublicTeamService,
@@ -11,7 +11,7 @@ import {
 const teamContext: ApiContext = {
 	baseUrl: process.env.API_URL,
 	init: {
-		next: { revalidate: contentRevalidateSeconds, tags: [CacheTag.TEAM] }
+		next: { revalidate: contentRevalidate, tags: [CacheTag.TEAM] }
 	}
 };
 

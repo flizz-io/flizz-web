@@ -11,6 +11,7 @@
 				"API_URL",
 				"MEDIA_BASE_URL",
 				"REVALIDATE_SECRET",
+				"ENABLE_PERIODIC_REVALIDATION",
 				"NEXT_PUBLIC_GOOGLE_CLIENT_ID"
 			],
 			"outputs": [".next/**", "!.next/cache/**", "dist/**"]

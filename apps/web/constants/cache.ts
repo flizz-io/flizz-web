@@ -9,8 +9,17 @@ export enum CacheTag {
 	TEAM = 'team'
 }
 
+/** How often pages refetch on their own, when periodic refresh is on. */
+const periodicRevalidateSeconds = 300;
+
 /**
- * The backstop: pages refetch at most this often even without a nudge — so a
- * project scheduled for later goes live without anyone saving it.
+ * Whether pages also refetch every five minutes without being asked —
+ * `ENABLE_PERIODIC_REVALIDATION=true`. Off by default: pages then change only
+ * when the API asks (`POST /api/revalidate`) or on the next deploy. Turn it
+ * on if a project scheduled for later must go live without anyone saving it.
+ * Read at build time — rebuild after changing it.
  */
-export const contentRevalidateSeconds = 300;
+export const contentRevalidate: number | false =
+	process.env.ENABLE_PERIODIC_REVALIDATION === 'true'
+		? periodicRevalidateSeconds
+		: false;

@@ -13,9 +13,6 @@ import { WhyUs } from '@/components/features/home/why-us';
 import { portfolioMetaOf } from '@/utils/portfolio';
 import { getHomeProjects, getPortfolioProjects } from '@/utils/projects-api';
 
-/** Backstop for scheduled launches — edits revalidate on demand. */
-export const revalidate = 300;
-
 export default async function HomeV2Page() {
 	const [homeProjects, projects] = await Promise.all([
 		getHomeProjects(),

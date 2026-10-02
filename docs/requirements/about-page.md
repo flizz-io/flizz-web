@@ -331,7 +331,7 @@ The section lists the people an admin has marked **Show on the website** (Team â
 
 ### Visibility
 
-The `isVisible` prop and `showTeamSection` constant are gone: the section renders when at least one person is shown and drops out (with the section counter renumbered) when nobody is. Changes in the dashboard revalidate the page on demand; it also refetches every five minutes.
+The `isVisible` prop and `showTeamSection` constant are gone: the section renders when at least one person is shown and drops out (with the section counter renumbered) when nobody is. Changes in the dashboard revalidate the page on demand; it also refetches every five minutes when `ENABLE_PERIODIC_REVALIDATION=true`.
 
 The static `aboutTeam` list in `constants/about.ts` now only backs article bylines, until the Articles CRUD links authors to users.
 

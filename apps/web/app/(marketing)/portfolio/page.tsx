@@ -27,9 +27,6 @@ export const metadata: Metadata = {
 	}
 };
 
-/** Backstop for scheduled launches — edits revalidate on demand. */
-export const revalidate = 300;
-
 export default async function PortfolioPage() {
 	const projects = await getPortfolioProjects();
 	const hasReel = reelOf(projects).length > 0;

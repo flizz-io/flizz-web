@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { CacheTag, contentRevalidateSeconds } from '@/constants/cache';
+import { CacheTag, contentRevalidate } from '@/constants/cache';
 import { ProjectSector } from '@/enums/portfolio';
 import { ServiceCategory } from '@/enums/services';
 import type { Project, ProjectDetail } from '@/types/portfolio';
@@ -16,12 +16,12 @@ import {
 
 const NOT_FOUND_STATUS = 404;
 
-/** Cached, tagged, and refreshed on the backstop interval. */
+/** Cached and tagged; refetched on an interval only if that's enabled. */
 const projectsContext: ApiContext = {
 	baseUrl: process.env.API_URL,
 	init: {
 		next: {
-			revalidate: contentRevalidateSeconds,
+			revalidate: contentRevalidate,
 			tags: [CacheTag.PROJECTS]
 		}
 	}
