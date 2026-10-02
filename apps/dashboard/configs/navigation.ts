@@ -1,7 +1,7 @@
 import { LayoutDashboard, UserRound, Users } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
-import type { Feature } from '@/enums/user';
+import type { Feature } from '@workspace/api-services';
 
 export interface NavItem {
 	title: string;

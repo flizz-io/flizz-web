@@ -1,4 +1,4 @@
-import type { Feature, UserRole } from '@/enums/user';
+import type { Feature, UserRole } from '../enums/auth';
 
 export interface FeatureGrant {
 	create: boolean;
@@ -21,4 +21,10 @@ export interface AuthUser {
 	/** Uploaded photo, else the Google avatar. */
 	avatarUrl: string | null;
 	permissions: PermissionMap;
+}
+
+/** Who did something — "Created by …". */
+export interface UserReference {
+	uuid: string;
+	name: string;
 }

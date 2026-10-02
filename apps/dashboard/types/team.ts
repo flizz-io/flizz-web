@@ -1,11 +1,9 @@
-import type { UserLifecycle, UserRole } from '@/enums/user';
-import type { PermissionMap } from '@/types/user';
-
-/** Who did something — "Created by …". */
-export interface UserReference {
-	uuid: string;
-	name: string;
-}
+import type { UserLifecycle } from '@/enums/user';
+import type {
+	PermissionMap,
+	UserReference,
+	UserRole
+} from '@workspace/api-services';
 
 /** A user as `GET /api/users` returns them. */
 export interface TeamUser {

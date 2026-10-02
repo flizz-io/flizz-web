@@ -13,10 +13,11 @@ import {
 	roleLabels,
 	teamMessages
 } from '@/constants/team';
-import { UserLifecycle, UserRole } from '@/enums/user';
+import { UserLifecycle } from '@/enums/user';
 import type { TeamUser } from '@/types/team';
 import { relativeTime } from '@/utils/relative-time';
 import { displayName } from '@/utils/user-display';
+import { UserRole } from '@workspace/api-services';
 import { Input } from '@workspace/ui/components/input';
 import {
 	Select,

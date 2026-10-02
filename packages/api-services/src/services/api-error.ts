@@ -1,7 +1,7 @@
-import { ApiErrorCode } from '@/enums/auth';
-import type { ApiErrorBody } from '@/types/api';
+import { ApiErrorCode } from '../enums/api';
+import type { ApiErrorBody } from '../models/api';
 
-/** A failed API call, with the API's own code and message. */
+/** A failed API call, with the API's own code, message and field messages. */
 export class ApiError extends Error {
 	constructor(
 		readonly status: number,
@@ -13,6 +13,9 @@ export class ApiError extends Error {
 		this.name = 'ApiError';
 	}
 }
+
+export const unreachableMessage =
+	"Can't reach the server right now. Try again in a moment.";
 
 /** Turns a non-OK response into an `ApiError`, field messages keyed by field. */
 export async function toApiError(response: Response) {

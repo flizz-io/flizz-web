@@ -1,7 +1,10 @@
 import { featureOrder, grantActions } from '@/constants/permissions';
 import type { GrantAction } from '@/constants/permissions';
-import type { Feature } from '@/enums/user';
-import type { FeatureGrant, PermissionMap } from '@/types/user';
+import type {
+	Feature,
+	FeatureGrant,
+	PermissionMap
+} from '@workspace/api-services';
 
 const NONE: FeatureGrant = {
 	create: false,

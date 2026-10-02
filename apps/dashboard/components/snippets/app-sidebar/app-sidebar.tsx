@@ -6,8 +6,8 @@ import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/snippets/logo/logo';
 import { sidebarAccountItems, sidebarNavItems } from '@/configs/navigation';
 import type { NavItem } from '@/configs/navigation';
-import type { AuthUser } from '@/types/user';
 import { isAdminRole } from '@/utils/roles';
+import type { AuthUser } from '@workspace/api-services';
 import {
 	Sidebar,
 	SidebarContent,

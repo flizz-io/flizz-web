@@ -1,4 +1,4 @@
-import { UserRole } from '@/enums/user';
+import { UserRole } from '@workspace/api-services';
 
 /** Super Admin and Admins — who manages the team. */
 export function isAdminRole(role: UserRole) {

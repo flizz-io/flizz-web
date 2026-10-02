@@ -9,9 +9,9 @@ import { RoleBadge } from '@/components/features/team/role-badge';
 import { ImageUploader } from '@/components/snippets/image-uploader/image-uploader';
 import { profileMessages } from '@/constants/profile';
 import type { Profile, ProfileInput } from '@/types/profile';
-import { ApiError } from '@/utils/api-error';
 import { clientApi, clientUpload } from '@/utils/client-api';
 import { initials } from '@/utils/user-display';
+import { ApiError, HttpMethod } from '@workspace/api-services';
 import {
 	Avatar,
 	AvatarFallback,
@@ -80,7 +80,7 @@ export function ProfileForm({ profile: initial }: ProfileFormProps) {
 		setFieldErrors({});
 		try {
 			const saved = await clientApi<Profile>('/me/profile', {
-				method: 'PATCH',
+				method: HttpMethod.PATCH,
 				body: values
 			});
 			accept(saved);
@@ -165,7 +165,7 @@ export function ProfileForm({ profile: initial }: ProfileFormProps) {
 						}}
 						onRemove={async () => {
 							const saved = await clientApi<Profile>(PHOTO_PATH, {
-								method: 'DELETE'
+								method: HttpMethod.DELETE
 							});
 							accept(saved);
 							toast.success(

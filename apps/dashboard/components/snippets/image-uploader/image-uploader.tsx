@@ -11,7 +11,7 @@ import {
 	maxUploadKb,
 	uploaderMessages
 } from '@/constants/media';
-import { ApiError } from '@/utils/api-error';
+import { ApiError } from '@workspace/api-services';
 import { Button } from '@workspace/ui/components/button';
 
 type ImageFit = 'cover' | 'inside';

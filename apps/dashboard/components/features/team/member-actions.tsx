@@ -18,10 +18,10 @@ import { PermissionsDrawer } from '@/components/features/team/permissions-drawer
 import { permissionMessages } from '@/constants/permissions';
 import { teamMessages } from '@/constants/team';
 import type { TeamUser } from '@/types/team';
-import { ApiError } from '@/utils/api-error';
 import { clientApi } from '@/utils/client-api';
 import { teamActionsFor } from '@/utils/team-rules';
 import { displayName } from '@/utils/user-display';
+import { ApiError, HttpMethod } from '@workspace/api-services';
 import { Button } from '@workspace/ui/components/button';
 import {
 	DropdownMenu,
@@ -159,7 +159,7 @@ export function MemberActions({ user, currentUserUuid }: MemberActionsProps) {
 					run(
 						() =>
 							clientApi(`/users/${user.uuid}/suspend`, {
-								method: 'POST'
+								method: HttpMethod.POST
 							}),
 						teamMessages.confirm.suspended(name)
 					)
@@ -175,7 +175,7 @@ export function MemberActions({ user, currentUserUuid }: MemberActionsProps) {
 					run(
 						() =>
 							clientApi(`/users/${user.uuid}/reactivate`, {
-								method: 'POST'
+								method: HttpMethod.POST
 							}),
 						teamMessages.confirm.reactivated(name)
 					)
@@ -192,7 +192,7 @@ export function MemberActions({ user, currentUserUuid }: MemberActionsProps) {
 					run(
 						() =>
 							clientApi(`/users/${user.uuid}`, {
-								method: 'DELETE'
+								method: HttpMethod.DELETE
 							}),
 						teamMessages.confirm.removed(name)
 					)

@@ -1,4 +1,4 @@
-import type { UserRole } from '@/enums/user';
+import type { UserRole } from '@workspace/api-services';
 
 /** The signed-in user's own profile, as `GET /api/me/profile` returns it. */
 export interface Profile {

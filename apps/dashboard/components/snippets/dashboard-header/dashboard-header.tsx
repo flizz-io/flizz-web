@@ -1,5 +1,5 @@
 import { UserMenu } from '@/components/snippets/user-menu/user-menu';
-import type { AuthUser } from '@/types/user';
+import type { AuthUser } from '@workspace/api-services';
 import { Separator } from '@workspace/ui/components/separator';
 import { SidebarTrigger } from '@workspace/ui/components/sidebar';
 

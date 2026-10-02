@@ -12,10 +12,7 @@ import {
 	permissionMessages
 } from '@/constants/permissions';
 import type { GrantAction } from '@/constants/permissions';
-import type { Feature } from '@/enums/user';
 import type { TeamUser } from '@/types/team';
-import type { PermissionMap } from '@/types/user';
-import { ApiError } from '@/utils/api-error';
 import { clientApi } from '@/utils/client-api';
 import {
 	grantSummary,
@@ -24,6 +21,8 @@ import {
 	toggleGrant
 } from '@/utils/permission-grid';
 import { displayName } from '@/utils/user-display';
+import type { Feature, PermissionMap } from '@workspace/api-services';
+import { ApiError, HttpMethod } from '@workspace/api-services';
 import { Button } from '@workspace/ui/components/button';
 import { Checkbox } from '@workspace/ui/components/checkbox';
 import {
@@ -72,7 +71,7 @@ export function PermissionsDrawer({
 		setPending(true);
 		try {
 			await clientApi<TeamUser>(`/users/${user.uuid}/permissions`, {
-				method: 'PUT',
+				method: HttpMethod.PUT,
 				body: { permissions: grid }
 			});
 			toast.success(permissionMessages.saved(name));

@@ -1,4 +1,5 @@
-import { UserLifecycle, UserRole } from '@/enums/user';
+import { UserLifecycle } from '@/enums/user';
+import { UserRole } from '@workspace/api-services';
 
 export const roleLabels: Record<UserRole, string> = {
 	[UserRole.SUPER_ADMIN]: 'Super Admin',

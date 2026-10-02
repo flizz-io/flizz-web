@@ -1,5 +1,5 @@
-import { Feature } from '@/enums/user';
-import type { FeatureGrant } from '@/types/user';
+import { Feature } from '@workspace/api-services';
+import type { FeatureGrant } from '@workspace/api-services';
 
 /** Grid rows, in the order the drawer lists them. */
 export const featureOrder: Feature[] = [

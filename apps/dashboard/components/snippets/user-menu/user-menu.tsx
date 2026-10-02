@@ -7,8 +7,8 @@ import { useState } from 'react';
 
 import { loginPath, profilePath } from '@/constants/auth';
 import { shellMessages } from '@/constants/messages';
-import type { AuthUser } from '@/types/user';
 import { displayName, initials } from '@/utils/user-display';
+import type { AuthUser } from '@workspace/api-services';
 import {
 	Avatar,
 	AvatarFallback,

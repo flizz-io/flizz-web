@@ -5,7 +5,7 @@ import Script from 'next/script';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { loginMessages } from '@/constants/messages';
-import { ApiErrorCode } from '@/enums/auth';
+import { ApiErrorCode } from '@workspace/api-services';
 
 const GOOGLE_SCRIPT_SRC = 'https://accounts.google.com/gsi/client';
 const BUTTON_WIDTH = 320;

@@ -117,7 +117,7 @@ Branch: `feat/dashboard-auth-portfolio`. Tasks run one at a time, in order; upda
 
 | #   | Task                                                                                                                       | Status      |
 | --- | -------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| D1  | `packages/api-services`: common fetcher, auth + projects models, enums and service functions                               | Not started |
+| D1  | `packages/api-services`: common fetcher, auth + projects models, enums and service functions                               | Done        |
 | D2  | Dashboard Projects list — table, search, sector filter, featured toggle                                                    | Not started |
 | D3  | Dashboard Project form — basics, results, case-study lists, stack, quote, cover + gallery, publishing; delete with confirm | Not started |
 

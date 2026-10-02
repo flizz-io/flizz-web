@@ -7,10 +7,9 @@ import type { FormEvent } from 'react';
 import { toast } from 'sonner';
 
 import { assignableRoles, roleLabels, teamMessages } from '@/constants/team';
-import { UserRole } from '@/enums/user';
 import type { AddTeamUserInput, TeamUser } from '@/types/team';
-import { ApiError } from '@/utils/api-error';
 import { clientApi } from '@/utils/client-api';
+import { UserRole, HttpMethod, ApiError } from '@workspace/api-services';
 import { Button } from '@workspace/ui/components/button';
 import {
 	Dialog,
@@ -69,7 +68,7 @@ export function AddMemberDialog() {
 
 		try {
 			const user = await clientApi<TeamUser>('/users', {
-				method: 'POST',
+				method: HttpMethod.POST,
 				body: input
 			});
 			toast.success(teamMessages.added(user.email));
