@@ -106,29 +106,30 @@ Branch: `feat/dashboard-auth-portfolio`. Tasks run one at a time, in order; upda
 
 ### Phase C — Portfolio backend (Stage 10)
 
-| #   | Task                                                                                                                                         | Status      |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| C1  | Requirements doc for the Projects CRUD — fields, validation, draft/published, featured, ordering, deletion policy                            | Not started |
-| C2  | `projects` schema (+ results, stack, quote) matching the `Project` / `ProjectDetail` contract; migration; seed from `constants/portfolio.ts` | Not started |
-| C3  | Project screenshots through the media library (U6) — upload, replace, remove                                                                 | Not started |
-| C4  | Projects API: public list/detail (published only) and admin CRUD, Zod-validated                                                              | Not started |
+| #   | Task                                                                                                                                                                        | Status      |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| C1  | Requirements doc for the Projects CRUD — [projects-crud.md](projects-crud.md): fields, validation, draft/published + publish date, featured & home flags, gallery, deletion | Done        |
+| C2  | `projects` (results as JSONB, lists as `text[]`) + `project_images` schema matching the `Project` / `ProjectDetail` contract; migration; seed from `constants/portfolio.ts` | Done        |
+| C3  | Project images through the media library — cover upload/clear, gallery add/caption/reorder/retire                                                                           | Not started |
+| C4  | Projects API: public list/detail (published only) and admin CRUD, Zod-validated                                                                                             | Not started |
 
 ### Phase D — Shared API layer & dashboard screens (Stages 11–12)
 
-| #   | Task                                                                                                               | Status      |
-| --- | ------------------------------------------------------------------------------------------------------------------ | ----------- |
-| D1  | `packages/api-services`: common fetcher, auth + projects models, enums and service functions                       | Not started |
-| D2  | Dashboard Projects list — table, search, sector filter, featured toggle                                            | Not started |
-| D3  | Dashboard Project form — create/edit with result pairs, stack chips, quote, screenshot upload; delete with confirm | Not started |
+| #   | Task                                                                                                                       | Status      |
+| --- | -------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| D1  | `packages/api-services`: common fetcher, auth + projects models, enums and service functions                               | Not started |
+| D2  | Dashboard Projects list — table, search, sector filter, featured toggle                                                    | Not started |
+| D3  | Dashboard Project form — basics, results, case-study lists, stack, quote, cover + gallery, publishing; delete with confirm | Not started |
 
 ### Phase E — Landing integration (Stage 13)
 
-| #   | Task                                                                                                 | Status      |
-| --- | ---------------------------------------------------------------------------------------------------- | ----------- |
-| E1  | `/portfolio` and `/portfolio/[slug]` read from the API, statically generated and revalidated on edit | Not started |
-| E2  | Home portfolio strip reads from the API                                                              | Not started |
-| E3  | Retire the static roster (kept only as seed data); docs updated                                      | Not started |
-| E4  | About page team section reads public team members from the API (`show_on_website`)                   | Not started |
+| #   | Task                                                                                                                             | Status      |
+| --- | -------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| E1  | `/portfolio` and `/portfolio/[slug]` read from the API, statically generated and revalidated on edit                             | Not started |
+| E2  | Home portfolio strip reads from the API                                                                                          | Not started |
+| E3  | Retire the static roster (kept only as seed data); docs updated                                                                  | Not started |
+| E4  | About page team section reads public team members from the API (`show_on_website`)                                               | Not started |
+| E5  | Gallery section on `/portfolio/[slug]` — designed with the `frontend-design` skill; shown only when a project has gallery images | Not started |
 
 ## Open items for PM
 

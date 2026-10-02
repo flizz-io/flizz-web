@@ -13,7 +13,11 @@ export interface ImagePreset {
 
 export const imagePresets = {
 	/** Profile photos — square by default, as avatars and the About page show them. */
-	avatar: { width: 512, height: 512, fit: 'cover', quality: 82 }
+	avatar: { width: 512, height: 512, fit: 'cover', quality: 82 },
+	/** Project covers — screenshots keep their whole frame; plates crop to fit. */
+	projectCover: { width: 1600, height: 1000, fit: 'inside', quality: 82 },
+	/** Project gallery images — nothing cropped away. */
+	projectGallery: { width: 1600, height: 1200, fit: 'inside', quality: 82 }
 } as const satisfies Record<string, ImagePreset>;
 
 /**
