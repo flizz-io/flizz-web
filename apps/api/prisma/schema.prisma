@@ -1,0 +1,174 @@
+// Naming: models and fields are camelCase in code, mapped to snake_case
+// tables (plural), columns and enum types in the database — see
+// .claude/rules/conventions.md. Every table has an internal integer `id` for
+// joins and a public `uuid` (v7) that is the only id the API ever exposes.
+//
+// Project-wide rules (docs/requirements/users-and-permissions.md):
+// - nothing is hard-deleted: rows carry `deletedAt` + `deletedById`;
+// - every row records who created and last changed it.
+
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  TEAM_MEMBER
+
+  @@map("user_role")
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+
+  @@map("user_status")
+}
+
+/// What an uploaded file is for — decides its processing preset.
+enum MediaPurpose {
+  AVATAR
+
+  @@map("media_purpose")
+}
+
+/// The content features a Team Member can be granted access to.
+enum Feature {
+  PROJECTS
+  ARTICLES
+  SERVICES
+  TESTIMONIALS
+  CONTACT_MESSAGES
+
+  @@map("feature")
+}
+
+/// Everyone who can sign in to the dashboard. Exists only once an admin adds
+/// the email — there is no registration. Also the source of the public About
+/// page team section (`showOnWebsite`).
+model User {
+  id     Int        @id @default(autoincrement())
+  uuid   String     @unique @default(uuid(7)) @db.Uuid
+  /// Lower-cased; the sign-in key.
+  email  String     @unique
+  role   UserRole   @default(TEAM_MEMBER)
+  status UserStatus @default(ACTIVE)
+
+  // Profile — the user edits these (except designation).
+  firstName       String? @map("first_name")
+  lastName        String? @map("last_name")
+  /// Admin-set, free text: "Co-founder, CTO".
+  designation     String?
+  /// Uploaded photo; `googleAvatarUrl` is the fallback.
+  photoId         Int?    @map("photo_id")
+  googleAvatarUrl String? @map("google_avatar_url")
+  linkedinUrl     String? @map("linkedin_url")
+  xUrl            String? @map("x_url")
+  portfolioUrl    String? @map("portfolio_url")
+
+  // Public About page — admin-set.
+  showOnWebsite Boolean @default(false) @map("show_on_website")
+  isFounder     Boolean @default(false) @map("is_founder")
+  displayOrder  Int     @default(0) @map("display_order")
+
+  // Sign-in.
+  /// Google's stable account id, linked on first sign-in.
+  googleSub    String?   @unique @map("google_sub")
+  /// Null until the first sign-in — while null, the user may be removed.
+  firstLoginAt DateTime? @map("first_login_at") @db.Timestamptz(3)
+  lastLoginAt  DateTime? @map("last_login_at") @db.Timestamptz(3)
+  suspendedAt  DateTime? @map("suspended_at") @db.Timestamptz(3)
+
+  // Audit.
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz(3)
+  /// Null only for the seeded Super Admin.
+  createdById   Int?      @map("created_by_id")
+  updatedById   Int?      @map("updated_by_id")
+  deletedById   Int?      @map("deleted_by_id")
+  suspendedById Int?      @map("suspended_by_id")
+
+  createdBy   User? @relation("UserCreatedBy", fields: [createdById], references: [id])
+  updatedBy   User? @relation("UserUpdatedBy", fields: [updatedById], references: [id])
+  deletedBy   User? @relation("UserDeletedBy", fields: [deletedById], references: [id])
+  suspendedBy User? @relation("UserSuspendedBy", fields: [suspendedById], references: [id])
+
+  photo       MediaFile?       @relation("UserPhoto", fields: [photoId], references: [id])
+  permissions UserPermission[] @relation("PermissionUser")
+
+  // Back-relations for the audit columns above.
+  usersCreated       User[]           @relation("UserCreatedBy")
+  usersUpdated       User[]           @relation("UserUpdatedBy")
+  usersDeleted       User[]           @relation("UserDeletedBy")
+  usersSuspended     User[]           @relation("UserSuspendedBy")
+  permissionsUpdated UserPermission[] @relation("PermissionUpdatedBy")
+  mediaCreated       MediaFile[]      @relation("MediaCreatedBy")
+  mediaUpdated       MediaFile[]      @relation("MediaUpdatedBy")
+  mediaDeleted       MediaFile[]      @relation("MediaDeletedBy")
+
+  @@index([role])
+  @@index([deletedAt])
+  @@map("users")
+}
+
+/// One Team Member × feature grant. No row means no access. Admins never
+/// have rows — they always have everything.
+model UserPermission {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @unique @default(uuid(7)) @db.Uuid
+  userId      Int      @map("user_id")
+  feature     Feature
+  canCreate   Boolean  @default(false) @map("can_create")
+  canView     Boolean  @default(false) @map("can_view")
+  canEdit     Boolean  @default(false) @map("can_edit")
+  canDelete   Boolean  @default(false) @map("can_delete")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedById Int?     @map("updated_by_id")
+
+  user      User  @relation("PermissionUser", fields: [userId], references: [id])
+  updatedBy User? @relation("PermissionUpdatedBy", fields: [updatedById], references: [id])
+
+  @@unique([userId, feature])
+  @@map("user_permissions")
+}
+
+/// Every uploaded file (see packages/media-library). Rows store the storage
+/// key, never a URL — URLs are built by the provider, so moving storage only
+/// changes how they're built.
+model MediaFile {
+  id           Int          @id @default(autoincrement())
+  uuid         String       @unique @default(uuid(7)) @db.Uuid
+  purpose      MediaPurpose
+  /// Provider that holds it, e.g. `local`.
+  provider     String
+  storageKey   String       @unique @map("storage_key")
+  mimeType     String       @map("mime_type")
+  sizeBytes    Int          @map("size_bytes")
+  width        Int?
+  height       Int?
+  originalName String?      @map("original_name")
+  createdAt    DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt    DateTime?    @map("deleted_at") @db.Timestamptz(3)
+  createdById  Int?         @map("created_by_id")
+  updatedById  Int?         @map("updated_by_id")
+  deletedById  Int?         @map("deleted_by_id")
+
+  createdBy User? @relation("MediaCreatedBy", fields: [createdById], references: [id])
+  updatedBy User? @relation("MediaUpdatedBy", fields: [updatedById], references: [id])
+  deletedBy User? @relation("MediaDeletedBy", fields: [deletedById], references: [id])
+
+  userPhotos User[] @relation("UserPhoto")
+
+  @@map("media_files")
+}

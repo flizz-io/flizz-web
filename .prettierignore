@@ -17,3 +17,9 @@ coverage/
 .env.local
 .env.production
 .husky/
+
+# Generated code — regenerated on install (`prisma generate`), never hand-edited
+apps/api/src/generated/
+
+# Uploaded media (local-disk storage provider)
+apps/api/storage/
