@@ -2,12 +2,9 @@ import { Hammer } from 'lucide-react';
 
 import { Atmosphere } from '@/components/snippets/atmosphere/atmosphere';
 import { Reveal } from '@/components/snippets/reveal/reveal';
-import {
-	portfolioHeroLead,
-	portfolioMeta,
-	projects
-} from '@/constants/portfolio';
-import { projectSectorOrder } from '@/enums/portfolio';
+import { portfolioHeroLead } from '@/constants/portfolio';
+import type { Project } from '@/types/portfolio';
+import { portfolioMetaOf, sectorCountsOf } from '@/utils/portfolio';
 import { cn } from '@workspace/ui/lib/utils';
 
 /**
@@ -19,14 +16,13 @@ import { cn } from '@workspace/ui/lib/utils';
  * and the counts answer it before they scroll. Keeping them inert also keeps
  * this whole page server-rendered, which a filter would not.
  */
-export function PortfolioHero({ className }: { className?: string }) {
-	const sectors = projectSectorOrder
-		.map((sector) => ({
-			sector,
-			count: projects.filter((project) => project.sector === sector)
-				.length
-		}))
-		.filter(({ count }) => count > 0);
+interface PortfolioHeroProps {
+	projects: Project[];
+	className?: string;
+}
+
+export function PortfolioHero({ projects, className }: PortfolioHeroProps) {
+	const sectors = sectorCountsOf(projects);
 
 	return (
 		<section
@@ -48,7 +44,7 @@ export function PortfolioHero({ className }: { className?: string }) {
 						</span>
 
 						<p className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
-							{portfolioMeta}
+							{portfolioMetaOf(projects)}
 						</p>
 					</div>
 

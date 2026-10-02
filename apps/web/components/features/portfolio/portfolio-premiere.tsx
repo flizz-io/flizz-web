@@ -19,14 +19,15 @@ import { DotField } from '@/components/snippets/dot-field/dot-field';
 import { MediaSlot } from '@/components/snippets/media-slot/media-slot';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
-import { featuredProjects } from '@/constants/portfolio';
-import { projectSectorOrder } from '@/enums/portfolio';
+import type { Project } from '@/types/portfolio';
 import { scaleTransition, scaleVariants } from '@/utils/animation';
 import { Button } from '@workspace/ui/components/button';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface PortfolioPremiereProps {
+	/** The featured projects, in reel order — see `reelOf`. */
+	reel: Project[];
 	sectionIndex: number;
 	totalSections?: number;
 	/**
@@ -59,17 +60,6 @@ const swipeThreshold = 48;
 
 /** The house easing, as a bezier for Framer. */
 const powerOn = [0.16, 1, 0.3, 1] as const;
-
-/**
- * The highlighted work in running order — sector by sector, newest first inside
- * each — the same order the other two treatments use, so switching variant
- * never reshuffles the work.
- */
-const reel = projectSectorOrder.flatMap((sector) =>
-	featuredProjects
-		.filter((project) => project.sector === sector)
-		.sort((a, b) => b.year.localeCompare(a.year))
-);
 
 const pad = (value: number) => String(value).padStart(2, '0');
 
@@ -138,6 +128,7 @@ const plateVariants: Variants = scaleVariants({
  * page moves unprompted. Every piece respects the reduced-motion preference.
  */
 export function PortfolioPremiere({
+	reel,
 	sectionIndex,
 	totalSections,
 	fullWidth = true,
@@ -161,16 +152,24 @@ export function PortfolioPremiere({
 
 	const cut = useCallback(
 		(target: number, direction: 1 | -1) =>
-			setScene((current) => advance(current, target, direction)),
-		[]
+			setScene((current) =>
+				advance(current, target, direction, reel.length)
+			),
+		[reel.length]
 	);
 	const next = useCallback(
-		() => setScene((current) => advance(current, current.index + 1, 1)),
-		[]
+		() =>
+			setScene((current) =>
+				advance(current, current.index + 1, 1, reel.length)
+			),
+		[reel.length]
 	);
 	const prev = useCallback(
-		() => setScene((current) => advance(current, current.index - 1, -1)),
-		[]
+		() =>
+			setScene((current) =>
+				advance(current, current.index - 1, -1, reel.length)
+			),
+		[reel.length]
 	);
 
 	// --- pointer parallax ----------------------------------------------------
@@ -693,8 +692,13 @@ export function PortfolioPremiere({
 }
 
 /** One cut, as a pure step for the functional `setScene` updaters. Wraps. */
-function advance(current: Scene, target: number, direction: 1 | -1): Scene {
-	const index = (target + reel.length) % reel.length;
+function advance(
+	current: Scene,
+	target: number,
+	direction: 1 | -1,
+	length: number
+): Scene {
+	const index = (target + length) % length;
 	if (index === current.index) return current;
 
 	return { index, direction, take: current.take + 1 };

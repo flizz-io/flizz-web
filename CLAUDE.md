@@ -53,7 +53,7 @@ This is a **pnpm + Turborepo monorepo** with two workspace groups:
 ### Key relationships
 
 - Both apps import components via `@workspace/ui/components/<name>` and global styles via `@workspace/ui/globals.css`.
-- Each app's `next.config.ts` lists the source-only workspace packages it uses in `transpilePackages` (`@workspace/ui`, and `@workspace/api-services` in the dashboard) — they are not compiled separately.
+- Each app's `next.config.ts` lists the source-only workspace packages it uses in `transpilePackages` (`@workspace/ui`, `@workspace/api-services`, …) — they are not compiled separately.
 - The `@workspace/ui` package exports are declared in its `package.json#exports` map (components, hooks, lib, globals.css). New source files must be added there to be importable.
 
 ### Adding shadcn/ui components

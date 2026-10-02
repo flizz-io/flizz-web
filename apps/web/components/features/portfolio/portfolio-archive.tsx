@@ -9,11 +9,14 @@ import {
 } from '@/components/snippets/indexed-list/indexed-list';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
-import { archivePageSize, archiveProjects } from '@/constants/portfolio';
+import { archivePageSize } from '@/constants/portfolio';
+import type { Project } from '@/types/portfolio';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface PortfolioArchiveProps {
+	/** The projects the reel doesn't carry, newest first — see `archiveOf`. */
+	projects: Project[];
 	sectionIndex: number;
 	totalSections?: number;
 	className?: string;
@@ -29,10 +32,10 @@ interface PortfolioArchiveProps {
  *
  * Rows arrive in batches rather than all at once for the same reason the reel
  * exists: an index that opens at its full length reads as a backlog. Paging is
- * client-side over a static roster today, and the shape is what the Projects
- * API will page against at Stage 13.
+ * client-side — a portfolio is tens of projects, all loaded with the page.
  */
 export function PortfolioArchive({
+	projects: archiveProjects,
 	sectionIndex,
 	totalSections,
 	className

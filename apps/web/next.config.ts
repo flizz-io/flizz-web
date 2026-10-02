@@ -1,12 +1,30 @@
 import type { NextConfig } from 'next';
 
+/**
+ * Where project images come from: Cloudinary, plus the API's own media route
+ * when it serves files from local disk (`MEDIA_PROVIDER=local`).
+ */
+const mediaPatterns = [
+	new URL('https://res.cloudinary.com/**'),
+	...(process.env.MEDIA_BASE_URL
+		? [new URL(`${process.env.MEDIA_BASE_URL}/**`)]
+		: [])
+];
+
 const nextConfig: NextConfig = {
 	// TODO: drop '@workspace/theme-lab' together with that package before production.
 	transpilePackages: [
 		'@workspace/ui',
 		'@workspace/theme-lab',
-		'@workspace/service-visuals'
-	]
+		'@workspace/service-visuals',
+		'@workspace/api-services'
+	],
+	images: {
+		remotePatterns: mediaPatterns,
+		// Local-disk media lives on localhost in development, which the image
+		// optimiser refuses by default.
+		dangerouslyAllowLocalIP: process.env.NODE_ENV === 'development'
+	}
 };
 
 export default nextConfig;

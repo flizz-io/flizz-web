@@ -2,23 +2,26 @@
 
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ProjectShift } from '@/components/features/portfolio/project-shift';
 import { Atmosphere } from '@/components/snippets/atmosphere/atmosphere';
 import { DotField } from '@/components/snippets/dot-field/dot-field';
 import { Pinned } from '@/components/snippets/pinned/pinned';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
-import { featuredProjects, projectSectorVisuals } from '@/constants/portfolio';
+import { projectSectorVisuals } from '@/constants/portfolio';
 import { useSmoother } from '@/contexts/smooth-scroll-context';
-import { projectSectorOrder } from '@/enums/portfolio';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import type { Project } from '@/types/portfolio';
+import { reelChapters } from '@/utils/portfolio';
 import { scrollToPosition } from '@/utils/scroll';
 import { ServiceVisual } from '@workspace/service-visuals';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface PortfolioReelProps {
+	/** The featured projects, in reel order — see `reelOf`. */
+	reel: Project[];
 	sectionIndex: number;
 	totalSections?: number;
 	className?: string;
@@ -39,27 +42,6 @@ const sceneMask =
 	'radial-gradient(ellipse 72% 78% at 52% 50%, #000 22%, transparent 78%)';
 
 /**
- * The highlighted work in running order — sector by sector, newest first inside
- * each — so the reel plays as chapters rather than as unrelated frames.
- */
-const reel = projectSectorOrder.flatMap((sector) =>
-	featuredProjects
-		.filter((project) => project.sector === sector)
-		.sort((a, b) => b.year.localeCompare(a.year))
-);
-
-/** Where each chapter opens, for the scrubber's grouping. */
-const chapters = projectSectorOrder
-	.map((sector) => ({
-		sector,
-		start: reel.findIndex((project) => project.sector === sector),
-		items: reel
-			.map((project, index) => ({ project, index }))
-			.filter((entry) => entry.project.sector === sector)
-	}))
-	.filter((chapter) => chapter.items.length > 0);
-
-/**
  * The highlighted work, one project at a time, advanced by scrolling.
  *
  * Rows give every project the same weight and none of them any presence, so the
@@ -74,10 +56,12 @@ const chapters = projectSectorOrder
  * tick per frame, grouped into chapters, each one a jump.
  */
 export function PortfolioReel({
+	reel,
 	sectionIndex,
 	totalSections,
 	className
 }: PortfolioReelProps) {
+	const chapters = useMemo(() => reelChapters(reel), [reel]);
 	const smoother = useSmoother();
 	// `hidden lg:block` would still mount the specimen and burn a WebGL context
 	// on phones that never see it, so the scene is gated on the query instead.
@@ -148,7 +132,7 @@ export function PortfolioReel({
 			observer.disconnect();
 			if (frame) cancelAnimationFrame(frame);
 		};
-	}, []);
+	}, [reel.length]);
 
 	const activeProject = reel[activeIndex];
 	const activeSector = activeProject?.sector;

@@ -103,6 +103,8 @@ The slug `home` is reserved — it would collide with `GET /api/public/projects/
 
 - The portfolio pages stay statically generated. Saving, publishing or deleting a project asks the web app to **revalidate** the affected pages (an on-demand revalidation endpoint protected by a shared secret), so changes appear within seconds without a rebuild.
 - A scheduled project becomes public at read time; pages revalidate on a short interval as a backstop so a scheduled launch shows without anyone saving.
+- **How it's wired (E1):** the web app reads through `@workspace/api-services` in `apps/web/utils/projects-api.ts`, with fetches tagged `projects` and a 5-minute backstop (`revalidate = 300`). After an edit, delete or image change the API calls `POST <WEB_URL>/api/revalidate` with `Authorization: Bearer <WEB_REVALIDATE_SECRET>`; the site checks it against its `REVALIDATE_SECRET` and expires the tag. Either side unset → no nudge, only the backstop. `next build` needs the API reachable at `API_URL`. A project published after the build renders on its first visit.
+- **Reel order:** the reel still plays sector by sector; inside a sector, featured projects follow the dashboard's featured order.
 - Gallery section (E5): designed with the `frontend-design` skill, matching the existing detail page; only shown when a project has gallery images.
 
 ## Dashboard
@@ -116,4 +118,5 @@ The slug `home` is reserved — it would collide with `GET /api/public/projects/
 ## Decisions log
 
 - **Image size (2026-10-02):** project images (cover and gallery) may be up to **2 MB**; profile photos stay at 500 KB. The limit is set per upload endpoint.
+- **Enum values on the site (2026-10-02):** the web app keeps its label-valued `ProjectSector` / `ServiceCategory` (used across the services and home pages too) and maps the API's keys onto them in `utils/projects-api.ts` — the keys are shared, so it's one lookup. This replaces the planned switch of the web enums to keys.
 - **Slug changes (2026-10-02):** no redirects from previous slugs. Changing a published project's slug breaks old links — the slug field says so.

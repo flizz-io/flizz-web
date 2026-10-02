@@ -2,7 +2,7 @@
 
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { ProjectShift } from '@/components/features/portfolio/project-shift';
 import { Atmosphere } from '@/components/snippets/atmosphere/atmosphere';
@@ -10,8 +10,8 @@ import { DotField } from '@/components/snippets/dot-field/dot-field';
 import { MediaSlot } from '@/components/snippets/media-slot/media-slot';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
-import { featuredProjects } from '@/constants/portfolio';
-import { projectSectorOrder } from '@/enums/portfolio';
+import type { Project } from '@/types/portfolio';
+import { reelChapters } from '@/utils/portfolio';
 import { Button } from '@workspace/ui/components/button';
 import {
 	Carousel,
@@ -24,31 +24,12 @@ import {
 import { cn } from '@workspace/ui/lib/utils';
 
 interface PortfolioCarouselProps {
+	/** The featured projects, in reel order — see `reelOf`. */
+	reel: Project[];
 	sectionIndex: number;
 	totalSections?: number;
 	className?: string;
 }
-
-/**
- * The highlighted work in running order — sector by sector, newest first inside
- * each — the same order the scroll reel plays, so switching variant never
- * reshuffles the work.
- */
-const reel = projectSectorOrder.flatMap((sector) =>
-	featuredProjects
-		.filter((project) => project.sector === sector)
-		.sort((a, b) => b.year.localeCompare(a.year))
-);
-
-/** Ticks grouped by chapter, so the scrubber shows the shape of the set. */
-const chapters = projectSectorOrder
-	.map((sector) => ({
-		sector,
-		items: reel
-			.map((project, index) => ({ project, index }))
-			.filter((entry) => entry.project.sector === sector)
-	}))
-	.filter((chapter) => chapter.items.length > 0);
 
 /**
  * Hidden on phones: the region's height there is mostly caption, so a
@@ -73,10 +54,12 @@ const arrowClassName =
  * from the same place the testimonials get them.
  */
 export function PortfolioCarousel({
+	reel,
 	sectionIndex,
 	totalSections,
 	className
 }: PortfolioCarouselProps) {
+	const chapters = useMemo(() => reelChapters(reel), [reel]);
 	const [api, setApi] = useState<CarouselApi>();
 	const [current, setCurrent] = useState(0);
 

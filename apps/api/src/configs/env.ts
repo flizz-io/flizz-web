@@ -39,7 +39,9 @@ const baseEnvSchema = z.object({
 	CLOUDINARY_CLOUD_NAME: blankAsUnset,
 	CLOUDINARY_API_KEY: blankAsUnset,
 	CLOUDINARY_API_SECRET: blankAsUnset,
-	CLOUDINARY_FOLDER: z.string().min(1).default('flizz')
+	CLOUDINARY_FOLDER: z.string().min(1).default('flizz'),
+	WEB_URL: blankAsUnset.pipe(z.url().optional()),
+	WEB_REVALIDATE_SECRET: blankAsUnset
 });
 
 /** Each media provider's own settings, required only when it's in use. */
@@ -100,5 +102,10 @@ export const env = {
 			apiSecret: values.CLOUDINARY_API_SECRET ?? '',
 			folder: values.CLOUDINARY_FOLDER
 		}
+	},
+	/** The public site — asked to refresh its pages after content changes. */
+	web: {
+		url: values.WEB_URL?.replace(/\/+$/, '') ?? null,
+		revalidateSecret: values.WEB_REVALIDATE_SECRET ?? null
 	}
 } as const;

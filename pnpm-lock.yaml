@@ -166,6 +166,9 @@ importers:
       '@gsap/react':
         specifier: ^2.1.2
         version: 2.1.2(gsap@3.15.0)(react@19.2.4)
+      '@workspace/api-services':
+        specifier: workspace:*
+        version: link:../../packages/api-services
       '@workspace/service-visuals':
         specifier: workspace:*
         version: link:../../packages/service-visuals
@@ -196,6 +199,9 @@ importers:
       react-dom:
         specifier: 19.2.4
         version: 19.2.4(react@19.2.4)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
       three:
         specifier: ^0.185.1
         version: 0.185.1

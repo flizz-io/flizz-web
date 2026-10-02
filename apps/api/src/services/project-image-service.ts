@@ -5,8 +5,10 @@ import {
 } from '@workspace/media-library';
 
 import { recordImage, retireMedia, storeImage } from './media-service.js';
+import { revalidateSite } from './site-revalidation-service.js';
 import { prisma } from '../configs/database.js';
 import { maxGalleryImages } from '../constants/media.js';
+import { RevalidationTag } from '../enums/revalidation-tag.js';
 import type { MediaFile, Prisma } from '../generated/prisma/client.js';
 import { MediaPurpose } from '../generated/prisma/enums.js';
 import type {
@@ -80,6 +82,13 @@ export async function getProjectImages(
 	};
 }
 
+/** After a change: the site refreshes, the caller gets the new state. */
+function imagesChanged(projectId: number) {
+	revalidateSite(RevalidationTag.PROJECTS);
+
+	return getProjectImages(projectId);
+}
+
 /** Marks the project as changed by this user. */
 const touch = (
 	tx: Prisma.TransactionClient,
@@ -122,7 +131,7 @@ export async function setProjectCover(
 		});
 	});
 
-	return getProjectImages(projectId);
+	return imagesChanged(projectId);
 }
 
 /** Clears the cover — the pages fall back to registration marks. */
@@ -146,7 +155,7 @@ export async function clearProjectCover(
 		});
 	});
 
-	return getProjectImages(projectId);
+	return imagesChanged(projectId);
 }
 
 /** Adds an image at the end of the gallery (at most `maxGalleryImages`). */
@@ -194,7 +203,7 @@ export async function addGalleryImage(
 		await touch(tx, actor, projectId);
 	});
 
-	return getProjectImages(projectId);
+	return imagesChanged(projectId);
 }
 
 /** A live gallery entry of this project, or 404. */
@@ -227,7 +236,7 @@ export async function updateGalleryCaption(
 		})
 	]);
 
-	return getProjectImages(projectId);
+	return imagesChanged(projectId);
 }
 
 /** Retires one gallery image (entry and file record) — nothing is deleted. */
@@ -253,7 +262,7 @@ export async function retireGalleryImage(
 		await touch(tx, actor, projectId);
 	});
 
-	return getProjectImages(projectId);
+	return imagesChanged(projectId);
 }
 
 /**
@@ -296,5 +305,5 @@ export async function reorderGallery(
 		})
 	]);
 
-	return getProjectImages(projectId);
+	return imagesChanged(projectId);
 }

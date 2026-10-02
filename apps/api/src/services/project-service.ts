@@ -1,7 +1,9 @@
 import { getProjectImages } from './project-image-service.js';
+import { revalidateSite } from './site-revalidation-service.js';
 import { prisma } from '../configs/database.js';
 import { projectLimits, reservedProjectSlugs } from '../constants/project.js';
 import { ProjectVisibility } from '../enums/project-visibility.js';
+import { RevalidationTag } from '../enums/revalidation-tag.js';
 import type { Prisma } from '../generated/prisma/client.js';
 import { ProjectStatus } from '../generated/prisma/enums.js';
 import {
@@ -284,6 +286,7 @@ export async function editProject(
 		},
 		include: projectInclude
 	});
+	revalidateSite(RevalidationTag.PROJECTS);
 
 	return toProjectResponse(project);
 }
@@ -303,4 +306,5 @@ export async function removeProject(actor: CurrentUser, uuid: string) {
 			updatedById: actor.id
 		}
 	});
+	revalidateSite(RevalidationTag.PROJECTS);
 }

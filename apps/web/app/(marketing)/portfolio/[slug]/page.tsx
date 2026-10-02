@@ -8,21 +8,33 @@ import { ProjectDetailHero } from '@/components/features/portfolio/project-detai
 import { ProjectOutcome } from '@/components/features/portfolio/project-outcome';
 import { ProjectRelated } from '@/components/features/portfolio/project-related';
 import { siteConfig } from '@/configs/site';
-import { projects } from '@/constants/portfolio';
+import {
+	getPortfolioProject,
+	getPortfolioProjects
+} from '@/utils/projects-api';
 
 interface ProjectPageProps {
 	params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-	return projects.map((project) => ({ slug: project.slug }));
+/** Backstop for scheduled launches — edits revalidate on demand. */
+export const revalidate = 300;
+
+/**
+ * Every visible project is built ahead; one published later renders on its
+ * first visit and is cached from then on (`dynamicParams` stays on).
+ */
+export async function generateStaticParams() {
+	return (await getPortfolioProjects()).map((project) => ({
+		slug: project.slug
+	}));
 }
 
 export async function generateMetadata({
 	params
 }: ProjectPageProps): Promise<Metadata> {
 	const { slug } = await params;
-	const project = projects.find((entry) => entry.slug === slug);
+	const project = await getPortfolioProject(slug);
 
 	if (!project) return {};
 
@@ -51,7 +63,10 @@ export async function generateMetadata({
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
 	const { slug } = await params;
-	const project = projects.find((entry) => entry.slug === slug);
+	const [project, projects] = await Promise.all([
+		getPortfolioProject(slug),
+		getPortfolioProjects()
+	]);
 
 	if (!project) notFound();
 
