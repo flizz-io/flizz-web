@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { teamMessages } from '@/constants/team';
+import { commonMessages } from '@/constants/messages';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -26,7 +26,7 @@ interface ConfirmActionDialogProps {
 	onConfirm: () => Promise<void>;
 }
 
-/** "Are you sure?" for suspend, reactivate and remove. */
+/** "Are you sure?" before an action that is hard to undo. */
 export function ConfirmActionDialog({
 	open,
 	onOpenChange,
@@ -64,7 +64,7 @@ export function ConfirmActionDialog({
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel disabled={pending}>
-						{teamMessages.confirm.cancel}
+						{commonMessages.cancel}
 					</AlertDialogCancel>
 					<AlertDialogAction
 						disabled={pending}

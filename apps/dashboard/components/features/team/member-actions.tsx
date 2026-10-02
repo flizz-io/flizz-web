@@ -12,9 +12,9 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { ConfirmActionDialog } from '@/components/features/team/confirm-action-dialog';
 import { EditMemberDialog } from '@/components/features/team/edit-member-dialog';
 import { PermissionsDrawer } from '@/components/features/team/permissions-drawer';
+import { ConfirmActionDialog } from '@/components/snippets/confirm-action-dialog/confirm-action-dialog';
 import { permissionMessages } from '@/constants/permissions';
 import { teamMessages } from '@/constants/team';
 import type { TeamUser } from '@/types/team';

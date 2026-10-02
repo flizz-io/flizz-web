@@ -8,13 +8,13 @@ import { toast } from 'sonner';
 import {
 	acceptedImageTypes,
 	defaultImageSize,
-	maxUploadKb,
-	uploaderMessages
+	photoUploaderLabels,
+	uploadLimitsKb,
+	uploaderMessages,
+	type UploaderLabels
 } from '@/constants/media';
-import { ApiError } from '@workspace/api-services';
+import { ApiError, type ImageFit } from '@workspace/api-services';
 import { Button } from '@workspace/ui/components/button';
-
-type ImageFit = 'cover' | 'inside';
 
 interface ImageUploaderProps {
 	/** Output width in px (64–2048). Default 512. */
@@ -23,6 +23,10 @@ interface ImageUploaderProps {
 	height?: number;
 	/** `cover` crops to fill; `inside` keeps the whole image. Default `cover`. */
 	fit?: ImageFit;
+	/** Largest file accepted, in KB — match the endpoint's cap. Default 500. */
+	maxKb?: number;
+	/** Button wording. Defaults to "Upload photo" etc. */
+	labels?: UploaderLabels;
 	/** Whether there's an uploaded image to replace or remove. */
 	hasImage: boolean;
 	/** Uploads the chosen file — resolves when the parent has the new image. */
@@ -44,6 +48,8 @@ export function ImageUploader({
 	width = defaultImageSize.width,
 	height = defaultImageSize.height,
 	fit = defaultImageSize.fit,
+	maxKb = uploadLimitsKb.profilePhoto,
+	labels = photoUploaderLabels,
 	hasImage,
 	onUpload,
 	onRemove
@@ -71,8 +77,8 @@ export function ImageUploader({
 		if (!file) return;
 
 		const kb = Math.ceil(file.size / 1024);
-		if (kb > maxUploadKb) {
-			toast.error(uploaderMessages.tooLarge(kb));
+		if (kb > maxKb) {
+			toast.error(uploaderMessages.tooLarge(kb, maxKb));
 			return;
 		}
 
@@ -92,8 +98,8 @@ export function ImageUploader({
 					{pending
 						? uploaderMessages.uploading
 						: hasImage
-							? uploaderMessages.replace
-							: uploaderMessages.choose}
+							? labels.replace
+							: labels.choose}
 				</Button>
 				{hasImage && onRemove ? (
 					<Button
@@ -103,12 +109,12 @@ export function ImageUploader({
 						onClick={() => run(onRemove)}
 					>
 						<Trash2 />
-						{uploaderMessages.remove}
+						{labels.remove}
 					</Button>
 				) : null}
 			</div>
 			<p className="text-xs text-muted-foreground">
-				{uploaderMessages.hint(width, height)}
+				{uploaderMessages.hint(width, height, maxKb)}
 			</p>
 			<input
 				ref={inputRef}

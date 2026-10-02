@@ -109,6 +109,7 @@ The slug `home` is reserved — it would collide with `GET /api/public/projects/
 
 - **Projects list** — cover thumbnail, name, sector, year, status badge (Draft / Scheduled / Live), featured and home markers, last updated by. Search, sector and status filters. Visible with `VIEW`.
 - **Project form** — sections: Basics (name, slug, client, sector, service, year, summary), Results (pairs, reorderable), Case study (the four lists, reorderable), Stack (chips), Quote, Images (cover + gallery with captions and reorder), Publishing (status, publish date, featured + order, show on home + order). Read-only without `EDIT`.
+- **Saving** — the fields are saved together with the form's Save. Images are saved as they change (upload, caption on blur, reorder, remove) and only once the project exists, so a new project is created as a Draft first and its images added after.
 - **Delete** — confirmed; only with `DELETE`.
 - Each project shows "Created by … · Last changed by …".
 

@@ -22,3 +22,8 @@ export const shellMessages = {
 	overviewLead:
 		"You're signed in. Content management screens land here feature by feature — Projects first."
 } as const;
+
+/** Words every screen shares. */
+export const commonMessages = {
+	cancel: 'Cancel'
+} as const;

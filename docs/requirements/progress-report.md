@@ -115,11 +115,11 @@ Branch: `feat/dashboard-auth-portfolio`. Tasks run one at a time, in order; upda
 
 ### Phase D — Shared API layer & dashboard screens (Stages 11–12)
 
-| #   | Task                                                                                                                       | Status      |
-| --- | -------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| D1  | `packages/api-services`: common fetcher, auth + projects models, enums and service functions                               | Done        |
-| D2  | Dashboard Projects list — table, search, sector filter, featured toggle                                                    | Done        |
-| D3  | Dashboard Project form — basics, results, case-study lists, stack, quote, cover + gallery, publishing; delete with confirm | Not started |
+| #   | Task                                                                                                                       | Status |
+| --- | -------------------------------------------------------------------------------------------------------------------------- | ------ |
+| D1  | `packages/api-services`: common fetcher, auth + projects models, enums and service functions                               | Done   |
+| D2  | Dashboard Projects list — table, search, sector filter, featured toggle                                                    | Done   |
+| D3  | Dashboard Project form — basics, results, case-study lists, stack, quote, cover + gallery, publishing; delete with confirm | Done   |
 
 ### Phase E — Landing integration (Stage 13)
 
