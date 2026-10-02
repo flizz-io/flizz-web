@@ -13,6 +13,14 @@ const mediaPatterns = [
 		: [])
 ];
 
+const loopbackHosts = ['localhost', '127.0.0.1', '[::1]'];
+
+/** Local-disk media served from this machine — only ever in local runs. */
+const mediaIsLocal = Boolean(
+	process.env.MEDIA_BASE_URL &&
+	loopbackHosts.includes(new URL(process.env.MEDIA_BASE_URL).hostname)
+);
+
 const nextConfig: NextConfig = {
 	// TODO: drop '@workspace/theme-lab' together with that package before production.
 	transpilePackages: [
@@ -23,9 +31,9 @@ const nextConfig: NextConfig = {
 	],
 	images: {
 		remotePatterns: mediaPatterns,
-		// Local-disk media lives on localhost in development, which the image
-		// optimiser refuses by default.
-		dangerouslyAllowLocalIP: process.env.NODE_ENV === 'development'
+		// The optimiser refuses private addresses by default; allowed only
+		// while media is served from this machine (local-disk development).
+		dangerouslyAllowLocalIP: mediaIsLocal
 	}
 };
 

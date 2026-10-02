@@ -5,6 +5,7 @@ import { PortfolioCta } from '@/components/features/portfolio/portfolio-cta';
 import { ProjectBrief } from '@/components/features/portfolio/project-brief';
 import { ProjectBuild } from '@/components/features/portfolio/project-build';
 import { ProjectDetailHero } from '@/components/features/portfolio/project-detail-hero';
+import { ProjectGallery } from '@/components/features/portfolio/project-gallery';
 import { ProjectOutcome } from '@/components/features/portfolio/project-outcome';
 import { ProjectRelated } from '@/components/features/portfolio/project-related';
 import { siteConfig } from '@/configs/site';
@@ -75,9 +76,15 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 			entry.sector === project.sector && entry.slug !== project.slug
 	);
 
-	// "Nearby work" drops out when a sector holds only this project, so the
-	// counter has to be built from what actually renders.
-	const totalSections = related.length ? 5 : 4;
+	// The gallery shows only with images, and "Nearby work" drops out when a
+	// sector holds only this project — so the counter is built from what
+	// actually renders.
+	const gallery = project.gallery ?? [];
+	const galleryIndex = 3;
+	const outcomeIndex = galleryIndex + (gallery.length ? 1 : 0);
+	const relatedIndex = outcomeIndex + 1;
+	const ctaIndex = relatedIndex + (related.length ? 1 : 0);
+	const totalSections = ctaIndex;
 	const url = `${siteConfig.url}/portfolio/${project.slug}`;
 
 	// CreativeWork rather than Article: this is a record of work done, not a
@@ -145,20 +152,26 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 				sectionIndex={2}
 				totalSections={totalSections}
 			/>
+			<ProjectGallery
+				images={gallery}
+				projectName={project.name}
+				sectionIndex={galleryIndex}
+				totalSections={totalSections}
+			/>
 			<ProjectOutcome
 				results={project.results}
 				quote={project.quote}
-				sectionIndex={3}
+				sectionIndex={outcomeIndex}
 				totalSections={totalSections}
 			/>
 			<ProjectRelated
 				projects={related}
 				sector={project.sector}
-				sectionIndex={4}
+				sectionIndex={relatedIndex}
 				totalSections={totalSections}
 			/>
 			<PortfolioCta
-				sectionIndex={related.length ? 5 : 4}
+				sectionIndex={ctaIndex}
 				totalSections={totalSections}
 				heading="Got a version of this problem?"
 				lead={`This one ran ${project.duration.toLowerCase()} with ${project.team.toLowerCase()}. Yours will be different — a discovery call is how we find out by how much.`}

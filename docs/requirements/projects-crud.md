@@ -105,7 +105,7 @@ The slug `home` is reserved — it would collide with `GET /api/public/projects/
 - A scheduled project becomes public at read time; pages revalidate on a short interval as a backstop so a scheduled launch shows without anyone saving.
 - **How it's wired (E1):** the web app reads through `@workspace/api-services` in `apps/web/utils/projects-api.ts`, with fetches tagged `projects` and a 5-minute backstop (`revalidate = 300`). After an edit, delete or image change the API calls `POST <WEB_URL>/api/revalidate` with `Authorization: Bearer <WEB_REVALIDATE_SECRET>`; the site checks it against its `REVALIDATE_SECRET` and expires the tag. Either side unset → no nudge, only the backstop. `next build` needs the API reachable at `API_URL`. A project published after the build renders on its first visit.
 - **Reel order:** the reel still plays sector by sector; inside a sector, featured projects follow the dashboard's featured order.
-- Gallery section (E5): designed with the `frontend-design` skill, matching the existing detail page; only shown when a project has gallery images.
+- Gallery section (E5): designed with the `frontend-design` skill, matching the existing detail page; only shown when a project has gallery images — see [portfolio-pages.md](portfolio-pages.md#gallery-section--2026-10-02-task-e5).
 
 ## Dashboard
 

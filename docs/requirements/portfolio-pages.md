@@ -157,6 +157,15 @@ Measured, not assumed. Two findings from profiling the reel:
 A settle delay (`sceneSettleMs`) means a fast scroll through several chapters
 builds only the set it lands on.
 
+## Gallery section — 2026-10-02 (task E5)
+
+`ProjectGallery` sits between "How we went at it" and "What changed", and renders only when the project has gallery images (the section counter renumbers around it). Designed as a contact sheet of the product's screens:
+
+- The first image (the dashboard's gallery order) runs the full width as the lead plate; the rest fall into CSS columns — two from `sm`, three from `lg` when there are more than two — at their own proportions. Nothing is cropped, matching the `inside` fit the images are saved with.
+- Each plate is numbered `03 / 06` — the order is the editor's sequence — with its caption beside the number.
+- Clicking a plate opens it full-screen inside the registration marks used for reserved artwork elsewhere on the site, with previous / next buttons and arrow keys. The dialog is portalled to `body`, so ScrollSmoother's transform doesn't affect it.
+- Headline "What we put in front of people" is invented copy — `TODO: PM to confirm`.
+
 ## Home page coupling
 
 Since Phase E (2026-10-02) both read from the Projects API ([projects-crud.md](projects-crud.md)): the strip is the projects flagged **Show on home**, in home order, and `/portfolio` is every visible project — so the two can never disagree. Each card links to its own detail page. `ProjectCard` in `types/home.ts` and the strip's local pending-slot copy were both deleted in favour of `Project` and the shared `MediaSlot`.
