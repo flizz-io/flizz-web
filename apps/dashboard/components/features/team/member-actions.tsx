@@ -1,18 +1,27 @@
 'use client';
 
-import { MoreHorizontal, Pencil, Trash2, UserCheck, UserX } from 'lucide-react';
+import {
+	KeyRound,
+	MoreHorizontal,
+	Pencil,
+	Trash2,
+	UserCheck,
+	UserX
+} from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { ConfirmActionDialog } from '@/components/features/team/confirm-action-dialog';
 import { EditMemberDialog } from '@/components/features/team/edit-member-dialog';
+import { PermissionsDrawer } from '@/components/features/team/permissions-drawer';
+import { ConfirmActionDialog } from '@/components/snippets/confirm-action-dialog/confirm-action-dialog';
+import { permissionMessages } from '@/constants/permissions';
 import { teamMessages } from '@/constants/team';
 import type { TeamUser } from '@/types/team';
-import { ApiError } from '@/utils/api-error';
 import { clientApi } from '@/utils/client-api';
 import { teamActionsFor } from '@/utils/team-rules';
 import { displayName } from '@/utils/user-display';
+import { ApiError, HttpMethod } from '@workspace/api-services';
 import { Button } from '@workspace/ui/components/button';
 import {
 	DropdownMenu,
@@ -24,6 +33,7 @@ import {
 
 enum MemberDialog {
 	EDIT = 'edit',
+	PERMISSIONS = 'permissions',
 	SUSPEND = 'suspend',
 	REACTIVATE = 'reactivate',
 	REMOVE = 'remove'
@@ -81,6 +91,14 @@ export function MemberActions({ user, currentUserUuid }: MemberActionsProps) {
 						<Pencil />
 						{teamMessages.actions.edit}
 					</DropdownMenuItem>
+					{actions.canEditPermissions ? (
+						<DropdownMenuItem
+							onSelect={() => setDialog(MemberDialog.PERMISSIONS)}
+						>
+							<KeyRound />
+							{permissionMessages.menuItem}
+						</DropdownMenuItem>
+					) : null}
 					{actions.canSuspend ||
 					actions.canReactivate ||
 					actions.canRemove ? (
@@ -123,6 +141,13 @@ export function MemberActions({ user, currentUserUuid }: MemberActionsProps) {
 					onOpenChange={close}
 				/>
 			) : null}
+			{dialog === MemberDialog.PERMISSIONS ? (
+				<PermissionsDrawer
+					user={user}
+					open
+					onOpenChange={close}
+				/>
+			) : null}
 			<ConfirmActionDialog
 				open={dialog === MemberDialog.SUSPEND}
 				onOpenChange={close}
@@ -134,7 +159,7 @@ export function MemberActions({ user, currentUserUuid }: MemberActionsProps) {
 					run(
 						() =>
 							clientApi(`/users/${user.uuid}/suspend`, {
-								method: 'POST'
+								method: HttpMethod.POST
 							}),
 						teamMessages.confirm.suspended(name)
 					)
@@ -150,7 +175,7 @@ export function MemberActions({ user, currentUserUuid }: MemberActionsProps) {
 					run(
 						() =>
 							clientApi(`/users/${user.uuid}/reactivate`, {
-								method: 'POST'
+								method: HttpMethod.POST
 							}),
 						teamMessages.confirm.reactivated(name)
 					)
@@ -167,7 +192,7 @@ export function MemberActions({ user, currentUserUuid }: MemberActionsProps) {
 					run(
 						() =>
 							clientApi(`/users/${user.uuid}`, {
-								method: 'DELETE'
+								method: HttpMethod.DELETE
 							}),
 						teamMessages.confirm.removed(name)
 					)

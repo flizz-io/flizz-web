@@ -1,37 +1,33 @@
-import { ApiErrorCode } from '@/enums/auth';
-import { ApiError, toApiError } from '@/utils/api-error';
+import { apiService, HttpMethod, toUploadForm } from '@workspace/api-services';
 
 interface ClientApiOptions {
-	method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
+	method?: HttpMethod;
 	body?: unknown;
 }
 
 /**
  * Calls the API from the browser through the dashboard's own `/api` rewrite,
  * so the session cookie goes along. Returns `data`, or throws an `ApiError`.
+ * Features with a service in `@workspace/api-services` call that instead.
  */
-export async function clientApi<T>(
+export function clientApi<T>(
 	path: string,
-	{ method = 'GET', body }: ClientApiOptions = {}
+	{ method = HttpMethod.GET, body }: ClientApiOptions = {}
 ): Promise<T> {
-	const response = await fetch(`/api${path}`, {
-		method,
-		headers:
-			body === undefined
-				? undefined
-				: { 'Content-Type': 'application/json' },
-		body: body === undefined ? undefined : JSON.stringify(body)
-	}).catch(() => {
-		throw new ApiError(
-			0,
-			ApiErrorCode.INTERNAL,
-			"Can't reach the server right now. Try again in a moment."
-		);
+	return apiService<T>(path, { method, body });
+}
+
+/**
+ * Uploads a file (multipart) through the `/api` rewrite. Extra fields go
+ * alongside it — e.g. an image's `width` / `height` / `fit`.
+ */
+export function clientUpload<T>(
+	path: string,
+	file: File,
+	fields: Record<string, string | number> = {}
+): Promise<T> {
+	return apiService<T>(path, {
+		method: HttpMethod.POST,
+		form: toUploadForm(file, fields)
 	});
-
-	if (!response.ok) throw await toApiError(response);
-	if (response.status === 204) return undefined as T;
-
-	const { data } = (await response.json()) as { data: T };
-	return data;
 }

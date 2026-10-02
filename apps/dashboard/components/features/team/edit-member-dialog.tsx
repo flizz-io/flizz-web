@@ -6,13 +6,12 @@ import type { FormEvent } from 'react';
 import { toast } from 'sonner';
 
 import { assignableRoles, roleLabels, teamMessages } from '@/constants/team';
-import { UserRole } from '@/enums/user';
 import type { TeamUser } from '@/types/team';
-import { ApiError } from '@/utils/api-error';
 import { clientApi } from '@/utils/client-api';
 import { relativeTime } from '@/utils/relative-time';
 import type { TeamActions } from '@/utils/team-rules';
 import { displayName } from '@/utils/user-display';
+import { ApiError, UserRole, HttpMethod } from '@workspace/api-services';
 import { Button } from '@workspace/ui/components/button';
 import { Checkbox } from '@workspace/ui/components/checkbox';
 import {
@@ -119,7 +118,7 @@ export function EditMemberDialog({
 		setFieldErrors({});
 		try {
 			await clientApi<TeamUser>(`/users/${user.uuid}`, {
-				method: 'PATCH',
+				method: HttpMethod.PATCH,
 				body: changes
 			});
 			toast.success(teamMessages.edit.saved(name));

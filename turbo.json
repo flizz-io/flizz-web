@@ -6,7 +6,14 @@
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"env": ["DATABASE_URL", "API_URL", "NEXT_PUBLIC_GOOGLE_CLIENT_ID"],
+			"env": [
+				"DATABASE_URL",
+				"API_URL",
+				"MEDIA_BASE_URL",
+				"REVALIDATE_SECRET",
+				"ENABLE_PERIODIC_REVALIDATION",
+				"NEXT_PUBLIC_GOOGLE_CLIENT_ID"
+			],
 			"outputs": [".next/**", "!.next/cache/**", "dist/**"]
 		},
 		"lint": {

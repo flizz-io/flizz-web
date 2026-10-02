@@ -1,4 +1,6 @@
+import { revalidateSite } from './site-revalidation-service.js';
 import { prisma } from '../configs/database.js';
+import { RevalidationTag } from '../enums/revalidation-tag.js';
 import { UserLifecycle } from '../enums/user-lifecycle.js';
 import type { Prisma } from '../generated/prisma/client.js';
 import {
@@ -219,6 +221,7 @@ export async function updateTeamUser(
 		include: teamUserInclude
 	});
 
+	revalidateSite(RevalidationTag.TEAM);
 	return toTeamUserResponse(user);
 }
 
@@ -239,6 +242,7 @@ export async function suspendTeamUser(actor: CurrentUser, uuid: string) {
 		include: teamUserInclude
 	});
 
+	revalidateSite(RevalidationTag.TEAM);
 	return toTeamUserResponse(user);
 }
 
@@ -258,6 +262,7 @@ export async function reactivateTeamUser(actor: CurrentUser, uuid: string) {
 		include: teamUserInclude
 	});
 
+	revalidateSite(RevalidationTag.TEAM);
 	return toTeamUserResponse(user);
 }
 
@@ -282,6 +287,7 @@ export async function removeTeamUser(actor: CurrentUser, uuid: string) {
 			updatedById: actor.id
 		}
 	});
+	revalidateSite(RevalidationTag.TEAM);
 }
 
 /**

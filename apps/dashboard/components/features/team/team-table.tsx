@@ -7,16 +7,13 @@ import { LifecycleBadge } from '@/components/features/team/lifecycle-badge';
 import { MemberActions } from '@/components/features/team/member-actions';
 import { MemberCell } from '@/components/features/team/member-cell';
 import { RoleBadge } from '@/components/features/team/role-badge';
-import {
-	allFilterValue,
-	lifecycleLabels,
-	roleLabels,
-	teamMessages
-} from '@/constants/team';
-import { UserLifecycle, UserRole } from '@/enums/user';
+import { allFilterValue } from '@/constants/filters';
+import { lifecycleLabels, roleLabels, teamMessages } from '@/constants/team';
+import { UserLifecycle } from '@/enums/user';
 import type { TeamUser } from '@/types/team';
 import { relativeTime } from '@/utils/relative-time';
 import { displayName } from '@/utils/user-display';
+import { UserRole } from '@workspace/api-services';
 import { Input } from '@workspace/ui/components/input';
 import {
 	Select,

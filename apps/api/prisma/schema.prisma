@@ -36,6 +36,8 @@ enum UserStatus {
 /// What an uploaded file is for — decides its processing preset.
 enum MediaPurpose {
   AVATAR
+  PROJECT_COVER
+  PROJECT_GALLERY
 
   @@map("media_purpose")
 }
@@ -106,14 +108,20 @@ model User {
   permissions UserPermission[] @relation("PermissionUser")
 
   // Back-relations for the audit columns above.
-  usersCreated       User[]           @relation("UserCreatedBy")
-  usersUpdated       User[]           @relation("UserUpdatedBy")
-  usersDeleted       User[]           @relation("UserDeletedBy")
-  usersSuspended     User[]           @relation("UserSuspendedBy")
-  permissionsUpdated UserPermission[] @relation("PermissionUpdatedBy")
-  mediaCreated       MediaFile[]      @relation("MediaCreatedBy")
-  mediaUpdated       MediaFile[]      @relation("MediaUpdatedBy")
-  mediaDeleted       MediaFile[]      @relation("MediaDeletedBy")
+  usersCreated         User[]           @relation("UserCreatedBy")
+  usersUpdated         User[]           @relation("UserUpdatedBy")
+  usersDeleted         User[]           @relation("UserDeletedBy")
+  usersSuspended       User[]           @relation("UserSuspendedBy")
+  permissionsUpdated   UserPermission[] @relation("PermissionUpdatedBy")
+  mediaCreated         MediaFile[]      @relation("MediaCreatedBy")
+  mediaUpdated         MediaFile[]      @relation("MediaUpdatedBy")
+  mediaDeleted         MediaFile[]      @relation("MediaDeletedBy")
+  projectsCreated      Project[]        @relation("ProjectCreatedBy")
+  projectsUpdated      Project[]        @relation("ProjectUpdatedBy")
+  projectsDeleted      Project[]        @relation("ProjectDeletedBy")
+  projectImagesCreated ProjectImage[]   @relation("ProjectImageCreatedBy")
+  projectImagesUpdated ProjectImage[]   @relation("ProjectImageUpdatedBy")
+  projectImagesDeleted ProjectImage[]   @relation("ProjectImageDeletedBy")
 
   @@index([role])
   @@index([deletedAt])
@@ -168,7 +176,128 @@ model MediaFile {
   updatedBy User? @relation("MediaUpdatedBy", fields: [updatedById], references: [id])
   deletedBy User? @relation("MediaDeletedBy", fields: [deletedById], references: [id])
 
-  userPhotos User[] @relation("UserPhoto")
+  userPhotos    User[]         @relation("UserPhoto")
+  projectCovers Project[]      @relation("ProjectCover")
+  projectImages ProjectImage[] @relation("ProjectImageMedia")
 
   @@map("media_files")
+}
+
+/// Who a project was built for — the index groups by it. Same keys as the web
+/// app's `ProjectSector`; display labels live in the apps.
+enum ProjectSector {
+  OPERATIONS
+  RETAIL
+  FIELD
+  FINANCE
+  PROFESSIONAL
+
+  @@map("project_sector")
+}
+
+/// The part of the catalogue that delivered a project. Same keys as the web
+/// app's `ServiceCategory`.
+enum ServiceCategory {
+  CUSTOM_SOFTWARE
+  AI_AUTOMATION
+  ECOMMERCE
+  MOBILE
+
+  @@map("service_category")
+}
+
+/// Public only when PUBLISHED and `publishAt` is empty or past (read time).
+enum ProjectStatus {
+  DRAFT
+  PUBLISHED
+
+  @@map("project_status")
+}
+
+/// A portfolio project / case study — see docs/requirements/projects-crud.md.
+model Project {
+  id               Int             @id @default(autoincrement())
+  uuid             String          @unique @default(uuid(7)) @db.Uuid
+  /// `/portfolio/<slug>`. Unique across live *and* deleted projects, so an
+  /// old link never lands on different work.
+  slug             String          @unique
+  name             String
+  /// Anonymised descriptor — the client's shape, not necessarily a name.
+  client           String
+  sector           ProjectSector
+  serviceCategory  ServiceCategory @map("service_category")
+  /// The `/services/<slug>` this project is evidence for. A relation once the
+  /// Services CRUD exists.
+  serviceSlug      String          @map("service_slug")
+  year             Int
+  summary          String
+  /// `[{ label, from, to }]`, ordered; the first is the headline result.
+  /// A column rather than a table: saved as a whole, so nothing is deleted.
+  results          Json
+  duration         String
+  team             String
+  brief            String[]
+  constraints      String[]
+  approach         String[]
+  built            String[]
+  stack            String[]
+  quoteText        String?         @map("quote_text")
+  quoteAttribution String?         @map("quote_attribution")
+  coverImageId     Int?            @map("cover_image_id")
+
+  status           ProjectStatus @default(DRAFT)
+  /// Optional go-live time; in the future → hidden until then.
+  publishAt        DateTime?     @map("publish_at") @db.Timestamptz(3)
+  /// When it was first published — set once, kept through unpublishing.
+  firstPublishedAt DateTime?     @map("first_published_at") @db.Timestamptz(3)
+  /// The `/portfolio` reel, in `featuredOrder`.
+  featured         Boolean       @default(false)
+  featuredOrder    Int           @default(0) @map("featured_order")
+  /// The home page strip, in `homeOrder`.
+  showOnHome       Boolean       @default(false) @map("show_on_home")
+  homeOrder        Int           @default(0) @map("home_order")
+
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  createdById Int?      @map("created_by_id")
+  updatedById Int?      @map("updated_by_id")
+  deletedById Int?      @map("deleted_by_id")
+
+  coverImage MediaFile?     @relation("ProjectCover", fields: [coverImageId], references: [id])
+  images     ProjectImage[]
+  createdBy  User?          @relation("ProjectCreatedBy", fields: [createdById], references: [id])
+  updatedBy  User?          @relation("ProjectUpdatedBy", fields: [updatedById], references: [id])
+  deletedBy  User?          @relation("ProjectDeletedBy", fields: [deletedById], references: [id])
+
+  @@index([status, deletedAt])
+  @@index([featured])
+  @@index([showOnHome])
+  @@map("projects")
+}
+
+/// One gallery image on a project's detail page, in `position` order.
+/// Retired (soft-deleted) individually.
+model ProjectImage {
+  id          Int       @id @default(autoincrement())
+  uuid        String    @unique @default(uuid(7)) @db.Uuid
+  projectId   Int       @map("project_id")
+  mediaId     Int       @map("media_id")
+  position    Int       @default(0)
+  caption     String?
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  createdById Int?      @map("created_by_id")
+  updatedById Int?      @map("updated_by_id")
+  deletedById Int?      @map("deleted_by_id")
+
+  project   Project   @relation(fields: [projectId], references: [id])
+  media     MediaFile @relation("ProjectImageMedia", fields: [mediaId], references: [id])
+  createdBy User?     @relation("ProjectImageCreatedBy", fields: [createdById], references: [id])
+  updatedBy User?     @relation("ProjectImageUpdatedBy", fields: [updatedById], references: [id])
+  deletedBy User?     @relation("ProjectImageDeletedBy", fields: [deletedById], references: [id])
+
+  @@index([projectId, deletedAt])
+  @@map("project_images")
 }

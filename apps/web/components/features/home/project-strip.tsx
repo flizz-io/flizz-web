@@ -5,13 +5,22 @@ import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { MediaSlot } from '@/components/snippets/media-slot/media-slot';
-import { projectCards } from '@/constants/home';
+import type { Project } from '@/types/portfolio';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { cn } from '@workspace/ui/lib/utils';
 
 const DRAG_THRESHOLD = 6;
 
-export function ProjectStrip({ className }: { className?: string }) {
+interface ProjectStripProps {
+	/** The home strip, in the dashboard's home order. */
+	projects: Project[];
+	className?: string;
+}
+
+export function ProjectStrip({
+	projects: projectCards,
+	className
+}: ProjectStripProps) {
 	const reduceMotion = usePrefersReducedMotion();
 	const viewportRef = useRef<HTMLDivElement>(null);
 	const railRef = useRef<HTMLSpanElement>(null);

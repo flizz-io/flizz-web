@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import { uploadLimitsKb } from '../constants/media.js';
 import {
 	getMyProfile,
 	removeMyPhoto,
@@ -16,5 +17,9 @@ meRouter.use(requireAuth);
 
 meRouter.get('/profile', getMyProfile);
 meRouter.patch('/profile', updateMyProfile);
-meRouter.post('/photo', uploadImage, uploadMyPhoto);
+meRouter.post(
+	'/photo',
+	uploadImage(uploadLimitsKb.profilePhoto),
+	uploadMyPhoto
+);
 meRouter.delete('/photo', removeMyPhoto);

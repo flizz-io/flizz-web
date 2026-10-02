@@ -49,7 +49,7 @@ Work proceeds in this order. Update status inline as we move through them.
 | 6   | ~~Static Portfolio/Project pages — design + build~~                                                 | Built — pending PM content  |
 | 7   | ~~Static Articles pages — design + build~~ (Case Studies dropped)                                   | Built — pending PM content  |
 | 8   | Database design — schema for all CRUD features                                                      | **In progress** — see below |
-| 9   | Admin dashboard base structure, design, and authentication                                          | Done — awaiting review      |
+| 9   | Admin dashboard base structure, design, and authentication                                          | Done                        |
 | 10  | Build APIs — feature by feature                                                                     | Not started                 |
 | 11  | Frontend common API service functions, Zod schemas, models, enums & types (request/response/params) | Not started                 |
 | 12  | Admin dashboard CRUD feature design & API integration                                               | Not started                 |
@@ -91,44 +91,45 @@ Branch: `feat/dashboard-auth-portfolio`. Tasks run one at a time, in order; upda
 
 ### Phase U — Users, roles & permissions (Stage 9)
 
-| #   | Task                                                                                                                                                                 | Status      |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| U1  | Requirements doc — roles, lifecycle, permissions, profile, audit rule; conventions updated (no hard deletes, authorship on every table)                              | Done        |
-| U2  | Replace `admins` with `users` (role, status, profile, website fields, audit columns) + `user_permissions`; migration; seed the Super Admin from `SUPER_ADMIN_EMAIL`  | Done        |
-| U3  | Auth on `users`: sign-in refuses removed/suspended; session re-checks status each request; `/auth/me` returns role + permissions                                     | Done        |
-| U4  | API authorization: `requireAdmin`, `requirePermission(feature, action)`, and the guards (no self-actions, Super Admin untouchable)                                   | Done        |
-| U5  | Team API: list, add, update (role/designation/website), suspend/reactivate, remove-if-invited, replace permissions; own profile GET/PATCH — **review checkpoint**    | Done        |
-| U6  | `packages/media-library`: storage-provider interface + Cloudinary (default) and local-disk providers; 500 KB uploads; profile photo endpoints (project images later) | Done        |
-| U7  | Dashboard Team page — table, status badges, Add member dialog                                                                                                        | Done        |
-| U8  | Dashboard user actions — edit (role, designation, website settings), suspend/reactivate, remove                                                                      | Done        |
-| U9  | Dashboard permissions drawer — feature × action grid with "implies View"                                                                                             | Not started |
-| U10 | Dashboard My Profile (name, photo upload, social links); sidebar shows only what the user may use — **review checkpoint**                                            | Not started |
+| #   | Task                                                                                                                                                                 | Status |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| U1  | Requirements doc — roles, lifecycle, permissions, profile, audit rule; conventions updated (no hard deletes, authorship on every table)                              | Done   |
+| U2  | Replace `admins` with `users` (role, status, profile, website fields, audit columns) + `user_permissions`; migration; seed the Super Admin from `SUPER_ADMIN_EMAIL`  | Done   |
+| U3  | Auth on `users`: sign-in refuses removed/suspended; session re-checks status each request; `/auth/me` returns role + permissions                                     | Done   |
+| U4  | API authorization: `requireAdmin`, `requirePermission(feature, action)`, and the guards (no self-actions, Super Admin untouchable)                                   | Done   |
+| U5  | Team API: list, add, update (role/designation/website), suspend/reactivate, remove-if-invited, replace permissions; own profile GET/PATCH — **review checkpoint**    | Done   |
+| U6  | `packages/media-library`: storage-provider interface + Cloudinary (default) and local-disk providers; 500 KB uploads; profile photo endpoints (project images later) | Done   |
+| U7  | Dashboard Team page — table, status badges, Add member dialog                                                                                                        | Done   |
+| U8  | Dashboard user actions — edit (role, designation, website settings), suspend/reactivate, remove                                                                      | Done   |
+| U9  | Dashboard permissions drawer — feature × action grid with "implies View"                                                                                             | Done   |
+| U10 | Dashboard My Profile (name, photo upload, social links); sidebar shows only what the user may use — **review checkpoint**                                            | Done   |
 
 ### Phase C — Portfolio backend (Stage 10)
 
-| #   | Task                                                                                                                                         | Status      |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| C1  | Requirements doc for the Projects CRUD — fields, validation, draft/published, featured, ordering, deletion policy                            | Not started |
-| C2  | `projects` schema (+ results, stack, quote) matching the `Project` / `ProjectDetail` contract; migration; seed from `constants/portfolio.ts` | Not started |
-| C3  | Project screenshots through the media library (U6) — upload, replace, remove                                                                 | Not started |
-| C4  | Projects API: public list/detail (published only) and admin CRUD, Zod-validated                                                              | Not started |
+| #   | Task                                                                                                                                                                        | Status                  |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| C1  | Requirements doc for the Projects CRUD — [projects-crud.md](projects-crud.md): fields, validation, draft/published + publish date, featured & home flags, gallery, deletion | Done                    |
+| C2  | `projects` (results as JSONB, lists as `text[]`) + `project_images` schema matching the `Project` / `ProjectDetail` contract; migration; seed from `constants/portfolio.ts` | Done                    |
+| C3  | Project images through the media library — cover upload/clear, gallery add/caption/reorder/retire                                                                           | Done                    |
+| C4  | Projects API: public list/detail (published only) and admin CRUD, Zod-validated                                                                                             | Done — live E2E pending |
 
 ### Phase D — Shared API layer & dashboard screens (Stages 11–12)
 
-| #   | Task                                                                                                               | Status      |
-| --- | ------------------------------------------------------------------------------------------------------------------ | ----------- |
-| D1  | `packages/api-services`: common fetcher, auth + projects models, enums and service functions                       | Not started |
-| D2  | Dashboard Projects list — table, search, sector filter, featured toggle                                            | Not started |
-| D3  | Dashboard Project form — create/edit with result pairs, stack chips, quote, screenshot upload; delete with confirm | Not started |
+| #   | Task                                                                                                                       | Status |
+| --- | -------------------------------------------------------------------------------------------------------------------------- | ------ |
+| D1  | `packages/api-services`: common fetcher, auth + projects models, enums and service functions                               | Done   |
+| D2  | Dashboard Projects list — table, search, sector filter, featured toggle                                                    | Done   |
+| D3  | Dashboard Project form — basics, results, case-study lists, stack, quote, cover + gallery, publishing; delete with confirm | Done   |
 
 ### Phase E — Landing integration (Stage 13)
 
-| #   | Task                                                                                                 | Status      |
-| --- | ---------------------------------------------------------------------------------------------------- | ----------- |
-| E1  | `/portfolio` and `/portfolio/[slug]` read from the API, statically generated and revalidated on edit | Not started |
-| E2  | Home portfolio strip reads from the API                                                              | Not started |
-| E3  | Retire the static roster (kept only as seed data); docs updated                                      | Not started |
-| E4  | About page team section reads public team members from the API (`show_on_website`)                   | Not started |
+| #   | Task                                                                                                                             | Status |
+| --- | -------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| E1  | `/portfolio` and `/portfolio/[slug]` read from the API, statically generated and revalidated on edit                             | Done   |
+| E2  | Home portfolio strip reads from the API                                                                                          | Done   |
+| E3  | Retire the static roster (kept only as seed data); docs updated                                                                  | Done   |
+| E4  | About page team section reads public team members from the API (`show_on_website`)                                               | Done   |
+| E5  | Gallery section on `/portfolio/[slug]` — designed with the `frontend-design` skill; shown only when a project has gallery images | Done   |
 
 ## Open items for PM
 
@@ -139,7 +140,7 @@ Each item below is marked with a `// TODO:` at the referenced location, so the c
 | Item                   | Needed from PM                                                                | Location                                           |
 | ---------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------- |
 | Social proof logos     | Real company logos — currently text placeholders                              | `constants/home.ts` → `socialProofLogos`           |
-| Portfolio projects     | Real projects plus one screenshot each — the strip is derived from the roster | `constants/portfolio.ts` → `projects`              |
+| Portfolio projects     | Real projects plus one screenshot each — entered in the dashboard             | Dashboard → Projects                               |
 | Solution headline      | Confirm final headline — the sheet duplicated the Problem section's headline  | `components/features/home/solution.tsx:79`         |
 | "Who we build for"     | Confirm headline and the final audience segment list                          | `constants/home.ts:317`, `who-we-build-for.tsx:57` |
 | Hero discipline labels | Pick wording — "Engineering Works" reads wrong; three label sets were drafted | `constants/home.ts:20–24`                          |
@@ -156,16 +157,16 @@ The old "Contact Us form field list" item is now **resolved** — the field list
 
 ### Portfolio pages — built
 
-Both routes shipped 2026-09-03: `/portfolio` — a pinned reel playing the four highlighted projects one per screen, with the rest in a paged index below it — and ten `/portfolio/[slug]` case studies, statically generated, clearing the 404 the nav had been pointing at. `constants/portfolio.ts` is the single source of truth — the home strip is derived from it and its cards now link to individual projects. Full decisions and data model in [portfolio-pages.md](portfolio-pages.md).
+Both routes shipped 2026-09-03: `/portfolio` — a pinned reel playing the four highlighted projects one per screen, with the rest in a paged index below it — and ten `/portfolio/[slug]` case studies, statically generated, clearing the 404 the nav had been pointing at. Since Phase E (2026-10-02) the pages read from the Projects API and the static roster is retired — it survives only as seed data (`apps/api/prisma/seed-data/`). Full decisions and data model in [portfolio-pages.md](portfolio-pages.md).
 
 | Item             | Needed from PM                                                             | Note                                                                        |
 | ---------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | Result figures   | **Nothing in `results` may be published as-is** — every figure is invented | These are the pages' only claims; they need real numbers or cuts            |
 | Project copy     | Real engagements to replace all ten placeholders                           | Brief, constraints, approach, handover and stack per project                |
-| Screenshots      | One per project                                                            | Set `image`; the reserved plate disappears on its own                       |
+| Screenshots      | One per project                                                            | Upload the cover in the dashboard; the reserved plate disappears on its own |
 | Client naming    | Whether clients can be named, and which are under NDA                      | `client` is an anonymised descriptor today                                  |
 | Quotes           | Real attributions, or drop them                                            | Optional per project; omitting one changes no layout                        |
-| Which work leads | Confirm the four projects the reel highlights                              | `featured` in `constants/portfolio.ts`; the rest fall to the index          |
+| Which work leads | Confirm the four projects the reel highlights                              | The Featured flag in the dashboard; the rest fall to the index              |
 | Reel treatment   | Scroll-driven stage or visitor-driven carousel — both are built            | `portfolioReelVariant` in `constants/portfolio.ts`; carousel is the default |
 
 ### About page — built

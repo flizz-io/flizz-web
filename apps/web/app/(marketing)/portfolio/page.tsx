@@ -6,6 +6,8 @@ import { PortfolioHero } from '@/components/features/portfolio/portfolio-hero';
 import { PortfolioReelSection } from '@/components/features/portfolio/portfolio-reel-section';
 import { siteConfig } from '@/configs/site';
 import { portfolioHeroLead, portfolioReelVariant } from '@/constants/portfolio';
+import { archiveOf, reelOf } from '@/utils/portfolio';
+import { getPortfolioProjects } from '@/utils/projects-api';
 
 export const metadata: Metadata = {
 	title: 'Portfolio',
@@ -25,23 +27,35 @@ export const metadata: Metadata = {
 	}
 };
 
-export default function PortfolioPage() {
-	const totalSections = 3;
+export default async function PortfolioPage() {
+	const projects = await getPortfolioProjects();
+	const hasReel = reelOf(projects).length > 0;
+	const archive = archiveOf(projects);
+	const hasArchive = archive.length > 0;
+
+	// The counter is built from what actually renders — either list can be
+	// empty while the portfolio is being filled in.
+	const reelIndex = 1;
+	const archiveIndex = reelIndex + (hasReel ? 1 : 0);
+	const ctaIndex = archiveIndex + (hasArchive ? 1 : 0);
+	const totalSections = ctaIndex;
 
 	return (
 		<>
-			<PortfolioHero />
+			<PortfolioHero projects={projects} />
 			<PortfolioReelSection
+				projects={projects}
 				variant={portfolioReelVariant}
-				sectionIndex={1}
+				sectionIndex={reelIndex}
 				totalSections={totalSections}
 			/>
 			<PortfolioArchive
-				sectionIndex={2}
+				projects={archive}
+				sectionIndex={archiveIndex}
 				totalSections={totalSections}
 			/>
 			<PortfolioCta
-				sectionIndex={3}
+				sectionIndex={ctaIndex}
 				totalSections={totalSections}
 			/>
 		</>

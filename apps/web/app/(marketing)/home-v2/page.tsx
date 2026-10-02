@@ -10,8 +10,14 @@ import { StatsBand } from '@/components/features/home/stats-band';
 import { Testimonials } from '@/components/features/home/testimonials';
 import { WhoWeBuildFor } from '@/components/features/home/who-we-build-for';
 import { WhyUs } from '@/components/features/home/why-us';
+import { portfolioMetaOf } from '@/utils/portfolio';
+import { getHomeProjects, getPortfolioProjects } from '@/utils/projects-api';
 
-export default function HomeV2Page() {
+export default async function HomeV2Page() {
+	const [homeProjects, projects] = await Promise.all([
+		getHomeProjects(),
+		getPortfolioProjects()
+	]);
 	const totalSections = 9;
 
 	return (
@@ -23,6 +29,8 @@ export default function HomeV2Page() {
 				totalSections={totalSections}
 			/>
 			<PortfolioTeaser
+				projects={homeProjects}
+				meta={portfolioMetaOf(projects)}
 				sectionIndex={2}
 				totalSections={totalSections}
 			/>

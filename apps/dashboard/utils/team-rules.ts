@@ -1,5 +1,6 @@
-import { UserLifecycle, UserRole } from '@/enums/user';
+import { UserLifecycle } from '@/enums/user';
 import type { TeamUser } from '@/types/team';
+import { UserRole } from '@workspace/api-services';
 
 /**
  * Who may do what to whom — mirrors the API's guards so the dashboard only

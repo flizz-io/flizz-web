@@ -2,7 +2,7 @@ import 'server-only';
 
 import { cookies } from 'next/headers';
 
-import type { AuthUser } from '@/types/user';
+import { getMeService, type AuthUser } from '@workspace/api-services';
 
 /**
  * The signed-in user, checked against the API — the real auth check behind
@@ -13,12 +13,9 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
 	const cookieHeader = (await cookies()).toString();
 	if (!cookieHeader) return null;
 
-	const response = await fetch(`${process.env.API_URL}/api/auth/me`, {
+	return getMeService({
+		baseUrl: process.env.API_URL,
 		headers: { cookie: cookieHeader },
-		cache: 'no-store'
-	});
-	if (!response.ok) return null;
-
-	const { data } = (await response.json()) as { data: AuthUser };
-	return data;
+		init: { cache: 'no-store' }
+	}).catch(() => null);
 }

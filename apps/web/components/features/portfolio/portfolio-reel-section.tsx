@@ -2,8 +2,12 @@ import { PortfolioCarousel } from '@/components/features/portfolio/portfolio-car
 import { PortfolioPremiere } from '@/components/features/portfolio/portfolio-premiere';
 import { PortfolioReel } from '@/components/features/portfolio/portfolio-reel';
 import { PortfolioReelVariant } from '@/enums/portfolio';
+import type { Project } from '@/types/portfolio';
+import { reelOf } from '@/utils/portfolio';
 
 interface PortfolioReelSectionProps {
+	/** Every visible project — the featured ones are picked out here. */
+	projects: Project[];
 	sectionIndex: number;
 	totalSections?: number;
 	/**
@@ -26,11 +30,17 @@ interface PortfolioReelSectionProps {
  * layout props a single, documented place to arrive.
  */
 export function PortfolioReelSection({
+	projects,
 	variant = PortfolioReelVariant.PREMIERE,
 	fullWidth,
 	fullHeight,
-	...section
+	...rest
 }: PortfolioReelSectionProps) {
+	const reel = reelOf(projects);
+	if (!reel.length) return null;
+
+	const section = { ...rest, reel };
+
 	if (variant === PortfolioReelVariant.SCROLL) {
 		return <PortfolioReel {...section} />;
 	}

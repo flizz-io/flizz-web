@@ -141,5 +141,5 @@ One row per Team Member × feature: `user_id`, `feature` (enum `Feature`), `can_
 - **Team** (admins only) — table: photo, name, email, role, designation, status (Invited / Active / Suspended), last sign-in. Actions per row: edit (role, designation, website settings), permissions drawer (Team Members only), suspend/reactivate, remove (only while Invited).
 - **Add member** dialog — email, role, designation.
 - **Permissions drawer** — feature × action checkbox grid with the "implies View" rule applied live.
-- **My profile** — every user: name, photo upload, social links; designation shown read-only.
-- **Sidebar** shows only what the signed-in user may use; Team only for admins.
+- **My profile** (`/profile`, avatar menu and sidebar) — every user: name, photo upload, social links; email, role and designation shown read-only. Photos use the dashboard's `ImageUploader` (`width` / `height` / `fit` props, default 512×512 cover), which refuses files over 500 KB before uploading.
+- **Sidebar** shows only what the signed-in user may use: Team only for admins; each content feature only with at least View permission (`feature` on a nav item). My profile is always there.

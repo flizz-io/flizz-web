@@ -8,7 +8,7 @@ import { AboutOperating } from '@/components/features/about/about-operating';
 import { AboutOrigin } from '@/components/features/about/about-origin';
 import { AboutTeam } from '@/components/features/about/about-team';
 import { AboutValues } from '@/components/features/about/about-values';
-import { showTeamSection } from '@/constants/about';
+import { getAboutTeam } from '@/utils/team-api';
 
 export const metadata: Metadata = {
 	title: 'About',
@@ -16,8 +16,12 @@ export const metadata: Metadata = {
 		'Flizz started in 2024 building its own products, and moved into services from there. Seven people, four of them founders, and the terms of every engagement stated up front.'
 };
 
-export default function AboutPage() {
-	const totalSections = 7;
+export default async function AboutPage() {
+	const team = await getAboutTeam();
+	// The team section drops out while nobody is shown on the website, so
+	// the counter is built from what actually renders.
+	const hasTeam = team.length > 0;
+	const totalSections = hasTeam ? 7 : 6;
 
 	return (
 		<>
@@ -39,16 +43,16 @@ export default function AboutPage() {
 				totalSections={totalSections}
 			/>
 			<AboutTeam
+				members={team}
 				sectionIndex={5}
 				totalSections={totalSections}
-				isVisible={showTeamSection}
 			/>
 			<AboutGuarantees
-				sectionIndex={6}
+				sectionIndex={hasTeam ? 6 : 5}
 				totalSections={totalSections}
 			/>
 			<AboutCta
-				sectionIndex={7}
+				sectionIndex={hasTeam ? 7 : 6}
 				totalSections={totalSections}
 			/>
 		</>

@@ -1,14 +1,19 @@
 import { ImageResponse } from 'next/og';
 
 import { siteConfig } from '@/configs/site';
-import { projects } from '@/constants/portfolio';
+import {
+	getPortfolioProject,
+	getPortfolioProjects
+} from '@/utils/projects-api';
 
 export const alt = 'Flizz project';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-export function generateStaticParams() {
-	return projects.map((project) => ({ slug: project.slug }));
+export async function generateStaticParams() {
+	return (await getPortfolioProjects()).map((project) => ({
+		slug: project.slug
+	}));
 }
 
 /**
@@ -24,7 +29,7 @@ export default async function OpengraphImage({
 	params: Promise<{ slug: string }>;
 }) {
 	const { slug } = await params;
-	const project = projects.find((entry) => entry.slug === slug);
+	const project = await getPortfolioProject(slug);
 	const headline = project?.results[0];
 
 	return new ImageResponse(

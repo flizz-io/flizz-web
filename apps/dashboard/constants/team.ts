@@ -1,4 +1,5 @@
-import { UserLifecycle, UserRole } from '@/enums/user';
+import { UserLifecycle } from '@/enums/user';
+import { UserRole } from '@workspace/api-services';
 
 export const roleLabels: Record<UserRole, string> = {
 	[UserRole.SUPER_ADMIN]: 'Super Admin',
@@ -14,9 +15,6 @@ export const lifecycleLabels: Record<UserLifecycle, string> = {
 
 /** Roles an admin can give — Super Admin comes only from setup. */
 export const assignableRoles = [UserRole.TEAM_MEMBER, UserRole.ADMIN] as const;
-
-/** "Any" option for the filters. */
-export const allFilterValue = 'ALL';
 
 export const teamMessages = {
 	title: 'Team',

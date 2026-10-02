@@ -23,7 +23,7 @@ Treat the bullet list above as a starting menu, not a mandate — replace anythi
 
 Packages are created per feature/functionality; each has its own `src/` folder with an `index.ts` entry point. Add new shared packages here as they're scaffolded, following the same pattern as `packages/ui`:
 
-- **`packages/api-services`** _(example — scaffold when needed)_ — everything API-related shared across apps:
+- **`packages/api-services`** _(scaffolded 2026-10-02 — auth and projects so far)_ — everything API-related shared across apps. Every service takes an optional `ApiContext` last (browser default: the app's `/api` rewrite):
     - `src/services` — the common `apiService` fetcher function and all API functions (e.g. `getPostService`).
     - `src/models` — API payload, response, and query-param types.
     - `src/enums` — API-related enums and parameter options.

@@ -10,3 +10,6 @@ export const returnToParam = 'next';
 export const loginReasonParam = 'reason';
 /** Clears a session the API rejected, then goes to /login. */
 export const sessionExpiredPath = '/auth/expired';
+
+/** Every user's own profile page. */
+export const profilePath = '/profile';

@@ -1,5 +1,5 @@
 import { roleLabels } from '@/constants/team';
-import { UserRole } from '@/enums/user';
+import { UserRole } from '@workspace/api-services';
 import { Badge } from '@workspace/ui/components/badge';
 
 const roleVariant = {

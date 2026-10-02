@@ -3,17 +3,23 @@ import Link from 'next/link';
 import { ProjectStrip } from '@/components/features/home/project-strip';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { heroScrollTargetId } from '@/constants/home';
-import { portfolioMeta } from '@/constants/portfolio';
+import type { Project } from '@/types/portfolio';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface PortfolioTeaserProps {
+	/** The home strip, in home order. */
+	projects: Project[];
+	/** "10 projects · 2021 to 2025" — from the whole portfolio. */
+	meta: string;
 	sectionIndex: number;
 	totalSections?: number;
 	className?: string;
 }
 
 export function PortfolioTeaser({
+	projects,
+	meta,
 	sectionIndex,
 	totalSections,
 	className
@@ -39,12 +45,15 @@ export function PortfolioTeaser({
 					eyebrow="Our Work"
 					title="Work we've designed and built"
 					description="A snapshot of what we do — the full list lives on the Services page."
-					metaInfo={portfolioMeta}
+					metaInfo={meta}
 					sectionTagWrapperClassName="w-full"
 				/>
 			</div>
 
-			<ProjectStrip className="mt-10" />
+			<ProjectStrip
+				projects={projects}
+				className="mt-10"
+			/>
 
 			<div className="mt-14 flex justify-center px-4 sm:px-6 lg:px-8">
 				<Button
