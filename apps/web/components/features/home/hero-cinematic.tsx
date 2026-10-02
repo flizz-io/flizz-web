@@ -18,7 +18,6 @@ import { HeroCinematicCopy } from '@/components/features/home/hero-cinematic-cop
 import { IntroLoader } from '@/components/snippets/intro-loader/intro-loader';
 import {
 	heroCinematicCopy,
-	heroCinematicFacts,
 	heroDisciplinesSceneConfig,
 	heroScrollTargetId
 } from '@/constants/home';
@@ -29,7 +28,7 @@ import { HeroDepth } from '@/enums/home';
 import { IntroGate, IntroPhase } from '@/enums/intro';
 import { useHeroParallax } from '@/hooks/use-hero-parallax';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import type { HeroCinematicConfig } from '@/types/home';
+import type { HeroCinematicConfig, HeroFacts } from '@/types/home';
 import { scrollToElement, scrollToPosition } from '@/utils/scroll';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { cn } from '@workspace/ui/lib/utils';
@@ -91,6 +90,11 @@ function decideIntro(showLoader: boolean) {
 	}
 }
 
+interface HeroCinematicProps extends HeroCinematicConfig {
+	/** Omitted → the facts line is left out rather than showing zeros. */
+	facts?: HeroFacts;
+}
+
 /**
  * Hero v3: an intro loader, a reveal, then a scroll-driven hand-off.
  *
@@ -107,8 +111,9 @@ export function HeroCinematic({
 	scrollDistance,
 	autoAdvanceSeconds,
 	rotatingPhrases,
-	phraseHoldSeconds
-}: HeroCinematicConfig) {
+	phraseHoldSeconds,
+	facts
+}: HeroCinematicProps) {
 	const minSeconds = gsap.utils.clamp(
 		MIN_LOADER_SECONDS,
 		MAX_LOADER_SECONDS,
@@ -409,7 +414,7 @@ export function HeroCinematic({
 					count,
 					{ innerText: 0 },
 					{
-						innerText: heroCinematicFacts.projectCount,
+						innerText: facts?.projectCount ?? 0,
 						snap: { innerText: 1 },
 						duration: 0.3
 					},
@@ -423,7 +428,15 @@ export function HeroCinematic({
 				handOffRef.current = null;
 			};
 		},
-		{ dependencies: [pinned, smoother, scrollDistance], scope: sectionRef }
+		{
+			dependencies: [
+				pinned,
+				smoother,
+				scrollDistance,
+				facts?.projectCount
+			],
+			scope: sectionRef
+		}
 	);
 
 	// Declared after the hand-off so it measures from the pin's real end.
@@ -465,8 +478,7 @@ export function HeroCinematic({
 							phrases={rotatingPhrases}
 							phraseHoldSeconds={phraseHoldSeconds}
 							running={revealed}
-							projectCount={heroCinematicFacts.projectCount}
-							sinceYear={heroCinematicFacts.sinceYear}
+							facts={facts}
 							onSeeWorks={scrollToWork}
 						/>
 					</div>

@@ -27,6 +27,12 @@ export interface HeroCinematicConfig {
 }
 
 /** How one hero plane moves — see `heroParallax` in constants/home.ts. */
+/** The hero's facts line — computed from the live portfolio. */
+export interface HeroFacts {
+	projectCount: number;
+	sinceYear: string;
+}
+
 export interface HeroParallaxLayer {
 	/**
 	 * Small screens, as the hero scrolls away: how far the plane trails (+)

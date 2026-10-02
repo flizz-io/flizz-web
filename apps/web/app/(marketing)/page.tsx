@@ -11,19 +11,36 @@ import { Testimonials } from '@/components/features/home/testimonials';
 import { WhoWeBuildFor } from '@/components/features/home/who-we-build-for';
 import { WhyUs } from '@/components/features/home/why-us';
 import { SectionReveals } from '@/components/snippets/section-reveals/section-reveals';
+import { portfolioMetaOf, sinceYearOf } from '@/utils/portfolio';
+import { getHomeProjects, getPortfolioProjects } from '@/utils/projects-api';
 
-export default function HomePage() {
+/** Backstop for scheduled launches — edits revalidate on demand. */
+export const revalidate = 300;
+
+export default async function HomePage() {
+	const [homeProjects, projects] = await Promise.all([
+		getHomeProjects(),
+		getPortfolioProjects()
+	]);
 	const totalSections = 9;
 
 	return (
 		<>
-			<Hero variation="cinematic" />
+			<Hero
+				variation="cinematic"
+				facts={{
+					projectCount: projects.length,
+					sinceYear: sinceYearOf(projects)
+				}}
+			/>
 			{/* <Proof /> */}
 			<ServicesTeaser
 				sectionIndex={1}
 				totalSections={totalSections}
 			/>
 			<PortfolioTeaser
+				projects={homeProjects}
+				meta={portfolioMetaOf(projects)}
 				sectionIndex={2}
 				totalSections={totalSections}
 			/>
