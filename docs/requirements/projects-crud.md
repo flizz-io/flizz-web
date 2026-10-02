@@ -76,7 +76,7 @@ Soft delete (`deleted_at`, `deleted_by_id`). Nothing references a project yet, s
 - `project_images` — the gallery: `project_id`, `media_id`, `position`, `caption`, audit columns and `deleted_at` (images are retired one by one).
 - Enums — `project_sector`, `service_category`, `project_status`. Their **values are the keys** (`OPERATIONS`, `CUSTOM_SOFTWARE`, …) per the project conventions. The web app's `ProjectSector` / `ServiceCategory` currently use display labels as values; Phase E switches them to the keys with a separate label map.
 - **Seed** (`pnpm --filter api db:seed`): the ten projects exported from `constants/portfolio.ts` into `apps/api/prisma/seed-data/projects.json`, created Published with today's featured order and home-strip order, authored by the Super Admin. Cover screenshots go through the media library. It only creates slugs that don't exist yet — re-running never overwrites dashboard edits.
-- **Switching storage providers:** each `media_files` row records its provider, but URLs are built with the _current_ one. After changing `MEDIA_PROVIDER`, run `pnpm --filter api db:seed` — it re-uploads each seeded cover that's still on the old provider and retires the old row. Images uploaded through the dashboard on the old provider need re-uploading by hand.
+- **Switching storage providers:** each `media_files` row records its provider, but URLs are built with the _current_ one. After changing `MEDIA_PROVIDER`, follow [media-storage.md](../guides/media-storage.md#switch-provider): run `pnpm --filter api db:seed` — it re-uploads each seeded cover that's still on the old provider and retires the old row. Images uploaded through the dashboard on the old provider need re-uploading by hand.
 
 ## API
 
