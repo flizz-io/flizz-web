@@ -16,9 +16,6 @@ export const lifecycleLabels: Record<UserLifecycle, string> = {
 /** Roles an admin can give — Super Admin comes only from setup. */
 export const assignableRoles = [UserRole.TEAM_MEMBER, UserRole.ADMIN] as const;
 
-/** "Any" option for the filters. */
-export const allFilterValue = 'ALL';
-
 export const teamMessages = {
 	title: 'Team',
 	lead: 'Everyone who can sign in to the dashboard. People join only when an admin adds their email.',

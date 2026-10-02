@@ -1,7 +1,8 @@
-import { LayoutDashboard, UserRound, Users } from 'lucide-react';
+import { FolderKanban, LayoutDashboard, UserRound, Users } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
-import type { Feature } from '@workspace/api-services';
+import { projectsPath } from '@/constants/projects';
+import { Feature } from '@workspace/api-services';
 
 export interface NavItem {
 	title: string;
@@ -15,10 +16,16 @@ export interface NavItem {
 
 /**
  * The sidebar. A feature gets its entry when its screens ship — never ahead
- * of them (Projects lands with task D2, gated by `feature`).
+ * of them — gated by `feature` so only those who may view it see it.
  */
 export const sidebarNavItems: NavItem[] = [
 	{ title: 'Overview', href: '/', icon: LayoutDashboard },
+	{
+		title: 'Projects',
+		href: projectsPath,
+		icon: FolderKanban,
+		feature: Feature.PROJECTS
+	},
 	{ title: 'Team', href: '/team', icon: Users, adminOnly: true }
 ];
 
