@@ -35,15 +35,15 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
 	return (
 		<main className="flex min-h-svh items-center justify-center bg-muted/40 p-6">
-			<Card className="w-full max-w-sm">
-				<CardHeader className="items-center text-center">
+			<Card className="w-full max-w-sm space-y-5 p-5">
+				<CardHeader className="flex flex-col items-center gap-3 text-center">
 					<Logo className="mb-2" />
 					<CardTitle className="text-lg">
 						{loginMessages.title}
 					</CardTitle>
 					<CardDescription>{loginMessages.lead}</CardDescription>
 				</CardHeader>
-				<CardContent className="flex flex-col items-center gap-4">
+				<CardContent className="flex flex-col items-center gap-6">
 					{isLoginReason(reason) ? (
 						<p
 							role="status"
