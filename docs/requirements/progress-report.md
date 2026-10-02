@@ -101,7 +101,7 @@ Branch: `feat/dashboard-auth-portfolio`. Tasks run one at a time, in order; upda
 | U6  | `packages/media-library`: storage-provider interface + Cloudinary (default) and local-disk providers; 500 KB uploads; profile photo endpoints (project images later) | Done        |
 | U7  | Dashboard Team page — table, status badges, Add member dialog                                                                                                        | Done        |
 | U8  | Dashboard user actions — edit (role, designation, website settings), suspend/reactivate, remove                                                                      | Done        |
-| U9  | Dashboard permissions drawer — feature × action grid with "implies View"                                                                                             | Not started |
+| U9  | Dashboard permissions drawer — feature × action grid with "implies View"                                                                                             | Done        |
 | U10 | Dashboard My Profile (name, photo upload, social links); sidebar shows only what the user may use — **review checkpoint**                                            | Not started |
 
 ### Phase C — Portfolio backend (Stage 10)
