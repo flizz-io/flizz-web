@@ -38,11 +38,55 @@ export const teamMessages = {
 	noResults: 'No one matches these filters.',
 	neverSignedIn: 'Not signed in yet',
 	you: 'You',
+	actions: {
+		menuLabel: (name: string) => `Actions for ${name}`,
+		edit: 'Edit',
+		suspend: 'Suspend',
+		reactivate: 'Reactivate',
+		remove: 'Remove'
+	},
+	edit: {
+		title: (name: string) => `Edit ${name}`,
+		lead: 'Role, designation, and how they appear on the website.',
+		websiteSection: 'About page',
+		showOnWebsite: 'Show on the website',
+		showOnWebsiteHint: 'Lists them in the About page team section.',
+		isFounder: 'Founder',
+		isFounderHint: 'Shows the founder badge on their card.',
+		displayOrder: 'Display order',
+		displayOrderHint: 'Lower numbers appear first.',
+		roleLocked: {
+			self: "You can't change your own role.",
+			superAdmin: 'The Super Admin role changes only in setup.'
+		},
+		save: 'Save changes',
+		saved: (name: string) => `${name} updated.`,
+		createdBy: (name: string, when: string) => `Added by ${name} · ${when}`,
+		createdBySetup: (when: string) => `Added in setup · ${when}`,
+		updatedBy: (name: string, when: string) =>
+			`Last changed by ${name} · ${when}`
+	},
+	confirm: {
+		suspendTitle: (name: string) => `Suspend ${name}?`,
+		suspendBody:
+			'They are signed out on their next request and can’t sign in until reactivated. Everything they created keeps their name.',
+		suspended: (name: string) => `${name} is suspended.`,
+		reactivateTitle: (name: string) => `Reactivate ${name}?`,
+		reactivateBody:
+			'They can sign in again, with the same role and permissions as before.',
+		reactivated: (name: string) => `${name} can sign in again.`,
+		removeTitle: (name: string) => `Remove ${name}?`,
+		removeBody:
+			'They haven’t signed in yet, so they can be removed. Adding the same email later restores them.',
+		removed: (name: string) => `${name} was removed.`,
+		cancel: 'Cancel'
+	},
 	columns: {
 		member: 'Member',
 		role: 'Role',
 		designation: 'Designation',
 		status: 'Status',
-		lastSignIn: 'Last sign-in'
+		lastSignIn: 'Last sign-in',
+		actions: 'Actions'
 	}
 } as const;

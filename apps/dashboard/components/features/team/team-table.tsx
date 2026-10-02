@@ -4,6 +4,7 @@ import { Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import { LifecycleBadge } from '@/components/features/team/lifecycle-badge';
+import { MemberActions } from '@/components/features/team/member-actions';
 import { MemberCell } from '@/components/features/team/member-cell';
 import { RoleBadge } from '@/components/features/team/role-badge';
 import {
@@ -147,6 +148,11 @@ export function TeamTable({ users, currentUserUuid }: TeamTableProps) {
 							<TableHead className="hidden lg:table-cell">
 								{teamMessages.columns.lastSignIn}
 							</TableHead>
+							<TableHead className="w-12">
+								<span className="sr-only">
+									{teamMessages.columns.actions}
+								</span>
+							</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -177,12 +183,18 @@ export function TeamTable({ users, currentUserUuid }: TeamTableProps) {
 											? relativeTime(user.lastLoginAt)
 											: teamMessages.neverSignedIn}
 									</TableCell>
+									<TableCell className="text-right">
+										<MemberActions
+											user={user}
+											currentUserUuid={currentUserUuid}
+										/>
+									</TableCell>
 								</TableRow>
 							))
 						) : (
 							<TableRow>
 								<TableCell
-									colSpan={5}
+									colSpan={6}
 									className="py-10 text-center text-muted-foreground"
 								>
 									{teamMessages.noResults}
