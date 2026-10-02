@@ -106,12 +106,12 @@ Branch: `feat/dashboard-auth-portfolio`. Tasks run one at a time, in order; upda
 
 ### Phase C — Portfolio backend (Stage 10)
 
-| #   | Task                                                                                                                                                                        | Status      |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| C1  | Requirements doc for the Projects CRUD — [projects-crud.md](projects-crud.md): fields, validation, draft/published + publish date, featured & home flags, gallery, deletion | Done        |
-| C2  | `projects` (results as JSONB, lists as `text[]`) + `project_images` schema matching the `Project` / `ProjectDetail` contract; migration; seed from `constants/portfolio.ts` | Done        |
-| C3  | Project images through the media library — cover upload/clear, gallery add/caption/reorder/retire                                                                           | Done        |
-| C4  | Projects API: public list/detail (published only) and admin CRUD, Zod-validated                                                                                             | Not started |
+| #   | Task                                                                                                                                                                        | Status                  |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| C1  | Requirements doc for the Projects CRUD — [projects-crud.md](projects-crud.md): fields, validation, draft/published + publish date, featured & home flags, gallery, deletion | Done                    |
+| C2  | `projects` (results as JSONB, lists as `text[]`) + `project_images` schema matching the `Project` / `ProjectDetail` contract; migration; seed from `constants/portfolio.ts` | Done                    |
+| C3  | Project images through the media library — cover upload/clear, gallery add/caption/reorder/retire                                                                           | Done                    |
+| C4  | Projects API: public list/detail (published only) and admin CRUD, Zod-validated                                                                                             | Done — live E2E pending |
 
 ### Phase D — Shared API layer & dashboard screens (Stages 11–12)
 

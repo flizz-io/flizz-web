@@ -80,22 +80,24 @@ Soft delete (`deleted_at`, `deleted_by_id`). Nothing references a project yet, s
 
 ## API
 
-| Endpoint                                                  | Who      | Purpose                                                                                                |
-| --------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------ |
-| `GET /api/projects`                                       | `VIEW`   | Dashboard list (search, sector, status filters)                                                        |
-| `GET /api/projects/:uuid`                                 | `VIEW`   | One project, all fields, with authorship                                                               |
-| `POST /api/projects`                                      | `CREATE` | New Draft                                                                                              |
-| `PATCH /api/projects/:uuid`                               | `EDIT`   | Any fields, status and publish date                                                                    |
-| `DELETE /api/projects/:uuid`                              | `DELETE` | Soft delete                                                                                            |
-| `POST` / `DELETE /api/projects/:uuid/cover`               | `EDIT`   | Upload or clear the cover                                                                              |
-| `POST /api/projects/:uuid/gallery`                        | `EDIT`   | Add a gallery image (multipart `file` ≤ 2 MB, optional `caption`, `width`/`height`/`fit`); 409 past 12 |
-| `PATCH` / `DELETE /api/projects/:uuid/gallery/:imageUuid` | `EDIT`   | Caption or retire one gallery image                                                                    |
-| `PUT /api/projects/:uuid/gallery/order`                   | `EDIT`   | Reorder — must list every live image once; a stale list gets 409                                       |
-| `GET /api/public/projects`                                | Public   | Every visible project (index, reel)                                                                    |
-| `GET /api/public/projects/:slug`                          | Public   | One visible project (detail page) — 404 otherwise                                                      |
-| `GET /api/public/projects/home`                           | Public   | The home strip, in home order                                                                          |
+| Endpoint                                                  | Who      | Purpose                                                                                                     |
+| --------------------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
+| `GET /api/projects`                                       | `VIEW`   | Dashboard list — `?search=` (name, client, slug, summary), `?sector=`, `?visibility=DRAFT\|SCHEDULED\|LIVE` |
+| `GET /api/projects/:uuid`                                 | `VIEW`   | One project, all fields, with authorship                                                                    |
+| `POST /api/projects`                                      | `CREATE` | New Draft — every content field; slug optional (from the name, `-2`, `-3`… if taken); 409 on a taken slug   |
+| `PATCH /api/projects/:uuid`                               | `EDIT`   | Any fields, status and publish date                                                                         |
+| `DELETE /api/projects/:uuid`                              | `DELETE` | Soft delete                                                                                                 |
+| `POST` / `DELETE /api/projects/:uuid/cover`               | `EDIT`   | Upload or clear the cover                                                                                   |
+| `POST /api/projects/:uuid/gallery`                        | `EDIT`   | Add a gallery image (multipart `file` ≤ 2 MB, optional `caption`, `width`/`height`/`fit`); 409 past 12      |
+| `PATCH` / `DELETE /api/projects/:uuid/gallery/:imageUuid` | `EDIT`   | Caption or retire one gallery image                                                                         |
+| `PUT /api/projects/:uuid/gallery/order`                   | `EDIT`   | Reorder — must list every live image once; a stale list gets 409                                            |
+| `GET /api/public/projects`                                | Public   | Every visible project (index, reel)                                                                         |
+| `GET /api/public/projects/:slug`                          | Public   | One visible project (detail page) — 404 otherwise                                                           |
+| `GET /api/public/projects/home`                           | Public   | The home strip, in home order                                                                               |
 
-Public responses carry exactly the `Project` / `ProjectDetail` shape plus `gallery`, with image URLs resolved — no ids, status or authorship.
+Public responses carry exactly the `Project` / `ProjectDetail` shape plus `gallery`, with image URLs resolved — no ids, status or authorship. Optional keys (`featured`, `image`, `quote`) are left out rather than `null`; `year` is a string; sector and service are the enum keys. The list is ordered featured first (in featured order), then newest year first.
+
+The slug `home` is reserved — it would collide with `GET /api/public/projects/home`.
 
 ## Website integration (Phase E)
 
