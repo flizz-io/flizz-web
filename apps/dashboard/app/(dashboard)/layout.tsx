@@ -21,7 +21,7 @@ export default async function DashboardLayout({
 
 	return (
 		<SidebarProvider>
-			<AppSidebar />
+			<AppSidebar role={user.role} />
 			<SidebarInset>
 				<DashboardHeader user={user} />
 				<div className="flex flex-1 flex-col gap-6 p-6">{children}</div>

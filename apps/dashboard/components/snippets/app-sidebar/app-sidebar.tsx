@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 
 import { Logo } from '@/components/snippets/logo/logo';
 import { sidebarNavItems } from '@/configs/navigation';
+import type { UserRole } from '@/enums/user';
+import { isAdminRole } from '@/utils/roles';
 import {
 	Sidebar,
 	SidebarContent,
@@ -24,8 +26,16 @@ function isActive(pathname: string, href: string) {
 		: pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function AppSidebar() {
+interface AppSidebarProps {
+	role: UserRole;
+}
+
+/** Shows only the sections this user may use. */
+export function AppSidebar({ role }: AppSidebarProps) {
 	const pathname = usePathname();
+	const items = sidebarNavItems.filter(
+		(item) => !item.adminOnly || isAdminRole(role)
+	);
 
 	return (
 		<Sidebar collapsible="icon">
@@ -41,7 +51,7 @@ export function AppSidebar() {
 				<SidebarGroup>
 					<SidebarGroupContent>
 						<SidebarMenu>
-							{sidebarNavItems.map((item) => (
+							{items.map((item) => (
 								<SidebarMenuItem key={item.href}>
 									<SidebarMenuButton
 										asChild
