@@ -1,4 +1,3 @@
-import { homeTeaserProjects, projects } from '@/constants/portfolio';
 import { servicesInCategory } from '@/constants/services';
 import { HeroDepth } from '@/enums/home';
 import { ServiceCategory } from '@/enums/services';
@@ -80,16 +79,6 @@ export const heroCinematicCopy = {
 	availability: 'Replies within one business day.',
 	caption: 'Your Technology Partner',
 	scrollCue: 'Scroll to begin'
-};
-
-// Computed from the portfolio itself, so the hero's facts line can't go stale.
-export const heroCinematicFacts = {
-	projectCount: projects.length,
-	sinceYear: projects.reduce(
-		(earliest, project) =>
-			project.year < earliest ? project.year : earliest,
-		projects[0]?.year ?? ''
-	)
 };
 
 export const heroDisciplinesSceneConfig: HeroDisciplinesSceneConfig = {
@@ -283,14 +272,6 @@ export const servicesRailLabels = {
 	servicesCount: (count: number) =>
 		`${count} ${count === 1 ? 'service' : 'services'}`
 };
-
-/**
- * The strip's roster, derived from the canonical list in
- * `constants/portfolio.ts` so the home page and `/portfolio` can never disagree
- * about a name, summary or result. Re-exported under the old name to keep the
- * strip's import stable.
- */
-export const projectCards = homeTeaserProjects;
 
 export const valueProps: ValueProp[] = [
 	{

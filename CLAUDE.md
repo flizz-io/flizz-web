@@ -41,8 +41,10 @@ This is a **pnpm + Turborepo monorepo** with two workspace groups:
 
 - `apps/web` — Next.js app (React, App Router, Tailwind CSS v4), dev server on port 3300. Example public-facing / landing app.
 - `apps/dashboard` — Next.js app, same stack/scaffold as `web`, dev server on port 3400. Example admin/internal app.
-- `apps/api` — Express + TypeScript backend API, dev server on port 3500 (see `.claude/rules/conventions.md` for its structure and stack notes).
+- `apps/api` — Express + TypeScript backend API, dev server on port 3500 (see `.claude/rules/conventions.md` for its structure and stack notes). Deployment (Vercel for now, our own server later): `docs/guides/deployment.md`.
 - `packages/ui` — Shared component library (shadcn/ui, Radix UI, CVA).
+- `packages/media-library` — Server-side uploads for `apps/api`: a pluggable `StorageProvider` (Cloudinary by default, local disk for offline dev — `MEDIA_PROVIDER`), image validation and resizing to presets (`sharp`, WebP out). Built to `dist/` (Turbo builds it before `dev`/`build`); types come from `src/`.
+- `packages/api-services` — How the apps call `apps/api`: the common `apiService` fetcher and `ApiError`, request/response models, API enums, and one service function per endpoint (`getProjectsService`, …). Source-only, consumed via `transpilePackages`; each service takes an optional `ApiContext` (base URL, headers, Next caching hints) so the same call works from the browser and from a server component.
 - `packages/typescript-config` — Shared `tsconfig` presets.
 - `packages/eslint-config` — Shared ESLint configs.
 
@@ -51,7 +53,7 @@ This is a **pnpm + Turborepo monorepo** with two workspace groups:
 ### Key relationships
 
 - Both apps import components via `@workspace/ui/components/<name>` and global styles via `@workspace/ui/globals.css`.
-- Each app's `next.config.ts` sets `transpilePackages: ["@workspace/ui"]` — the UI package is not compiled separately.
+- Each app's `next.config.ts` lists the source-only workspace packages it uses in `transpilePackages` (`@workspace/ui`, `@workspace/api-services`, …) — they are not compiled separately.
 - The `@workspace/ui` package exports are declared in its `package.json#exports` map (components, hooks, lib, globals.css). New source files must be added there to be importable.
 
 ### Adding shadcn/ui components

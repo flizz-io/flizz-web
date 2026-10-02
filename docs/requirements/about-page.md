@@ -325,19 +325,15 @@ Each member carries up to three: LinkedIn, X, and a personal portfolio site. Ren
 
 > This reverses the PM's earlier answer that team cards should carry no outbound links; links were requested on 2026-08-31 when the section was redesigned. Bios were dropped in the same pass.
 
-### Roster
+### Roster — from the dashboard (2026-10-02, task E4)
 
-Seven demo people, four marked founder to match the real founding story. Names, roles, and profile URLs are placeholder — **the URLs currently resolve to nothing**, so they must be replaced or removed before launch.
+The section lists the people an admin has marked **Show on the website** (Team › Edit), in their display order, with the Founder flag, designation, photo (uploaded, else Google avatar) and the links each person set on their own profile — read from `GET /api/public/team` ([users-and-permissions.md](users-and-permissions.md)). Someone shown before they've set a name is skipped. The heading counts them ("Seven people, one frame").
 
-### Visibility prop
+### Visibility
 
-The PM asked for the section to be toggleable from the page:
+The `isVisible` prop and `showTeamSection` constant are gone: the section renders when at least one person is shown and drops out (with the section counter renumbered) when nobody is. Changes in the dashboard revalidate the page on demand; it also refetches every five minutes when `ENABLE_PERIODIC_REVALIDATION=true`.
 
-```tsx
-<AboutTeam isVisible={showTeamSection} />
-```
-
-The default lives in `constants/about.ts`. The component returns `null` when false, so the section can be pulled without editing markup or leaving dead code.
+The static `aboutTeam` list in `constants/about.ts` now only backs article bylines, until the Articles CRUD links authors to users.
 
 ## 7. Guarantees & numbers
 

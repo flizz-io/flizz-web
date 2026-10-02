@@ -23,8 +23,8 @@ export interface ProjectQuote {
 
 /**
  * What the index, the home strip and the detail hero all need. The Projects
- * CRUD will eventually supply these same fields, so the shape here is the
- * contract page code is written against.
+ * API supplies these same fields (mapped in `utils/projects-api.ts`), so the
+ * shape here is the contract page code is written against.
  */
 export interface Project {
 	/** Also the detail route segment: /portfolio/[slug]. */
@@ -60,6 +60,14 @@ export interface Project {
 	image?: string;
 }
 
+/** One image in a project's gallery, in the order the dashboard set. */
+export interface ProjectGalleryImage {
+	url: string;
+	width: number | null;
+	height: number | null;
+	caption: string | null;
+}
+
 /**
  * The case study itself. Kept separate from `Project` so the index and the home
  * strip are not forced to carry copy they never render.
@@ -80,4 +88,6 @@ export interface ProjectDetail extends Project {
 	/** Named tools and languages, rendered as chips. */
 	stack: string[];
 	quote?: ProjectQuote;
+	/** Shown in its own section on the detail page, when there are any. */
+	gallery?: ProjectGalleryImage[];
 }

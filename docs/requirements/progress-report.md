@@ -39,22 +39,22 @@ Each page's requirements doc is written just before its static-design stage star
 
 Work proceeds in this order. Update status inline as we move through them.
 
-| #   | Stage                                                                                               | Status                         |
-| --- | --------------------------------------------------------------------------------------------------- | ------------------------------ |
-| 1   | ~~Read & document PM's Google Sheet content~~                                                       | Done                           |
-| 2   | ~~Static Home page — design + build with static/placeholder data, launch-ready~~                    | Built — pending PM content     |
-| 3   | ~~Static About page — design + build~~                                                              | Built — pending PM content     |
-| 4   | ~~Static Services + Single Service pages — design + build~~                                         | Built — pending PM content     |
-| 5   | ~~Static Contact Us page — design + build~~                                                         | Built early — pending PM       |
-| 6   | ~~Static Portfolio/Project pages — design + build~~                                                 | Built — pending PM content     |
-| 7   | ~~Static Articles pages — design + build~~ (Case Studies dropped)                                   | Built — pending PM content     |
-| 8   | Database design — schema for all CRUD features                                                      | **Current** — nothing blocking |
-| 9   | Admin dashboard base structure, design, and authentication                                          | Not started                    |
-| 10  | Build APIs — feature by feature                                                                     | Not started                    |
-| 11  | Frontend common API service functions, Zod schemas, models, enums & types (request/response/params) | Not started                    |
-| 12  | Admin dashboard CRUD feature design & API integration                                               | Not started                    |
-| 13  | Landing page API integration — replace static data with live data across all public pages           | Not started                    |
-| 14  | Testing & bug fixing — full feature + design pass                                                   | Not started                    |
+| #   | Stage                                                                                               | Status                      |
+| --- | --------------------------------------------------------------------------------------------------- | --------------------------- |
+| 1   | ~~Read & document PM's Google Sheet content~~                                                       | Done                        |
+| 2   | ~~Static Home page — design + build with static/placeholder data, launch-ready~~                    | Built — pending PM content  |
+| 3   | ~~Static About page — design + build~~                                                              | Built — pending PM content  |
+| 4   | ~~Static Services + Single Service pages — design + build~~                                         | Built — pending PM content  |
+| 5   | ~~Static Contact Us page — design + build~~                                                         | Built early — pending PM    |
+| 6   | ~~Static Portfolio/Project pages — design + build~~                                                 | Built — pending PM content  |
+| 7   | ~~Static Articles pages — design + build~~ (Case Studies dropped)                                   | Built — pending PM content  |
+| 8   | Database design — schema for all CRUD features                                                      | **In progress** — see below |
+| 9   | Admin dashboard base structure, design, and authentication                                          | Done                        |
+| 10  | Build APIs — feature by feature                                                                     | Not started                 |
+| 11  | Frontend common API service functions, Zod schemas, models, enums & types (request/response/params) | Not started                 |
+| 12  | Admin dashboard CRUD feature design & API integration                                               | Not started                 |
+| 13  | Landing page API integration — replace static data with live data across all public pages           | Not started                 |
+| 14  | Testing & bug fixing — full feature + design pass                                                   | Not started                 |
 
 ### Deviations from the plan
 
@@ -63,6 +63,73 @@ Work proceeds in this order. Update status inline as we move through them.
 - **Stage 7 was built before Stage 6.** Articles shipped 2026-09-01, Portfolio 2026-09-03.
 - **Case Studies were dropped, not deferred.** The PM settled on 2026-09-03 that a case study is a project shown in full — so `/portfolio/[slug]` is the case study, and Stage 7's second half disappears rather than moving.
 - The original "each stage starts only once the prior one is agreed/done" rule no longer matches how work is actually being sequenced, so it has been dropped from the intro above.
+- **Stages 8–13 run as a vertical slice per feature, Portfolio first** (decided 2026-10-02). Rather than designing every table, then every API, then every screen, each feature goes database → API → dashboard → landing before the next starts. Auth and the dashboard shell come first because every feature needs them.
+
+## Current work — dashboard, Google sign-in & Portfolio slice
+
+Branch: `feat/dashboard-auth-portfolio`. Tasks run one at a time, in order; update the status as each lands. Phases A–B done 2026-10-02 ([dashboard-auth.md](dashboard-auth.md)). Phase U added the same day when roles and permissions were specified ([users-and-permissions.md](users-and-permissions.md)). **Review checkpoints after U5 (API) and U10 (screens).**
+
+### Phase A — Database foundations (Stage 8)
+
+| #   | Task                                                                                                                                                                      | Status |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| A1  | Requirements doc for the dashboard & auth — scope, sign-in flow, allowlist, session, env vars                                                                             | Done   |
+| A2  | `apps/api`: Zod-validated env config, consistent JSON error responses, request-validation middleware                                                                      | Done   |
+| A3  | `apps/api`: Prisma + PostgreSQL wired up (`prisma/` at the app root, `DATABASE_URL`, `.env.example`), UUIDv7 helper for public ids                                        | Done   |
+| A4  | `admins` table — internal int PK + public `uuid`, `email` (unique), `name`, `avatar_url`, `google_sub`, `last_login_at`, timestamps; first migration + seed from env list | Done   |
+
+### Phase B — Google sign-in & dashboard shell (Stage 9)
+
+| #   | Task                                                                                                                                                    | Status |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| B1  | API auth: `POST /api/auth/google` (verify Google ID token, check allowlist, set `httpOnly` session cookie), `GET /api/auth/me`, `POST /api/auth/logout` | Done   |
+| B2  | API: `requireAuth` middleware; CORS limited to the public site (the dashboard reaches the API through its own `/api` rewrite)                           | Done   |
+| B3  | Dashboard: `/login` page with the Google sign-in button; clear error states (not on the allowlist, Google failure)                                      | Done   |
+| B4  | Dashboard: route protection — signed-out visitors go to `/login`, signed-in ones skip it                                                                | Done   |
+| B5  | Dashboard shell: sidebar (Overview, Projects, …), header with the admin's avatar and sign-out, Overview placeholder                                     | Done   |
+| B6  | End-to-end check of sign-in / sign-out / blocked email; docs updated — **review checkpoint**                                                            | Done   |
+
+### Phase U — Users, roles & permissions (Stage 9)
+
+| #   | Task                                                                                                                                                                 | Status |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| U1  | Requirements doc — roles, lifecycle, permissions, profile, audit rule; conventions updated (no hard deletes, authorship on every table)                              | Done   |
+| U2  | Replace `admins` with `users` (role, status, profile, website fields, audit columns) + `user_permissions`; migration; seed the Super Admin from `SUPER_ADMIN_EMAIL`  | Done   |
+| U3  | Auth on `users`: sign-in refuses removed/suspended; session re-checks status each request; `/auth/me` returns role + permissions                                     | Done   |
+| U4  | API authorization: `requireAdmin`, `requirePermission(feature, action)`, and the guards (no self-actions, Super Admin untouchable)                                   | Done   |
+| U5  | Team API: list, add, update (role/designation/website), suspend/reactivate, remove-if-invited, replace permissions; own profile GET/PATCH — **review checkpoint**    | Done   |
+| U6  | `packages/media-library`: storage-provider interface + Cloudinary (default) and local-disk providers; 500 KB uploads; profile photo endpoints (project images later) | Done   |
+| U7  | Dashboard Team page — table, status badges, Add member dialog                                                                                                        | Done   |
+| U8  | Dashboard user actions — edit (role, designation, website settings), suspend/reactivate, remove                                                                      | Done   |
+| U9  | Dashboard permissions drawer — feature × action grid with "implies View"                                                                                             | Done   |
+| U10 | Dashboard My Profile (name, photo upload, social links); sidebar shows only what the user may use — **review checkpoint**                                            | Done   |
+
+### Phase C — Portfolio backend (Stage 10)
+
+| #   | Task                                                                                                                                                                        | Status                  |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| C1  | Requirements doc for the Projects CRUD — [projects-crud.md](projects-crud.md): fields, validation, draft/published + publish date, featured & home flags, gallery, deletion | Done                    |
+| C2  | `projects` (results as JSONB, lists as `text[]`) + `project_images` schema matching the `Project` / `ProjectDetail` contract; migration; seed from `constants/portfolio.ts` | Done                    |
+| C3  | Project images through the media library — cover upload/clear, gallery add/caption/reorder/retire                                                                           | Done                    |
+| C4  | Projects API: public list/detail (published only) and admin CRUD, Zod-validated                                                                                             | Done — live E2E pending |
+
+### Phase D — Shared API layer & dashboard screens (Stages 11–12)
+
+| #   | Task                                                                                                                       | Status |
+| --- | -------------------------------------------------------------------------------------------------------------------------- | ------ |
+| D1  | `packages/api-services`: common fetcher, auth + projects models, enums and service functions                               | Done   |
+| D2  | Dashboard Projects list — table, search, sector filter, featured toggle                                                    | Done   |
+| D3  | Dashboard Project form — basics, results, case-study lists, stack, quote, cover + gallery, publishing; delete with confirm | Done   |
+
+### Phase E — Landing integration (Stage 13)
+
+| #   | Task                                                                                                                             | Status |
+| --- | -------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| E1  | `/portfolio` and `/portfolio/[slug]` read from the API, statically generated and revalidated on edit                             | Done   |
+| E2  | Home portfolio strip reads from the API                                                                                          | Done   |
+| E3  | Retire the static roster (kept only as seed data); docs updated                                                                  | Done   |
+| E4  | About page team section reads public team members from the API (`show_on_website`)                                               | Done   |
+| E5  | Gallery section on `/portfolio/[slug]` — designed with the `frontend-design` skill; shown only when a project has gallery images | Done   |
 
 ## Open items for PM
 
@@ -73,7 +140,7 @@ Each item below is marked with a `// TODO:` at the referenced location, so the c
 | Item                   | Needed from PM                                                                | Location                                           |
 | ---------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------- |
 | Social proof logos     | Real company logos — currently text placeholders                              | `constants/home.ts` → `socialProofLogos`           |
-| Portfolio projects     | Real projects plus one screenshot each — the strip is derived from the roster | `constants/portfolio.ts` → `projects`              |
+| Portfolio projects     | Real projects plus one screenshot each — entered in the dashboard             | Dashboard → Projects                               |
 | Solution headline      | Confirm final headline — the sheet duplicated the Problem section's headline  | `components/features/home/solution.tsx:79`         |
 | "Who we build for"     | Confirm headline and the final audience segment list                          | `constants/home.ts:317`, `who-we-build-for.tsx:57` |
 | Hero discipline labels | Pick wording — "Engineering Works" reads wrong; three label sets were drafted | `constants/home.ts:20–24`                          |
@@ -90,16 +157,16 @@ The old "Contact Us form field list" item is now **resolved** — the field list
 
 ### Portfolio pages — built
 
-Both routes shipped 2026-09-03: `/portfolio` — a pinned reel playing the four highlighted projects one per screen, with the rest in a paged index below it — and ten `/portfolio/[slug]` case studies, statically generated, clearing the 404 the nav had been pointing at. `constants/portfolio.ts` is the single source of truth — the home strip is derived from it and its cards now link to individual projects. Full decisions and data model in [portfolio-pages.md](portfolio-pages.md).
+Both routes shipped 2026-09-03: `/portfolio` — a pinned reel playing the four highlighted projects one per screen, with the rest in a paged index below it — and ten `/portfolio/[slug]` case studies, statically generated, clearing the 404 the nav had been pointing at. Since Phase E (2026-10-02) the pages read from the Projects API and the static roster is retired — it survives only as seed data (`apps/api/prisma/seed-data/`). Full decisions and data model in [portfolio-pages.md](portfolio-pages.md).
 
 | Item             | Needed from PM                                                             | Note                                                                        |
 | ---------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | Result figures   | **Nothing in `results` may be published as-is** — every figure is invented | These are the pages' only claims; they need real numbers or cuts            |
 | Project copy     | Real engagements to replace all ten placeholders                           | Brief, constraints, approach, handover and stack per project                |
-| Screenshots      | One per project                                                            | Set `image`; the reserved plate disappears on its own                       |
+| Screenshots      | One per project                                                            | Upload the cover in the dashboard; the reserved plate disappears on its own |
 | Client naming    | Whether clients can be named, and which are under NDA                      | `client` is an anonymised descriptor today                                  |
 | Quotes           | Real attributions, or drop them                                            | Optional per project; omitting one changes no layout                        |
-| Which work leads | Confirm the four projects the reel highlights                              | `featured` in `constants/portfolio.ts`; the rest fall to the index          |
+| Which work leads | Confirm the four projects the reel highlights                              | The Featured flag in the dashboard; the rest fall to the index              |
 | Reel treatment   | Scroll-driven stage or visitor-driven carousel — both are built            | `portfolioReelVariant` in `constants/portfolio.ts`; carousel is the default |
 
 ### About page — built

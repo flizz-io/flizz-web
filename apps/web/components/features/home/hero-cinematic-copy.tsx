@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Fragment, useRef } from 'react';
 
 import { heroCinematicCopy, socialProofLogos } from '@/constants/home';
+import type { HeroFacts } from '@/types/home';
 import { Button } from '@workspace/ui/components/button';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { cn } from '@workspace/ui/lib/utils';
@@ -183,8 +184,8 @@ interface HeroCinematicCopyProps {
 	phraseHoldSeconds: number;
 	/** The copy is on screen — start the rotating line. */
 	running: boolean;
-	projectCount: number;
-	sinceYear: string;
+	/** The facts line; left out when there's nothing to count. */
+	facts?: HeroFacts;
 	onSeeWorks: () => void;
 	className?: string;
 }
@@ -199,8 +200,7 @@ export function HeroCinematicCopy({
 	phrases,
 	phraseHoldSeconds,
 	running,
-	projectCount,
-	sinceYear,
+	facts,
 	onSeeWorks,
 	className
 }: HeroCinematicCopyProps) {
@@ -301,15 +301,17 @@ export function HeroCinematicCopy({
 				data-copy-reveal
 				className="mt-14 flex w-full max-w-lg flex-wrap gap-x-10 gap-y-3 border-t border-border/70 pt-6 text-sm text-muted-foreground"
 			>
-				<p>
-					<span
-						data-copy-count
-						className="font-semibold text-foreground tabular-nums"
-					>
-						{projectCount}
-					</span>{' '}
-					projects shipped since {sinceYear}.
-				</p>
+				{facts?.projectCount ? (
+					<p>
+						<span
+							data-copy-count
+							className="font-semibold text-foreground tabular-nums"
+						>
+							{facts.projectCount}
+						</span>{' '}
+						projects shipped since {facts.sinceYear}.
+					</p>
+				) : null}
 				<p className="inline-flex items-center gap-2.5">
 					<span className="relative flex size-2">
 						<span className="absolute inset-0 animate-ping rounded-full bg-primary/60 motion-reduce:animate-none" />

@@ -2,6 +2,7 @@ import { HeroCinematic } from '@/components/features/home/hero-cinematic';
 import { HeroConstellation } from '@/components/features/home/hero-constellation';
 import { HeroStarfield } from '@/components/features/home/hero-starfield';
 import { heroCinematicConfig } from '@/constants/home';
+import type { HeroFacts } from '@/types/home';
 
 /**
  * `starfield` — the centred statement over a drifting starfield.
@@ -18,11 +19,18 @@ interface HeroProps {
 	 * swapping is a prop change rather than an import change.
 	 */
 	variation?: HeroVariation;
+	/** The cinematic hero's "N projects shipped since …" line. */
+	facts?: HeroFacts;
 }
 
-export function Hero({ variation = 'constellation' }: HeroProps) {
+export function Hero({ variation = 'constellation', facts }: HeroProps) {
 	if (variation === 'cinematic') {
-		return <HeroCinematic {...heroCinematicConfig} />;
+		return (
+			<HeroCinematic
+				{...heroCinematicConfig}
+				facts={facts}
+			/>
+		);
 	}
 
 	if (variation === 'constellation') return <HeroConstellation />;
