@@ -1,6 +1,6 @@
 # Projects CRUD
 
-Stages 10–13 for Portfolio in [progress-report.md](progress-report.md) (tasks C1–E5). Replaces the static roster in `apps/web/constants/portfolio.ts` with records managed from the dashboard. The public pages and their design are specified in [portfolio-pages.md](portfolio-pages.md); this doc covers the data, the rules and the dashboard. Who may do what follows [users-and-permissions.md](users-and-permissions.md).
+Stages 10–13 for Portfolio in [progress-report.md](progress-report.md) (tasks C1–E5). Replaced the static roster that lived in `apps/web/constants/portfolio.ts` (retired in E3 — now only seed data) with records managed from the dashboard. The public pages and their design are specified in [portfolio-pages.md](portfolio-pages.md); this doc covers the data, the rules and the dashboard. Who may do what follows [users-and-permissions.md](users-and-permissions.md).
 
 ## Scope decisions — 2026-10-02
 
@@ -8,7 +8,7 @@ Stages 10–13 for Portfolio in [progress-report.md](progress-report.md) (tasks 
 - **Case-study sections stay structured lists.** Brief, Constraints, Approach and What we built are each an ordered list of plain-text paragraphs/items — added, reordered and removed in the form. No rich-text editor for now.
 - **Draft / Published, with an optional publish date.** A project is public only when Published **and** its publish date (if set) has passed — computed at read time, no background job (per the project conventions).
 - **One cover image plus a gallery.** The cover is the plate every existing view uses (reel, index, home strip, detail hero). The gallery is a new, ordered set of images with optional captions, shown in a **new gallery section** on the detail page — the rest of the page is unchanged. That section is designed in task E5.
-- **"Featured" and "Show on home" are separate flags, each with its own order.** Featured drives the `/portfolio` reel; Show on home drives the home page strip (replacing the hand-kept slug list in `constants/portfolio.ts`).
+- **"Featured" and "Show on home" are separate flags, each with its own order.** Featured drives the `/portfolio` reel; Show on home drives the home page strip (replacing the hand-kept slug list the static roster had).
 - **Nothing is hard-deleted; every change records who made it** (project-wide rule).
 
 ## Fields
@@ -75,7 +75,7 @@ Soft delete (`deleted_at`, `deleted_by_id`). Nothing references a project yet, s
     - `slug` is unique across live and deleted projects.
 - `project_images` — the gallery: `project_id`, `media_id`, `position`, `caption`, audit columns and `deleted_at` (images are retired one by one).
 - Enums — `project_sector`, `service_category`, `project_status`. Their **values are the keys** (`OPERATIONS`, `CUSTOM_SOFTWARE`, …) per the project conventions. The web app's `ProjectSector` / `ServiceCategory` currently use display labels as values; Phase E switches them to the keys with a separate label map.
-- **Seed** (`pnpm --filter api db:seed`): the ten projects exported from `constants/portfolio.ts` into `apps/api/prisma/seed-data/projects.json`, created Published with today's featured order and home-strip order, authored by the Super Admin. Cover screenshots go through the media library. It only creates slugs that don't exist yet — re-running never overwrites dashboard edits.
+- **Seed** (`pnpm --filter api db:seed`): the ten projects of the retired static roster, in `apps/api/prisma/seed-data/projects.json` (screenshots in `seed-data/projects/`, paths relative to `seed-data/`), created Published with today's featured order and home-strip order, authored by the Super Admin. Cover screenshots go through the media library. It only creates slugs that don't exist yet — re-running never overwrites dashboard edits.
 - **Switching storage providers:** each `media_files` row records its provider, but URLs are built with the _current_ one. After changing `MEDIA_PROVIDER`, follow [media-storage.md](../guides/media-storage.md#switch-provider): run `pnpm --filter api db:seed` — it re-uploads each seeded cover that's still on the old provider and retires the old row. Images uploaded through the dashboard on the old provider need re-uploading by hand.
 
 ## API

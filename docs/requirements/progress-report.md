@@ -127,7 +127,7 @@ Branch: `feat/dashboard-auth-portfolio`. Tasks run one at a time, in order; upda
 | --- | -------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | E1  | `/portfolio` and `/portfolio/[slug]` read from the API, statically generated and revalidated on edit                             | Done        |
 | E2  | Home portfolio strip reads from the API                                                                                          | Done        |
-| E3  | Retire the static roster (kept only as seed data); docs updated                                                                  | Not started |
+| E3  | Retire the static roster (kept only as seed data); docs updated                                                                  | Done        |
 | E4  | About page team section reads public team members from the API (`show_on_website`)                                               | Not started |
 | E5  | Gallery section on `/portfolio/[slug]` — designed with the `frontend-design` skill; shown only when a project has gallery images | Not started |
 
@@ -140,7 +140,7 @@ Each item below is marked with a `// TODO:` at the referenced location, so the c
 | Item                   | Needed from PM                                                                | Location                                           |
 | ---------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------- |
 | Social proof logos     | Real company logos — currently text placeholders                              | `constants/home.ts` → `socialProofLogos`           |
-| Portfolio projects     | Real projects plus one screenshot each — the strip is derived from the roster | `constants/portfolio.ts` → `projects`              |
+| Portfolio projects     | Real projects plus one screenshot each — entered in the dashboard             | Dashboard → Projects                               |
 | Solution headline      | Confirm final headline — the sheet duplicated the Problem section's headline  | `components/features/home/solution.tsx:79`         |
 | "Who we build for"     | Confirm headline and the final audience segment list                          | `constants/home.ts:317`, `who-we-build-for.tsx:57` |
 | Hero discipline labels | Pick wording — "Engineering Works" reads wrong; three label sets were drafted | `constants/home.ts:20–24`                          |
@@ -157,16 +157,16 @@ The old "Contact Us form field list" item is now **resolved** — the field list
 
 ### Portfolio pages — built
 
-Both routes shipped 2026-09-03: `/portfolio` — a pinned reel playing the four highlighted projects one per screen, with the rest in a paged index below it — and ten `/portfolio/[slug]` case studies, statically generated, clearing the 404 the nav had been pointing at. `constants/portfolio.ts` is the single source of truth — the home strip is derived from it and its cards now link to individual projects. Full decisions and data model in [portfolio-pages.md](portfolio-pages.md).
+Both routes shipped 2026-09-03: `/portfolio` — a pinned reel playing the four highlighted projects one per screen, with the rest in a paged index below it — and ten `/portfolio/[slug]` case studies, statically generated, clearing the 404 the nav had been pointing at. Since Phase E (2026-10-02) the pages read from the Projects API and the static roster is retired — it survives only as seed data (`apps/api/prisma/seed-data/`). Full decisions and data model in [portfolio-pages.md](portfolio-pages.md).
 
 | Item             | Needed from PM                                                             | Note                                                                        |
 | ---------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | Result figures   | **Nothing in `results` may be published as-is** — every figure is invented | These are the pages' only claims; they need real numbers or cuts            |
 | Project copy     | Real engagements to replace all ten placeholders                           | Brief, constraints, approach, handover and stack per project                |
-| Screenshots      | One per project                                                            | Set `image`; the reserved plate disappears on its own                       |
+| Screenshots      | One per project                                                            | Upload the cover in the dashboard; the reserved plate disappears on its own |
 | Client naming    | Whether clients can be named, and which are under NDA                      | `client` is an anonymised descriptor today                                  |
 | Quotes           | Real attributions, or drop them                                            | Optional per project; omitting one changes no layout                        |
-| Which work leads | Confirm the four projects the reel highlights                              | `featured` in `constants/portfolio.ts`; the rest fall to the index          |
+| Which work leads | Confirm the four projects the reel highlights                              | The Featured flag in the dashboard; the rest fall to the index              |
 | Reel treatment   | Scroll-driven stage or visitor-driven carousel — both are built            | `portfolioReelVariant` in `constants/portfolio.ts`; carousel is the default |
 
 ### About page — built

@@ -17,8 +17,8 @@ import {
 } from '../src/generated/prisma/enums.js';
 import { storeImage } from '../src/services/media-service.js';
 
-/** Where the static roster's screenshots live (apps/web/public). */
-const WEB_PUBLIC_DIR = path.resolve('../web/public');
+/** Seed files; `coverImagePath` in projects.json is relative to this. */
+const SEED_DATA_DIR = path.resolve('prisma/seed-data');
 
 /**
  * Makes `SUPER_ADMIN_EMAIL` the one Super Admin. Safe to re-run. A previous
@@ -53,9 +53,9 @@ async function seedSuperAdmin() {
 	return superAdmin;
 }
 
-/** A cover screenshot from the web app's public folder, through the media library. */
+/** A seeded cover screenshot, through the media library. */
 async function seedCover(relativePath: string, authorId: number) {
-	const file = path.join(WEB_PUBLIC_DIR, relativePath);
+	const file = path.join(SEED_DATA_DIR, relativePath);
 	const image = await storeImage({
 		buffer: await readFile(file),
 		originalName: path.basename(file),
@@ -78,7 +78,7 @@ type SeedProject = (typeof projectSeeds)[number];
 /**
  * After `MEDIA_PROVIDER` changes (local → Cloudinary), a seeded cover still
  * points at the old provider and its URL would break. Re-uploads it from the
- * web app's public folder to the current provider and retires the old row.
+ * seed data to the current provider and retires the old row.
  * Only touches a cover that is still the seeded one on another provider — a
  * cover an admin replaced in the dashboard is left alone.
  */
@@ -119,8 +119,8 @@ async function moveCoverToCurrentProvider(
 }
 
 /**
- * The ten projects from the static roster (apps/web/constants/portfolio.ts,
- * exported to seed-data/projects.json), Published with today's featured and
+ * The ten projects of the retired static roster (seed-data/projects.json,
+ * screenshots in seed-data/projects/), Published with today's featured and
  * home-strip choices — so the site looks the same when it switches to the API.
  * Only creates what's missing: a slug that exists (even deleted) is left
  * alone, so re-running never overwrites dashboard edits — except to move a

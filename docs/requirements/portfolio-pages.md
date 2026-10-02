@@ -159,15 +159,15 @@ builds only the set it lands on.
 
 ## Home page coupling
 
-`constants/portfolio.ts` is the single source of truth. `constants/home.ts` re-exports `homeTeaserProjects` as `projectCards`, so the strip and `/portfolio` can never disagree, and each card now links to its own detail page rather than all six landing on `/portfolio`. `ProjectCard` in `types/home.ts` and the strip's local pending-slot copy were both deleted in favour of `Project` and the shared `MediaSlot`.
+Since Phase E (2026-10-02) both read from the Projects API ([projects-crud.md](projects-crud.md)): the strip is the projects flagged **Show on home**, in home order, and `/portfolio` is every visible project — so the two can never disagree. Each card links to its own detail page. `ProjectCard` in `types/home.ts` and the strip's local pending-slot copy were both deleted in favour of `Project` and the shared `MediaSlot`.
 
 ## Open items for PM
 
 | Item               | Needed from PM                                                                                                                     | Note                                                                |
 | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Every project      | Real engagements to replace all ten placeholders                                                                                   | `constants/portfolio.ts` carries a single `// TODO:`                |
+| Every project      | Real engagements to replace all ten placeholders                                                                                   | Edited in the dashboard (Projects)                                  |
 | Result figures     | **Nothing in `results` may be published as-is** — all illustrative                                                                 | These are the page's only claims, so they need real numbers or cuts |
-| Screenshots        | One per project                                                                                                                    | Set `image`; the reserved plate disappears on its own               |
+| Screenshots        | One per project                                                                                                                    | Upload a cover in the dashboard; the reserved plate disappears      |
 | Client names       | Whether clients can be named at all, and which are under NDA                                                                       | `client` is deliberately an anonymised descriptor today             |
 | Quotes             | Real attributions, or drop the quote per project                                                                                   | `quote` is optional; omitting it changes no layout                  |
 | Social proof logos | The four new names (Halden Grove, Ardsley, Penhurst, Brightmoor) were added to `socialProofLogos` to keep the two lists consistent | Replace both together                                               |
