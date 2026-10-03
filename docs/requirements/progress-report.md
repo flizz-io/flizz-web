@@ -133,14 +133,46 @@ Branch: `feat/dashboard-auth-portfolio`. Tasks run one at a time, in order; upda
 
 ## Next work — remaining CRUD slices
 
-Planned 2026-10-03. The schema for all four features is done and migrated locally (Stage 8, migration `20261003094516_add_content_tables`). Each feature is built as a vertical slice, like Portfolio: requirements → API → shared API layer → dashboard → landing → production release. Run the slices in this order, one task at a time, and update the status as each lands.
+Planned 2026-10-03. The schema for all four features is done and migrated locally (Stage 8, migration `20261003094516_add_content_tables`). Each feature is built as a vertical slice, like Portfolio: requirements → API → shared API layer → dashboard → landing → production release. Run the work in this order, one task at a time, and update the status as each lands.
 
+0. **Phase L launch blockers (L1–L8)** come first, decided 2026-10-03. Phase L's "first weeks" items follow; L9 (API hardening) must land before CM2.
 1. **Services**: projects depend on it (`projects.service_id`).
 2. **Contact Us + Book a Call**: the form and the scheduler are blocking launch.
 3. **Testimonials**: small, home page only.
 4. **Articles**: the largest, because it needs a body editor.
 
 Every slice ends with a production release that follows the checklist in [apps/api/README.md](../../apps/api/README.md#production-database).
+
+### Phase L — Launch readiness
+
+From the pre-launch review on 2026-10-03. **Owner**: _Dev_ is code work (Claude or a developer); _Owner_ is an account, legal or business task; _PM_ is content. A dev task that needs the owner's input says so.
+
+#### Blockers: before anyone outside the team sees the site
+
+| #   | Task                                                                                                                                                                                                                                                                                                        | Owner       | Status      |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ----------- |
+| L1  | `/privacy-policy` and `/terms-and-conditions` pages (the footer links 404 today). The privacy policy must name every processor (Crisp, Calendly, Google Analytics, Meta, Cloudflare Turnstile, Cloudinary, hosting) and state how long contact messages are kept. Owner supplies or approves the legal text | Dev + Owner | Not started |
+| L2  | Cookie consent banner: accept/reject with equal weight, choice stored, "Cookie settings" footer link; GA, Pixel (and Crisp, if it's classed as non-essential) load only after consent. Mounted outside the ScrollSmoother wrapper. See [analytics.md](../guides/analytics.md)                               | Dev         | Not started |
+| L3  | Real social links in `configs/footer.ts` (now `https://linkedin.com` / `https://twitter.com`) and the About team profile URLs. Owner supplies the URLs                                                                                                                                                      | Dev + Owner | Not started |
+| L4  | Branded `not-found.tsx` (real 404 status) and `error.tsx` / `global-error.tsx` in web and dashboard                                                                                                                                                                                                         | Dev         | Not started |
+| L5  | Replace every invented figure: project results, service engagement durations, About timeline dates and published stats — or remove them                                                                                                                                                                     | PM          | Not started |
+| L6  | Hosting plan allows commercial use: Vercel Pro, or the move to our own server first                                                                                                                                                                                                                         | Owner       | Not started |
+| L7  | Google OAuth consent screen publishing status → "In production" (in "Testing", only listed test users can sign in)                                                                                                                                                                                          | Owner       | Not started |
+| L8  | Contact notifications are required: CM4 is no longer optional (an email or Slack alert on each new message). Pick the sending provider and set up SPF, DKIM and DMARC for the domain                                                                                                                        | Owner + Dev | Not started |
+
+#### First weeks: right after the blockers, alongside the slices
+
+| #   | Task                                                                                                                                                                                                  | Owner       | Status      |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ----------- |
+| L9  | API hardening: security headers (`helmet`), rate limiting (stricter on public writes and auth), `trust proxy` set so the visitor's IP is seen. **Must land before CM2**                               | Dev         | Not started |
+| L10 | Monitoring: error tracking (for example Sentry) in all three apps, plus uptime checks on `/api/health` and the home page with alerts                                                                  | Dev + Owner | Not started |
+| L11 | Database safety: check Neon's backup/restore window; give Vercel preview deployments their own Neon branch so previews never write to production                                                      | Owner + Dev | Not started |
+| L12 | Domain and email: `hello@flizz.io` receives mail; `www` and the bare domain redirect to one canonical host; `NEXT_PUBLIC_SITE_URL` matches it                                                         | Owner       | Not started |
+| L13 | Dashboard access recovery: a second Admin, so losing the Super Admin's Google account doesn't lock everyone out                                                                                       | Owner       | Not started |
+| L14 | Smoke tests: a written pre-launch checklist (sign-in, publish a project, contact form end to end, test booking) and Playwright tests for the critical paths; close C4's pending live end-to-end check | Dev         | Not started |
+| L15 | Device and accessibility pass: real iOS Safari and a low-end Android phone (GSAP, WebGL), keyboard navigation, reduced motion. Prompts in [quality-audits.md](../guides/quality-audits.md)            | Dev         | Not started |
+| L16 | Engineering cleanup (see the section near the end of this file): remove `@workspace/theme-lab` and the `/home-v2` route                                                                               | Dev         | Not started |
+| L17 | Review free-tier limits (Cloudinary, Neon, Crisp, Calendly) against expected traffic                                                                                                                  | Owner       | Not started |
 
 ### Phase S — Services
 
@@ -163,7 +195,7 @@ Every slice ends with a production release that follows the checklist in [apps/a
 | CM1 | Requirements doc `contact-page.md` (backfills the missing doc): form fields, inbox statuses, spam protection (honeypot + rate limit + Cloudflare Turnstile CAPTCHA on submit), team email notification (yes/no, provider), Calendly setup | Not started |
 | CM2 | Public `POST /api/contact`: same Zod rules as the web form, Turnstile token verified server-side (`TURNSTILE_SECRET_KEY`), honeypot, rate limit by `ip_hash`, lower-cased email, `source_path`                                            | Not started |
 | CM3 | Admin inbox API: list (status filter, search, unread count), detail (marks read on first open), status change, internal note, delete; `requirePermission(CONTACT_MESSAGES)`                                                               | Not started |
-| CM4 | Team email notification on a new message, if CM1 says yes                                                                                                                                                                                 | Not started |
+| CM4 | Team email notification on a new message (required, see L8)                                                                                                                                                                               | Not started |
 | CM5 | `packages/api-services`: contact models, enums and service functions                                                                                                                                                                      | Not started |
 | CM6 | Web: `use-contact-form` POSTs to the API, with real success and error states; Turnstile runs on submit (invisible unless the visitor looks suspicious, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`)                                                  | Not started |
 | CM7 | Dashboard inbox: list with status tabs and an unread badge in the sidebar, detail view, status/note actions, archive/spam/delete                                                                                                          | Not started |
