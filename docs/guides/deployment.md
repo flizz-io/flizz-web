@@ -47,6 +47,7 @@ Every variable is documented in each app's `.env.example`; this is what producti
 | api       | `WEB_URL`, `WEB_REVALIDATE_SECRET`                                     | The web app's URL and the shared secret                            |
 | dashboard | `API_URL`                                                              | The API's URL                                                      |
 | dashboard | `NEXT_PUBLIC_GOOGLE_CLIENT_ID`                                         | Same client ID                                                     |
+| dashboard | `NEXT_PUBLIC_SITE_URL`                                                 | The website's origin — the service form's search-result preview    |
 | web       | `API_URL`                                                              | The API's URL — needed at build time                               |
 | web       | `REVALIDATE_SECRET`                                                    | The shared secret                                                  |
 | web       | `NEXT_PUBLIC_SITE_URL`                                                 | The site's public origin                                           |

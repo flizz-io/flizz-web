@@ -93,6 +93,7 @@ Then deploy the API, then the dashboard and web app (see [deployment.md](../../d
 
 Remove each entry once it has run on production.
 
-| Migration                           | Seed needed? | Notes                                                                                                                                        |
-| ----------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `20261003094516_add_content_tables` | **Yes**      | Adds articles, services, testimonials, contact messages and `projects.service_id`. The seed adds the 12 services and links projects to them. |
+| Migration                                           | Seed needed?                | Notes                                                                                                                                                                                                                                                          |
+| --------------------------------------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `20261003094516_add_content_tables`                 | **Yes**                     | Adds articles, services, testimonials, contact messages and `projects.service_id`. The seed adds the 12 services and links projects to them.                                                                                                                   |
+| `20261003124644_add_service_seo_and_slug_redirects` | No (same seed run as above) | Adds the services' SEO fields, FAQs and share image, `slug_redirects`, and the `SERVICE_OG_IMAGE` media purpose. Deploy the API from the Phase S commits after it. Any project the seed reports as unlinked must be given a service in the dashboard before S9 |
