@@ -3,35 +3,36 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
-import { DeleteProjectButton } from '@/components/features/projects/delete-project-button';
-import { ProjectForm } from '@/components/features/projects/project-form';
-import { VisibilityBadge } from '@/components/features/projects/visibility-badge';
+import { DeleteServiceButton } from '@/components/features/services/delete-service-button';
+import { ServiceForm } from '@/components/features/services/service-form';
+import { ServiceProjectsSection } from '@/components/features/services/service-projects-section';
+import { ServiceStatusBadge } from '@/components/features/services/service-status-badge';
 import { RecordAuthorship } from '@/components/snippets/record-authorship/record-authorship';
 import { homePath } from '@/constants/auth';
 import {
-	projectFormMessages,
-	projectsMessages,
-	projectsPath
-} from '@/constants/projects';
+	serviceFormMessages,
+	servicesMessages,
+	servicesPath
+} from '@/constants/services';
 import { getCurrentUser } from '@/utils/get-current-user';
 import { serverApiContext, serverCall } from '@/utils/server-api';
-import { ApiError, Feature, getProjectService } from '@workspace/api-services';
+import { ApiError, Feature, getServiceService } from '@workspace/api-services';
 import { Button } from '@workspace/ui/components/button';
 
 const NOT_FOUND_STATUS = 404;
 const BAD_REQUEST_STATUS = 400;
 
-interface ProjectPageProps {
+interface ServicePageProps {
 	params: Promise<{ uuid: string }>;
 }
 
-export const metadata: Metadata = { title: projectsMessages.title };
+export const metadata: Metadata = { title: servicesMessages.title };
 
 /** A deleted, unknown or malformed id is a 404. */
-async function loadProject(uuid: string) {
+async function loadService(uuid: string) {
 	try {
 		return await serverCall(
-			getProjectService(uuid, await serverApiContext())
+			getServiceService(uuid, await serverApiContext())
 		);
 	} catch (error) {
 		if (
@@ -45,13 +46,13 @@ async function loadProject(uuid: string) {
 	}
 }
 
-/** Needs Projects › View; the form is read-only without Edit. */
-export default async function ProjectPage({ params }: ProjectPageProps) {
+/** Needs Services › View; the form is read-only without Edit. */
+export default async function ServicePage({ params }: ServicePageProps) {
 	const user = await getCurrentUser();
-	const grant = user?.permissions[Feature.PROJECTS];
+	const grant = user?.permissions[Feature.SERVICES];
 	if (!grant?.view) redirect(homePath);
 
-	const project = await loadProject((await params).uuid);
+	const service = await loadService((await params).uuid);
 
 	return (
 		<>
@@ -62,41 +63,45 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 					size="sm"
 					className="self-start"
 				>
-					<Link href={projectsPath}>
+					<Link href={servicesPath}>
 						<ArrowLeft />
-						{projectFormMessages.backToList}
+						{serviceFormMessages.backToList}
 					</Link>
 				</Button>
 				<div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 					<div className="flex flex-col gap-1">
 						<div className="flex items-center gap-3">
 							<h1 className="text-2xl font-semibold tracking-tight">
-								{project.name}
+								{service.title}
 							</h1>
-							<VisibilityBadge visibility={project.visibility} />
+							<ServiceStatusBadge status={service.status} />
 						</div>
 						<p className="text-sm text-muted-foreground">
-							{projectFormMessages.editLead(project.slug)}
+							{serviceFormMessages.editLead(service.slug)}
 						</p>
-						<RecordAuthorship {...project} />
+						<RecordAuthorship {...service} />
 						{grant.edit ? null : (
 							<p className="text-sm text-muted-foreground">
-								{projectFormMessages.readOnly}
+								{serviceFormMessages.readOnly}
 							</p>
 						)}
 					</div>
 					{grant.delete ? (
-						<DeleteProjectButton
-							uuid={project.uuid}
-							name={project.name}
+						<DeleteServiceButton
+							uuid={service.uuid}
+							title={service.title}
+							projectCount={service.projectCount}
 						/>
 					) : null}
 				</div>
 			</div>
-			<ProjectForm
-				project={project}
+			<ServiceForm
+				service={service}
 				canSave={grant.edit}
 			/>
+			<div className="max-w-4xl">
+				<ServiceProjectsSection projects={service.projects} />
+			</div>
 		</>
 	);
 }

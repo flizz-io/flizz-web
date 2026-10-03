@@ -111,6 +111,9 @@ importers:
       '@workspace/api-services':
         specifier: workspace:*
         version: link:../../packages/api-services
+      '@workspace/service-visuals':
+        specifier: workspace:*
+        version: link:../../packages/service-visuals
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui

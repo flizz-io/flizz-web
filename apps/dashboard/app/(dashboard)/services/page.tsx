@@ -1,12 +1,15 @@
+import { Plus } from 'lucide-react';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { ServicesTable } from '@/components/features/services/services-table';
 import { homePath } from '@/constants/auth';
-import { servicesMessages } from '@/constants/services';
+import { newServicePath, servicesMessages } from '@/constants/services';
 import { getCurrentUser } from '@/utils/get-current-user';
 import { serverApiContext, serverCall } from '@/utils/server-api';
 import { Feature, getServicesService } from '@workspace/api-services';
+import { Button } from '@workspace/ui/components/button';
 
 export const metadata: Metadata = { title: servicesMessages.title };
 
@@ -22,13 +25,23 @@ export default async function ServicesPage() {
 
 	return (
 		<>
-			<div>
-				<h1 className="text-2xl font-semibold tracking-tight">
-					{servicesMessages.title}
-				</h1>
-				<p className="max-w-prose text-muted-foreground">
-					{servicesMessages.lead}
-				</p>
+			<div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+				<div>
+					<h1 className="text-2xl font-semibold tracking-tight">
+						{servicesMessages.title}
+					</h1>
+					<p className="max-w-prose text-muted-foreground">
+						{servicesMessages.lead}
+					</p>
+				</div>
+				{grant.create ? (
+					<Button asChild>
+						<Link href={newServicePath}>
+							<Plus />
+							{servicesMessages.newService}
+						</Link>
+					</Button>
+				) : null}
 			</div>
 			<ServicesTable
 				services={services}

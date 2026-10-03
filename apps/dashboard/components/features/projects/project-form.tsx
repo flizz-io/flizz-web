@@ -12,7 +12,7 @@ import { ProjectQuoteSection } from '@/components/features/projects/project-quot
 import { ProjectResultsSection } from '@/components/features/projects/project-results-section';
 import { ProjectStackSection } from '@/components/features/projects/project-stack-section';
 import { ProjectStorySection } from '@/components/features/projects/project-story-section';
-import { SectionCard } from '@/components/features/projects/section-card';
+import { SectionCard } from '@/components/snippets/section-card/section-card';
 import { projectFormMessages, projectPath } from '@/constants/projects';
 import type { ProjectFormValues, SetProjectField } from '@/types/project-form';
 import {

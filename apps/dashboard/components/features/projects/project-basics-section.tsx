@@ -1,8 +1,8 @@
 import {
 	FormField,
 	charCount
-} from '@/components/features/projects/form-field';
-import { SectionCard } from '@/components/features/projects/section-card';
+} from '@/components/snippets/form-field/form-field';
+import { SectionCard } from '@/components/snippets/section-card/section-card';
 import {
 	projectFieldLimits as limits,
 	projectFormMessages,

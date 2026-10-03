@@ -111,7 +111,7 @@ Every change revalidates the `services` cache tag, and also `projects` when the 
 ## Dashboard
 
 - **Services list** — grouped by category (four sections, enum order). Each row: visual name, title, slug, status badge (Draft / Live), linked-project count, last updated by. Move up / down within a group (with `EDIT`) saves the category's order at once. Search and status filter; while a search or filter is on, reordering is off.
-- **Service form** — sections: Basics (title, slug, category, summary), Visual (picker grid with live previews of the scenes), Page copy (intro, problem), Deliverables and Outcomes (reorderable lists), Engagement, FAQs (reorderable pairs), Search & social (SEO title/description with counters, a Google-result preview, share image), Publishing (status). Read-only without `EDIT`.
+- **Service form** — sections: Basics (title, slug, category, summary), Visual (a grid of the scenes by name, with a live preview of the chosen one — one WebGL context), Page copy (intro, problem), Deliverables and Outcomes (reorderable lists), Engagement, FAQs (reorderable pairs), Search & social (SEO title/description with counters, a search-result preview, share image), Publishing (status), and the linked Projects. Read-only without `EDIT`. The preview's URL comes from `NEXT_PUBLIC_SITE_URL` in apps/dashboard.
 - **Saving** — fields save together with the form's Save. The share image saves as it changes and only once the service exists.
 - **Delete** — confirmed; only with `DELETE`. When projects link to it, the dialog says so and lists them instead of offering delete.
 - Each service shows "Created by … · Last changed by …".
