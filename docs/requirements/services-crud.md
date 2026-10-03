@@ -6,7 +6,7 @@ Phase S in [progress-report.md](progress-report.md) (tasks S1–S9). Replaces th
 
 - **Same contract as the static roster.** A service carries every field the pages render today (`Service` / `ServiceDetail` in `apps/web/types/services.ts`), so `/services`, `/services/[slug]` and the home teaser switch data source without a redesign.
 - **Draft / Published, no publish date.** Services change rarely and launch with the site, so there is no scheduling. A service is public when it is **Published and not deleted**.
-- **Ordered within a category.** The list page groups by the four categories (in enum order); inside a group, services follow `display_order`, set by drag-reorder in the dashboard. Moving a service to another category puts it last there.
+- **Ordered within a category.** The list page groups by the four categories (in enum order); inside a group, services follow `display_order`, set with move up / down in the dashboard. Moving a service to another category puts it last there.
 - **Lists stay plain-text lists.** Deliverables, outcomes and FAQs are ordered lists edited in the form — no rich-text editor.
 - **SEO and AI fields are part of the record** (task SEO5 for services): SEO title, SEO description, a share image, and FAQs that render visibly on the detail page and as `FAQPage` JSON-LD.
 - **Changing a slug keeps the old URL working.** The old slug 301s to the new one (see [Slug redirects](#slug-redirects)). The table is shared, so articles and projects can use it later.
@@ -110,7 +110,7 @@ Every change revalidates the `services` cache tag, and also `projects` when the 
 
 ## Dashboard
 
-- **Services list** — grouped by category (four sections, enum order). Each row: visual name, title, slug, status badge (Draft / Live), linked-project count, last updated by. Drag-reorder within a group (with `EDIT`). Search and status filter; while a search or filter is on, reordering is off.
+- **Services list** — grouped by category (four sections, enum order). Each row: visual name, title, slug, status badge (Draft / Live), linked-project count, last updated by. Move up / down within a group (with `EDIT`) saves the category's order at once. Search and status filter; while a search or filter is on, reordering is off.
 - **Service form** — sections: Basics (title, slug, category, summary), Visual (picker grid with live previews of the scenes), Page copy (intro, problem), Deliverables and Outcomes (reorderable lists), Engagement, FAQs (reorderable pairs), Search & social (SEO title/description with counters, a Google-result preview, share image), Publishing (status). Read-only without `EDIT`.
 - **Saving** — fields save together with the form's Save. The share image saves as it changes and only once the service exists.
 - **Delete** — confirmed; only with `DELETE`. When projects link to it, the dialog says so and lists them instead of offering delete.

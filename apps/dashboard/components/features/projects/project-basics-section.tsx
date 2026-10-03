@@ -6,9 +6,9 @@ import { SectionCard } from '@/components/features/projects/section-card';
 import {
 	projectFieldLimits as limits,
 	projectFormMessages,
-	sectorLabels,
-	serviceCategoryLabels
+	sectorLabels
 } from '@/constants/projects';
+import { serviceCategoryLabels } from '@/constants/services';
 import type { ProjectSectionProps } from '@/types/project-form';
 import { ProjectSector, ServiceCategory } from '@workspace/api-services';
 import { Input } from '@workspace/ui/components/input';

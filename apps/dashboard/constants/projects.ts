@@ -1,8 +1,7 @@
 import {
 	ProjectSector,
 	ProjectStatus,
-	ProjectVisibility,
-	ServiceCategory
+	ProjectVisibility
 } from '@workspace/api-services';
 
 export const projectsPath = '/projects';
@@ -16,13 +15,6 @@ export const sectorLabels: Record<ProjectSector, string> = {
 	[ProjectSector.FIELD]: 'Field & Frontline',
 	[ProjectSector.FINANCE]: 'Financial Services',
 	[ProjectSector.PROFESSIONAL]: 'Professional Services'
-};
-
-export const serviceCategoryLabels: Record<ServiceCategory, string> = {
-	[ServiceCategory.CUSTOM_SOFTWARE]: 'Custom Software',
-	[ServiceCategory.AI_AUTOMATION]: 'AI & Automation',
-	[ServiceCategory.ECOMMERCE]: 'E-commerce',
-	[ServiceCategory.MOBILE]: 'Mobile'
 };
 
 export const visibilityLabels: Record<ProjectVisibility, string> = {
