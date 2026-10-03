@@ -1,4 +1,5 @@
 import { publicProjectWhere, resultsOf } from './project-service.js';
+import { isPublicService } from './service-service.js';
 import { prisma } from '../configs/database.js';
 import type { Prisma } from '../generated/prisma/client.js';
 import type {
@@ -9,7 +10,12 @@ import type {
 import { HttpError } from '../utils/http-error.js';
 import { mediaUrl } from '../utils/media-url.js';
 
-const cardInclude = { coverImage: true } satisfies Prisma.ProjectInclude;
+const cardInclude = {
+	coverImage: true,
+	service: {
+		select: { slug: true, category: true, status: true, deletedAt: true }
+	}
+} satisfies Prisma.ProjectInclude;
 
 const publicInclude = {
 	...cardInclude,
@@ -37,8 +43,11 @@ function toPublicProject(project: PublicCardRow): PublicProjectResponse {
 		name: project.name,
 		client: project.client,
 		sector: project.sector,
-		service: project.serviceCategory,
-		serviceSlug: project.serviceSlug,
+		service: project.service?.category ?? project.serviceCategory,
+		// No link to a service page the website doesn't show.
+		...(project.service && isPublicService(project.service)
+			? { serviceSlug: project.service.slug }
+			: {}),
 		year: String(project.year),
 		summary: project.summary,
 		results: resultsOf(project.results),

@@ -27,8 +27,19 @@ const referenceFields = {
 	select: { uuid: true, email: true, firstName: true, lastName: true }
 } as const;
 
+const serviceFields = {
+	select: {
+		id: true,
+		uuid: true,
+		title: true,
+		slug: true,
+		category: true
+	}
+} as const;
+
 const projectInclude = {
 	coverImage: true,
+	service: serviceFields,
 	createdBy: referenceFields,
 	updatedBy: referenceFields
 } satisfies Prisma.ProjectInclude;
@@ -85,7 +96,7 @@ function toListItem(
 		slug: project.slug,
 		name: project.name,
 		sector: project.sector,
-		serviceCategory: project.serviceCategory,
+		serviceCategory: project.service?.category ?? project.serviceCategory,
 		year: project.year,
 		status: project.status,
 		visibility: visibilityOf(project, now),
@@ -109,7 +120,14 @@ async function toProjectResponse(
 		...toListItem(project),
 		...images,
 		client: project.client,
-		serviceSlug: project.serviceSlug,
+		service: project.service
+			? {
+					uuid: project.service.uuid,
+					title: project.service.title,
+					slug: project.service.slug,
+					category: project.service.category
+				}
+			: null,
 		summary: project.summary,
 		results: resultsOf(project.results),
 		duration: project.duration,
@@ -161,6 +179,28 @@ async function assertSlugFree(slug: string, exceptId?: number) {
 			'That slug is taken — by another project, a deleted one, or a site route.'
 		);
 	}
+}
+
+/**
+ * The columns a chosen service sets. `service_category` / `service_slug`
+ * are kept in step until S9 drops them; nothing reads them once linked.
+ */
+async function serviceColumns(serviceUuid: string) {
+	const service = await prisma.service.findFirst({
+		where: { uuid: serviceUuid, deletedAt: null },
+		select: { id: true, slug: true, category: true }
+	});
+	if (!service) {
+		throw HttpError.badRequest('Some fields are missing or invalid.', [
+			{ field: 'serviceUuid', message: 'Choose a service.' }
+		]);
+	}
+
+	return {
+		serviceId: service.id,
+		serviceCategory: service.category,
+		serviceSlug: service.slug
+	};
 }
 
 type QuoteInput = CreateProjectInput['quote'];
@@ -216,8 +256,9 @@ export async function addProject(
 	actor: CurrentUser,
 	input: CreateProjectInput
 ) {
-	const { slug: requested, quote, ...fields } = input;
+	const { slug: requested, quote, serviceUuid, ...fields } = input;
 	if (requested) await assertSlugFree(requested);
+	const service = await serviceColumns(serviceUuid);
 	const slug =
 		requested ??
 		(await uniqueSlug(slugify(fields.name, 'project'), (candidate) =>
@@ -227,6 +268,7 @@ export async function addProject(
 	const project = await prisma.project.create({
 		data: {
 			...fields,
+			...service,
 			slug,
 			...quoteColumns(quote),
 			status: ProjectStatus.DRAFT,
@@ -249,7 +291,8 @@ export async function editProject(
 	input: UpdateProjectInput
 ) {
 	const current = await findProject(uuid);
-	const { quote, ...fields } = input;
+	const { quote, serviceUuid, ...fields } = input;
+	const service = serviceUuid ? await serviceColumns(serviceUuid) : {};
 	if (fields.slug !== undefined && fields.slug !== current.slug) {
 		await assertSlugFree(fields.slug, current.id);
 	}
@@ -261,6 +304,7 @@ export async function editProject(
 		where: { id: current.id },
 		data: {
 			...fields,
+			...service,
 			...quoteColumns(quote),
 			...(firstPublish ? { firstPublishedAt: new Date() } : {}),
 			updatedById: actor.id

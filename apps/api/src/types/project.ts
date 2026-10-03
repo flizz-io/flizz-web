@@ -60,11 +60,20 @@ export interface ProjectListItemResponse {
 	updatedBy: UserReference | null;
 }
 
+/** The service a project links to, as the project form shows it. */
+export interface ProjectServiceReference {
+	uuid: string;
+	title: string;
+	slug: string;
+	category: ServiceCategory;
+}
+
 /** One project with every field, as the dashboard form edits it. */
 export interface ProjectResponse
 	extends ProjectListItemResponse, ProjectImagesResponse {
 	client: string;
-	serviceSlug: string;
+	/** `null` only for a project the seed couldn't link yet. */
+	service: ProjectServiceReference | null;
 	summary: string;
 	results: ProjectResult[];
 	duration: string;
@@ -90,7 +99,8 @@ export interface PublicProjectResponse {
 	client: string;
 	sector: ProjectSector;
 	service: ServiceCategory;
-	serviceSlug: string;
+	/** Left out while the service isn't on the website. */
+	serviceSlug?: string;
 	/** A string, as the pages expect — nothing does arithmetic on it. */
 	year: string;
 	summary: string;

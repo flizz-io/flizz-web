@@ -15,7 +15,12 @@ import {
 } from '@/constants/projects';
 import { getCurrentUser } from '@/utils/get-current-user';
 import { serverApiContext, serverCall } from '@/utils/server-api';
-import { ApiError, Feature, getProjectService } from '@workspace/api-services';
+import {
+	ApiError,
+	Feature,
+	getProjectService,
+	getServiceOptionsService
+} from '@workspace/api-services';
 import { Button } from '@workspace/ui/components/button';
 
 const NOT_FOUND_STATUS = 404;
@@ -51,7 +56,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 	const grant = user?.permissions[Feature.PROJECTS];
 	if (!grant?.view) redirect(homePath);
 
-	const project = await loadProject((await params).uuid);
+	const [project, serviceOptions] = await Promise.all([
+		loadProject((await params).uuid),
+		serverCall(getServiceOptionsService(await serverApiContext()))
+	]);
 
 	return (
 		<>
@@ -96,6 +104,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 			<ProjectForm
 				project={project}
 				canSave={grant.edit}
+				serviceOptions={serviceOptions}
 			/>
 		</>
 	);

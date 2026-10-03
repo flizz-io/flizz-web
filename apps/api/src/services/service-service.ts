@@ -89,6 +89,16 @@ export const publicServiceWhere = {
 	status: PublishStatus.PUBLISHED
 } satisfies Prisma.ServiceWhereInput;
 
+/** Whether the website shows this service — `publicServiceWhere` in code. */
+export function isPublicService(service: {
+	status: PublishStatus;
+	deletedAt: Date | null;
+}) {
+	return (
+		service.deletedAt === null && service.status === PublishStatus.PUBLISHED
+	);
+}
+
 /** `faqs` is JSONB — read it back through the same shape it was saved as. */
 export function faqsOf(json: Prisma.JsonValue): ServiceFaq[] {
 	const parsed = serviceFaqSchema.array().safeParse(json);

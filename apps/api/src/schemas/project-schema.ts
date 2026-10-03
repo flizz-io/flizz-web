@@ -3,11 +3,7 @@ import { z } from 'zod';
 import { slugSchema } from './slug-schema.js';
 import { projectLimits } from '../constants/project.js';
 import { ProjectVisibility } from '../enums/project-visibility.js';
-import {
-	ProjectSector,
-	ProjectStatus,
-	ServiceCategory
-} from '../generated/prisma/enums.js';
+import { ProjectSector, ProjectStatus } from '../generated/prisma/enums.js';
 
 const limits = projectLimits;
 
@@ -57,8 +53,8 @@ const contentSchema = z.object({
 	name: text(limits.name),
 	client: text(limits.client),
 	sector: z.enum(ProjectSector),
-	serviceCategory: z.enum(ServiceCategory),
-	serviceSlug: slug,
+	/** The service it's evidence for — its category and page come from it. */
+	serviceUuid: z.uuid(),
 	year: z
 		.number()
 		.int()

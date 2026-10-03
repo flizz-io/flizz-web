@@ -6,7 +6,8 @@ import { redirect } from 'next/navigation';
 import { ProjectForm } from '@/components/features/projects/project-form';
 import { projectFormMessages, projectsPath } from '@/constants/projects';
 import { getCurrentUser } from '@/utils/get-current-user';
-import { Feature } from '@workspace/api-services';
+import { serverApiContext, serverCall } from '@/utils/server-api';
+import { Feature, getServiceOptionsService } from '@workspace/api-services';
 import { Button } from '@workspace/ui/components/button';
 
 export const metadata: Metadata = { title: projectFormMessages.newTitle };
@@ -15,6 +16,10 @@ export const metadata: Metadata = { title: projectFormMessages.newTitle };
 export default async function NewProjectPage() {
 	const user = await getCurrentUser();
 	if (!user?.permissions[Feature.PROJECTS].create) redirect(projectsPath);
+
+	const serviceOptions = await serverCall(
+		getServiceOptionsService(await serverApiContext())
+	);
 
 	return (
 		<>
@@ -37,7 +42,10 @@ export default async function NewProjectPage() {
 					{projectFormMessages.newLead}
 				</p>
 			</div>
-			<ProjectForm canSave />
+			<ProjectForm
+				canSave
+				serviceOptions={serviceOptions}
+			/>
 		</>
 	);
 }

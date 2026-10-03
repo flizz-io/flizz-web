@@ -23,8 +23,10 @@ export interface ProjectFormValues {
 	slug: string;
 	client: string;
 	sector: ProjectSector;
+	/** Narrows the Service dropdown — the project's category is its service's. */
 	serviceCategory: ServiceCategory;
-	serviceSlug: string;
+	/** '' until one is chosen. */
+	serviceUuid: string;
 	year: string;
 	summary: string;
 	results: KeyedItem<ResultValue>[];

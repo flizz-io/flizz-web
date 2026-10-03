@@ -59,10 +59,19 @@ export interface ProjectListItem {
 	updatedBy: UserReference | null;
 }
 
+/** The service a project links to. */
+export interface ProjectServiceReference {
+	uuid: string;
+	title: string;
+	slug: string;
+	category: ServiceCategory;
+}
+
 /** One project with every field — `GET /api/projects/:uuid`. */
 export interface ProjectRecord extends ProjectListItem, ProjectImages {
 	client: string;
-	serviceSlug: string;
+	/** `null` only for a project the seed couldn't link yet. */
+	service: ProjectServiceReference | null;
 	summary: string;
 	results: ProjectResult[];
 	duration: string;
@@ -90,8 +99,8 @@ export interface ProjectContentPayload {
 	name: string;
 	client: string;
 	sector: ProjectSector;
-	serviceCategory: ServiceCategory;
-	serviceSlug: string;
+	/** The service it's evidence for — its category and page come from it. */
+	serviceUuid: string;
 	year: number;
 	summary: string;
 	results: ProjectResult[];
@@ -131,7 +140,8 @@ export interface PublicProject {
 	client: string;
 	sector: ProjectSector;
 	service: ServiceCategory;
-	serviceSlug: string;
+	/** Left out while the service isn't on the website. */
+	serviceSlug?: string;
 	year: string;
 	summary: string;
 	results: ProjectResult[];
