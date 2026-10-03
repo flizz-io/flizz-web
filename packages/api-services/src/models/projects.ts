@@ -2,9 +2,9 @@ import type { UserReference } from './auth';
 import type {
 	ProjectSector,
 	ProjectStatus,
-	ProjectVisibility,
-	ServiceCategory
+	ProjectVisibility
 } from '../enums/projects';
+import type { ServiceCategory } from '../enums/services';
 
 /** One measured change — `from` → `to`. The first is the headline. */
 export interface ProjectResult {
