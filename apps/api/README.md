@@ -91,13 +91,10 @@ Then deploy the API, then the dashboard and web app (see [deployment.md](../../d
 ### Connection notes (Neon)
 
 - Prisma's migrate commands should use Neon's **direct** connection string (host without `-pooler`). The pooled one (PgBouncer) can hang on the lock `migrate deploy` takes. The running API on Vercel uses the **pooled** string.
-- If a remote seed fails with `P2028 Unable to start a transaction` or `ETIMEDOUT`, the cause is latency or the network, not the data. Re-run it (it's idempotent). Some networks block outbound port 5432; switch networks if `psql "<url>"` can't connect either.
+- If a remote seed fails with `P2028 Unable to start a transaction` or `ETIMEDOUT`, the cause is latency or the network, not the data. Re-run it (it's idempotent). If the error lists `ENETUNREACH` IPv6 addresses, Node is trying IPv6 the network can't reach: prefix the command with `NODE_OPTIONS="--dns-result-order=ipv4first --network-family-autoselection-attempt-timeout=2000"`. Some networks block outbound port 5432; switch networks if `psql "<url>"` can't connect either.
 
 ## Pending production releases
 
 Remove each entry once it has run on production.
 
-| Migration                                           | Seed needed?                | Notes                                                                                                                                                                                                                                                          |
-| --------------------------------------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `20261003094516_add_content_tables`                 | **Yes**                     | Adds articles, services, testimonials, contact messages and `projects.service_id`. The seed adds the 12 services and links projects to them.                                                                                                                   |
-| `20261003124644_add_service_seo_and_slug_redirects` | No (same seed run as above) | Adds the services' SEO fields, FAQs and share image, `slug_redirects`, and the `SERVICE_OG_IMAGE` media purpose. Deploy the API from the Phase S commits after it. Any project the seed reports as unlinked must be given a service in the dashboard before S9 |
+_None — `20261003094516_add_content_tables` and `20261003124644_add_service_seo_and_slug_redirects` ran on production on 2026-10-04 (seed: 12 services, 10 projects linked)._
