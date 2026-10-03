@@ -2,6 +2,8 @@ import Script from 'next/script';
 
 import { getCrispScript } from '@/constants/chat';
 
+import './crisp-chat.css';
+
 const websiteId = process.env.NEXT_PUBLIC_CRISP_WEBSITE_ID?.trim();
 
 /**
