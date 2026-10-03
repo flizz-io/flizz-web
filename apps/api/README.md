@@ -32,7 +32,7 @@ The API build never migrates the database. Migrations and seeding are manual ste
 Your `.env` stays pointed at the local database. Put production values in `apps/api/.env.production` (ignored by git through `.env*`). It must hold **every** variable `src/configs/env.ts` validates, not only `DATABASE_URL`. The seed loads the full config:
 
 ```bash
-DATABASE_URL=postgresql://…neon.tech/flizz?sslmode=require   # see the connection note below
+DATABASE_URL='postgresql://…neon.tech/flizz?sslmode=require&channel_binding=require'   # quoted, see below
 SUPER_ADMIN_EMAIL=…                 # the production Super Admin
 MEDIA_PROVIDER=cloudinary           # must match production, see the warning below
 CLOUDINARY_CLOUD_NAME=…
@@ -42,6 +42,8 @@ CLOUDINARY_FOLDER=flizz
 GOOGLE_CLIENT_ID=…
 SESSION_SECRET=…
 ```
+
+> **Quote any value containing `&`, `?`, `$`, spaces or `#`** — Neon's URL has `&channel_binding=require`. The file is `source`d by bash, which reads an unquoted `&` as "run in the background": `DATABASE_URL` is then never set and every command silently falls back to your local `.env`.
 
 Run commands with that file loaded into a subshell. Variables already set in the environment win over `.env`, so nothing local leaks in:
 
@@ -59,6 +61,8 @@ cd apps/api
 P='set -a; source .env.production; set +a;'
 
 # a. What's pending? Lists the migrations not yet applied.
+#    STOP unless it prints `Datasource "db": … at "<your-host>.neon.tech"`.
+#    `at "localhost"` means .env.production didn't load (see the quoting note).
 (eval "$P"; npx prisma migrate status)
 
 # b. Back up first: on Neon, create a branch of the production database
