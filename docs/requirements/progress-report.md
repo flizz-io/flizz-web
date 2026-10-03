@@ -33,28 +33,28 @@ Each page's requirements doc is written just before its static-design stage star
 | Case Studies       | **Dropped 2026-09-03** — a case study is a project shown in full, not a separate record. The Projects CRUD covers both.                                                                                                                                                                  | —           |
 | Contact Us         | Stores/manages Contact Us form submissions.                                                                                                                                                                                                                                              | Not started |
 | Testimonial        | Home page section only — no dedicated public page or list.                                                                                                                                                                                                                               | Not started |
-| Book a Call        | No dedicated public page identified yet — confirm where this is triggered from (e.g. Hero CTA / Final CTA on Home) when we get there.                                                                                                                                                    | Not started |
+| Book a Call        | Calendly embed on `/contact` (and any CTA that links to it). **No table** — Calendly holds the bookings and sends the notifications. Add a `call_bookings` table fed by Calendly webhooks only if the dashboard ever needs to list calls.                                                | Not started |
 
 ## Development plan (execution order)
 
 Work proceeds in this order. Update status inline as we move through them.
 
-| #   | Stage                                                                                               | Status                      |
-| --- | --------------------------------------------------------------------------------------------------- | --------------------------- |
-| 1   | ~~Read & document PM's Google Sheet content~~                                                       | Done                        |
-| 2   | ~~Static Home page — design + build with static/placeholder data, launch-ready~~                    | Built — pending PM content  |
-| 3   | ~~Static About page — design + build~~                                                              | Built — pending PM content  |
-| 4   | ~~Static Services + Single Service pages — design + build~~                                         | Built — pending PM content  |
-| 5   | ~~Static Contact Us page — design + build~~                                                         | Built early — pending PM    |
-| 6   | ~~Static Portfolio/Project pages — design + build~~                                                 | Built — pending PM content  |
-| 7   | ~~Static Articles pages — design + build~~ (Case Studies dropped)                                   | Built — pending PM content  |
-| 8   | Database design — schema for all CRUD features                                                      | **In progress** — see below |
-| 9   | Admin dashboard base structure, design, and authentication                                          | Done                        |
-| 10  | Build APIs — feature by feature                                                                     | Not started                 |
-| 11  | Frontend common API service functions, Zod schemas, models, enums & types (request/response/params) | Not started                 |
-| 12  | Admin dashboard CRUD feature design & API integration                                               | Not started                 |
-| 13  | Landing page API integration — replace static data with live data across all public pages           | Not started                 |
-| 14  | Testing & bug fixing — full feature + design pass                                                   | Not started                 |
+| #   | Stage                                                                                               | Status                                                                                                                                                                       |
+| --- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | ~~Read & document PM's Google Sheet content~~                                                       | Done                                                                                                                                                                         |
+| 2   | ~~Static Home page — design + build with static/placeholder data, launch-ready~~                    | Built — pending PM content                                                                                                                                                   |
+| 3   | ~~Static About page — design + build~~                                                              | Built — pending PM content                                                                                                                                                   |
+| 4   | ~~Static Services + Single Service pages — design + build~~                                         | Built — pending PM content                                                                                                                                                   |
+| 5   | ~~Static Contact Us page — design + build~~                                                         | Built early — pending PM                                                                                                                                                     |
+| 6   | ~~Static Portfolio/Project pages — design + build~~                                                 | Built — pending PM content                                                                                                                                                   |
+| 7   | ~~Static Articles pages — design + build~~ (Case Studies dropped)                                   | Built — pending PM content                                                                                                                                                   |
+| 8   | Database design — schema for all CRUD features                                                      | Done 2026-10-03 — articles, services, testimonials, contact messages, `projects.service_id`; migrated locally, production pending. Article comments/reactions/views deferred |
+| 9   | Admin dashboard base structure, design, and authentication                                          | Done                                                                                                                                                                         |
+| 10  | Build APIs — feature by feature                                                                     | Not started                                                                                                                                                                  |
+| 11  | Frontend common API service functions, Zod schemas, models, enums & types (request/response/params) | Not started                                                                                                                                                                  |
+| 12  | Admin dashboard CRUD feature design & API integration                                               | Not started                                                                                                                                                                  |
+| 13  | Landing page API integration — replace static data with live data across all public pages           | Not started                                                                                                                                                                  |
+| 14  | Testing & bug fixing — full feature + design pass                                                   | Not started                                                                                                                                                                  |
 
 ### Deviations from the plan
 
@@ -131,6 +131,69 @@ Branch: `feat/dashboard-auth-portfolio`. Tasks run one at a time, in order; upda
 | E4  | About page team section reads public team members from the API (`show_on_website`)                                               | Done   |
 | E5  | Gallery section on `/portfolio/[slug]` — designed with the `frontend-design` skill; shown only when a project has gallery images | Done   |
 
+## Next work — remaining CRUD slices
+
+Planned 2026-10-03. The schema for all four features is done and migrated locally (Stage 8, migration `20261003094516_add_content_tables`). Each feature is built as a vertical slice, like Portfolio: requirements → API → shared API layer → dashboard → landing → production release. Run the slices in this order, one task at a time, and update the status as each lands.
+
+1. **Services**: projects depend on it (`projects.service_id`).
+2. **Contact Us + Book a Call**: the form and the scheduler are blocking launch.
+3. **Testimonials**: small, home page only.
+4. **Articles**: the largest, because it needs a body editor.
+
+Every slice ends with a production release that follows the checklist in [apps/api/README.md](../../apps/api/README.md#production-database).
+
+### Phase S — Services
+
+| #   | Task                                                                                                                                                                                                     | Status      |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| S1  | Requirements doc `services-crud.md`: fields, validation, `visualKind` picker, draft/published, order within a category, and the delete rule (blocked while a live project links to the service)          | Not started |
+| S2  | Services API: public list/detail (published only) and admin CRUD + reorder, Zod-validated, `requirePermission(SERVICES)`, `visualKind` checked against `SERVICE_VISUAL_KINDS`, revalidates the web pages | Not started |
+| S3  | `packages/api-services`: services models, enums and service functions                                                                                                                                    | Not started |
+| S4  | Dashboard Services list: table grouped by category, status badge, reorder within a category                                                                                                              | Not started |
+| S5  | Dashboard Service form: basics, visual picker, intro/problem, deliverables and outcomes lists, engagement, publishing; delete with confirm                                                               | Not started |
+| S6  | Projects ↔ Services: API takes and returns the service by `uuid`, with category and slug derived from it; project form gets a Category filter + Service dropdown and loses "Service page slug"           | Not started |
+| S7  | Landing: `/services`, `/services/[slug]` and the home teaser read from the API, static and revalidated on edit; retire `constants/services.ts` (kept as `seed-data/services.json`)                       | Not started |
+| S8  | Production release: migration + seed (adds the services, links projects); fix any project the seed couldn't link — **review checkpoint**                                                                 | Not started |
+| S9  | Contract migration: drop `projects.service_slug` / `service_category`, make `service_id` required; seed and the Project types updated                                                                    | Not started |
+
+### Phase CM — Contact Us & Book a Call
+
+| #   | Task                                                                                                                                                                                                                                      | Status      |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| CM1 | Requirements doc `contact-page.md` (backfills the missing doc): form fields, inbox statuses, spam protection (honeypot + rate limit + Cloudflare Turnstile CAPTCHA on submit), team email notification (yes/no, provider), Calendly setup | Not started |
+| CM2 | Public `POST /api/contact`: same Zod rules as the web form, Turnstile token verified server-side (`TURNSTILE_SECRET_KEY`), honeypot, rate limit by `ip_hash`, lower-cased email, `source_path`                                            | Not started |
+| CM3 | Admin inbox API: list (status filter, search, unread count), detail (marks read on first open), status change, internal note, delete; `requirePermission(CONTACT_MESSAGES)`                                                               | Not started |
+| CM4 | Team email notification on a new message, if CM1 says yes                                                                                                                                                                                 | Not started |
+| CM5 | `packages/api-services`: contact models, enums and service functions                                                                                                                                                                      | Not started |
+| CM6 | Web: `use-contact-form` POSTs to the API, with real success and error states; Turnstile runs on submit (invisible unless the visitor looks suspicious, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`)                                                  | Not started |
+| CM7 | Dashboard inbox: list with status tabs and an unread badge in the sidebar, detail view, status/note actions, archive/spam/delete                                                                                                          | Not started |
+| CM8 | Book a Call: Calendly inline embed in the booking slot on `/contact` (`NEXT_PUBLIC_CALENDLY_URL`), name/email prefill, UTM tags, light/dark fit. No database and no CAPTCHA of ours (the booking happens inside Calendly's iframe)        | Not started |
+| CM9 | Production release (no migration needed); end-to-end check of form → inbox and a test booking — **review checkpoint**                                                                                                                     | Not started |
+
+### Phase T — Testimonials
+
+| #   | Task                                                                                                                                      | Status      |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| T1  | Requirements doc `testimonials-crud.md`: fields, highlights must be exact phrases in the quote, display order, optional project link      | Not started |
+| T2  | Testimonials API: public list (published, ordered) and admin CRUD + reorder, `requirePermission(TESTIMONIALS)`, revalidates the home page | Not started |
+| T3  | `packages/api-services`: testimonial models and service functions                                                                         | Not started |
+| T4  | Dashboard Testimonials: list with drag reorder; form with a highlight picker (select phrases in the quote) and a project dropdown         | Not started |
+| T5  | Seed the three placeholder quotes; home testimonials section reads from the API; retire the constant                                      | Not started |
+| T6  | Production release: seed — **review checkpoint**                                                                                          | Not started |
+
+### Phase AR — Articles
+
+| #   | Task                                                                                                                                                                                                         | Status      |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
+| AR1 | Requirements doc `articles-crud.md`: fields, the body editor approach (shared `packages/text-editor` vs a dashboard block editor, both saving `ArticleBlock[]` JSON), byline (PM decision), tags, publishing | Not started |
+| AR2 | Article media: cover and body-image presets in `packages/media-library`, upload endpoints, image blocks resolved from media `uuid` to URL in responses                                                       | Not started |
+| AR3 | Articles API: public list (category/tag/search/sort) + detail + related, admin CRUD, Zod validation of the block union, `requirePermission(ARTICLES)`, revalidates the web pages                             | Not started |
+| AR4 | `packages/api-services`: article models, enums and service functions                                                                                                                                         | Not started |
+| AR5 | Body editor: paragraph, heading, list, quote, code and image blocks, with JSON in and out                                                                                                                    | Not started |
+| AR6 | Dashboard Articles list (search, category/status filters) and form (meta, tags, author from Team, cover, body editor, publishing); delete with confirm                                                       | Not started |
+| AR7 | Seed the six placeholder articles; `/articles`, `/articles/[slug]` and OG images read from the API; retire the constants. Engagement (comments, reactions, views) stays static, deferred 2026-10-03          | Not started |
+| AR8 | Production release: seed + media — **review checkpoint**                                                                                                                                                     | Not started |
+
 ## Open items for PM
 
 Each item below is marked with a `// TODO:` at the referenced location, so the code and this list stay in sync.
@@ -195,7 +258,7 @@ Both routes shipped 2026-09-01: `/services` and twelve `/services/[slug]` pages,
 
 ### Upcoming stages
 
-- **Book a Call** — confirm entry point(s) on the public site (Home hero/final CTA reuse vs. a standalone flow) before Stage 4+.
+- **Book a Call**: Calendly embed on `/contact`. See task CM8.
 
 ## Engineering cleanup before production
 

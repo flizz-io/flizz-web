@@ -4,6 +4,7 @@ import path from 'node:path';
 import { imagePresets } from '@workspace/media-library';
 
 import projectSeeds from './seed-data/projects.json' with { type: 'json' };
+import serviceSeeds from './seed-data/services.json' with { type: 'json' };
 import { prisma } from '../src/configs/database.js';
 import { env } from '../src/configs/env.js';
 import { storage } from '../src/configs/media.js';
@@ -11,6 +12,7 @@ import {
 	MediaPurpose,
 	ProjectSector,
 	ProjectStatus,
+	PublishStatus,
 	ServiceCategory,
 	UserRole,
 	UserStatus
@@ -191,9 +193,76 @@ async function seedProjects(authorId: number) {
 	);
 }
 
+/**
+ * The twelve services of the static roster (seed-data/services.json, exported
+ * from apps/web `constants/services.ts`), Published. Like projects, only
+ * creates what's missing, so dashboard edits are never overwritten.
+ */
+async function seedServices(authorId: number) {
+	let created = 0;
+
+	for (const seed of serviceSeeds) {
+		const existing = await prisma.service.findUnique({
+			where: { slug: seed.slug }
+		});
+		if (existing) continue;
+
+		await prisma.service.create({
+			data: {
+				...seed,
+				category:
+					ServiceCategory[
+						seed.category as keyof typeof ServiceCategory
+					],
+				status: PublishStatus.PUBLISHED,
+				createdById: authorId,
+				updatedById: authorId
+			}
+		});
+		created += 1;
+	}
+
+	console.info(
+		`Services: ${created} created, ${serviceSeeds.length - created} already there`
+	);
+}
+
+/**
+ * Links every project that has no service yet to the one its `serviceSlug`
+ * names. Runs once per database after the `service_id` migration; a project
+ * whose slug matches no service is reported and left for the dashboard.
+ */
+async function linkProjectsToServices() {
+	const unlinked = await prisma.project.findMany({
+		where: { serviceId: null },
+		select: { id: true, slug: true, serviceSlug: true }
+	});
+	const missing: string[] = [];
+
+	for (const project of unlinked) {
+		const service = await prisma.service.findUnique({
+			where: { slug: project.serviceSlug }
+		});
+		if (!service) {
+			missing.push(project.slug);
+			continue;
+		}
+		await prisma.project.update({
+			where: { id: project.id },
+			data: { serviceId: service.id }
+		});
+	}
+
+	console.info(
+		`Project services: ${unlinked.length - missing.length} linked${missing.length ? `, no matching service for ${missing.join(', ')}` : ''}`
+	);
+}
+
 try {
 	const superAdmin = await seedSuperAdmin();
+	await seedServices(superAdmin.id);
 	await seedProjects(superAdmin.id);
+	await linkProjectsToServices();
 } finally {
 	await prisma.$disconnect();
 }
