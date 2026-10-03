@@ -1,3 +1,4 @@
+import { legalPaths } from '@/constants/legal';
 import type { FooterLinkGroup, SocialLink } from '@/types/nav';
 
 export const footerLinkGroups: FooterLinkGroup[] = [
@@ -19,8 +20,8 @@ export const footerLinkGroups: FooterLinkGroup[] = [
 	{
 		title: 'Legal',
 		items: [
-			{ label: 'Terms & Conditions', href: '/terms-and-conditions' },
-			{ label: 'Privacy Policy', href: '/privacy-policy' }
+			{ label: 'Terms & Conditions', href: legalPaths.terms },
+			{ label: 'Privacy Policy', href: legalPaths.privacy }
 		]
 	}
 ];
