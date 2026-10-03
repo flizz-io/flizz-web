@@ -194,6 +194,23 @@ Every slice ends with a production release that follows the checklist in [apps/a
 | AR7 | Seed the six placeholder articles; `/articles`, `/articles/[slug]` and OG images read from the API; retire the constants. Engagement (comments, reactions, views) stays static, deferred 2026-10-03          | Not started |
 | AR8 | Production release: seed + media — **review checkpoint**                                                                                                                                                     | Not started |
 
+### Phase SEO — metadata, Open Graph, search & AI visibility
+
+Spec and reasoning: [docs/guides/seo.md](../guides/seo.md). SEO1–SEO4 don't depend on the CRUD slices and can run any time; SEO5 lands inside each slice; SEO7–SEO9 need the services and articles APIs for complete data, so they run after S7 and AR7 (or start with what exists and extend).
+
+| #     | Task                                                                                                                                                                                                                                                                              | Status      |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| SEO1  | `utils/metadata.ts` `buildPageMetadata()`: one call per page producing title, description, canonical, robots and the **full** OG + Twitter set (url, type, site name, locale, image + alt). Fixes the shallow-merge bug where pages inherit the home page's OG title and URL      | Not started |
+| SEO2  | Every landing page on the helper: home gets its own title and description; about, services, contact and service details get correct OG; one brand name decided ("Flizz" vs "Flizzio") and used everywhere                                                                         | Not started |
+| SEO3  | OG images: site default (root `opengraph-image.tsx`), generated cards for service details and the list pages, with `og:image:alt`                                                                                                                                                 | Not started |
+| SEO4  | Article details: `article:published_time`, `modified_time`, `author` (About URL), `section`, one `article:tag` per tag, cover as OG image when set; same dates in the `Article` JSON-LD                                                                                           | Not started |
+| SEO5  | Per-record SEO fields (`seo_title`, `seo_description`, `og_image_id`, `noindex`) with a dashboard "Search & social" form section (Google snippet and share-card preview, character counters): services in S1–S5, articles in AR1–AR6, projects as a small migration + form change | Not started |
+| SEO6  | _Optional:_ `page_seo` table + dashboard screen so the PM edits static pages' meta without a deploy                                                                                                                                                                               | Not started |
+| SEO7  | `robots.ts` (AI crawler rules, preview `noindex`) and `sitemap.ts` from the API with `lastModified`                                                                                                                                                                               | Not started |
+| SEO8  | JSON-LD: `Organization` + `WebSite`, `Service`, `FAQPage`, `AboutPage`, `ContactPage`, breadcrumbs; validated with the Rich Results Test                                                                                                                                          | Not started |
+| SEO9  | AI visibility: `/llms.txt` route, IndexNow ping from the API on publish, firewall check for AI bots                                                                                                                                                                               | Not started |
+| SEO10 | Launch: Google Search Console + Bing verification and sitemap submission; share-card check on LinkedIn/Facebook debuggers; SEO audit per [quality-audits.md](../guides/quality-audits.md) — **review checkpoint**                                                                 | Not started |
+
 ## Open items for PM
 
 Each item below is marked with a `// TODO:` at the referenced location, so the code and this list stay in sync.

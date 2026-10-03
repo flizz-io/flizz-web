@@ -6,26 +6,26 @@ People now find services two ways: classic search engines, and AI assistants (Ch
 
 ### Where things stand (2026-10-03)
 
-| Item                                               | State                                                                                            |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `metadataBase`, title template, default OG/Twitter | Done, in `app/layout.tsx`                                                                        |
-| Per-page `metadata` / `generateMetadata`           | Done for about, services, portfolio, articles, contact (lists and details)                       |
-| Home page's own title/description                  | Missing, so it falls back to the root default ("Flizz")                                          |
-| JSON-LD                                            | `Article` + `BreadcrumbList` on articles, and on portfolio details. Missing on home and services |
-| Generated OG images                                | Articles and portfolio details. Missing for home, services and the list pages                    |
-| `sitemap.xml`                                      | **Missing**                                                                                      |
-| `robots.txt`                                       | **Missing**                                                                                      |
-| Canonical URLs                                     | Partial. Check every page sets `alternates.canonical`                                            |
-| Dashboard `noindex`                                | Done, in `apps/dashboard/app/layout.tsx`                                                         |
-| Preview deployments kept out of Google             | **Missing**                                                                                      |
-| Redirect when a slug changes                       | **Missing**. Slugs are editable, so old links 404                                                |
+| Item                                               | State                                                                                                                          |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `metadataBase`, title template, default OG/Twitter | Done, in `app/layout.tsx`                                                                                                      |
+| Per-page `metadata` / `generateMetadata`           | Title and description on every page except home. **Open Graph is wrong or missing on most pages**, see the per-page spec below |
+| Home page's own title/description                  | Missing, so it falls back to the root default ("Flizz")                                                                        |
+| JSON-LD                                            | `Article` + `BreadcrumbList` on articles, and on portfolio details. Missing on home and services                               |
+| Generated OG images                                | Articles and portfolio details. Missing for home, services and the list pages                                                  |
+| `sitemap.xml`                                      | **Missing**                                                                                                                    |
+| `robots.txt`                                       | **Missing**                                                                                                                    |
+| Canonical URLs                                     | Partial. Check every page sets `alternates.canonical`                                                                          |
+| Dashboard `noindex`                                | Done, in `apps/dashboard/app/layout.tsx`                                                                                       |
+| Preview deployments kept out of Google             | **Missing**                                                                                                                    |
+| Redirect when a slug changes                       | **Missing**. Slugs are editable, so old links 404                                                                              |
 
 ### Tasks, in priority order
 
 1. **`app/robots.ts`**: allow `/`, disallow `/api/` and any scratch routes (`/home-v2` until it's deleted), and point to `${siteUrl}/sitemap.xml`. When the deployment isn't production (`VERCEL_ENV !== 'production'`, or a dedicated `NEXT_PUBLIC_INDEXABLE` flag after leaving Vercel), return `disallow: '/'` **and** set `robots: { index: false }` in the root metadata. Otherwise previews get indexed as duplicates of the real site. Production rules for AI crawlers are in [Part 4](#part-4--ai-search-visibility).
 2. **`app/sitemap.ts`**: static routes plus every published service, project and article from the API, with `lastModified` set to the record's `updatedAt`. It must use the same public endpoints the pages use, so drafts and future-dated items stay out. Revalidate it on the same tags as the pages.
 3. **Canonical on every page**: `alternates: { canonical: '/services/<slug>' }`. List pages with filters (`/articles?tag=…`) canonicalise to the bare list URL.
-4. **Home metadata**: a real title (about 50–60 characters, for example "Custom Software & AI Automation Studio — Flizz") and a description of about 150 characters.
+4. **Home metadata** (and everything in the per-page spec below): a real title (about 50–60 characters, for example "Custom Software & AI Automation Studio — Flizz") and a description of about 150 characters.
 5. **Structured data** (see the bundled `02-guides/json-ld.md`):
     - Root layout or home: `Organization` (name, url, logo, `sameAs` social profiles, contact email) and `WebSite`.
     - `/services/[slug]`: `Service` with `provider` → the Organization, plus `BreadcrumbList`.
@@ -36,6 +36,56 @@ People now find services two ways: classic search engines, and AI assistants (Ch
 6. **OG images** for home, `/services/[slug]` and the list pages (`opengraph-image.tsx`, same approach as articles).
 7. **Slug redirects**: when an admin changes a slug, keep the old one and 301 it to the new one. Database: a `slug_redirects` table (`entity_type`, `old_slug`, `entity_id`, timestamps), written by the API on slug change. Web: `proxy.ts` or the detail page's not-found path looks the old slug up and calls `permanentRedirect()`. Plan this during S1 (services) and AR1 (articles), and retrofit projects.
 8. **Search engine verification**: `metadata.verification.google` (and Bing) in the root layout. Then submit the sitemap in [Google Search Console](https://search.google.com/search-console) and Bing Webmaster Tools.
+
+### Meta tags and Open Graph: the per-page spec
+
+Every public page must output the full set below. Search engines use the meta tags for the result snippet. LinkedIn, Facebook, WhatsApp, Slack, X and AI chat link previews use the Open Graph (OG) tags for the share card.
+
+**The trap in today's code:** Next.js merges metadata **shallowly**. A page that sets `openGraph` replaces the root layout's whole `openGraph` object, and a page that doesn't set it inherits the root's as-is. So today:
+
+- About, Services, Contact and every service detail page share with the **home page's** OG title and URL ("Flizz", `/`).
+- Portfolio and Articles pages lose the root's `locale`.
+- Nothing except portfolio and article details has an **OG image**, so their share cards are text-only.
+
+The fix is one helper that every page calls, so no page can forget a field (task SEO1).
+
+#### Tags every page outputs
+
+| Tag                                        | Rule                                                                                                                                      |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `<title>`                                  | 50–60 characters, unique, keyword first. Template `%s — Flizz` (one brand name, see Part 4)                                               |
+| `meta description`                         | 140–160 characters, unique, says what the reader gets                                                                                     |
+| `link rel=canonical`                       | Absolute URL of the page without query string                                                                                             |
+| `meta robots`                              | `index, follow` in production; `noindex` on previews and on records with `noindex = true`                                                 |
+| `og:title` / `og:description`              | Same as title and description by default (title without the `— Flizz` suffix); can be overridden per record                               |
+| `og:url`                                   | Same as canonical                                                                                                                         |
+| `og:type`                                  | `website` for home, lists and service pages; `article` for article and project details                                                    |
+| `og:site_name`, `og:locale`                | Brand name, `en_GB`, on **every** page                                                                                                    |
+| `og:image` (+ `:width`, `:height`, `:alt`) | 1200×630 PNG/JPG, under 1 MB, important text inside the centre ~1000×500 (platforms crop). `alt` describes the image                      |
+| `twitter:card`                             | `summary_large_image`; `twitter:title`, `twitter:description` and `twitter:image` mirror OG. Add `twitter:site` once there's an X account |
+| `meta keywords`                            | Optional. **Google ignores it.** Harmless, low value; derive it from tags or category, never hand-maintain it                             |
+
+#### Per route
+
+| Route               | Title / description source                         | OG type | OG image                                                  | Extras                                                                                                                                                                                                 |
+| ------------------- | -------------------------------------------------- | ------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/`                 | Constants (or `page_seo`, task SEO6)               | website | Site default (root `opengraph-image.tsx`)                 | `Organization` + `WebSite` JSON-LD                                                                                                                                                                     |
+| `/about`            | Constants (or `page_seo`)                          | website | Default, or a team photo                                  | `AboutPage` JSON-LD                                                                                                                                                                                    |
+| `/services`         | Constants (or `page_seo`)                          | website | Generated list card                                       |                                                                                                                                                                                                        |
+| `/services/[slug]`  | `seo_title ?? title`, `seo_description ?? summary` | website | `og_image ?? generated` (title + category)                | `Service` + `FAQPage` + `BreadcrumbList` JSON-LD                                                                                                                                                       |
+| `/portfolio`        | Constants (or `page_seo`)                          | website | Generated list card                                       |                                                                                                                                                                                                        |
+| `/portfolio/[slug]` | `seo_title ?? name`, `seo_description ?? summary`  | article | `og_image ?? cover ?? generated` (exists today)           | `article:section` = sector                                                                                                                                                                             |
+| `/articles`         | Constants (or `page_seo`)                          | website | Generated list card                                       | Filtered views (`?tag=`) canonicalise to `/articles`                                                                                                                                                   |
+| `/articles/[slug]`  | `seo_title ?? title`, `seo_description ?? excerpt` | article | `og_image ?? cover ?? generated` (generated exists today) | `article:published_time`, `article:modified_time` (`updatedAt`), `article:author` (author's About URL), `article:section` (category), one `article:tag` per tag; `Article` JSON-LD with the same dates |
+| `/contact`          | Constants (or `page_seo`)                          | website | Default                                                   | `ContactPage` JSON-LD                                                                                                                                                                                  |
+
+Database fields behind the `??` fallbacks are in [Part 2](#part-2--content-in-the-database).
+
+#### Testing a page
+
+- View Source (or `curl -s <url> | grep -E '<title|og:|twitter:|canonical|description'`) on a **production build**.
+- Share-card previews: [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/), [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) (also forces a re-scrape after you change an image), and [opengraph.xyz](https://www.opengraph.xyz/) for every platform at once.
+- Platforms cache cards for days. After changing an OG image, re-scrape in the debuggers above.
 
 ### Rules for every new page or section
 
@@ -59,6 +109,8 @@ All optional. When a field is empty, fall back to the existing content.
 | `seo_description` | articles, services, projects | `excerpt` / `summary`  | 140–160 characters             |
 | `og_image_id`     | articles, services, projects | the generated OG image | 1200×630                       |
 | `noindex`         | articles                     | false                  | For thin or announcement posts |
+
+**Static pages** (home, about, the list pages, contact) have no record, so their meta lives in constants and changes need a deploy. To let the PM edit them from the dashboard, add a small `page_seo` table: one row per page key (an enum: `HOME`, `ABOUT`, `SERVICES`, `PORTFOLIO`, `ARTICLES`, `CONTACT`) with the same four fields, constants as the fallback, and the web page revalidated on save. This is optional (task SEO6).
 
 Add these in S1 (services), AR1 (articles), and a small migration for projects. The dashboard form shows a search-result preview (title, URL, description, with a character count turning red when too long).
 
