@@ -105,8 +105,10 @@ Every change revalidates the `services` cache tag, and also `projects` when the 
 ## Website integration (S7)
 
 - The pages stay statically generated and read through `@workspace/api-services` (`apps/web/utils/services-api.ts`), tagged `services`, with the same revalidation wiring as projects ([projects-crud.md](projects-crud.md#website-integration-phase-e)).
-- The home teaser keeps its own selection from the published list (the first of each category, as `homeTeaserServices` does today).
+- The home teaser's four category cards stay in `constants/home.ts` (`serviceCategoryCardBases`); each lists its published services via `serviceCategoryCardsOf`.
+- The detail page shows a FAQ section (every answer in the HTML) only when the service has FAQs, and uses the SEO title, description and share image in its metadata. A missing slug asks the redirects endpoint before 404ing.
 - `constants/services.ts` keeps only page copy and the back-nav switch; the roster lives in `seed-data/services.json`.
+- The project detail hero links its service only when that service is published (`getProjectService` over the published list).
 
 ## Dashboard
 

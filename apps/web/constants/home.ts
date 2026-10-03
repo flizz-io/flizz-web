@@ -1,4 +1,3 @@
-import { servicesInCategory } from '@/constants/services';
 import { HeroDepth } from '@/enums/home';
 import { ServiceCategory } from '@/enums/services';
 import type {
@@ -226,12 +225,12 @@ export const processSteps: ProcessStep[] = [
 ];
 
 /**
- * The teaser's rail: the four categories, each listing its services from the
- * canonical roster in `constants/services.ts`, so the home page and `/services`
- * can never disagree about which services a category holds or what they're
- * called. Titles and sentences are the PM's.
+ * The teaser's rail: the four categories. Their services come from the API
+ * (`serviceCategoryCardsOf` in utils/services.ts), so the home page and
+ * `/services` can never disagree about which services a category holds or
+ * what they're called. Titles and sentences are the PM's.
  */
-export const serviceCategoryCards: ServiceCategoryCard[] = (
+export const serviceCategoryCardBases: Omit<ServiceCategoryCard, 'services'>[] =
 	[
 		{
 			category: ServiceCategory.CUSTOM_SOFTWARE,
@@ -257,8 +256,7 @@ export const serviceCategoryCards: ServiceCategoryCard[] = (
 			summary: 'Bring your product to mobile.',
 			visualKind: 'dual-handset'
 		}
-	] satisfies Omit<ServiceCategoryCard, 'services'>[]
-).map((card) => ({ ...card, services: servicesInCategory(card.category) }));
+	];
 
 // Copy for the services strip's edge arrows and pointer badge.
 export const servicesRailLabels = {
