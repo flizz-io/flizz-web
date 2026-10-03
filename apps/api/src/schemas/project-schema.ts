@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-import { projectLimits, slugPattern } from '../constants/project.js';
+import { slugSchema } from './slug-schema.js';
+import { projectLimits } from '../constants/project.js';
 import { ProjectVisibility } from '../enums/project-visibility.js';
 import {
 	ProjectSector,
@@ -12,12 +13,7 @@ const limits = projectLimits;
 
 const text = (max: number) => z.string().trim().min(1).max(max);
 
-const slug = z
-	.string()
-	.trim()
-	.toLowerCase()
-	.max(limits.slug)
-	.regex(slugPattern, 'Use lower-case letters, digits and single hyphens.');
+const slug = slugSchema;
 
 const storyList = z
 	.array(text(limits.storyItem))

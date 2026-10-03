@@ -1,7 +1,7 @@
 import { getProjectImages } from './project-image-service.js';
 import { revalidateSite } from './site-revalidation-service.js';
 import { prisma } from '../configs/database.js';
-import { projectLimits, reservedProjectSlugs } from '../constants/project.js';
+import { reservedProjectSlugs } from '../constants/project.js';
 import { ProjectVisibility } from '../enums/project-visibility.js';
 import { RevalidationTag } from '../enums/revalidation-tag.js';
 import type { Prisma } from '../generated/prisma/client.js';
@@ -20,6 +20,7 @@ import type {
 import type { CurrentUser } from '../types/user.js';
 import { HttpError } from '../utils/http-error.js';
 import { mediaUrl } from '../utils/media-url.js';
+import { slugify, uniqueSlug } from '../utils/slug.js';
 import { toUserReference } from '../utils/user-display.js';
 
 const referenceFields = {
@@ -142,19 +143,6 @@ async function findProject(uuid: string) {
 	return project;
 }
 
-/** "Northwind Ops — Platform" → "northwind-ops-platform". */
-function slugify(name: string) {
-	const slug = name
-		.normalize('NFKD')
-		.replace(/[̀-ͯ]/g, '')
-		.toLowerCase()
-		.replace(/[^a-z0-9]+/g, '-')
-		.slice(0, projectLimits.slug - 4)
-		.replace(/^-+|-+$/g, '');
-
-	return slug || 'project';
-}
-
 /** Slugs stay reserved after a delete, so deleted projects count too. */
 async function isSlugTaken(slug: string, exceptId?: number) {
 	if (reservedProjectSlugs.includes(slug)) return true;
@@ -165,17 +153,6 @@ async function isSlugTaken(slug: string, exceptId?: number) {
 	});
 
 	return Boolean(owner && owner.id !== exceptId);
-}
-
-/** The name's slug, with `-2`, `-3`, … until it's free. */
-async function uniqueSlugFor(name: string) {
-	const base = slugify(name);
-	let candidate = base;
-	for (let n = 2; await isSlugTaken(candidate); n += 1) {
-		candidate = `${base}-${n}`;
-	}
-
-	return candidate;
 }
 
 async function assertSlugFree(slug: string, exceptId?: number) {
@@ -241,7 +218,11 @@ export async function addProject(
 ) {
 	const { slug: requested, quote, ...fields } = input;
 	if (requested) await assertSlugFree(requested);
-	const slug = requested ?? (await uniqueSlugFor(fields.name));
+	const slug =
+		requested ??
+		(await uniqueSlug(slugify(fields.name, 'project'), (candidate) =>
+			isSlugTaken(candidate)
+		));
 
 	const project = await prisma.project.create({
 		data: {

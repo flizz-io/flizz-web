@@ -41,6 +41,8 @@ enum MediaPurpose {
   ARTICLE_COVER
   /// Diagrams and screenshots placed inside an article body.
   ARTICLE_IMAGE
+  /// A service's share image (Open Graph), 1200 × 630.
+  SERVICE_OG_IMAGE
 
   @@map("media_purpose")
 }
@@ -132,6 +134,9 @@ model User {
   servicesCreated        Service[]        @relation("ServiceCreatedBy")
   servicesUpdated        Service[]        @relation("ServiceUpdatedBy")
   servicesDeleted        Service[]        @relation("ServiceDeletedBy")
+  slugRedirectsCreated   SlugRedirect[]   @relation("SlugRedirectCreatedBy")
+  slugRedirectsUpdated   SlugRedirect[]   @relation("SlugRedirectUpdatedBy")
+  slugRedirectsDeleted   SlugRedirect[]   @relation("SlugRedirectDeletedBy")
   testimonialsCreated    Testimonial[]    @relation("TestimonialCreatedBy")
   testimonialsUpdated    Testimonial[]    @relation("TestimonialUpdatedBy")
   testimonialsDeleted    Testimonial[]    @relation("TestimonialDeletedBy")
@@ -192,10 +197,11 @@ model MediaFile {
   updatedBy User? @relation("MediaUpdatedBy", fields: [updatedById], references: [id])
   deletedBy User? @relation("MediaDeletedBy", fields: [deletedById], references: [id])
 
-  userPhotos    User[]         @relation("UserPhoto")
-  projectCovers Project[]      @relation("ProjectCover")
-  projectImages ProjectImage[] @relation("ProjectImageMedia")
-  articleCovers Article[]      @relation("ArticleCover")
+  userPhotos      User[]         @relation("UserPhoto")
+  projectCovers   Project[]      @relation("ProjectCover")
+  projectImages   ProjectImage[] @relation("ProjectImageMedia")
+  articleCovers   Article[]      @relation("ArticleCover")
+  serviceOgImages Service[]      @relation("ServiceOgImage")
 
   @@map("media_files")
 }
@@ -398,26 +404,35 @@ model Article {
 /// A service in the catalogue — see docs/requirements/services-pages.md.
 /// Powers `/services`, `/services/<slug>` and the home teaser.
 model Service {
-  id           Int             @id @default(autoincrement())
-  uuid         String          @unique @default(uuid(7)) @db.Uuid
+  id             Int             @id @default(autoincrement())
+  uuid           String          @unique @default(uuid(7)) @db.Uuid
   /// `/services/<slug>`. Unique across live *and* deleted services.
-  slug         String          @unique
-  title        String
-  category     ServiceCategory
+  slug           String          @unique
+  title          String
+  category       ServiceCategory
   /// One line — the list page and the home teaser.
-  summary      String
+  summary        String
   /// A key of `SERVICE_VISUAL_KINDS` in @workspace/service-visuals. Free text
   /// here because that package owns the list; the API validates it.
-  visualKind   String          @map("visual_kind")
-  intro        String
-  problem      String
-  deliverables String[]
-  outcomes     String[]
+  visualKind     String          @map("visual_kind")
+  intro          String
+  problem        String
+  deliverables   String[]
+  outcomes       String[]
   /// Typical shape of the engagement; omitted where none is confirmed.
-  engagement   String?
+  engagement     String?
+  /// `[{ question, answer }]`, ordered — shown on the page and as FAQPage
+  /// JSON-LD. A column rather than a table: saved as a whole.
+  faqs           Json            @default("[]")
+  /// Search result title; the title when empty.
+  seoTitle       String?         @map("seo_title")
+  /// Search result snippet; the summary when empty.
+  seoDescription String?         @map("seo_description")
+  /// Share image (1200 × 630); the generated card when empty.
+  ogImageId      Int?            @map("og_image_id")
   /// Order within its category on the list page.
-  displayOrder Int             @default(0) @map("display_order")
-  status       PublishStatus   @default(DRAFT)
+  displayOrder   Int             @default(0) @map("display_order")
+  status         PublishStatus   @default(DRAFT)
 
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -426,9 +441,10 @@ model Service {
   updatedById Int?      @map("updated_by_id")
   deletedById Int?      @map("deleted_by_id")
 
-  createdBy User? @relation("ServiceCreatedBy", fields: [createdById], references: [id])
-  updatedBy User? @relation("ServiceUpdatedBy", fields: [updatedById], references: [id])
-  deletedBy User? @relation("ServiceDeletedBy", fields: [deletedById], references: [id])
+  createdBy User?      @relation("ServiceCreatedBy", fields: [createdById], references: [id])
+  updatedBy User?      @relation("ServiceUpdatedBy", fields: [updatedById], references: [id])
+  deletedBy User?      @relation("ServiceDeletedBy", fields: [deletedById], references: [id])
+  ogImage   MediaFile? @relation("ServiceOgImage", fields: [ogImageId], references: [id])
 
   projects Project[]
 
@@ -539,4 +555,40 @@ model ContactMessage {
   @@index([status, deletedAt, createdAt])
   @@index([email])
   @@map("contact_messages")
+}
+
+/// Which kind of record a slug redirect belongs to.
+enum SlugEntityType {
+  SERVICE
+  PROJECT
+  ARTICLE
+
+  @@map("slug_entity_type")
+}
+
+/// An old slug that 301s to the record's current one. Points at the record,
+/// not a slug, so renames never chain. Retired (not deleted) when the record
+/// takes the slug back. See docs/requirements/services-crud.md#slug-redirects.
+model SlugRedirect {
+  id         Int            @id @default(autoincrement())
+  uuid       String         @unique @default(uuid(7)) @db.Uuid
+  entityType SlugEntityType @map("entity_type")
+  oldSlug    String         @map("old_slug")
+  /// `services.id`, `projects.id` or `articles.id`, per `entityType`.
+  entityId   Int            @map("entity_id")
+
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  createdById Int?      @map("created_by_id")
+  updatedById Int?      @map("updated_by_id")
+  deletedById Int?      @map("deleted_by_id")
+
+  createdBy User? @relation("SlugRedirectCreatedBy", fields: [createdById], references: [id])
+  updatedBy User? @relation("SlugRedirectUpdatedBy", fields: [updatedById], references: [id])
+  deletedBy User? @relation("SlugRedirectDeletedBy", fields: [deletedById], references: [id])
+
+  @@unique([entityType, oldSlug])
+  @@index([entityType, entityId])
+  @@map("slug_redirects")
 }
