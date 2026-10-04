@@ -3,7 +3,9 @@ export const uploadLimitsKb = {
 	/** Profile photos. */
 	profilePhoto: 500,
 	/** Project covers and gallery images — full-page screenshots run large. */
-	projectImage: 2048
+	projectImage: 2048,
+	/** Share images (Open Graph) — same cap as project images. */
+	shareImage: 2048
 } as const;
 
 /** Most gallery images one project may carry. */

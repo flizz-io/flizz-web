@@ -12,7 +12,7 @@ import { ProjectQuoteSection } from '@/components/features/projects/project-quot
 import { ProjectResultsSection } from '@/components/features/projects/project-results-section';
 import { ProjectStackSection } from '@/components/features/projects/project-stack-section';
 import { ProjectStorySection } from '@/components/features/projects/project-story-section';
-import { SectionCard } from '@/components/features/projects/section-card';
+import { SectionCard } from '@/components/snippets/section-card/section-card';
 import { projectFormMessages, projectPath } from '@/constants/projects';
 import type { ProjectFormValues, SetProjectField } from '@/types/project-form';
 import {
@@ -25,7 +25,8 @@ import {
 	ApiError,
 	createProjectService,
 	updateProjectService,
-	type ProjectRecord
+	type ProjectRecord,
+	type ServiceOption
 } from '@workspace/api-services';
 import { Button } from '@workspace/ui/components/button';
 
@@ -34,6 +35,8 @@ interface ProjectFormProps {
 	project?: ProjectRecord;
 	/** Edit (or Create, for a new one). Without it the form is read-only. */
 	canSave: boolean;
+	/** Every non-deleted service, for the Service dropdown. */
+	serviceOptions: ServiceOption[];
 }
 
 const messages = projectFormMessages;
@@ -42,7 +45,11 @@ const messages = projectFormMessages;
  * The whole project on one page. Fields are saved together with Save; images
  * are saved as they change (and only once the project exists).
  */
-export function ProjectForm({ project, canSave }: ProjectFormProps) {
+export function ProjectForm({
+	project,
+	canSave,
+	serviceOptions
+}: ProjectFormProps) {
 	const router = useRouter();
 	const [saved, setSaved] = useState(project);
 	const [values, setValues] = useState<ProjectFormValues>(() =>
@@ -109,6 +116,7 @@ export function ProjectForm({ project, canSave }: ProjectFormProps) {
 					{...sectionProps}
 					wasPublished={Boolean(saved?.firstPublishedAt)}
 					savedSlug={saved?.slug ?? null}
+					serviceOptions={serviceOptions}
 				/>
 				<ProjectResultsSection {...sectionProps} />
 				<ProjectStorySection {...sectionProps} />

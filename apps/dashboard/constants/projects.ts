@@ -1,8 +1,7 @@
 import {
 	ProjectSector,
 	ProjectStatus,
-	ProjectVisibility,
-	ServiceCategory
+	ProjectVisibility
 } from '@workspace/api-services';
 
 export const projectsPath = '/projects';
@@ -16,13 +15,6 @@ export const sectorLabels: Record<ProjectSector, string> = {
 	[ProjectSector.FIELD]: 'Field & Frontline',
 	[ProjectSector.FINANCE]: 'Financial Services',
 	[ProjectSector.PROFESSIONAL]: 'Professional Services'
-};
-
-export const serviceCategoryLabels: Record<ServiceCategory, string> = {
-	[ServiceCategory.CUSTOM_SOFTWARE]: 'Custom Software',
-	[ServiceCategory.AI_AUTOMATION]: 'AI & Automation',
-	[ServiceCategory.ECOMMERCE]: 'E-commerce',
-	[ServiceCategory.MOBILE]: 'Mobile'
 };
 
 export const visibilityLabels: Record<ProjectVisibility, string> = {
@@ -98,20 +90,12 @@ export const projectFormMessages = {
 	editLead: (slug: string) => `/portfolio/${slug}`,
 	backToList: 'All projects',
 	readOnly: 'You can view this project but not change it.',
-	createdBy: (name: string, when: string) => `Created by ${name} · ${when}`,
-	updatedBy: (name: string, when: string) =>
-		`Last changed by ${name} · ${when}`,
-	someone: 'someone',
 	create: 'Create draft',
 	save: 'Save changes',
 	saving: 'Saving…',
 	created: (name: string) => `${name} created as a draft.`,
 	saved: (name: string) => `${name} saved.`,
 	fixErrors: 'Some fields need attention — see the messages below.',
-	optional: '(optional)',
-	moveUp: 'Move up',
-	moveDown: 'Move down',
-	remove: 'Remove',
 	sections: {
 		basics: 'Basics',
 		basicsLead: 'What the project is and where it sits on the site.',
@@ -146,9 +130,13 @@ export const projectFormMessages = {
 			'An anonymised descriptor — “A 40-person operations team…”.',
 		sector: 'Sector',
 		serviceCategory: 'Service category',
-		serviceSlug: 'Service page slug',
-		serviceSlugHint: 'The /services/<slug> this project is evidence for.',
-		serviceSlugPlaceholder: 'e.g. saas-application-development',
+		serviceCategoryHint: 'Narrows the services to choose from.',
+		service: 'Service',
+		serviceHint:
+			'The service this project is evidence for — its page links here, and the project takes its category.',
+		servicePlaceholder: 'Choose a service',
+		serviceDraft: (title: string) => `${title} (draft)`,
+		noServicesInCategory: 'No services in this category yet.',
 		year: 'Year',
 		summary: 'Summary',
 		summaryHint: 'One line — the index row and the home card.',

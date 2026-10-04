@@ -12,11 +12,14 @@ import { WhoWeBuildFor } from '@/components/features/home/who-we-build-for';
 import { WhyUs } from '@/components/features/home/why-us';
 import { portfolioMetaOf } from '@/utils/portfolio';
 import { getHomeProjects, getPortfolioProjects } from '@/utils/projects-api';
+import { serviceCategoryCardsOf } from '@/utils/services';
+import { getCatalogueServices } from '@/utils/services-api';
 
 export default async function HomeV2Page() {
-	const [homeProjects, projects] = await Promise.all([
+	const [homeProjects, projects, services] = await Promise.all([
 		getHomeProjects(),
-		getPortfolioProjects()
+		getPortfolioProjects(),
+		getCatalogueServices()
 	]);
 	const totalSections = 9;
 
@@ -25,6 +28,7 @@ export default async function HomeV2Page() {
 			<Hero variation="starfield" />
 			<Proof />
 			<ServicesTeaser
+				categories={serviceCategoryCardsOf(services)}
 				sectionIndex={1}
 				totalSections={totalSections}
 			/>

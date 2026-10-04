@@ -1,14 +1,9 @@
+import type { KeyedItem } from '@/types/list-items';
 import type {
 	ProjectSector,
 	ProjectStatus,
 	ServiceCategory
 } from '@workspace/api-services';
-
-/** A list entry with a stable key, so reordering keeps focus and state. */
-export interface KeyedItem<T> {
-	key: string;
-	value: T;
-}
 
 export interface ResultValue {
 	label: string;
@@ -28,8 +23,10 @@ export interface ProjectFormValues {
 	slug: string;
 	client: string;
 	sector: ProjectSector;
+	/** Narrows the Service dropdown — the project's category is its service's. */
 	serviceCategory: ServiceCategory;
-	serviceSlug: string;
+	/** '' until one is chosen. */
+	serviceUuid: string;
 	year: string;
 	summary: string;
 	results: KeyedItem<ResultValue>[];

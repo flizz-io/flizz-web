@@ -1,4 +1,4 @@
-import type { KeyedItem } from '@/types/project-form';
+import type { KeyedItem } from '@/types/list-items';
 
 let lastKey = 0;
 

@@ -9,10 +9,12 @@ import { ProjectGallery } from '@/components/features/portfolio/project-gallery'
 import { ProjectOutcome } from '@/components/features/portfolio/project-outcome';
 import { ProjectRelated } from '@/components/features/portfolio/project-related';
 import { siteConfig } from '@/configs/site';
+import { getProjectService } from '@/utils/portfolio';
 import {
 	getPortfolioProject,
 	getPortfolioProjects
 } from '@/utils/projects-api';
+import { getCatalogueServices } from '@/utils/services-api';
 
 interface ProjectPageProps {
 	params: Promise<{ slug: string }>;
@@ -61,9 +63,10 @@ export async function generateMetadata({
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
 	const { slug } = await params;
-	const [project, projects] = await Promise.all([
+	const [project, projects, services] = await Promise.all([
 		getPortfolioProject(slug),
-		getPortfolioProjects()
+		getPortfolioProjects(),
+		getCatalogueServices()
 	]);
 
 	if (!project) notFound();
@@ -134,7 +137,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 				}}
 			/>
 
-			<ProjectDetailHero project={project} />
+			<ProjectDetailHero
+				project={project}
+				service={getProjectService(project, services)}
+			/>
 
 			<ProjectBrief
 				brief={project.brief}

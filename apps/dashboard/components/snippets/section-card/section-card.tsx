@@ -14,7 +14,7 @@ interface SectionCardProps {
 	children?: ReactNode;
 }
 
-/** One section of the project form. */
+/** One section of a dashboard form. */
 export function SectionCard({
 	title,
 	description,

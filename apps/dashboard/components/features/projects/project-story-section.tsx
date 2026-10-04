@@ -1,6 +1,9 @@
-import { SectionCard } from '@/components/features/projects/section-card';
-import { StoryListField } from '@/components/features/projects/story-list-field';
-import { projectFormMessages } from '@/constants/projects';
+import { SectionCard } from '@/components/snippets/section-card/section-card';
+import { TextListField } from '@/components/snippets/text-list-field/text-list-field';
+import {
+	projectFieldLimits as limits,
+	projectFormMessages
+} from '@/constants/projects';
 import type { ProjectSectionProps, StoryField } from '@/types/project-form';
 
 const { fields, sections } = projectFormMessages;
@@ -24,13 +27,17 @@ export function ProjectStorySection({
 			description={sections.storyLead}
 		>
 			{storyFields.map(({ name, label }) => (
-				<StoryListField
+				<TextListField
 					key={name}
 					name={name}
+					idPrefix="project"
 					label={label}
 					items={values[name]}
 					onChange={(items) => setField(name, items)}
 					errors={errors}
+					maxLength={limits.storyItem}
+					maxItems={limits.storyItemsMax}
+					addLabel={fields.addParagraph}
 				/>
 			))}
 		</SectionCard>

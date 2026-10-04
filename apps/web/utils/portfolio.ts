@@ -1,14 +1,16 @@
-import { services } from '@/constants/services';
 import { projectSectorOrder } from '@/enums/portfolio';
 import type { Project } from '@/types/portfolio';
-import type { ServiceDetail } from '@/types/services';
+import type { Service } from '@/types/services';
 
 /**
- * The service a project is evidence for. Matched by slug, so a service removed
- * from the catalogue drops the cross-link rather than erroring — check both
- * together when either changes.
+ * The service a project is evidence for, among the published ones. The API
+ * leaves `serviceSlug` out while that service is hidden, so the cross-link
+ * drops rather than pointing at a 404.
  */
-export function getProjectService(project: Project): ServiceDetail | undefined {
+export function getProjectService(
+	project: Project,
+	services: Service[]
+): Service | undefined {
 	return services.find((service) => service.slug === project.serviceSlug);
 }
 

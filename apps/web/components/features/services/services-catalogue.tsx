@@ -8,14 +8,16 @@ import { Pinned } from '@/components/snippets/pinned/pinned';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SchematicFrame } from '@/components/snippets/schematic-frame/schematic-frame';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
-import { services } from '@/constants/services';
 import { PinOffset } from '@/enums/scroll';
 import { serviceCategoryAnchors, serviceCategoryOrder } from '@/enums/services';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import type { Service } from '@/types/services';
 import { ServiceVisual } from '@workspace/service-visuals';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface ServicesCatalogueProps {
+	/** Every published service, by category then position. */
+	services: Service[];
 	sectionIndex: number;
 	totalSections?: number;
 	className?: string;
@@ -41,6 +43,7 @@ const specimenSettleMs = 130;
  * One viewer means one context, whatever the roster grows to.
  */
 export function ServicesCatalogue({
+	services,
 	sectionIndex,
 	totalSections,
 	className
@@ -59,7 +62,7 @@ export function ServicesCatalogue({
 					(service) => service.category === category
 				)
 			})),
-		[]
+		[services]
 	);
 
 	useEffect(() => {

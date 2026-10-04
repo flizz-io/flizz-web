@@ -36,8 +36,11 @@ export interface Project {
 	sector: ProjectSector;
 	/** Which part of the catalogue delivered it. */
 	service: ServiceCategory;
-	/** The service page this project is evidence for: /services/[slug]. */
-	serviceSlug: string;
+	/**
+	 * The service page this project is evidence for: /services/[slug]. Left
+	 * out while that service isn't on the website.
+	 */
+	serviceSlug?: string;
 	/** Year of delivery. String, since nothing does arithmetic on it. */
 	year: string;
 	/** One line. Carries the index row and the home strip card. */

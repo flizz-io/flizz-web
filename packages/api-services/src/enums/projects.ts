@@ -7,14 +7,6 @@ export enum ProjectSector {
 	PROFESSIONAL = 'PROFESSIONAL'
 }
 
-/** Mirrors the API's `ServiceCategory`. */
-export enum ServiceCategory {
-	CUSTOM_SOFTWARE = 'CUSTOM_SOFTWARE',
-	AI_AUTOMATION = 'AI_AUTOMATION',
-	ECOMMERCE = 'ECOMMERCE',
-	MOBILE = 'MOBILE'
-}
-
 /** Mirrors the API's `ProjectStatus`. */
 export enum ProjectStatus {
 	DRAFT = 'DRAFT',

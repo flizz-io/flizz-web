@@ -4,8 +4,8 @@ import { Plus, X } from 'lucide-react';
 import { useState } from 'react';
 import type { KeyboardEvent } from 'react';
 
-import { FieldError } from '@/components/features/projects/form-field';
-import { SectionCard } from '@/components/features/projects/section-card';
+import { FieldError } from '@/components/snippets/form-field/form-field';
+import { SectionCard } from '@/components/snippets/section-card/section-card';
 import {
 	projectFieldLimits as limits,
 	projectFormMessages

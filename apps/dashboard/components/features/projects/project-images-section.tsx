@@ -6,8 +6,8 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { GalleryItem } from '@/components/features/projects/gallery-item';
-import { SectionCard } from '@/components/features/projects/section-card';
 import { ImageUploader } from '@/components/snippets/image-uploader/image-uploader';
+import { SectionCard } from '@/components/snippets/section-card/section-card';
 import { uploadLimitsKb } from '@/constants/media';
 import {
 	projectFieldLimits as limits,

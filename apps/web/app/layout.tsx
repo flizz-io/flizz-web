@@ -8,6 +8,7 @@ import {
 import localFont from 'next/font/local';
 
 import '@workspace/ui/globals.css';
+import { CrispChat } from '@/components/snippets/crisp-chat/crisp-chat';
 import { ThemeProvider } from '@/components/theme-provider';
 import { animationConfig } from '@/configs/animation';
 import { siteConfig } from '@/configs/site';
@@ -96,6 +97,7 @@ export default function RootLayout({
 			</head>
 			<body>
 				<ThemeProvider>{children}</ThemeProvider>
+				<CrispChat />
 			</body>
 		</html>
 	);

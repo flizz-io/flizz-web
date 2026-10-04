@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { ListItemControls } from '@/components/features/projects/list-item-controls';
+import { ListItemControls } from '@/components/snippets/list-item-controls/list-item-controls';
 import {
 	projectFieldLimits as limits,
 	projectFormMessages

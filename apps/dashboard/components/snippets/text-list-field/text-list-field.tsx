@@ -1,39 +1,53 @@
 import { Plus } from 'lucide-react';
 
-import { FieldError } from '@/components/features/projects/form-field';
-import { ListItemControls } from '@/components/features/projects/list-item-controls';
-import {
-	projectFieldLimits as limits,
-	projectFormMessages
-} from '@/constants/projects';
-import type { KeyedItem } from '@/types/project-form';
+import { FieldError } from '@/components/snippets/form-field/form-field';
+import { ListItemControls } from '@/components/snippets/list-item-controls/list-item-controls';
+import type { KeyedItem } from '@/types/list-items';
 import { moveItem, nextKey, removeItem, replaceItem } from '@/utils/list-items';
 import { Button } from '@workspace/ui/components/button';
 import { Textarea } from '@workspace/ui/components/textarea';
 
-interface StoryListFieldProps {
+interface TextListFieldProps {
 	/** Field name — also the API's error path prefix (`brief.2`). */
 	name: string;
+	/** Prefix for the inputs' ids — `project`, `service`. */
+	idPrefix: string;
 	label: string;
 	items: KeyedItem<string>[];
 	onChange: (items: KeyedItem<string>[]) => void;
 	errors: Record<string, string>;
+	/** Characters per entry. */
+	maxLength: number;
+	/** Most entries the list may have. */
+	maxItems: number;
+	addLabel: string;
+	rows?: number;
+	hint?: string;
 }
 
-/** One case-study section: 1–10 paragraphs, reorderable. */
-export function StoryListField({
+/** An ordered list of plain-text entries — at least one, reorderable. */
+export function TextListField({
 	name,
+	idPrefix,
 	label,
 	items,
 	onChange,
-	errors
-}: StoryListFieldProps) {
+	errors,
+	maxLength,
+	maxItems,
+	addLabel,
+	rows = 3,
+	hint
+}: TextListFieldProps) {
 	return (
 		<fieldset className="flex flex-col gap-3">
 			<legend className="mb-1 text-sm font-medium">{label}</legend>
+			{hint ? (
+				<p className="-mt-2 text-xs text-muted-foreground">{hint}</p>
+			) : null}
 			<ol className="flex flex-col gap-3">
 				{items.map((item, index) => {
-					const id = `project-${name}-${index}`;
+					const id = `${idPrefix}-${name}-${index}`;
 					const error = errors[`${name}.${index}`];
 
 					return (
@@ -54,8 +68,8 @@ export function StoryListField({
 											)
 										)
 									}
-									maxLength={limits.storyItem}
-									rows={3}
+									maxLength={maxLength}
+									rows={rows}
 									aria-label={`${label} ${index + 1}`}
 									aria-invalid={Boolean(error)}
 								/>
@@ -83,13 +97,13 @@ export function StoryListField({
 					type="button"
 					variant="outline"
 					size="sm"
-					disabled={items.length >= limits.storyItemsMax}
+					disabled={items.length >= maxItems}
 					onClick={() =>
 						onChange([...items, { key: nextKey(), value: '' }])
 					}
 				>
 					<Plus />
-					{projectFormMessages.fields.addParagraph}
+					{addLabel}
 				</Button>
 			</div>
 		</fieldset>
