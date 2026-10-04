@@ -84,7 +84,7 @@ Then deploy the API, then the dashboard and web app (see [deployment.md](../../d
 
 - **Never** run `db:migrate`, `prisma migrate reset`, `prisma db push` or `prisma migrate dev` against production. They can drop data.
 - **Migrate before you deploy.** New code expects the new columns; old code keeps working against an added column.
-- **Destructive changes go in two releases (expand, then contract).** First release: add the new column or table and backfill it, while the old one stays. Second release, once the code no longer reads the old column: drop it. Example: `projects.service_id` was added on 2026-10-03, and `service_slug` / `service_category` are dropped in a later migration.
+- **Destructive changes go in two releases (expand, then contract).** First release: add the new column or table and backfill it, while the old one stays. Second release, once the code no longer reads the old column: drop it. Example: `projects.service_id` was added on 2026-10-03 (expand), and `service_slug` / `service_category` were dropped on 2026-10-04 once every project was linked (contract).
 - **The seed is idempotent.** It creates missing rows by slug or email and never overwrites dashboard edits, so re-running it is safe.
 - **A failed migration** shows as failed in `migrate status`, and `db:deploy` refuses to continue. Fix the cause, then mark it with `npx prisma migrate resolve --rolled-back <name>` (or `--applied` if you finished it by hand), and deploy again. If in doubt, restore the Neon branch from step b.
 
@@ -97,4 +97,6 @@ Then deploy the API, then the dashboard and web app (see [deployment.md](../../d
 
 Remove each entry once it has run on production.
 
-_None — `20261003094516_add_content_tables` and `20261003124644_add_service_seo_and_slug_redirects` ran on production on 2026-10-04 (seed: 12 services, 10 projects linked)._
+| Migration                                | Seed needed? | Notes                                                                                                                                                                                                                                                                                                                                                         |
+| ---------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `20261004120000_require_project_service` | No           | S9 (contract): drops `projects.service_slug` / `service_category`, makes `service_id` required. **Migrate before deploying** the API from this release — its code no longer writes those columns. First check `SELECT slug FROM projects WHERE service_id IS NULL;` returns no rows (it did on 2026-10-04); otherwise the migration fails and changes nothing |

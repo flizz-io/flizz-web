@@ -43,9 +43,9 @@ function toPublicProject(project: PublicCardRow): PublicProjectResponse {
 		name: project.name,
 		client: project.client,
 		sector: project.sector,
-		service: project.service?.category ?? project.serviceCategory,
+		service: project.service.category,
 		// No link to a service page the website doesn't show.
-		...(project.service && isPublicService(project.service)
+		...(isPublicService(project.service)
 			? { serviceSlug: project.service.slug }
 			: {}),
 		year: String(project.year),

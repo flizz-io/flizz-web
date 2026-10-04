@@ -239,23 +239,18 @@ enum ProjectStatus {
 
 /// A portfolio project / case study — see docs/requirements/projects-crud.md.
 model Project {
-  id               Int             @id @default(autoincrement())
-  uuid             String          @unique @default(uuid(7)) @db.Uuid
+  id               Int           @id @default(autoincrement())
+  uuid             String        @unique @default(uuid(7)) @db.Uuid
   /// `/portfolio/<slug>`. Unique across live *and* deleted projects, so an
   /// old link never lands on different work.
-  slug             String          @unique
+  slug             String        @unique
   name             String
   /// Anonymised descriptor — the client's shape, not necessarily a name.
   client           String
   sector           ProjectSector
   /// The service this project is evidence for; its category and
-  /// `/services/<slug>` come from there. Nullable only until every existing
-  /// project is linked (the seed links them by `serviceSlug`).
-  serviceId        Int?            @map("service_id")
-  /// Superseded by `serviceId` — dropped once the API and form use it.
-  serviceCategory  ServiceCategory @map("service_category")
-  /// Superseded by `serviceId` — dropped once the API and form use it.
-  serviceSlug      String          @map("service_slug")
+  /// `/services/<slug>` come from there.
+  serviceId        Int           @map("service_id")
   year             Int
   summary          String
   /// `[{ label, from, to }]`, ordered; the first is the headline result.
@@ -268,9 +263,9 @@ model Project {
   approach         String[]
   built            String[]
   stack            String[]
-  quoteText        String?         @map("quote_text")
-  quoteAttribution String?         @map("quote_attribution")
-  coverImageId     Int?            @map("cover_image_id")
+  quoteText        String?       @map("quote_text")
+  quoteAttribution String?       @map("quote_attribution")
+  coverImageId     Int?          @map("cover_image_id")
 
   status           ProjectStatus @default(DRAFT)
   /// Optional go-live time; in the future → hidden until then.
@@ -291,7 +286,7 @@ model Project {
   updatedById Int?      @map("updated_by_id")
   deletedById Int?      @map("deleted_by_id")
 
-  service      Service?       @relation(fields: [serviceId], references: [id])
+  service      Service        @relation(fields: [serviceId], references: [id])
   coverImage   MediaFile?     @relation("ProjectCover", fields: [coverImageId], references: [id])
   images       ProjectImage[]
   testimonials Testimonial[]
