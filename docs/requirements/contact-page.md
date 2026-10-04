@@ -67,13 +67,13 @@ The web schema (`apps/web/schemas/contact.ts`) and the API schema (`apps/api/src
 
 Every route needs a session and the `CONTACT_MESSAGES` grant.
 
-| Route                                | Action   | Does                                                                                               |
-| ------------------------------------ | -------- | -------------------------------------------------------------------------------------------------- |
-| `GET /api/contact-messages`          | `VIEW`   | `?status=&search=&page=` — newest first, 25 a page. Search covers name, email, company and message |
-| `GET /api/contact-messages/summary`  | `VIEW`   | Count per status and the unread count (status `NEW`) — the sidebar badge and the tabs              |
-| `GET /api/contact-messages/:uuid`    | `VIEW`   | The message. **The first open marks it read**: `read_at`, `read_by_id`, and `NEW` → `READ`         |
-| `PATCH /api/contact-messages/:uuid`  | `EDIT`   | `{ status?, internalNote? }` — status change and the team note                                     |
-| `DELETE /api/contact-messages/:uuid` | `DELETE` | Soft delete                                                                                        |
+| Route                                | Action   | Does                                                                                                                                                                          |
+| ------------------------------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /api/contact-messages`          | `VIEW`   | `?folder=&search=&page=` — newest first, 25 a page. `folder` is a tab: `INBOX` (default), `UNREAD`, `ARCHIVED`, `SPAM`, `ALL`. Search covers name, email, company and message |
+| `GET /api/contact-messages/summary`  | `VIEW`   | Count per folder, including unread (status `NEW`) — the sidebar badge and the tab counts                                                                                      |
+| `GET /api/contact-messages/:uuid`    | `VIEW`   | The message. **The first open marks it read**: `read_at`, `read_by_id`, and `NEW` → `READ`                                                                                    |
+| `PATCH /api/contact-messages/:uuid`  | `EDIT`   | `{ status?, internalNote? }` — status change and the team note                                                                                                                |
+| `DELETE /api/contact-messages/:uuid` | `DELETE` | Soft delete                                                                                                                                                                   |
 
 Marking read is a side effect of viewing, so a View-only member records reads too — reading is what View is for.
 

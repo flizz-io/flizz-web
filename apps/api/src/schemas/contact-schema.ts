@@ -1,7 +1,12 @@
 import { z } from 'zod';
 
 import { contactLimits } from '../constants/contact.js';
-import { ContactScope, ContactStart } from '../generated/prisma/enums.js';
+import { ContactFolder } from '../enums/contact-folder.js';
+import {
+	ContactMessageStatus,
+	ContactScope,
+	ContactStart
+} from '../generated/prisma/enums.js';
 
 const limits = contactLimits;
 
@@ -38,3 +43,34 @@ export const submitContactSchema = z.object({
 });
 
 export type SubmitContactInput = z.infer<typeof submitContactSchema>;
+
+export const contactMessageUuidSchema = z.object({ uuid: z.uuid() });
+
+export const listContactMessagesQuerySchema = z.object({
+	folder: z.enum(ContactFolder).default(ContactFolder.INBOX),
+	search: z.string().trim().max(120).optional(),
+	page: z.coerce.number().int().min(1).default(1)
+});
+
+/** Status and the team note — blank clears the note. */
+export const updateContactMessageSchema = z
+	.object({
+		status: z.enum(ContactMessageStatus),
+		internalNote: z
+			.string()
+			.trim()
+			.max(limits.internalNote)
+			.nullable()
+			.transform((value) => value || null)
+	})
+	.partial()
+	.refine((body) => Object.keys(body).length > 0, {
+		message: 'Nothing to update.'
+	});
+
+export type ListContactMessagesFilters = z.infer<
+	typeof listContactMessagesQuerySchema
+>;
+export type UpdateContactMessageInput = z.infer<
+	typeof updateContactMessageSchema
+>;

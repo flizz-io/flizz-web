@@ -24,3 +24,6 @@ export const turnstileVerifyUrl =
 	'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
 export const TURNSTILE_TIMEOUT_MS = 5000;
+
+/** Messages per page in the dashboard inbox. */
+export const CONTACT_PAGE_SIZE = 25;
