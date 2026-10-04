@@ -6,12 +6,13 @@ import { RailCursor } from '@/components/features/home/rail-cursor';
 import { ServiceSpecimen } from '@/components/features/home/service-specimen';
 import { SpineArrow } from '@/components/features/home/spine-arrow';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
-import { serviceCategoryCards, servicesRailLabels } from '@/constants/home';
+import { servicesRailLabels } from '@/constants/home';
 import { ScrollDirection } from '@/enums/scroll';
 import { useDragScroll } from '@/hooks/use-drag-scroll';
 import { usePinnedRail } from '@/hooks/use-pinned-rail';
 import { useScrollEdges } from '@/hooks/use-scroll-edges';
 import { useSmoothScroll } from '@/hooks/use-smooth-scroll';
+import type { ServiceCategoryCard } from '@/types/home';
 import { cn } from '@workspace/ui/lib/utils';
 
 /** Grace period before a popover closes, so crossing a gap doesn't flicker it. */
@@ -27,6 +28,8 @@ interface ServicesTeaserProps {
 	sectionIndex: number;
 	totalSections?: number;
 	className?: string;
+	/** The rail — `serviceCategoryCardsOf` over the published services. */
+	categories: ServiceCategoryCard[];
 	/** Show only the first `limit` categories. */
 	limit?: number;
 	/** Opens a detail panel across the spine on hover. Off leaves the
@@ -54,6 +57,7 @@ interface ServicesTeaserProps {
 }
 
 export function ServicesTeaser({
+	categories: allCategories,
 	className,
 	sectionIndex,
 	totalSections,
@@ -81,9 +85,8 @@ export function ServicesTeaser({
 	const stripScroller = useSmoothScroll(viewportRef);
 
 	const categories = useMemo(
-		() =>
-			limit ? serviceCategoryCards.slice(0, limit) : serviceCategoryCards,
-		[limit]
+		() => (limit ? allCategories.slice(0, limit) : allCategories),
+		[allCategories, limit]
 	);
 
 	const clearHideTimer = () => {

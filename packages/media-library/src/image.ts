@@ -17,7 +17,9 @@ export const imagePresets = {
 	/** Project covers — screenshots keep their whole frame; plates crop to fit. */
 	projectCover: { width: 1600, height: 1000, fit: 'inside', quality: 82 },
 	/** Project gallery images — nothing cropped away. */
-	projectGallery: { width: 1600, height: 1200, fit: 'inside', quality: 82 }
+	projectGallery: { width: 1600, height: 1200, fit: 'inside', quality: 82 },
+	/** Share images (Open Graph) — the 1200 × 630 card every network expects. */
+	shareImage: { width: 1200, height: 630, fit: 'cover', quality: 82 }
 } as const satisfies Record<string, ImagePreset>;
 
 /**

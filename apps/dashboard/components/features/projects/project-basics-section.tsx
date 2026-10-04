@@ -1,16 +1,21 @@
 import {
 	FormField,
 	charCount
-} from '@/components/features/projects/form-field';
-import { SectionCard } from '@/components/features/projects/section-card';
+} from '@/components/snippets/form-field/form-field';
+import { SectionCard } from '@/components/snippets/section-card/section-card';
 import {
 	projectFieldLimits as limits,
 	projectFormMessages,
-	sectorLabels,
-	serviceCategoryLabels
+	sectorLabels
 } from '@/constants/projects';
+import { serviceCategoryLabels } from '@/constants/services';
 import type { ProjectSectionProps } from '@/types/project-form';
-import { ProjectSector, ServiceCategory } from '@workspace/api-services';
+import {
+	ProjectSector,
+	PublishStatus,
+	ServiceCategory,
+	type ServiceOption
+} from '@workspace/api-services';
 import { Input } from '@workspace/ui/components/input';
 import {
 	Select,
@@ -25,6 +30,8 @@ interface ProjectBasicsSectionProps extends ProjectSectionProps {
 	/** A published project's slug is in links already — warn before changing. */
 	wasPublished: boolean;
 	savedSlug: string | null;
+	/** Every non-deleted service, for the Service dropdown. */
+	serviceOptions: ServiceOption[];
 }
 
 const { fields, sections } = projectFormMessages;
@@ -35,9 +42,21 @@ export function ProjectBasicsSection({
 	setField,
 	errors,
 	wasPublished,
-	savedSlug
+	savedSlug,
+	serviceOptions
 }: ProjectBasicsSectionProps) {
 	const slugChanged = savedSlug !== null && values.slug !== savedSlug;
+	const servicesInCategory = serviceOptions.filter(
+		(option) => option.category === values.serviceCategory
+	);
+
+	const chooseCategory = (category: ServiceCategory) => {
+		setField('serviceCategory', category);
+		const current = serviceOptions.find(
+			(option) => option.uuid === values.serviceUuid
+		);
+		if (current?.category !== category) setField('serviceUuid', '');
+	};
 
 	return (
 		<SectionCard
@@ -135,15 +154,12 @@ export function ProjectBasicsSection({
 				<FormField
 					id="project-service-category"
 					label={fields.serviceCategory}
-					error={errors.serviceCategory}
+					hint={fields.serviceCategoryHint}
 				>
 					<Select
 						value={values.serviceCategory}
 						onValueChange={(value) =>
-							setField(
-								'serviceCategory',
-								value as ServiceCategory
-							)
+							chooseCategory(value as ServiceCategory)
 						}
 					>
 						<SelectTrigger
@@ -186,25 +202,40 @@ export function ProjectBasicsSection({
 			</div>
 
 			<FormField
-				id="project-service-slug"
-				label={fields.serviceSlug}
-				hint={fields.serviceSlugHint}
-				error={errors.serviceSlug}
+				id="project-service"
+				label={fields.service}
+				hint={
+					servicesInCategory.length
+						? fields.serviceHint
+						: fields.noServicesInCategory
+				}
+				error={errors.serviceUuid}
 			>
-				<Input
-					id="project-service-slug"
-					value={values.serviceSlug}
-					onChange={(event) =>
-						setField(
-							'serviceSlug',
-							event.target.value.toLowerCase()
-						)
-					}
-					maxLength={limits.slug}
-					placeholder={fields.serviceSlugPlaceholder}
-					required
-					aria-invalid={Boolean(errors.serviceSlug)}
-				/>
+				<Select
+					value={values.serviceUuid}
+					onValueChange={(value) => setField('serviceUuid', value)}
+					disabled={!servicesInCategory.length}
+				>
+					<SelectTrigger
+						id="project-service"
+						className="w-full"
+						aria-invalid={Boolean(errors.serviceUuid)}
+					>
+						<SelectValue placeholder={fields.servicePlaceholder} />
+					</SelectTrigger>
+					<SelectContent>
+						{servicesInCategory.map((option) => (
+							<SelectItem
+								key={option.uuid}
+								value={option.uuid}
+							>
+								{option.status === PublishStatus.DRAFT
+									? fields.serviceDraft(option.title)
+									: option.title}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
 			</FormField>
 
 			<FormField

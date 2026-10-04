@@ -22,9 +22,9 @@ dashboard (admin.flizz.io) ─┘             │
 2. **Schema and seed** — from your machine, with `DATABASE_URL` pointing at it:
     ```bash
     pnpm --filter api db:deploy   # applies migrations — never `db:migrate` in production
-    pnpm --filter api db:seed     # Super Admin + the ten seeded projects
+    pnpm --filter api db:seed     # Super Admin, services, projects
     ```
-    Run `db:deploy` again whenever a PR adds a migration, before deploying the API that needs it. Migrations are deliberately not part of the API build: a preview deployment would otherwise migrate the production database.
+    Full routine, safety rules and the pending-release list: [apps/api/README.md](../../apps/api/README.md#production-database). Run `db:deploy` again whenever a PR adds a migration, before deploying the API that needs it. Migrations are deliberately not part of the API build: a preview deployment would otherwise migrate the production database.
 3. **API** — deploy, check `GET <api>/api/health`.
 4. **Dashboard** — deploy with `API_URL` set to the API's URL.
 5. **Web** — set `API_URL` (and the revalidation secret), redeploy.
@@ -47,6 +47,7 @@ Every variable is documented in each app's `.env.example`; this is what producti
 | api       | `WEB_URL`, `WEB_REVALIDATE_SECRET`                                     | The web app's URL and the shared secret                            |
 | dashboard | `API_URL`                                                              | The API's URL                                                      |
 | dashboard | `NEXT_PUBLIC_GOOGLE_CLIENT_ID`                                         | Same client ID                                                     |
+| dashboard | `NEXT_PUBLIC_SITE_URL`                                                 | The website's origin — the service form's search-result preview    |
 | web       | `API_URL`                                                              | The API's URL — needed at build time                               |
 | web       | `REVALIDATE_SECRET`                                                    | The shared secret                                                  |
 | web       | `NEXT_PUBLIC_SITE_URL`                                                 | The site's public origin                                           |

@@ -13,11 +13,14 @@ import { WhyUs } from '@/components/features/home/why-us';
 import { SectionReveals } from '@/components/snippets/section-reveals/section-reveals';
 import { portfolioMetaOf, sinceYearOf } from '@/utils/portfolio';
 import { getHomeProjects, getPortfolioProjects } from '@/utils/projects-api';
+import { serviceCategoryCardsOf } from '@/utils/services';
+import { getCatalogueServices } from '@/utils/services-api';
 
 export default async function HomePage() {
-	const [homeProjects, projects] = await Promise.all([
+	const [homeProjects, projects, services] = await Promise.all([
 		getHomeProjects(),
-		getPortfolioProjects()
+		getPortfolioProjects(),
+		getCatalogueServices()
 	]);
 	const totalSections = 9;
 
@@ -32,6 +35,7 @@ export default async function HomePage() {
 			/>
 			{/* <Proof /> */}
 			<ServicesTeaser
+				categories={serviceCategoryCardsOf(services)}
 				sectionIndex={1}
 				totalSections={totalSections}
 			/>

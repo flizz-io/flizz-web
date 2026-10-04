@@ -5,11 +5,13 @@ import { Atmosphere } from '@/components/snippets/atmosphere/atmosphere';
 import { MediaSlot } from '@/components/snippets/media-slot/media-slot';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import type { ProjectDetail } from '@/types/portfolio';
-import { getProjectService } from '@/utils/portfolio';
+import type { Service } from '@/types/services';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface ProjectDetailHeroProps {
 	project: ProjectDetail;
+	/** The published service it's evidence for — linked when present. */
+	service?: Service;
 	className?: string;
 }
 
@@ -21,10 +23,9 @@ interface ProjectDetailHeroProps {
  */
 export function ProjectDetailHero({
 	project,
+	service,
 	className
 }: ProjectDetailHeroProps) {
-	const service = getProjectService(project);
-
 	const facts = [
 		{ term: 'Client', detail: project.client },
 		{ term: 'Duration', detail: project.duration },

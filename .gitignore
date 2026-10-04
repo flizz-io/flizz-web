@@ -28,6 +28,7 @@ dist
 .DS_Store
 *.pem
 .claude/settings.local.json
+.gemini/settings.local.json
 
 # debug
 npm-debug.log*

@@ -38,6 +38,11 @@ enum MediaPurpose {
   AVATAR
   PROJECT_COVER
   PROJECT_GALLERY
+  ARTICLE_COVER
+  /// Diagrams and screenshots placed inside an article body.
+  ARTICLE_IMAGE
+  /// A service's share image (Open Graph), 1200 × 630.
+  SERVICE_OG_IMAGE
 
   @@map("media_purpose")
 }
@@ -108,20 +113,36 @@ model User {
   permissions UserPermission[] @relation("PermissionUser")
 
   // Back-relations for the audit columns above.
-  usersCreated         User[]           @relation("UserCreatedBy")
-  usersUpdated         User[]           @relation("UserUpdatedBy")
-  usersDeleted         User[]           @relation("UserDeletedBy")
-  usersSuspended       User[]           @relation("UserSuspendedBy")
-  permissionsUpdated   UserPermission[] @relation("PermissionUpdatedBy")
-  mediaCreated         MediaFile[]      @relation("MediaCreatedBy")
-  mediaUpdated         MediaFile[]      @relation("MediaUpdatedBy")
-  mediaDeleted         MediaFile[]      @relation("MediaDeletedBy")
-  projectsCreated      Project[]        @relation("ProjectCreatedBy")
-  projectsUpdated      Project[]        @relation("ProjectUpdatedBy")
-  projectsDeleted      Project[]        @relation("ProjectDeletedBy")
-  projectImagesCreated ProjectImage[]   @relation("ProjectImageCreatedBy")
-  projectImagesUpdated ProjectImage[]   @relation("ProjectImageUpdatedBy")
-  projectImagesDeleted ProjectImage[]   @relation("ProjectImageDeletedBy")
+  usersCreated           User[]           @relation("UserCreatedBy")
+  usersUpdated           User[]           @relation("UserUpdatedBy")
+  usersDeleted           User[]           @relation("UserDeletedBy")
+  usersSuspended         User[]           @relation("UserSuspendedBy")
+  permissionsUpdated     UserPermission[] @relation("PermissionUpdatedBy")
+  mediaCreated           MediaFile[]      @relation("MediaCreatedBy")
+  mediaUpdated           MediaFile[]      @relation("MediaUpdatedBy")
+  mediaDeleted           MediaFile[]      @relation("MediaDeletedBy")
+  projectsCreated        Project[]        @relation("ProjectCreatedBy")
+  projectsUpdated        Project[]        @relation("ProjectUpdatedBy")
+  projectsDeleted        Project[]        @relation("ProjectDeletedBy")
+  projectImagesCreated   ProjectImage[]   @relation("ProjectImageCreatedBy")
+  projectImagesUpdated   ProjectImage[]   @relation("ProjectImageUpdatedBy")
+  projectImagesDeleted   ProjectImage[]   @relation("ProjectImageDeletedBy")
+  articlesAuthored       Article[]        @relation("ArticleAuthor")
+  articlesCreated        Article[]        @relation("ArticleCreatedBy")
+  articlesUpdated        Article[]        @relation("ArticleUpdatedBy")
+  articlesDeleted        Article[]        @relation("ArticleDeletedBy")
+  servicesCreated        Service[]        @relation("ServiceCreatedBy")
+  servicesUpdated        Service[]        @relation("ServiceUpdatedBy")
+  servicesDeleted        Service[]        @relation("ServiceDeletedBy")
+  slugRedirectsCreated   SlugRedirect[]   @relation("SlugRedirectCreatedBy")
+  slugRedirectsUpdated   SlugRedirect[]   @relation("SlugRedirectUpdatedBy")
+  slugRedirectsDeleted   SlugRedirect[]   @relation("SlugRedirectDeletedBy")
+  testimonialsCreated    Testimonial[]    @relation("TestimonialCreatedBy")
+  testimonialsUpdated    Testimonial[]    @relation("TestimonialUpdatedBy")
+  testimonialsDeleted    Testimonial[]    @relation("TestimonialDeletedBy")
+  contactMessagesRead    ContactMessage[] @relation("ContactMessageReadBy")
+  contactMessagesUpdated ContactMessage[] @relation("ContactMessageUpdatedBy")
+  contactMessagesDeleted ContactMessage[] @relation("ContactMessageDeletedBy")
 
   @@index([role])
   @@index([deletedAt])
@@ -176,9 +197,11 @@ model MediaFile {
   updatedBy User? @relation("MediaUpdatedBy", fields: [updatedById], references: [id])
   deletedBy User? @relation("MediaDeletedBy", fields: [deletedById], references: [id])
 
-  userPhotos    User[]         @relation("UserPhoto")
-  projectCovers Project[]      @relation("ProjectCover")
-  projectImages ProjectImage[] @relation("ProjectImageMedia")
+  userPhotos      User[]         @relation("UserPhoto")
+  projectCovers   Project[]      @relation("ProjectCover")
+  projectImages   ProjectImage[] @relation("ProjectImageMedia")
+  articleCovers   Article[]      @relation("ArticleCover")
+  serviceOgImages Service[]      @relation("ServiceOgImage")
 
   @@map("media_files")
 }
@@ -225,9 +248,13 @@ model Project {
   /// Anonymised descriptor — the client's shape, not necessarily a name.
   client           String
   sector           ProjectSector
+  /// The service this project is evidence for; its category and
+  /// `/services/<slug>` come from there. Nullable only until every existing
+  /// project is linked (the seed links them by `serviceSlug`).
+  serviceId        Int?            @map("service_id")
+  /// Superseded by `serviceId` — dropped once the API and form use it.
   serviceCategory  ServiceCategory @map("service_category")
-  /// The `/services/<slug>` this project is evidence for. A relation once the
-  /// Services CRUD exists.
+  /// Superseded by `serviceId` — dropped once the API and form use it.
   serviceSlug      String          @map("service_slug")
   year             Int
   summary          String
@@ -264,13 +291,16 @@ model Project {
   updatedById Int?      @map("updated_by_id")
   deletedById Int?      @map("deleted_by_id")
 
-  coverImage MediaFile?     @relation("ProjectCover", fields: [coverImageId], references: [id])
-  images     ProjectImage[]
-  createdBy  User?          @relation("ProjectCreatedBy", fields: [createdById], references: [id])
-  updatedBy  User?          @relation("ProjectUpdatedBy", fields: [updatedById], references: [id])
-  deletedBy  User?          @relation("ProjectDeletedBy", fields: [deletedById], references: [id])
+  service      Service?       @relation(fields: [serviceId], references: [id])
+  coverImage   MediaFile?     @relation("ProjectCover", fields: [coverImageId], references: [id])
+  images       ProjectImage[]
+  testimonials Testimonial[]
+  createdBy    User?          @relation("ProjectCreatedBy", fields: [createdById], references: [id])
+  updatedBy    User?          @relation("ProjectUpdatedBy", fields: [updatedById], references: [id])
+  deletedBy    User?          @relation("ProjectDeletedBy", fields: [deletedById], references: [id])
 
   @@index([status, deletedAt])
+  @@index([serviceId])
   @@index([featured])
   @@index([showOnHome])
   @@map("projects")
@@ -300,4 +330,265 @@ model ProjectImage {
 
   @@index([projectId, deletedAt])
   @@map("project_images")
+}
+
+/// Draft/published switch for the content tables added after Projects
+/// (Projects keep their own `ProjectStatus`, same keys).
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+
+  @@map("publish_status")
+}
+
+/// Fixed article taxonomy — exactly one per article. Same keys as the web
+/// app's `ArticleCategory`; display labels live in the apps.
+enum ArticleCategory {
+  ENGINEERING
+  PRODUCT
+  AI
+  PRACTICE
+
+  @@map("article_category")
+}
+
+/// An article — see docs/requirements/articles-pages.md. Public only when
+/// PUBLISHED and `publishAt` is empty or past (read time). Reading time is
+/// computed from `body`, never stored.
+model Article {
+  id           Int             @id @default(autoincrement())
+  uuid         String          @unique @default(uuid(7)) @db.Uuid
+  /// `/articles/<slug>`. Unique across live *and* deleted articles.
+  slug         String          @unique
+  title        String
+  /// One or two lines — the list entry and the meta description.
+  excerpt      String
+  category     ArticleCategory
+  /// Open vocabulary, unlike `category` — free to add without a migration.
+  tags         String[]
+  /// `ArticleBlock[]`, the same union the web renderer is written against.
+  /// Image blocks hold a `media_files.uuid`, never a URL.
+  body         Json
+  coverImageId Int?            @map("cover_image_id")
+  /// The byline when the site shows named authors; a relation rather than
+  /// a name so a roster rename can't silently drop it.
+  authorId     Int?            @map("author_id")
+
+  status           PublishStatus @default(DRAFT)
+  /// Optional go-live time; in the future → hidden until then.
+  publishAt        DateTime?     @map("publish_at") @db.Timestamptz(3)
+  /// When it was first published — set once, kept through unpublishing.
+  /// The public "published" date is `publishAt ?? firstPublishedAt`.
+  firstPublishedAt DateTime?     @map("first_published_at") @db.Timestamptz(3)
+
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  createdById Int?      @map("created_by_id")
+  updatedById Int?      @map("updated_by_id")
+  deletedById Int?      @map("deleted_by_id")
+
+  coverImage MediaFile? @relation("ArticleCover", fields: [coverImageId], references: [id])
+  author     User?      @relation("ArticleAuthor", fields: [authorId], references: [id])
+  createdBy  User?      @relation("ArticleCreatedBy", fields: [createdById], references: [id])
+  updatedBy  User?      @relation("ArticleUpdatedBy", fields: [updatedById], references: [id])
+  deletedBy  User?      @relation("ArticleDeletedBy", fields: [deletedById], references: [id])
+
+  @@index([status, deletedAt])
+  @@index([category])
+  @@index([tags], type: Gin)
+  @@index([authorId])
+  @@map("articles")
+}
+
+/// A service in the catalogue — see docs/requirements/services-pages.md.
+/// Powers `/services`, `/services/<slug>` and the home teaser.
+model Service {
+  id             Int             @id @default(autoincrement())
+  uuid           String          @unique @default(uuid(7)) @db.Uuid
+  /// `/services/<slug>`. Unique across live *and* deleted services.
+  slug           String          @unique
+  title          String
+  category       ServiceCategory
+  /// One line — the list page and the home teaser.
+  summary        String
+  /// A key of `SERVICE_VISUAL_KINDS` in @workspace/service-visuals. Free text
+  /// here because that package owns the list; the API validates it.
+  visualKind     String          @map("visual_kind")
+  intro          String
+  problem        String
+  deliverables   String[]
+  outcomes       String[]
+  /// Typical shape of the engagement; omitted where none is confirmed.
+  engagement     String?
+  /// `[{ question, answer }]`, ordered — shown on the page and as FAQPage
+  /// JSON-LD. A column rather than a table: saved as a whole.
+  faqs           Json            @default("[]")
+  /// Search result title; the title when empty.
+  seoTitle       String?         @map("seo_title")
+  /// Search result snippet; the summary when empty.
+  seoDescription String?         @map("seo_description")
+  /// Share image (1200 × 630); the generated card when empty.
+  ogImageId      Int?            @map("og_image_id")
+  /// Order within its category on the list page.
+  displayOrder   Int             @default(0) @map("display_order")
+  status         PublishStatus   @default(DRAFT)
+
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  createdById Int?      @map("created_by_id")
+  updatedById Int?      @map("updated_by_id")
+  deletedById Int?      @map("deleted_by_id")
+
+  createdBy User?      @relation("ServiceCreatedBy", fields: [createdById], references: [id])
+  updatedBy User?      @relation("ServiceUpdatedBy", fields: [updatedById], references: [id])
+  deletedBy User?      @relation("ServiceDeletedBy", fields: [deletedById], references: [id])
+  ogImage   MediaFile? @relation("ServiceOgImage", fields: [ogImageId], references: [id])
+
+  projects Project[]
+
+  @@index([status, deletedAt])
+  @@index([category, displayOrder])
+  @@map("services")
+}
+
+/// A client quote for the home page section — no public page of its own.
+model Testimonial {
+  id           Int           @id @default(autoincrement())
+  uuid         String        @unique @default(uuid(7)) @db.Uuid
+  quote        String
+  /// Exact phrases from `quote` set in the accent colour.
+  highlights   String[]
+  authorName   String        @map("author_name")
+  /// Free text: "COO, Northwind".
+  authorRole   String        @map("author_role")
+  /// The engagement it came from, when it can be named.
+  projectId    Int?          @map("project_id")
+  displayOrder Int           @default(0) @map("display_order")
+  status       PublishStatus @default(DRAFT)
+
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  createdById Int?      @map("created_by_id")
+  updatedById Int?      @map("updated_by_id")
+  deletedById Int?      @map("deleted_by_id")
+
+  project   Project? @relation(fields: [projectId], references: [id])
+  createdBy User?    @relation("TestimonialCreatedBy", fields: [createdById], references: [id])
+  updatedBy User?    @relation("TestimonialUpdatedBy", fields: [updatedById], references: [id])
+  deletedBy User?    @relation("TestimonialDeletedBy", fields: [deletedById], references: [id])
+
+  @@index([status, deletedAt, displayOrder])
+  @@map("testimonials")
+}
+
+/// The shape of work an enquiry is about. Same keys as the web app's
+/// `ProjectScope`.
+enum ContactScope {
+  NEW_BUILD
+  REBUILD
+  SCALE
+  FIX
+  UNDECIDED
+
+  @@map("contact_scope")
+}
+
+/// When the enquirer wants work to begin. Same keys as the web app's
+/// `ProjectStart`.
+enum ContactStart {
+  IMMEDIATELY
+  THIS_QUARTER
+  NEXT_QUARTER
+  EXPLORING
+
+  @@map("contact_start")
+}
+
+/// Where an enquiry sits in the team's inbox.
+enum ContactMessageStatus {
+  NEW
+  READ
+  REPLIED
+  ARCHIVED
+  SPAM
+
+  @@map("contact_message_status")
+}
+
+/// A Contact Us form submission. Written by an anonymous visitor, so
+/// `createdById` doesn't exist — every later change is a team member's.
+model ContactMessage {
+  id      Int          @id @default(autoincrement())
+  uuid    String       @unique @default(uuid(7)) @db.Uuid
+  name    String
+  company String?
+  /// Lower-cased.
+  email   String
+  scope   ContactScope
+  start   ContactStart
+  message String
+
+  status       ContactMessageStatus @default(NEW)
+  /// First time anyone on the team opened it.
+  readAt       DateTime?            @map("read_at") @db.Timestamptz(3)
+  readById     Int?                 @map("read_by_id")
+  /// Team-only notes; never shown to the enquirer.
+  internalNote String?              @map("internal_note")
+  /// Page the form was sent from, for attribution.
+  sourcePath   String?              @map("source_path")
+  /// Salted hash — enough to spot repeat spam without keeping the address.
+  ipHash       String?              @map("ip_hash")
+
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  updatedById Int?      @map("updated_by_id")
+  deletedById Int?      @map("deleted_by_id")
+
+  readBy    User? @relation("ContactMessageReadBy", fields: [readById], references: [id])
+  updatedBy User? @relation("ContactMessageUpdatedBy", fields: [updatedById], references: [id])
+  deletedBy User? @relation("ContactMessageDeletedBy", fields: [deletedById], references: [id])
+
+  @@index([status, deletedAt, createdAt])
+  @@index([email])
+  @@map("contact_messages")
+}
+
+/// Which kind of record a slug redirect belongs to.
+enum SlugEntityType {
+  SERVICE
+  PROJECT
+  ARTICLE
+
+  @@map("slug_entity_type")
+}
+
+/// An old slug that 301s to the record's current one. Points at the record,
+/// not a slug, so renames never chain. Retired (not deleted) when the record
+/// takes the slug back. See docs/requirements/services-crud.md#slug-redirects.
+model SlugRedirect {
+  id         Int            @id @default(autoincrement())
+  uuid       String         @unique @default(uuid(7)) @db.Uuid
+  entityType SlugEntityType @map("entity_type")
+  oldSlug    String         @map("old_slug")
+  /// `services.id`, `projects.id` or `articles.id`, per `entityType`.
+  entityId   Int            @map("entity_id")
+
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  createdById Int?      @map("created_by_id")
+  updatedById Int?      @map("updated_by_id")
+  deletedById Int?      @map("deleted_by_id")
+
+  createdBy User? @relation("SlugRedirectCreatedBy", fields: [createdById], references: [id])
+  updatedBy User? @relation("SlugRedirectUpdatedBy", fields: [updatedById], references: [id])
+  deletedBy User? @relation("SlugRedirectDeletedBy", fields: [deletedById], references: [id])
+
+  @@unique([entityType, oldSlug])
+  @@index([entityType, entityId])
+  @@map("slug_redirects")
 }

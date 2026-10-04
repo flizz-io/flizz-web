@@ -1,8 +1,8 @@
 import { Plus } from 'lucide-react';
 
-import { FieldError } from '@/components/features/projects/form-field';
-import { ListItemControls } from '@/components/features/projects/list-item-controls';
-import { SectionCard } from '@/components/features/projects/section-card';
+import { FieldError } from '@/components/snippets/form-field/form-field';
+import { ListItemControls } from '@/components/snippets/list-item-controls/list-item-controls';
+import { SectionCard } from '@/components/snippets/section-card/section-card';
 import {
 	projectFieldLimits as limits,
 	projectFormMessages

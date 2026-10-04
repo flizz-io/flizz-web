@@ -25,5 +25,10 @@ export const shellMessages = {
 
 /** Words every screen shares. */
 export const commonMessages = {
-	cancel: 'Cancel'
+	cancel: 'Cancel',
+	someone: 'someone',
+	createdByLine: (name: string, when: string) =>
+		`Created by ${name} · ${when}`,
+	updatedByLine: (name: string, when: string) =>
+		`Last changed by ${name} · ${when}`
 } as const;

@@ -2,8 +2,9 @@ import { Layers } from 'lucide-react';
 
 import { Atmosphere } from '@/components/snippets/atmosphere/atmosphere';
 import { Reveal } from '@/components/snippets/reveal/reveal';
-import { services, servicesHeroLead } from '@/constants/services';
+import { servicesHeroLead } from '@/constants/services';
 import { serviceCategoryOrder } from '@/enums/services';
+import type { Service } from '@/types/services';
 import { cn } from '@workspace/ui/lib/utils';
 
 /**
@@ -11,7 +12,12 @@ import { cn } from '@workspace/ui/lib/utils';
  * named here rather than left to be discovered by scrolling. No figures strip —
  * that belongs to About, and this page is a routing surface, not an argument.
  */
-export function ServicesHero({ className }: { className?: string }) {
+interface ServicesHeroProps {
+	services: Service[];
+	className?: string;
+}
+
+export function ServicesHero({ services, className }: ServicesHeroProps) {
 	return (
 		<section
 			className={cn(

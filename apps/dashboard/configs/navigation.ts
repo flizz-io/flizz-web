@@ -1,7 +1,14 @@
-import { FolderKanban, LayoutDashboard, UserRound, Users } from 'lucide-react';
+import {
+	FolderKanban,
+	Layers,
+	LayoutDashboard,
+	UserRound,
+	Users
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { projectsPath } from '@/constants/projects';
+import { servicesPath } from '@/constants/services';
 import { Feature } from '@workspace/api-services';
 
 export interface NavItem {
@@ -25,6 +32,12 @@ export const sidebarNavItems: NavItem[] = [
 		href: projectsPath,
 		icon: FolderKanban,
 		feature: Feature.PROJECTS
+	},
+	{
+		title: 'Services',
+		href: servicesPath,
+		icon: Layers,
+		feature: Feature.SERVICES
 	},
 	{ title: 'Team', href: '/team', icon: Users, adminOnly: true }
 ];

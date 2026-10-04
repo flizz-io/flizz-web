@@ -1,7 +1,6 @@
 /** Field limits for projects — docs/requirements/projects-crud.md#fields. */
 export const projectLimits = {
 	name: 80,
-	slug: 100,
 	client: 140,
 	summary: 200,
 	resultField: 80,
@@ -19,9 +18,6 @@ export const projectLimits = {
 	firstYear: 2000,
 	displayOrderMax: 10_000
 } as const;
-
-/** Lower-case letters and digits, single hyphens between them. */
-export const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /**
  * Slugs a project can't take — they'd collide with fixed public routes

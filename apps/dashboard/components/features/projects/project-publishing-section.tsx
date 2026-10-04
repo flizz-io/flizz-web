@@ -1,8 +1,8 @@
 'use client';
 
-import { FormField } from '@/components/features/projects/form-field';
-import { SectionCard } from '@/components/features/projects/section-card';
 import { VisibilityBadge } from '@/components/features/projects/visibility-badge';
+import { FormField } from '@/components/snippets/form-field/form-field';
+import { SectionCard } from '@/components/snippets/section-card/section-card';
 import { projectFormMessages, statusLabels } from '@/constants/projects';
 import { useIsClient } from '@/hooks/use-is-client';
 import type { ProjectSectionProps } from '@/types/project-form';

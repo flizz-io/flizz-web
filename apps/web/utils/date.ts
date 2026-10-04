@@ -20,3 +20,14 @@ export function formatNextBusinessDay(from: Date = new Date()): string {
 
 	return replyByFormatter.format(replyBy);
 }
+
+const longDateFormatter = new Intl.DateTimeFormat('en-GB', {
+	day: 'numeric',
+	month: 'long',
+	year: 'numeric'
+});
+
+/** "3 October 2026" — for dates a reader cites, such as a policy's revision. */
+export function formatLongDate(isoDate: string): string {
+	return longDateFormatter.format(new Date(isoDate));
+}

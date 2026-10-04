@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowUp, X } from 'lucide-react';
 
-import { projectFormMessages } from '@/constants/projects';
+import { formMessages } from '@/constants/form';
 import { Button } from '@workspace/ui/components/button';
 
 interface ListItemControlsProps {
@@ -25,7 +25,7 @@ export function ListItemControls({
 	canRemove = true,
 	disabled = false
 }: ListItemControlsProps) {
-	const { moveUp, moveDown, remove } = projectFormMessages;
+	const { moveUp, moveDown, remove } = formMessages;
 
 	return (
 		<div className="flex shrink-0 gap-1">

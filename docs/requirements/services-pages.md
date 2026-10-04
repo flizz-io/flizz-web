@@ -7,7 +7,7 @@ Covers two public routes in `apps/web`, specced together because they share one 
 - `/services` — the Services list page
 - `/services/[slug]` — Single Service detail
 
-Stage 4. **Both built 2026-09-01.** Static for now; the Services CRUD (Stage 8–12) replaces the constants later without changing either page's structure.
+Stage 4. **Both built 2026-09-01.** Since S7 (2026-10-03) both read from the Services API and are managed in the dashboard — see [services-crud.md](services-crud.md).
 
 > The per-service copy originally transcribed from the sheet was deliberately removed — the PM holds the source and will re-author through the admin CRUD. Everything below is placeholder written to the site's voice, not sheet content.
 
@@ -119,13 +119,13 @@ Notes:
 
 - **Do not restate the five-step process from the home page.** It already lives there and on About; a service page repeating it is filler. Reference it or leave it out.
 - Twelve pages share one template. It has to hold up when `engagement` is missing and when `deliverables` runs long.
-- `generateStaticParams` over the twelve slugs; unknown slug → `notFound()`.
+- `generateStaticParams` over the published slugs; an old slug of a renamed service 308s to the current one; anything else → `notFound()`.
 
 ## Build notes
 
 Worth knowing before touching either page again:
 
-- **One roster, one source.** `constants/services.ts` holds all twelve as `ServiceDetail[]`; the home teaser derives from it via `homeTeaserServices`, so the three surfaces cannot disagree. The old `ServiceCard` type is gone.
+- **One roster, one source.** The published services come from the API (`utils/services-api.ts`); the list page, the detail pages and the home teaser (`serviceCategoryCardsOf` in `utils/services.ts`) all derive from that one list, so they cannot disagree. The original twelve live on as seed data (`apps/api/prisma/seed-data/services.json`).
 - **The list page mounts one WebGL context, not twelve.** The index is static and a single sticky viewer swaps specimens on hover or focus. Below `lg` the viewer is not rendered at all — gated on `useMediaQuery`, because `hidden` would still mount it and burn a context on phones that never see it.
 - **Row handlers sit on the `<li>`, not the `<Link>`**, so the behaviour does not depend on which props `next/link` forwards. React's synthetic focus bubbles up from the anchor.
 - **Specimen swaps are debounced** by 130ms; without it, dragging the cursor down the index rebuilds a Three scene per row crossed.

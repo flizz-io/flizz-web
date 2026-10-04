@@ -1,23 +1,15 @@
 import { z } from 'zod';
 
-import { projectLimits, slugPattern } from '../constants/project.js';
+import { slugSchema } from './slug-schema.js';
+import { projectLimits } from '../constants/project.js';
 import { ProjectVisibility } from '../enums/project-visibility.js';
-import {
-	ProjectSector,
-	ProjectStatus,
-	ServiceCategory
-} from '../generated/prisma/enums.js';
+import { ProjectSector, ProjectStatus } from '../generated/prisma/enums.js';
 
 const limits = projectLimits;
 
 const text = (max: number) => z.string().trim().min(1).max(max);
 
-const slug = z
-	.string()
-	.trim()
-	.toLowerCase()
-	.max(limits.slug)
-	.regex(slugPattern, 'Use lower-case letters, digits and single hyphens.');
+const slug = slugSchema;
 
 const storyList = z
 	.array(text(limits.storyItem))
@@ -61,8 +53,8 @@ const contentSchema = z.object({
 	name: text(limits.name),
 	client: text(limits.client),
 	sector: z.enum(ProjectSector),
-	serviceCategory: z.enum(ServiceCategory),
-	serviceSlug: slug,
+	/** The service it's evidence for — its category and page come from it. */
+	serviceUuid: z.uuid(),
 	year: z
 		.number()
 		.int()

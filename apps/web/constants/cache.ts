@@ -6,6 +6,7 @@
  */
 export enum CacheTag {
 	PROJECTS = 'projects',
+	SERVICES = 'services',
 	TEAM = 'team'
 }
 
