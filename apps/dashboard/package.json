@@ -12,6 +12,7 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
+		"@sentry/nextjs": "^11.4.0",
 		"@workspace/api-services": "workspace:*",
 		"@workspace/service-visuals": "workspace:*",
 		"@workspace/ui": "workspace:*",

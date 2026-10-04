@@ -22,7 +22,7 @@ People now find services two ways: classic search engines, and AI assistants (Ch
 
 ### Tasks, in priority order
 
-1. **`app/robots.ts`**: allow `/`, disallow `/api/` and any scratch routes (`/home-v2` until it's deleted), and point to `${siteUrl}/sitemap.xml`. When the deployment isn't production (`VERCEL_ENV !== 'production'`, or a dedicated `NEXT_PUBLIC_INDEXABLE` flag after leaving Vercel), return `disallow: '/'` **and** set `robots: { index: false }` in the root metadata. Otherwise previews get indexed as duplicates of the real site. Production rules for AI crawlers are in [Part 4](#part-4--ai-search-visibility).
+1. **`app/robots.ts`**: allow `/`, disallow `/api/`, and point to `${siteUrl}/sitemap.xml`. When the deployment isn't production (`VERCEL_ENV !== 'production'`, or a dedicated `NEXT_PUBLIC_INDEXABLE` flag after leaving Vercel), return `disallow: '/'` **and** set `robots: { index: false }` in the root metadata. Otherwise previews get indexed as duplicates of the real site. Production rules for AI crawlers are in [Part 4](#part-4--ai-search-visibility).
 2. **`app/sitemap.ts`**: static routes plus every published service, project and article from the API, with `lastModified` set to the record's `updatedAt`. It must use the same public endpoints the pages use, so drafts and future-dated items stay out. Revalidate it on the same tags as the pages.
 3. **Canonical on every page**: `alternates: { canonical: '/services/<slug>' }`. List pages with filters (`/articles?tag=…`) canonicalise to the bare list URL.
 4. **Home metadata** (and everything in the per-page spec below): a real title (about 50–60 characters, for example "Custom Software & AI Automation Studio — Flizz") and a description of about 150 characters.

@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 
 import { env } from '../configs/env.js';
+import { reportError } from '../configs/sentry.js';
 import { ErrorCode } from '../enums/error-code.js';
 import { HttpError } from '../utils/http-error.js';
 
@@ -14,7 +15,7 @@ export const notFoundHandler = (req: Request) => {
  * errors keep their status and message; anything unexpected is logged and
  * reported as a generic 500 — internals never reach the client in production.
  */
-export const errorHandler = (
+export const errorHandler = async (
 	error: unknown,
 	_req: Request,
 	res: Response,
@@ -46,6 +47,7 @@ export const errorHandler = (
 	}
 
 	console.error(error);
+	await reportError(error);
 	res.status(500).json({
 		error: {
 			code: ErrorCode.INTERNAL,

@@ -1,6 +1,6 @@
 # Home — Hero v3 ("cinematic")
 
-A third hero variation for the home page, alongside `starfield` and `constellation`. Same message and the same `HeroDisciplinesScene`, told as one orchestrated sequence: a loading screen, a header and scene reveal, then a scroll-driven hand-off that moves the scene aside and builds the copy in its place.
+A third hero variation for the home page, alongside `starfield` (removed 2026-10-04, L16) and `constellation`. Same message and the same `HeroDisciplinesScene`, told as one orchestrated sequence: a loading screen, a header and scene reveal, then a scroll-driven hand-off that moves the scene aside and builds the copy in its place.
 
 Copy source of truth stays in [home-page.md § Hero](home-page.md#hero). Selected in `app/(marketing)/page.tsx` with `<Hero variation="cinematic" />`; the other two variations remain available.
 
