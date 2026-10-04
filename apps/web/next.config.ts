@@ -22,10 +22,8 @@ const mediaIsLocal = Boolean(
 );
 
 const nextConfig: NextConfig = {
-	// TODO: drop '@workspace/theme-lab' together with that package before production.
 	transpilePackages: [
 		'@workspace/ui',
-		'@workspace/theme-lab',
 		'@workspace/service-visuals',
 		'@workspace/api-services'
 	],

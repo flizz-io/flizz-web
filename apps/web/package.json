@@ -15,7 +15,6 @@
 		"@gsap/react": "^2.1.2",
 		"@workspace/api-services": "workspace:*",
 		"@workspace/service-visuals": "workspace:*",
-		"@workspace/theme-lab": "workspace:*",
 		"@workspace/ui": "workspace:*",
 		"framer-motion": "^13.1.1",
 		"gsap": "^3.15.0",

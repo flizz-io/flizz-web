@@ -4,21 +4,20 @@ Master index and tracker for the Flizz web project: public site pages, admin CRU
 
 ## Pages — public site (`apps/web`)
 
-| #   | Page                          | Notes doc                                | Route                                      | Static build stage | Status                            |
-| --- | ----------------------------- | ---------------------------------------- | ------------------------------------------ | ------------------ | --------------------------------- |
-| 1   | Home                          | [home-page.md](home-page.md)             | `/`                                        | Stage 2            | Built — pending PM content        |
-| 2   | About                         | [about-page.md](about-page.md)           | `/about`                                   | Stage 3            | Built — pending PM content        |
-| 3   | Services (list)               | [services-pages.md](services-pages.md)   | `/services`                                | Stage 4            | Built — pending PM content        |
-| 4   | Single Service detail         | [services-pages.md](services-pages.md)   | `/services/[slug]`                         | Stage 4            | Built — pending PM content        |
-| 5   | Contact Us                    | _not written — built ad hoc_             | `/contact`                                 | Stage 5            | Built — pending PM content        |
-| 6   | Portfolio/Projects (list)     | [portfolio-pages.md](portfolio-pages.md) | `/portfolio`                               | Stage 6            | Built — pending PM content        |
-| 7   | Single Project detail         | [portfolio-pages.md](portfolio-pages.md) | `/portfolio/[slug]`                        | Stage 6            | Built — pending PM content        |
-| 8   | Articles (list)               | [articles-pages.md](articles-pages.md)   | `/articles`                                | Stage 7            | Built — pending PM content        |
-| 9   | Single Article detail         | [articles-pages.md](articles-pages.md)   | `/articles/[slug]`                         | Stage 7            | Built — pending PM content        |
-| 10  | Case Studies (list)           | [portfolio-pages.md](portfolio-pages.md) | —                                          | —                  | Dropped — see below               |
-| 11  | Single Case Study detail      | [portfolio-pages.md](portfolio-pages.md) | —                                          | —                  | Dropped — see below               |
-| 12  | Privacy Policy & Terms        | [legal-pages.md](legal-pages.md)         | `/privacy-policy`, `/terms-and-conditions` | —                  | Drafted — owner decisions pending |
-| —   | Home design variant (scratch) | —                                        | `/home-v2`                                 | —                  | Delete before launch              |
+| #   | Page                      | Notes doc                                | Route                                      | Static build stage | Status                            |
+| --- | ------------------------- | ---------------------------------------- | ------------------------------------------ | ------------------ | --------------------------------- |
+| 1   | Home                      | [home-page.md](home-page.md)             | `/`                                        | Stage 2            | Built — pending PM content        |
+| 2   | About                     | [about-page.md](about-page.md)           | `/about`                                   | Stage 3            | Built — pending PM content        |
+| 3   | Services (list)           | [services-pages.md](services-pages.md)   | `/services`                                | Stage 4            | Built — pending PM content        |
+| 4   | Single Service detail     | [services-pages.md](services-pages.md)   | `/services/[slug]`                         | Stage 4            | Built — pending PM content        |
+| 5   | Contact Us                | _not written — built ad hoc_             | `/contact`                                 | Stage 5            | Built — pending PM content        |
+| 6   | Portfolio/Projects (list) | [portfolio-pages.md](portfolio-pages.md) | `/portfolio`                               | Stage 6            | Built — pending PM content        |
+| 7   | Single Project detail     | [portfolio-pages.md](portfolio-pages.md) | `/portfolio/[slug]`                        | Stage 6            | Built — pending PM content        |
+| 8   | Articles (list)           | [articles-pages.md](articles-pages.md)   | `/articles`                                | Stage 7            | Built — pending PM content        |
+| 9   | Single Article detail     | [articles-pages.md](articles-pages.md)   | `/articles/[slug]`                         | Stage 7            | Built — pending PM content        |
+| 10  | Case Studies (list)       | [portfolio-pages.md](portfolio-pages.md) | —                                          | —                  | Dropped — see below               |
+| 11  | Single Case Study detail  | [portfolio-pages.md](portfolio-pages.md) | —                                          | —                  | Dropped — see below               |
+| 12  | Privacy Policy & Terms    | [legal-pages.md](legal-pages.md)         | `/privacy-policy`, `/terms-and-conditions` | —                  | Drafted — owner decisions pending |
 
 Each page's requirements doc is written just before its static-design stage starts — no point speccing pages we're 5 stages away from.
 
@@ -163,17 +162,17 @@ From the pre-launch review on 2026-10-03. **Owner**: _Dev_ is code work (Claude 
 
 #### First weeks: right after the blockers, alongside the slices
 
-| #   | Task                                                                                                                                                                                                  | Owner       | Status      |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ----------- |
-| L9  | API hardening: security headers (`helmet`), rate limiting (stricter on public writes and auth), `trust proxy` set so the visitor's IP is seen. **Must land before CM2**                               | Dev         | Not started |
-| L10 | Monitoring: error tracking (for example Sentry) in all three apps, plus uptime checks on `/api/health` and the home page with alerts                                                                  | Dev + Owner | Not started |
-| L11 | Database safety: check Neon's backup/restore window; give Vercel preview deployments their own Neon branch so previews never write to production                                                      | Owner + Dev | Not started |
-| L12 | Domain and email: `hello@flizz.io` receives mail; `www` and the bare domain redirect to one canonical host; `NEXT_PUBLIC_SITE_URL` matches it                                                         | Owner       | Not started |
-| L13 | Dashboard access recovery: a second Admin, so losing the Super Admin's Google account doesn't lock everyone out                                                                                       | Owner       | Not started |
-| L14 | Smoke tests: a written pre-launch checklist (sign-in, publish a project, contact form end to end, test booking) and Playwright tests for the critical paths; close C4's pending live end-to-end check | Dev         | Not started |
-| L15 | Device and accessibility pass: real iOS Safari and a low-end Android phone (GSAP, WebGL), keyboard navigation, reduced motion. Prompts in [quality-audits.md](../guides/quality-audits.md)            | Dev         | Not started |
-| L16 | Engineering cleanup (see the section near the end of this file): remove `@workspace/theme-lab` and the `/home-v2` route                                                                               | Dev         | Not started |
-| L17 | Review free-tier limits (Cloudinary, Neon, Crisp, Calendly) against expected traffic                                                                                                                  | Owner       | Not started |
+| #   | Task                                                                                                                                                                                                  | Owner       | Status          |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | --------------- |
+| L9  | API hardening: security headers (`helmet`), rate limiting (stricter on public writes and auth), `trust proxy` set so the visitor's IP is seen. **Must land before CM2**                               | Dev         | Not started     |
+| L10 | Monitoring: error tracking (for example Sentry) in all three apps, plus uptime checks on `/api/health` and the home page with alerts                                                                  | Dev + Owner | Not started     |
+| L11 | Database safety: check Neon's backup/restore window; give Vercel preview deployments their own Neon branch so previews never write to production                                                      | Owner + Dev | Not started     |
+| L12 | Domain and email: `hello@flizz.io` receives mail; `www` and the bare domain redirect to one canonical host; `NEXT_PUBLIC_SITE_URL` matches it                                                         | Owner       | Not started     |
+| L13 | Dashboard access recovery: a second Admin, so losing the Super Admin's Google account doesn't lock everyone out                                                                                       | Owner       | Not started     |
+| L14 | Smoke tests: a written pre-launch checklist (sign-in, publish a project, contact form end to end, test booking) and Playwright tests for the critical paths; close C4's pending live end-to-end check | Dev         | Not started     |
+| L15 | Device and accessibility pass: real iOS Safari and a low-end Android phone (GSAP, WebGL), keyboard navigation, reduced motion. Prompts in [quality-audits.md](../guides/quality-audits.md)            | Dev         | Not started     |
+| L16 | Engineering cleanup (see the section near the end of this file): remove `@workspace/theme-lab` and the `/home-v2` route                                                                               | Dev         | Done 2026-10-04 |
+| L17 | Review free-tier limits (Cloudinary, Neon, Crisp, Calendly) against expected traffic                                                                                                                  | Owner       | Not started     |
 
 ### Phase S — Services
 
@@ -312,8 +311,7 @@ Both routes shipped 2026-09-01: `/services` and twelve `/services/[slug]` pages,
 
 ## Engineering cleanup before production
 
-- Remove the `@workspace/theme-lab` package and its two references — `apps/web/next.config.ts:4` and `apps/web/app/(marketing)/layout.tsx:16`.
-- Delete the `/home-v2` scratch route and any hero/section variants it alone depends on.
+Done 2026-10-04 (L16): the `@workspace/theme-lab` package, the `/home-v2` scratch route and the starfield hero it alone used are removed.
 
 ## How to use these docs
 
