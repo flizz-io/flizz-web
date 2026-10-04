@@ -1,12 +1,16 @@
 import {
 	FolderKanban,
+	Inbox,
 	Layers,
 	LayoutDashboard,
 	UserRound,
 	Users
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import type { ComponentType } from 'react';
 
+import { UnreadMessagesBadge } from '@/components/features/messages/unread-messages-badge';
+import { messagesPath } from '@/constants/contact-messages';
 import { projectsPath } from '@/constants/projects';
 import { servicesPath } from '@/constants/services';
 import { Feature } from '@workspace/api-services';
@@ -19,6 +23,8 @@ export interface NavItem {
 	adminOnly?: boolean;
 	/** Shown only to users who may at least view this feature. */
 	feature?: Feature;
+	/** A count beside the title — rendered only for those who see the item. */
+	badge?: ComponentType;
 }
 
 /**
@@ -38,6 +44,13 @@ export const sidebarNavItems: NavItem[] = [
 		href: servicesPath,
 		icon: Layers,
 		feature: Feature.SERVICES
+	},
+	{
+		title: 'Messages',
+		href: messagesPath,
+		icon: Inbox,
+		feature: Feature.CONTACT_MESSAGES,
+		badge: UnreadMessagesBadge
 	},
 	{ title: 'Team', href: '/team', icon: Users, adminOnly: true }
 ];

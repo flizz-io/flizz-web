@@ -160,24 +160,25 @@ export async function summarizeContactMessages(): Promise<ContactMessageSummaryR
 }
 
 /**
- * One message. The first open by anyone marks it read — `NEW` becomes `READ`
- * and who opened it is recorded; later opens change nothing.
+ * One message. Opening a New one marks it read — `READ`, and on the very
+ * first open, who opened it and when. Any other open changes nothing.
  */
 export async function openContactMessage(
 	actor: CurrentUser,
 	uuid: string
 ): Promise<ContactMessageResponse> {
 	const message = await findMessage(uuid);
-	if (message.readAt) return toMessageResponse(message);
+	if (message.status !== ContactMessageStatus.NEW) {
+		return toMessageResponse(message);
+	}
 
 	const updated = await prisma.contactMessage.update({
 		where: { id: message.id },
 		data: {
-			readAt: new Date(),
-			readById: actor.id,
-			...(message.status === ContactMessageStatus.NEW
-				? { status: ContactMessageStatus.READ }
-				: {})
+			status: ContactMessageStatus.READ,
+			...(message.readAt
+				? {}
+				: { readAt: new Date(), readById: actor.id })
 		},
 		include: messageInclude
 	});

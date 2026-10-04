@@ -72,7 +72,7 @@ Every route needs a session and the `CONTACT_MESSAGES` grant.
 | ------------------------------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `GET /api/contact-messages`          | `VIEW`   | `?folder=&search=&page=` — newest first, 25 a page. `folder` is a tab: `INBOX` (default), `UNREAD`, `ARCHIVED`, `SPAM`, `ALL`. Search covers name, email, company and message |
 | `GET /api/contact-messages/summary`  | `VIEW`   | Count per folder, including unread (status `NEW`) — the sidebar badge and the tab counts                                                                                      |
-| `GET /api/contact-messages/:uuid`    | `VIEW`   | The message. **The first open marks it read**: `read_at`, `read_by_id`, and `NEW` → `READ`                                                                                    |
+| `GET /api/contact-messages/:uuid`    | `VIEW`   | The message. **Opening a `NEW` message marks it read** (`READ`); the very first open also records `read_at` and `read_by_id`                                                  |
 | `PATCH /api/contact-messages/:uuid`  | `EDIT`   | `{ status?, internalNote? }` — status change and the team note                                                                                                                |
 | `DELETE /api/contact-messages/:uuid` | `DELETE` | Soft delete                                                                                                                                                                   |
 
