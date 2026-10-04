@@ -6,6 +6,8 @@
 @source '../../../apps/**/*.{ts,tsx}';
 @source '../../../components/**/*.{ts,tsx}';
 @source '../**/*.{ts,tsx}';
+/* The Theme Lab panel (env-gated, see packages/theme-lab). */
+@source '../../../theme-lab/src/**/*.{ts,tsx}';
 
 @theme inline {
 	--font-heading: var(--font-heading);

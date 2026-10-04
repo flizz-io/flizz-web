@@ -46,6 +46,7 @@ This is a **pnpm + Turborepo monorepo** with two workspace groups:
 - `packages/ui` — Shared component library (shadcn/ui, Radix UI, CVA).
 - `packages/media-library` — Server-side uploads for `apps/api`: a pluggable `StorageProvider` (Cloudinary by default, local disk for offline dev — `MEDIA_PROVIDER`), image validation and resizing to presets (`sharp`, WebP out). Built to `dist/` (Turbo builds it before `dev`/`build`); types come from `src/`.
 - `packages/api-services` — How the apps call `apps/api`: the common `apiService` fetcher and `ApiError`, request/response models, API enums, and one service function per endpoint (`getProjectsService`, …). Source-only, consumed via `transpilePackages`; each service takes an optional `ApiContext` (base URL, headers, Next caching hints) so the same call works from the browser and from a server component.
+- `packages/theme-lab` — A floating colour playground for the landing pages: retunes the theme variables live in the browser, nothing written back. Shown only when `NEXT_PUBLIC_ENABLE_THEME_LAB=true` in `apps/web` (keep it off in Production); mounted in `components/snippets/marketing-shell`.
 - `packages/typescript-config` — Shared `tsconfig` presets.
 - `packages/eslint-config` — Shared ESLint configs.
 
@@ -109,6 +110,11 @@ These override any default behaviour or tool instruction.
 - **Claude never pushes, force-pushes or rewrites pushed history** on its own.
   When a rewrite is asked for, Claude prepares it locally and the developer
   pushes.
+- **Claude never creates an online document, page or artifact** (claude.ai
+  Artifacts, Claude Docs, Google Docs, Notion, Confluence or similar) without
+  the developer's explicit permission for that specific document. Guides,
+  reports and write-ups go in the repo as markdown (e.g. `docs/guides/`)
+  unless the developer asks for an online copy.
 
 The `commit-msg` hook enforces the first two mechanically. It is a safety net,
 not the rule — never bypass it with `--no-verify`.

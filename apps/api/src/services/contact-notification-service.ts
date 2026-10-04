@@ -1,11 +1,14 @@
+import { createTransport, type Transporter } from 'nodemailer';
+
 import { env } from '../configs/env.js';
 import {
 	NOTIFY_EXCERPT_LENGTH,
 	NOTIFY_TIMEOUT_MS,
+	SMTP_TLS_PORT,
 	contactScopeLabels,
 	contactStartLabels,
 	dashboardMessagePath,
-	resendEmailsUrl
+	notifySenderName
 } from '../constants/contact.js';
 import type { ContactMessage } from '../generated/prisma/client.js';
 
@@ -56,32 +59,51 @@ function slackEscape(text: string) {
 		.replace(/>/g, '&gt;');
 }
 
-async function post(url: string, body: unknown, headers = {}) {
+let transport: Transporter | null = null;
+
+/** One SMTP connection setup per process, made on first use. */
+function mailTransport(user: string, password: string) {
+	const { host, port } = env.contactNotify.smtp;
+
+	transport ??= createTransport({
+		host,
+		port,
+		secure: port === SMTP_TLS_PORT,
+		auth: { user, pass: password },
+		connectionTimeout: NOTIFY_TIMEOUT_MS,
+		greetingTimeout: NOTIFY_TIMEOUT_MS,
+		socketTimeout: NOTIFY_TIMEOUT_MS
+	});
+
+	return transport;
+}
+
+/**
+ * Email over SMTP — Gmail by default (`SMTP_USER` + an App Password). On
+ * once there's a sender, a password and recipients. Sent from `SMTP_USER`,
+ * with Reply-To set to the enquirer so replying answers them.
+ */
+async function sendEmail(message: NotifiedMessage) {
+	const { smtp, to } = env.contactNotify;
+	if (!smtp.user || !smtp.password || to.length === 0) return null;
+
+	await mailTransport(smtp.user, smtp.password).sendMail({
+		from: { name: notifySenderName, address: smtp.user },
+		to,
+		replyTo: { name: message.name, address: message.email },
+		subject: subjectOf(message),
+		text: textOf(message)
+	});
+}
+
+async function post(url: string, body: unknown) {
 	const response = await fetch(url, {
 		method: 'POST',
-		headers: { 'Content-Type': 'application/json', ...headers },
+		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(body),
 		signal: AbortSignal.timeout(NOTIFY_TIMEOUT_MS)
 	});
 	if (!response.ok) throw new Error(`HTTP ${response.status}`);
-}
-
-/** Email through Resend — on with an API key, a sender and recipients. */
-function sendEmail(message: NotifiedMessage) {
-	const { resendApiKey, from, to } = env.contactNotify;
-	if (!resendApiKey || !from || to.length === 0) return null;
-
-	return post(
-		resendEmailsUrl,
-		{
-			from,
-			to,
-			reply_to: message.email,
-			subject: subjectOf(message),
-			text: textOf(message)
-		},
-		{ Authorization: `Bearer ${resendApiKey}` }
-	);
 }
 
 /** Slack through an incoming webhook. */
