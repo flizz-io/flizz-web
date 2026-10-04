@@ -1,5 +1,12 @@
 import { expect, test } from '@playwright/test';
 
+import {
+	deleteMessages,
+	e2eSenderEmail,
+	findMessages
+} from '../../support/contact';
+import { adminStatePath } from '../../support/urls';
+
 /** Must match apps/web/constants/consent.ts. */
 const consentCookieName = 'flizz_consent';
 
@@ -51,10 +58,43 @@ test.describe('contact', () => {
 		).toBeAttached();
 	});
 
-	// TODO: submit a message and find it in the dashboard inbox once the
-	// contact API (CM2) and inbox (CM3/CM5) exist.
-	test.fixme('a message reaches the inbox', async () => {});
+	test.describe('with the admin signed in', () => {
+		// The session reads the inbox through the API; the form doesn't need it.
+		test.use({ storageState: adminStatePath });
 
-	// TODO: open the Calendly booking once it's configured (CM1).
+		test('a message reaches the inbox', async ({ page, request }) => {
+			const email = e2eSenderEmail();
+			// Reveal animations hold the form back until it scrolls in.
+			await page.emulateMedia({ reducedMotion: 'reduce' });
+			await page.goto('/contact');
+			await page.getByRole('button', { name: 'Reject' }).click();
+
+			const form = page.locator('form').first();
+			await form.scrollIntoViewIfNeeded();
+			await form.getByLabel('Your name').fill('E2E Smoke');
+			await form
+				.getByLabel('What the project is')
+				.selectOption('NEW_BUILD');
+			await form
+				.getByLabel('When you want to start')
+				.selectOption('EXPLORING');
+			await form.getByLabel('Your email address').fill(email);
+			await form
+				.locator('textarea')
+				.fill('Sent by the smoke tests — safe to delete.');
+			await form.locator('button[type="submit"]').click();
+
+			await expect(page.getByText('Message sent.')).toBeVisible();
+
+			const stored = await findMessages(request, email);
+			await deleteMessages(request, stored);
+			expect(stored).toHaveLength(1);
+			expect(stored[0]?.status).toBe('NEW');
+		});
+	});
+
+	// Calendly's scheduler doesn't render for automated browsers, and a test
+	// booking is a real one — it stays a manual step in the pre-launch
+	// checklist (docs/guides/smoke-tests.md).
 	test.fixme('a call can be booked', async () => {});
 });

@@ -35,27 +35,34 @@ dashboard (admin.flizz.io) ─┘             │
 
 Every variable is documented in each app's `.env.example`; this is what production needs.
 
-| App       | Variable                                                               | Value                                                              |
-| --------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| api       | `DATABASE_URL`                                                         | Hosted Postgres (pooled on serverless)                             |
-| api       | `GOOGLE_CLIENT_ID`                                                     | Same client as the dashboard's                                     |
-| api       | `SESSION_SECRET`                                                       | 32+ random characters                                              |
-| api       | `SUPER_ADMIN_EMAIL`                                                    | The owner's Google account                                         |
-| api       | `CORS_ORIGINS`                                                         | The web app's origin, e.g. `https://flizz.io`                      |
-| api       | `MEDIA_PROVIDER`                                                       | `cloudinary` — required on serverless (no persistent disk)         |
-| api       | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | From the Cloudinary console ([media-storage.md](media-storage.md)) |
-| api       | `WEB_URL`, `WEB_REVALIDATE_SECRET`                                     | The web app's URL and the shared secret                            |
-| api       | `SENTRY_DSN`                                                           | Optional — error tracking ([Monitoring](#monitoring))              |
-| dashboard | `API_URL`                                                              | The API's URL                                                      |
-| dashboard | `NEXT_PUBLIC_GOOGLE_CLIENT_ID`                                         | Same client ID                                                     |
-| dashboard | `NEXT_PUBLIC_SITE_URL`                                                 | The website's origin — the service form's search-result preview    |
-| web       | `API_URL`                                                              | The API's URL — needed at build time                               |
-| web       | `REVALIDATE_SECRET`                                                    | The shared secret                                                  |
-| web       | `NEXT_PUBLIC_SITE_URL`                                                 | The site's public origin                                           |
-| web       | `ENABLE_PERIODIC_REVALIDATION`                                         | Optional, `true` for a five-minute refresh                         |
-| web       | `MEDIA_BASE_URL`                                                       | Only with local-disk media — not used with Cloudinary              |
-| web, dash | `NEXT_PUBLIC_SENTRY_DSN`                                               | Optional — error tracking ([Monitoring](#monitoring))              |
-| web, dash | `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT`                    | Optional, build-time — source maps for readable stack traces       |
+| App       | Variable                                                               | Value                                                                                   |
+| --------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| api       | `DATABASE_URL`                                                         | Hosted Postgres (pooled on serverless)                                                  |
+| api       | `GOOGLE_CLIENT_ID`                                                     | Same client as the dashboard's                                                          |
+| api       | `SESSION_SECRET`                                                       | 32+ random characters                                                                   |
+| api       | `SUPER_ADMIN_EMAIL`                                                    | The owner's Google account                                                              |
+| api       | `CORS_ORIGINS`                                                         | The web app's origin, e.g. `https://flizz.io`                                           |
+| api       | `MEDIA_PROVIDER`                                                       | `cloudinary` — required on serverless (no persistent disk)                              |
+| api       | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | From the Cloudinary console ([media-storage.md](media-storage.md))                      |
+| api       | `WEB_URL`, `WEB_REVALIDATE_SECRET`                                     | The web app's URL and the shared secret                                                 |
+| api       | `SENTRY_DSN`                                                           | Optional — error tracking ([Monitoring](#monitoring))                                   |
+| api       | `TURNSTILE_SECRET_KEY`                                                 | Contact form CAPTCHA — set with the web's site key, never alone                         |
+| api       | `RESEND_API_KEY`, `CONTACT_NOTIFY_FROM`, `CONTACT_NOTIFY_TO`           | New-message email ([contact-page.md](../requirements/contact-page.md#notification-cm4)) |
+| api       | `CONTACT_SLACK_WEBHOOK_URL`                                            | Optional — new-message alert in Slack                                                   |
+| api       | `DASHBOARD_URL`                                                        | The dashboard's origin — links in notifications                                         |
+| dashboard | `API_URL`                                                              | The API's URL                                                                           |
+| dashboard | `NEXT_PUBLIC_GOOGLE_CLIENT_ID`                                         | Same client ID                                                                          |
+| dashboard | `NEXT_PUBLIC_SITE_URL`                                                 | The website's origin — the service form's search-result preview                         |
+| web       | `API_URL`                                                              | The API's URL — needed at build time                                                    |
+| web       | `REVALIDATE_SECRET`                                                    | The shared secret                                                                       |
+| web       | `NEXT_PUBLIC_SITE_URL`                                                 | The site's public origin                                                                |
+| web       | `ENABLE_PERIODIC_REVALIDATION`                                         | Optional, `true` for a five-minute refresh                                              |
+| web       | `MEDIA_BASE_URL`                                                       | Only with local-disk media — not used with Cloudinary                                   |
+| web       | `NEXT_PUBLIC_API_URL`                                                  | The API's URL — the browser posts the contact form to it                                |
+| web       | `NEXT_PUBLIC_TURNSTILE_SITE_KEY`                                       | Contact form CAPTCHA widget                                                             |
+| web       | `NEXT_PUBLIC_CALENDLY_URL`                                             | The Calendly event link for the booking slot                                            |
+| web, dash | `NEXT_PUBLIC_SENTRY_DSN`                                               | Optional — error tracking ([Monitoring](#monitoring))                                   |
+| web, dash | `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT`                    | Optional, build-time — source maps for readable stack traces                            |
 
 ## On Vercel (temporary)
 

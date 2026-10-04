@@ -20,5 +20,12 @@ export const warmUpRoutes = {
 		'/terms-and-conditions',
 		'/this-page-does-not-exist'
 	],
-	dashboard: ['/login', '/projects', '/services', '/team', '/profile']
+	dashboard: [
+		'/login',
+		'/projects',
+		'/services',
+		'/messages',
+		'/team',
+		'/profile'
+	]
 } as const;
