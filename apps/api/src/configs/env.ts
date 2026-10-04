@@ -48,7 +48,10 @@ const baseEnvSchema = z.object({
 	CLOUDINARY_API_SECRET: blankAsUnset,
 	CLOUDINARY_FOLDER: z.string().min(1).default('flizz'),
 	WEB_URL: blankAsUnset.pipe(z.url().optional()),
-	WEB_REVALIDATE_SECRET: blankAsUnset
+	WEB_REVALIDATE_SECRET: blankAsUnset,
+	SENTRY_DSN: blankAsUnset.pipe(z.url().optional()),
+	/** Vercel sets it: production, preview or development. */
+	VERCEL_ENV: blankAsUnset
 });
 
 /** Each media provider's own settings, required only when it's in use. */
@@ -116,5 +119,10 @@ export const env = {
 	web: {
 		url: values.WEB_URL?.replace(/\/+$/, '') ?? null,
 		revalidateSecret: values.WEB_REVALIDATE_SECRET ?? null
+	},
+	/** Error tracking — off without a DSN. */
+	sentry: {
+		dsn: values.SENTRY_DSN ?? null,
+		environment: values.VERCEL_ENV ?? values.NODE_ENV
 	}
 } as const;

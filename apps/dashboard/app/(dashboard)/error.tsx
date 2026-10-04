@@ -1,5 +1,6 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import { useEffect } from 'react';
 
 import { ErrorCard } from '@/components/snippets/status-card/error-card';
@@ -15,7 +16,7 @@ export default function DashboardError({
 	unstable_retry
 }: DashboardErrorProps) {
 	useEffect(() => {
-		console.error(error);
+		Sentry.captureException(error);
 	}, [error]);
 
 	return <ErrorCard onRetry={unstable_retry} />;

@@ -1,6 +1,7 @@
 'use client';
 
 import '@workspace/ui/globals.css';
+import * as Sentry from '@sentry/nextjs';
 import { useEffect } from 'react';
 
 import { ErrorCard } from '@/components/snippets/status-card/error-card';
@@ -16,7 +17,7 @@ export default function GlobalError({
 	unstable_retry
 }: GlobalErrorProps) {
 	useEffect(() => {
-		console.error(error);
+		Sentry.captureException(error);
 	}, [error]);
 
 	return (

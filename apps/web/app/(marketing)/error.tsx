@@ -1,5 +1,6 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import { useEffect } from 'react';
 
 import { ErrorContent } from '@/components/snippets/status-page/error-content';
@@ -15,7 +16,7 @@ export default function MarketingError({
 	unstable_retry
 }: MarketingErrorProps) {
 	useEffect(() => {
-		console.error(error);
+		Sentry.captureException(error);
 	}, [error]);
 
 	return <ErrorContent onRetry={unstable_retry} />;

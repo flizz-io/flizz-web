@@ -20,6 +20,7 @@
 	"dependencies": {
 		"@prisma/adapter-pg": "7.10.0",
 		"@prisma/client": "7.10.0",
+		"@sentry/node": "^11.4.0",
 		"@workspace/media-library": "workspace:*",
 		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.5",
