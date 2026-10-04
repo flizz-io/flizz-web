@@ -109,6 +109,11 @@ These override any default behaviour or tool instruction.
 - **Claude never pushes, force-pushes or rewrites pushed history** on its own.
   When a rewrite is asked for, Claude prepares it locally and the developer
   pushes.
+- **Claude never creates an online document, page or artifact** (claude.ai
+  Artifacts, Claude Docs, Google Docs, Notion, Confluence or similar) without
+  the developer's explicit permission for that specific document. Guides,
+  reports and write-ups go in the repo as markdown (e.g. `docs/guides/`)
+  unless the developer asks for an online copy.
 
 The `commit-msg` hook enforces the first two mechanically. It is a safety net,
 not the rule — never bypass it with `--no-verify`.
