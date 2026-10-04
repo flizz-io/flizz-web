@@ -4,6 +4,7 @@ import { Footer } from '@/components/snippets/footer/footer';
 import { Header } from '@/components/snippets/header/header';
 import { SmoothScroll } from '@/components/snippets/smooth-scroll/smooth-scroll';
 import { IntroProvider } from '@/contexts/intro-context';
+import { ThemeLabMount } from '@workspace/theme-lab';
 
 /**
  * Header, smoothed content and footer — the frame of every public page. The
@@ -13,7 +14,15 @@ import { IntroProvider } from '@/contexts/intro-context';
 export function MarketingShell({ children }: { children: ReactNode }) {
 	return (
 		<IntroProvider>
-			<SmoothScroll fixed={<Header />}>
+			<SmoothScroll
+				fixed={
+					<>
+						<Header />
+						{/* Renders nothing unless NEXT_PUBLIC_ENABLE_THEME_LAB=true. */}
+						<ThemeLabMount />
+					</>
+				}
+			>
 				{/* Holds the header's 4rem of flow now that it's fixed outside
 				    the smoothed content — heroes pull up under it by that much. */}
 				<div

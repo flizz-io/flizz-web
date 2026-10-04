@@ -46,6 +46,7 @@ This is a **pnpm + Turborepo monorepo** with two workspace groups:
 - `packages/ui` — Shared component library (shadcn/ui, Radix UI, CVA).
 - `packages/media-library` — Server-side uploads for `apps/api`: a pluggable `StorageProvider` (Cloudinary by default, local disk for offline dev — `MEDIA_PROVIDER`), image validation and resizing to presets (`sharp`, WebP out). Built to `dist/` (Turbo builds it before `dev`/`build`); types come from `src/`.
 - `packages/api-services` — How the apps call `apps/api`: the common `apiService` fetcher and `ApiError`, request/response models, API enums, and one service function per endpoint (`getProjectsService`, …). Source-only, consumed via `transpilePackages`; each service takes an optional `ApiContext` (base URL, headers, Next caching hints) so the same call works from the browser and from a server component.
+- `packages/theme-lab` — A floating colour playground for the landing pages: retunes the theme variables live in the browser, nothing written back. Shown only when `NEXT_PUBLIC_ENABLE_THEME_LAB=true` in `apps/web` (keep it off in Production); mounted in `components/snippets/marketing-shell`.
 - `packages/typescript-config` — Shared `tsconfig` presets.
 - `packages/eslint-config` — Shared ESLint configs.
 
