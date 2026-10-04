@@ -46,7 +46,9 @@ apps/web/
   utils/analytics.ts                # trackEvent() — one call, both providers
 ```
 
-Render `<Analytics />` once in `app/layout.tsx`, next to `<CrispChat />`.
+Render `<Analytics />` once in `app/layout.tsx`, inside `<WithConsent>` (already built, L2) so nothing loads before the visitor accepts.
+
+**Already in place (L2, 2026-10-04):** `ConsentProvider` (`contexts/consent-context.tsx`, read the choice with `useConsent()`), `ConsentBanner` and `WithConsent` (`components/snippets/consent/`), the `flizz_consent` cookie (`constants/consent.ts`, six months) and the footer's "Cookie settings" button. Because GA and the Pixel only mount after Accept, Consent Mode defaults are a belt-and-braces extra, not required for compliance.
 
 ## 4. Implementation notes
 
