@@ -70,8 +70,7 @@ export interface ProjectServiceReference {
 /** One project with every field — `GET /api/projects/:uuid`. */
 export interface ProjectRecord extends ProjectListItem, ProjectImages {
 	client: string;
-	/** `null` only for a project the seed couldn't link yet. */
-	service: ProjectServiceReference | null;
+	service: ProjectServiceReference;
 	summary: string;
 	results: ProjectResult[];
 	duration: string;

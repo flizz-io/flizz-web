@@ -144,6 +144,11 @@ async function seedProjects(authorId: number) {
 			continue;
 		}
 
+		// Services are seeded first; a project names its service by slug.
+		const { id: serviceId } = await prisma.service.findUniqueOrThrow({
+			where: { slug: seed.serviceSlug },
+			select: { id: true }
+		});
 		const cover = seed.coverImagePath
 			? await seedCover(seed.coverImagePath, authorId)
 			: null;
@@ -157,11 +162,7 @@ async function seedProjects(authorId: number) {
 				sector: ProjectSector[
 					seed.sector as keyof typeof ProjectSector
 				],
-				serviceCategory:
-					ServiceCategory[
-						seed.serviceCategory as keyof typeof ServiceCategory
-					],
-				serviceSlug: seed.serviceSlug,
+				serviceId,
 				year: seed.year,
 				summary: seed.summary,
 				results: seed.results,
@@ -227,42 +228,10 @@ async function seedServices(authorId: number) {
 	);
 }
 
-/**
- * Links every project that has no service yet to the one its `serviceSlug`
- * names. Runs once per database after the `service_id` migration; a project
- * whose slug matches no service is reported and left for the dashboard.
- */
-async function linkProjectsToServices() {
-	const unlinked = await prisma.project.findMany({
-		where: { serviceId: null },
-		select: { id: true, slug: true, serviceSlug: true }
-	});
-	const missing: string[] = [];
-
-	for (const project of unlinked) {
-		const service = await prisma.service.findUnique({
-			where: { slug: project.serviceSlug }
-		});
-		if (!service) {
-			missing.push(project.slug);
-			continue;
-		}
-		await prisma.project.update({
-			where: { id: project.id },
-			data: { serviceId: service.id }
-		});
-	}
-
-	console.info(
-		`Project services: ${unlinked.length - missing.length} linked${missing.length ? `, no matching service for ${missing.join(', ')}` : ''}`
-	);
-}
-
 try {
 	const superAdmin = await seedSuperAdmin();
 	await seedServices(superAdmin.id);
 	await seedProjects(superAdmin.id);
-	await linkProjectsToServices();
 } finally {
 	await prisma.$disconnect();
 }

@@ -72,8 +72,7 @@ export interface ProjectServiceReference {
 export interface ProjectResponse
 	extends ProjectListItemResponse, ProjectImagesResponse {
 	client: string;
-	/** `null` only for a project the seed couldn't link yet. */
-	service: ProjectServiceReference | null;
+	service: ProjectServiceReference;
 	summary: string;
 	results: ProjectResult[];
 	duration: string;
