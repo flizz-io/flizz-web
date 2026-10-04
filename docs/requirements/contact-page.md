@@ -105,12 +105,12 @@ Feature `CONTACT_MESSAGES` (admins always have all four):
 
 Required (L8): the team hears about every stored message. Two channels, each on when its variables are set — either, both, or (locally) neither:
 
-- **Email** through [Resend](https://resend.com)'s HTTP API — `RESEND_API_KEY`, `CONTACT_NOTIFY_FROM` (a sender on a domain verified in Resend, with SPF and DKIM), `CONTACT_NOTIFY_TO` (comma-separated). `Reply-To` is the enquirer, so replying from the inbox answers them directly.
+- **Email** over SMTP, from a Gmail account by default (free) — `SMTP_USER` (the sending Gmail address), `SMTP_PASSWORD` (a Google App Password for it, which needs 2-Step Verification on that account), `CONTACT_NOTIFY_TO` (comma-separated). Sent as "Flizz website" from `SMTP_USER`; `Reply-To` is the enquirer, so replying answers them directly. Gmail allows about 500 recipients a day — far above our volume. `SMTP_HOST` / `SMTP_PORT` (default `smtp.gmail.com` / `465`) switch to another provider without a code change.
 - **Slack** through an incoming webhook — `CONTACT_SLACK_WEBHOOK_URL`.
 
 The message carries name, company, email, scope, start, the first 500 characters of the message, and a link to it in the dashboard (`DASHBOARD_URL`). Sending waits up to 5 seconds and logs a failure rather than throwing. Caught honeypots are never announced.
 
-L8 still has the owner pick the provider and set up SPF, DKIM and DMARC. Resend is the default because it needs no SDK and has a free tier; swapping it is a change to `contact-notification-service.ts` only.
+Decided 2026-10-05: Slack plus Gmail-to-Gmail email, both free. Gmail sends from Google's own servers, so no SPF/DKIM/DMARC setup is needed for these internal alerts; that part of L8 only returns if the site ever emails visitors from an `@flizz.io` address.
 
 ## Book a Call (CM8)
 
@@ -124,23 +124,25 @@ L8 still has the owner pick the provider and set up SPF, DKIM and DMARC. Resend 
 
 ## Environment variables
 
-| App | Variable                         | Purpose                                      |
-| --- | -------------------------------- | -------------------------------------------- |
-| api | `TURNSTILE_SECRET_KEY`           | Verifies the CAPTCHA token. Unset → skipped  |
-| api | `RESEND_API_KEY`                 | Email notification. Unset → no email         |
-| api | `CONTACT_NOTIFY_FROM`            | Sender of the notification email             |
-| api | `CONTACT_NOTIFY_TO`              | Who receives it, comma-separated             |
-| api | `CONTACT_SLACK_WEBHOOK_URL`      | Slack notification. Unset → no Slack message |
-| api | `DASHBOARD_URL`                  | Links in the notification to the message     |
-| web | `NEXT_PUBLIC_API_URL`            | Where the browser posts the form             |
-| web | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | The CAPTCHA widget. Unset → no widget        |
-| web | `NEXT_PUBLIC_CALENDLY_URL`       | The booking embed. Unset → placeholder slot  |
+Step-by-step account setup for the owner: [contact-setup.md](../guides/contact-setup.md).
+
+| App | Variable                         | Purpose                                       |
+| --- | -------------------------------- | --------------------------------------------- |
+| api | `TURNSTILE_SECRET_KEY`           | Verifies the CAPTCHA token. Unset → skipped   |
+| api | `SMTP_USER`, `SMTP_PASSWORD`     | Gmail sender + App Password. Unset → no email |
+| api | `SMTP_HOST`, `SMTP_PORT`         | Default Gmail (`smtp.gmail.com`, `465`)       |
+| api | `CONTACT_NOTIFY_TO`              | Who receives it, comma-separated              |
+| api | `CONTACT_SLACK_WEBHOOK_URL`      | Slack notification. Unset → no Slack message  |
+| api | `DASHBOARD_URL`                  | Links in the notification to the message      |
+| web | `NEXT_PUBLIC_API_URL`            | Where the browser posts the form              |
+| web | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | The CAPTCHA widget. Unset → no widget         |
+| web | `NEXT_PUBLIC_CALENDLY_URL`       | The booking embed. Unset → placeholder slot   |
 
 ## Open decisions
 
-| Decision                                           | Owner | Until then                                                                              |
-| -------------------------------------------------- | ----- | --------------------------------------------------------------------------------------- |
-| Email provider, sender domain, SPF/DKIM/DMARC (L8) | Owner | Resend wired, off until its keys are set; Slack works on its own                        |
-| How long messages are kept (L1, legal decision 3)  | Owner | Kept indefinitely (soft-deleted ones too). A purge job comes once the period is decided |
-| The Calendly account and event                     | Owner | Placeholder slot                                                                        |
-| NDA line in the hero                               | PM    | Ships as written (`constants/contact.ts`)                                               |
+| Decision                                            | Owner | Until then                                                                              |
+| --------------------------------------------------- | ----- | --------------------------------------------------------------------------------------- |
+| The Slack channel and the Gmail sender account (L8) | Owner | Both wired, each off until its values are set                                           |
+| How long messages are kept (L1, legal decision 3)   | Owner | Kept indefinitely (soft-deleted ones too). A purge job comes once the period is decided |
+| The Calendly account and event                      | Owner | Placeholder slot                                                                        |
+| NDA line in the hero                                | PM    | Ships as written (`constants/contact.ts`)                                               |

@@ -36,7 +36,11 @@ export const NOTIFY_TIMEOUT_MS = 5000;
 /** Characters of the message quoted in a notification. */
 export const NOTIFY_EXCERPT_LENGTH = 500;
 
-export const resendEmailsUrl = 'https://api.resend.com/emails';
+/** The sender's display name; the address is always `SMTP_USER`. */
+export const notifySenderName = 'Flizz website';
+
+/** Port 465 speaks TLS from the start; others (587) upgrade with STARTTLS. */
+export const SMTP_TLS_PORT = 465;
 
 /** The dashboard's message route — `DASHBOARD_URL` + this + uuid. */
 export const dashboardMessagePath = '/messages/';
