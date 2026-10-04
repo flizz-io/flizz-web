@@ -164,7 +164,7 @@ From the pre-launch review on 2026-10-03. **Owner**: _Dev_ is code work (Claude 
 
 | #   | Task                                                                                                                                                                                                  | Owner       | Status          |
 | --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | --------------- |
-| L9  | API hardening: security headers (`helmet`), rate limiting (stricter on public writes and auth), `trust proxy` set so the visitor's IP is seen. **Must land before CM2**                               | Dev         | Not started     |
+| L9  | API hardening: security headers (`helmet`), rate limiting (stricter on public writes and auth), `trust proxy` set so the visitor's IP is seen. **Must land before CM2**                               | Dev         | Done 2026-10-04 |
 | L10 | Monitoring: error tracking (for example Sentry) in all three apps, plus uptime checks on `/api/health` and the home page with alerts                                                                  | Dev + Owner | Not started     |
 | L11 | Database safety: check Neon's backup/restore window; give Vercel preview deployments their own Neon branch so previews never write to production                                                      | Owner + Dev | Not started     |
 | L12 | Domain and email: `hello@flizz.io` receives mail; `www` and the bare domain redirect to one canonical host; `NEXT_PUBLIC_SITE_URL` matches it                                                         | Owner       | Not started     |

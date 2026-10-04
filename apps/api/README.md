@@ -23,6 +23,12 @@ Run from the repo root as `pnpm --filter api <script>`, or as `pnpm <script>` in
 
 `db:migrate` may ask to **reset** (wipe) the database when it detects drift. That's fine locally. It must never be run against production.
 
+## Security
+
+- **Headers**: `helmet` on every response (`src/app.ts`). Cross-origin resource reads stay allowed so the site can load `/api/media` images.
+- **Rate limits** (`src/constants/rate-limits.ts`, `src/middlewares/rate-limit.ts`): sign-in 20 per 15 min, any write 300 per 15 min, anonymous forms 5 per hour (mount `publicFormLimiter` on the contact endpoint). Public GETs are not limited — site builds fetch every page from one IP. Counts are in memory, per instance; a shared store (Redis) is the upgrade if abuse appears.
+- **Visitor IP**: `trust proxy` is set to `TRUST_PROXY_HOPS` (default 1, Vercel's proxy), so `req.ip` is the visitor's address and can't be spoofed with a forged `X-Forwarded-For`.
+
 ## Production database
 
 The API build never migrates the database. Migrations and seeding are manual steps, run from a developer machine, **before** deploying the API code that needs them.
