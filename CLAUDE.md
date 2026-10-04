@@ -42,6 +42,7 @@ This is a **pnpm + Turborepo monorepo** with two workspace groups:
 - `apps/web` — Next.js app (React, App Router, Tailwind CSS v4), dev server on port 3300. Example public-facing / landing app.
 - `apps/dashboard` — Next.js app, same stack/scaffold as `web`, dev server on port 3400. Example admin/internal app.
 - `apps/api` — Express + TypeScript backend API, dev server on port 3500 (see `.claude/rules/conventions.md` for its structure and stack notes). Deployment (Vercel for now, our own server later): `docs/guides/deployment.md`.
+- `apps/e2e` — Playwright smoke tests for the critical paths, run against `pnpm dev` and the local database (`pnpm --filter e2e test`). Guide and pre-launch checklist: `docs/guides/smoke-tests.md`.
 - `packages/ui` — Shared component library (shadcn/ui, Radix UI, CVA).
 - `packages/media-library` — Server-side uploads for `apps/api`: a pluggable `StorageProvider` (Cloudinary by default, local disk for offline dev — `MEDIA_PROVIDER`), image validation and resizing to presets (`sharp`, WebP out). Built to `dist/` (Turbo builds it before `dev`/`build`); types come from `src/`.
 - `packages/api-services` — How the apps call `apps/api`: the common `apiService` fetcher and `ApiError`, request/response models, API enums, and one service function per endpoint (`getProjectsService`, …). Source-only, consumed via `transpilePackages`; each service takes an optional `ApiContext` (base URL, headers, Next caching hints) so the same call works from the browser and from a server component.

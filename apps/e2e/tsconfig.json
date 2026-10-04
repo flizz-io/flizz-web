@@ -1,0 +1,14 @@
+{
+	"extends": "@workspace/typescript-config/base.json",
+	"compilerOptions": {
+		"lib": ["ES2022", "DOM"],
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"noEmit": true,
+		"declaration": false,
+		"declarationMap": false,
+		"types": ["node"]
+	},
+	"include": ["**/*.ts"],
+	"exclude": ["node_modules", "test-results", "playwright-report"]
+}

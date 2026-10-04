@@ -39,7 +39,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 				<CardHeader className="flex flex-col items-center gap-3 text-center">
 					<Logo className="mb-2" />
 					<CardTitle className="text-lg">
-						{loginMessages.title}
+						<h1>{loginMessages.title}</h1>
 					</CardTitle>
 					<CardDescription>{loginMessages.lead}</CardDescription>
 				</CardHeader>
