@@ -51,8 +51,13 @@ const baseEnvSchema = z.object({
 	WEB_REVALIDATE_SECRET: blankAsUnset,
 	SENTRY_DSN: blankAsUnset.pipe(z.url().optional()),
 	TURNSTILE_SECRET_KEY: blankAsUnset,
-	RESEND_API_KEY: blankAsUnset,
-	CONTACT_NOTIFY_FROM: blankAsUnset,
+	SMTP_HOST: z.string().trim().min(1).default('smtp.gmail.com'),
+	SMTP_PORT: z.coerce.number().int().positive().default(465),
+	SMTP_USER: blankAsUnset,
+	/** Google shows App Passwords in groups of four — the spaces don't count. */
+	SMTP_PASSWORD: blankAsUnset.transform((value) =>
+		value?.replace(/\s+/g, '')
+	),
 	CONTACT_NOTIFY_TO: commaList.pipe(z.array(z.email())),
 	CONTACT_SLACK_WEBHOOK_URL: blankAsUnset.pipe(z.url().optional()),
 	DASHBOARD_URL: blankAsUnset.pipe(z.url().optional()),
@@ -130,8 +135,12 @@ export const env = {
 	turnstileSecretKey: values.TURNSTILE_SECRET_KEY ?? null,
 	/** New contact message alerts — each channel off until it's configured. */
 	contactNotify: {
-		resendApiKey: values.RESEND_API_KEY ?? null,
-		from: values.CONTACT_NOTIFY_FROM ?? null,
+		smtp: {
+			host: values.SMTP_HOST,
+			port: values.SMTP_PORT,
+			user: values.SMTP_USER ?? null,
+			password: values.SMTP_PASSWORD || null
+		},
 		to: values.CONTACT_NOTIFY_TO,
 		slackWebhookUrl: values.CONTACT_SLACK_WEBHOOK_URL ?? null
 	},
