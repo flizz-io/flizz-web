@@ -16,6 +16,7 @@
 		"@sentry/nextjs": "^11.4.0",
 		"@workspace/api-services": "workspace:*",
 		"@workspace/service-visuals": "workspace:*",
+		"@workspace/theme-lab": "workspace:*",
 		"@workspace/ui": "workspace:*",
 		"framer-motion": "^13.1.1",
 		"gsap": "^3.15.0",

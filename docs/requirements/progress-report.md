@@ -172,7 +172,7 @@ From the pre-launch review on 2026-10-03. **Paused 2026-10-04**: the remaining t
 | L13 | Dashboard access recovery: a second Admin, so losing the Super Admin's Google account doesn't lock everyone out                                                                                       | Owner       | Not started                                                                                                                                                                              |
 | L14 | Smoke tests: a written pre-launch checklist (sign-in, publish a project, contact form end to end, test booking) and Playwright tests for the critical paths; close C4's pending live end-to-end check | Dev         | Code done 2026-10-04 — `apps/e2e` Playwright suite and checklist in [smoke-tests.md](../guides/smoke-tests.md); contact form → inbox covered since CM9; booking stays manual             |
 | L15 | Device and accessibility pass: real iOS Safari and a low-end Android phone (GSAP, WebGL), keyboard navigation, reduced motion. Prompts in [quality-audits.md](../guides/quality-audits.md)            | Dev         | Not started                                                                                                                                                                              |
-| L16 | Engineering cleanup (see the section near the end of this file): remove `@workspace/theme-lab` and the `/home-v2` route                                                                               | Dev         | Done 2026-10-04                                                                                                                                                                          |
+| L16 | Engineering cleanup (see the section near the end of this file): remove the `/home-v2` route; keep `@workspace/theme-lab` but hide it behind `NEXT_PUBLIC_ENABLE_THEME_LAB`                           | Dev         | Done 2026-10-04; Theme Lab restored 2026-10-05 as an env-gated tool (was removed by mistake)                                                                                             |
 | L17 | Review free-tier limits (Cloudinary, Neon, Crisp, Calendly) against expected traffic                                                                                                                  | Owner       | Not started                                                                                                                                                                              |
 
 ### Phase S — Services
@@ -310,7 +310,7 @@ Both routes shipped 2026-09-01: `/services` and twelve `/services/[slug]` pages,
 
 ## Engineering cleanup before production
 
-Done 2026-10-04 (L16): the `@workspace/theme-lab` package, the `/home-v2` scratch route and the starfield hero it alone used are removed.
+Done 2026-10-04 (L16): the `/home-v2` scratch route and the starfield hero it alone used are removed. The `@workspace/theme-lab` package was removed too, then restored on 2026-10-05: the colour playground stays, shown on the landing pages only when `NEXT_PUBLIC_ENABLE_THEME_LAB=true` (off in Production). See [packages/theme-lab/README.md](../../packages/theme-lab/README.md).
 
 ## How to use these docs
 

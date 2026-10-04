@@ -25,6 +25,7 @@ const mediaIsLocal = Boolean(
 const nextConfig: NextConfig = {
 	transpilePackages: [
 		'@workspace/ui',
+		'@workspace/theme-lab',
 		'@workspace/service-visuals',
 		'@workspace/api-services'
 	],
