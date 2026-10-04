@@ -50,6 +50,7 @@ const baseEnvSchema = z.object({
 	WEB_URL: blankAsUnset.pipe(z.url().optional()),
 	WEB_REVALIDATE_SECRET: blankAsUnset,
 	SENTRY_DSN: blankAsUnset.pipe(z.url().optional()),
+	TURNSTILE_SECRET_KEY: blankAsUnset,
 	/** Vercel sets it: production, preview or development. */
 	VERCEL_ENV: blankAsUnset
 });
@@ -120,6 +121,8 @@ export const env = {
 		url: values.WEB_URL?.replace(/\/+$/, '') ?? null,
 		revalidateSecret: values.WEB_REVALIDATE_SECRET ?? null
 	},
+	/** Contact form CAPTCHA (Cloudflare Turnstile) — off without a secret. */
+	turnstileSecretKey: values.TURNSTILE_SECRET_KEY ?? null,
 	/** Error tracking — off without a DSN. */
 	sentry: {
 		dsn: values.SENTRY_DSN ?? null,
