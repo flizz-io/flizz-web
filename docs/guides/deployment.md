@@ -45,6 +45,7 @@ Every variable is documented in each app's `.env.example`; this is what producti
 | api       | `MEDIA_PROVIDER`                                                       | `cloudinary` — required on serverless (no persistent disk)         |
 | api       | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | From the Cloudinary console ([media-storage.md](media-storage.md)) |
 | api       | `WEB_URL`, `WEB_REVALIDATE_SECRET`                                     | The web app's URL and the shared secret                            |
+| api       | `SENTRY_DSN`                                                           | Optional — error tracking ([Monitoring](#monitoring))              |
 | dashboard | `API_URL`                                                              | The API's URL                                                      |
 | dashboard | `NEXT_PUBLIC_GOOGLE_CLIENT_ID`                                         | Same client ID                                                     |
 | dashboard | `NEXT_PUBLIC_SITE_URL`                                                 | The website's origin — the service form's search-result preview    |
@@ -53,6 +54,8 @@ Every variable is documented in each app's `.env.example`; this is what producti
 | web       | `NEXT_PUBLIC_SITE_URL`                                                 | The site's public origin                                           |
 | web       | `ENABLE_PERIODIC_REVALIDATION`                                         | Optional, `true` for a five-minute refresh                         |
 | web       | `MEDIA_BASE_URL`                                                       | Only with local-disk media — not used with Cloudinary              |
+| web, dash | `NEXT_PUBLIC_SENTRY_DSN`                                               | Optional — error tracking ([Monitoring](#monitoring))              |
+| web, dash | `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT`                    | Optional, build-time — source maps for readable stack traces       |
 
 ## On Vercel (temporary)
 
@@ -74,6 +77,25 @@ One Vercel project per app, all from this repository:
 - The Hobby (free) plan's terms are for non-commercial use — check they fit before relying on it.
 
 **Per project, turn on** _Settings → Git → "Skip deployments when there are no changes to the root directory or its dependencies"_, so a dashboard-only change doesn't rebuild all three apps.
+
+## Monitoring
+
+**Error tracking (Sentry).** Wired into all three apps and off until a DSN is set, so local and preview builds report nothing. Errors only: no performance tracing and no session replay, which keeps within the free tier and records no visitor.
+
+1. On sentry.io create three projects: `flizz-web` and `flizz-dashboard` (platform Next.js) and `flizz-api` (platform Express).
+2. Set each project's DSN on the **Production** environment in Vercel: `NEXT_PUBLIC_SENTRY_DSN` on web and dashboard, `SENTRY_DSN` on the API. Redeploy, because the Next.js DSN is inlined at build time.
+3. Optional: create an organization auth token (scope `project:releases`) and set `SENTRY_AUTH_TOKEN`, `SENTRY_ORG` and `SENTRY_PROJECT` on web and dashboard. Builds then upload source maps; without them errors still arrive, but minified.
+4. In each project, add an alert rule that emails the team on a new issue.
+
+What gets reported: in web and dashboard, server render and route-handler errors (`instrumentation.ts`), browser errors (`instrumentation-client.ts`) and anything caught by `error.tsx` / `global-error.tsx`. In the API, every unexpected 500 from the error handler; expected 4xx errors are not reported.
+
+**Uptime checks.** Not code: set up in an external monitor (UptimeRobot or Better Stack free tier, for example), alerting by email:
+
+| Check     | URL                              | Expect                           |
+| --------- | -------------------------------- | -------------------------------- |
+| API       | `https://<api-host>/api/health`  | 200, every 5 minutes             |
+| Website   | `https://flizz.io/`              | 200, every 5 minutes             |
+| Dashboard | `https://<dashboard-host>/login` | 200, every 15 minutes (optional) |
 
 ## On our own server (next month)
 

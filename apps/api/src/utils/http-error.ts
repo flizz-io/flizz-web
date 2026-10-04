@@ -40,4 +40,10 @@ export class HttpError extends Error {
 	static conflict(message: string) {
 		return new HttpError(409, ErrorCode.CONFLICT, message);
 	}
+
+	static tooManyRequests(
+		message = 'Too many requests. Wait a few minutes and try again.'
+	) {
+		return new HttpError(429, ErrorCode.RATE_LIMITED, message);
+	}
 }

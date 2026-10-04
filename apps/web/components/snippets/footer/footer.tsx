@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { CookieSettingsButton } from '@/components/snippets/consent/cookie-settings-button';
 import { footerLinkGroups, socialLinks } from '@/configs/footer';
 import { siteConfig } from '@/configs/site';
 
@@ -47,10 +48,13 @@ export function Footer() {
 				</div>
 
 				<div className="flex flex-col gap-4 border-t border-border py-6 sm:flex-row sm:items-center sm:justify-between">
-					<p className="font-mono text-xs text-muted-foreground">
-						© {new Date().getFullYear()} {siteConfig.name}. All
-						rights reserved.
-					</p>
+					<div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+						<p className="font-mono text-xs text-muted-foreground">
+							© {new Date().getFullYear()} {siteConfig.name}. All
+							rights reserved.
+						</p>
+						<CookieSettingsButton className="font-mono text-xs text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline" />
+					</div>
 					<div className="flex items-center gap-5">
 						{socialLinks.map((social) => (
 							<Link

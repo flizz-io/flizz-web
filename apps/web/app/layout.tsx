@@ -8,12 +8,14 @@ import {
 import localFont from 'next/font/local';
 
 import '@workspace/ui/globals.css';
+import { ConsentBanner } from '@/components/snippets/consent/consent-banner';
 import { CrispChat } from '@/components/snippets/crisp-chat/crisp-chat';
 import { ThemeProvider } from '@/components/theme-provider';
 import { animationConfig } from '@/configs/animation';
 import { siteConfig } from '@/configs/site';
 import { animationScaleProperty } from '@/constants/animation';
 import { introGateScript } from '@/constants/intro';
+import { ConsentProvider } from '@/contexts/consent-context';
 import { cn } from '@workspace/ui/lib/utils';
 
 export const metadata: Metadata = {
@@ -96,7 +98,14 @@ export default function RootLayout({
 				<script dangerouslySetInnerHTML={{ __html: introGateScript }} />
 			</head>
 			<body>
-				<ThemeProvider>{children}</ThemeProvider>
+				<ConsentProvider>
+					<ThemeProvider>
+						{children}
+						{/* On <body>, outside the ScrollSmoother wrapper, so
+						    its fixed position holds. */}
+						<ConsentBanner />
+					</ThemeProvider>
+				</ConsentProvider>
 				<CrispChat />
 			</body>
 		</html>

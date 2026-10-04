@@ -1,3 +1,4 @@
+import { withSentryConfig } from '@sentry/nextjs/config';
 import type { NextConfig } from 'next';
 
 /**
@@ -22,10 +23,8 @@ const mediaIsLocal = Boolean(
 );
 
 const nextConfig: NextConfig = {
-	// TODO: drop '@workspace/theme-lab' together with that package before production.
 	transpilePackages: [
 		'@workspace/ui',
-		'@workspace/theme-lab',
 		'@workspace/service-visuals',
 		'@workspace/api-services'
 	],
@@ -37,4 +36,16 @@ const nextConfig: NextConfig = {
 	}
 };
 
-export default nextConfig;
+/**
+ * With `SENTRY_AUTH_TOKEN` (plus `SENTRY_ORG` / `SENTRY_PROJECT`) set in the
+ * build, source maps are uploaded so Sentry shows readable stack traces.
+ * Without it the build is untouched and errors still arrive, minified.
+ */
+export default process.env.SENTRY_AUTH_TOKEN
+	? withSentryConfig(nextConfig, {
+			org: process.env.SENTRY_ORG,
+			project: process.env.SENTRY_PROJECT,
+			authToken: process.env.SENTRY_AUTH_TOKEN,
+			silent: true
+		})
+	: nextConfig;

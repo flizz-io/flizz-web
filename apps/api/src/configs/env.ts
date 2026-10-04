@@ -6,6 +6,8 @@ import { NodeEnv } from '../enums/node-env.js';
 
 const DEFAULT_PORT = 3500;
 const MIN_SESSION_SECRET_LENGTH = 32;
+/** Vercel puts one proxy in front of the API. */
+const DEFAULT_TRUST_PROXY_HOPS = 1;
 
 /** A comma-separated env value as a trimmed list, empties dropped. */
 const commaList = z
@@ -28,6 +30,11 @@ const blankAsUnset = z
 const baseEnvSchema = z.object({
 	NODE_ENV: z.enum(NodeEnv).default(NodeEnv.DEVELOPMENT),
 	PORT: z.coerce.number().int().positive().default(DEFAULT_PORT),
+	TRUST_PROXY_HOPS: z.coerce
+		.number()
+		.int()
+		.min(0)
+		.default(DEFAULT_TRUST_PROXY_HOPS),
 	DATABASE_URL: z.url(),
 	GOOGLE_CLIENT_ID: z.string().min(1),
 	SESSION_SECRET: z.string().min(MIN_SESSION_SECRET_LENGTH),
@@ -41,7 +48,10 @@ const baseEnvSchema = z.object({
 	CLOUDINARY_API_SECRET: blankAsUnset,
 	CLOUDINARY_FOLDER: z.string().min(1).default('flizz'),
 	WEB_URL: blankAsUnset.pipe(z.url().optional()),
-	WEB_REVALIDATE_SECRET: blankAsUnset
+	WEB_REVALIDATE_SECRET: blankAsUnset,
+	SENTRY_DSN: blankAsUnset.pipe(z.url().optional()),
+	/** Vercel sets it: production, preview or development. */
+	VERCEL_ENV: blankAsUnset
 });
 
 /** Each media provider's own settings, required only when it's in use. */
@@ -87,6 +97,8 @@ export const env = {
 	nodeEnv: values.NODE_ENV,
 	isProduction: values.NODE_ENV === NodeEnv.PRODUCTION,
 	port: values.PORT,
+	/** Proxies between the visitor and the API — see `trust proxy` in app.ts. */
+	trustProxyHops: values.TRUST_PROXY_HOPS,
 	databaseUrl: values.DATABASE_URL,
 	googleClientId: values.GOOGLE_CLIENT_ID,
 	sessionSecret: values.SESSION_SECRET,
@@ -107,5 +119,10 @@ export const env = {
 	web: {
 		url: values.WEB_URL?.replace(/\/+$/, '') ?? null,
 		revalidateSecret: values.WEB_REVALIDATE_SECRET ?? null
+	},
+	/** Error tracking — off without a DSN. */
+	sentry: {
+		dsn: values.SENTRY_DSN ?? null,
+		environment: values.VERCEL_ENV ?? values.NODE_ENV
 	}
 } as const;
