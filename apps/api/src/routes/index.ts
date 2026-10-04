@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import { authRouter } from './auth-routes.js';
+import { contactMessageRouter } from './contact-message-routes.js';
 import { meRouter } from './me-routes.js';
 import { projectRouter } from './project-routes.js';
 import { publicRouter } from './public-routes.js';
@@ -16,4 +17,5 @@ router.use('/me', meRouter);
 router.use('/users', userRouter);
 router.use('/projects', projectRouter);
 router.use('/services', serviceRouter);
+router.use('/contact-messages', contactMessageRouter);
 router.use('/public', publicRouter);

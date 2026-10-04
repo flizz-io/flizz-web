@@ -23,6 +23,7 @@ import { cn } from '@workspace/ui/lib/utils';
 
 import { ContactFormActions } from './contact-form-actions';
 import { ContactFormReceipt } from './contact-form-receipt';
+import { ContactFormSafeguards } from './contact-form-safeguards';
 import { ContactFormShell } from './contact-form-shell';
 
 /** Marketing-page sizing for the packaged controls, which default to compact. */
@@ -95,8 +96,16 @@ export function ContactFormClassic({
 	sectionIndex,
 	totalSections
 }: ContactFormVariationProps) {
-	const { values, errors, status, setField, submit, reset } =
-		useContactForm();
+	const {
+		values,
+		errors,
+		status,
+		submitError,
+		turnstileRef,
+		setField,
+		submit,
+		reset
+	} = useContactForm();
 
 	return (
 		<ContactFormShell
@@ -317,10 +326,13 @@ export function ContactFormClassic({
 							</ClassicField>
 						</div>
 
+						<ContactFormSafeguards turnstileRef={turnstileRef} />
+
 						<ContactFormActions
 							className="mt-9"
 							status={status}
 							errors={errors}
+							errorMessage={submitError}
 							submitLabel="Send message"
 						/>
 

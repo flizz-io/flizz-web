@@ -25,18 +25,19 @@ Point it elsewhere with `E2E_WEB_URL`, `E2E_DASHBOARD_URL` and `E2E_API_URL`.
 
 ### What's covered
 
-| Project      | File                                    | Checks                                                                                                   |
-| ------------ | --------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `api`        | `tests/api/api.spec.ts`                 | Health, security headers, public lists, admin routes need a session                                      |
-| `api`        | `tests/api/project-lifecycle.spec.ts`   | C4's live check: create a Draft (not public) → publish (public on API and website) → delete (gone again) |
-| `web`        | `tests/web/pages.spec.ts`               | Every public page renders with no page errors, a service and a project page, unknown URLs are a real 404 |
-| `web`        | `tests/web/consent-and-contact.spec.ts` | Cookie banner reject is remembered, footer reopens it, contact form is present                           |
-| `web-mobile` | same as `web`                           | The same on a Pixel 7 viewport                                                                           |
-| `dashboard`  | `tests/dashboard/dashboard.spec.ts`     | Signed out → sign-in with `next=`; signed in → every section loads; `/login` sends an admin home         |
+| Project      | File                                    | Checks                                                                                                                                           |
+| ------------ | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `api`        | `tests/api/api.spec.ts`                 | Health, security headers, public lists, admin routes need a session                                                                              |
+| `api`        | `tests/api/project-lifecycle.spec.ts`   | C4's live check: create a Draft (not public) → publish (public on API and website) → delete (gone again)                                         |
+| `api`        | `tests/api/contact.spec.ts`             | Contact endpoint names invalid fields; a message is stored, opens as read, takes a note, deletes; honeypot stores nothing; inbox needs a session |
+| `web`        | `tests/web/pages.spec.ts`               | Every public page renders with no page errors, a service and a project page, unknown URLs are a real 404                                         |
+| `web`        | `tests/web/consent-and-contact.spec.ts` | Cookie banner reject is remembered, footer reopens it; the contact form sends and the message reaches the inbox                                  |
+| `web-mobile` | same as `web`                           | The same on a Pixel 7 viewport                                                                                                                   |
+| `dashboard`  | `tests/dashboard/dashboard.spec.ts`     | Signed out → sign-in with `next=`; signed in → every section loads; opening a message marks it read; `/login` sends an admin home                |
 
-The lifecycle test leaves one soft-deleted `E2E smoke …` project in the local database per run.
+The lifecycle test leaves one soft-deleted `E2E smoke …` project in the local database per run; the contact tests soft-delete the `e2e-…@example.com` messages they send. Outside production, contact form rate limits skip requests from this machine, so repeated runs don't lock the form.
 
-**Not covered yet** (`test.fixme` in `consent-and-contact.spec.ts`): sending a contact message and finding it in the inbox (needs CM2/CM3), and booking a call (needs CM1).
+**Not covered** (`test.fixme` in `consent-and-contact.spec.ts`): booking a call. Calendly's scheduler doesn't render for automated browsers, and a test booking is a real one — it stays in the manual checklist.
 
 Not in CI: it needs a database and running apps. Run it before every PR that touches routing, auth, publishing or the consent banner.
 
@@ -57,15 +58,18 @@ Run on **production** after the launch deploy, and on a preview before it. Tick 
 - [ ] Its link preview (OG image) renders when pasted into Slack or WhatsApp.
 - [ ] Unpublish or delete it → gone from the site again.
 
-**Contact form end to end** _(after CM2–CM4)_
+**Contact form end to end** _(needs `NEXT_PUBLIC_API_URL`, Turnstile keys and a notification channel set)_
 
-- [ ] Send a message from `/contact` on a phone → success state.
-- [ ] It appears in the dashboard inbox, and the notification email arrives.
-- [ ] Sending several in a row is rate-limited with a friendly message.
+- [ ] Send a message from `/contact` on a phone → success state. If Turnstile shows a checkbox, ticking it sends the message.
+- [ ] It appears in the dashboard inbox with the sidebar's unread badge; opening it clears the badge.
+- [ ] The notification email (and/or Slack message) arrives, and replying to the email answers the sender.
+- [ ] Sending a sixth message within the hour is refused with the "wait a while" message.
 
-**Test booking** _(after CM1)_
+**Test booking** _(needs `NEXT_PUBLIC_CALENDLY_URL`)_
 
-- [ ] Book a call through Calendly from `/contact`, receive the confirmation, then cancel it.
+- [ ] The Calendly scheduler loads in the booking slot, in the site's light and dark themes.
+- [ ] Type a name and email into the form first, then scroll to the scheduler → they're prefilled.
+- [ ] Book a call, receive the confirmation, then cancel it.
 
 **Site-wide**
 

@@ -6,6 +6,7 @@ import { ContactFaq } from '@/components/features/contact/contact-faq';
 import { ContactForm } from '@/components/features/contact/contact-form';
 import { ContactHero } from '@/components/features/contact/contact-hero';
 import { ContactNextSteps } from '@/components/features/contact/contact-next-steps';
+import { ContactPrefillProvider } from '@/contexts/contact-prefill-context';
 
 export const metadata: Metadata = {
 	title: 'Contact',
@@ -17,7 +18,7 @@ export default function ContactPage() {
 	const totalSections = 5;
 
 	return (
-		<>
+		<ContactPrefillProvider>
 			<ContactHero />
 			<ContactForm
 				variation="brief"
@@ -40,6 +41,6 @@ export default function ContactPage() {
 				sectionIndex={5}
 				totalSections={totalSections}
 			/>
-		</>
+		</ContactPrefillProvider>
 	);
 }

@@ -20,6 +20,7 @@ import { cn } from '@workspace/ui/lib/utils';
 
 import { ContactFormActions } from './contact-form-actions';
 import { ContactFormReceipt } from './contact-form-receipt';
+import { ContactFormSafeguards } from './contact-form-safeguards';
 import { ContactFormShell } from './contact-form-shell';
 
 /** Strips every packaged box, ring and radius back to a bare readout line. */
@@ -108,6 +109,8 @@ export function ContactFormConsole({
 		values,
 		errors,
 		status,
+		submitError,
+		turnstileRef,
 		setField,
 		submit,
 		reset,
@@ -362,10 +365,13 @@ export function ContactFormConsole({
 						</div>
 					</SchematicFrame>
 
+					<ContactFormSafeguards turnstileRef={turnstileRef} />
+
 					<ContactFormActions
 						className="mt-8"
 						status={status}
 						errors={errors}
+						errorMessage={submitError}
 						submitLabel="Transmit"
 					/>
 				</form>
