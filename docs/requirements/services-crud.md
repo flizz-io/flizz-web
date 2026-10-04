@@ -80,7 +80,7 @@ From [seo.md](../guides/seo.md#tasks-in-priority-order) item 7. One table for ev
     - `visual_kind` is text; the API checks it against its copy of the list (`apps/api/src/constants/service.ts`, kept in sync with `packages/service-visuals/src/types.ts`). The API runs compiled JavaScript and can't import that source-only React package.
 - `slug_redirects` — as above; S2 creates it.
 - `media_purpose` gains `SERVICE_OG_IMAGE`.
-- **Seed** (`pnpm --filter api db:seed`): the twelve services in `apps/api/prisma/seed-data/services.json`, created Published in today's order, authored by the Super Admin. It only creates slugs that don't exist yet — re-running never overwrites dashboard edits. It then links every project with no `service_id` by its `service_slug`, and reports the ones it couldn't link.
+- **Seed** (`pnpm --filter api db:seed`): the twelve services in `apps/api/prisma/seed-data/services.json`, created Published in today's order, authored by the Super Admin. It only creates slugs that don't exist yet — re-running never overwrites dashboard edits. Services are seeded before projects; each seeded project names its service by slug (`serviceSlug` in `projects.json`).
 
 ## API
 
@@ -123,7 +123,7 @@ Every change revalidates the `services` cache tag, and also `projects` when the 
 - The project API takes `serviceUuid` and returns `service: { uuid, title, slug, category }`; the project's category and `/services/<slug>` come from it. `serviceCategory` / `serviceSlug` stop being inputs.
 - Public project responses keep `service` (category) and `serviceSlug`; `serviceSlug` is left out when the service isn't visible.
 - The project form gets a Category filter and a Service dropdown in place of the free-text "Service page slug".
-- S9 drops `projects.service_slug` / `service_category` and makes `service_id` required, after the production seed has linked every project (S8).
+- **Done 2026-10-04 (S9):** `projects.service_slug` / `service_category` are dropped and `service_id` is required (migration `20261004120000_require_project_service`), after the production seed linked every project (S8). A project's category is always its service's.
 
 ## Decisions log
 
