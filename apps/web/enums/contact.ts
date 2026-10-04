@@ -1,23 +1,13 @@
 /**
- * The shape of work someone is writing in about. Values are stable identifiers
- * rather than display copy — every variation of the form renders its own
- * wording for the same option (see `projectScopeOptions`).
+ * The shape of work someone is writing in about, and when they want to begin.
+ * The API's own enums, so what the form sends can't drift from what it
+ * accepts. Values are stable identifiers rather than display copy — every
+ * variation of the form renders its own wording (see `projectScopeChoices`).
  */
-export enum ProjectScope {
-	NEW_BUILD = 'NEW_BUILD',
-	REBUILD = 'REBUILD',
-	SCALE = 'SCALE',
-	FIX = 'FIX',
-	UNDECIDED = 'UNDECIDED'
-}
-
-/** When they want work to begin. */
-export enum ProjectStart {
-	IMMEDIATELY = 'IMMEDIATELY',
-	THIS_QUARTER = 'THIS_QUARTER',
-	NEXT_QUARTER = 'NEXT_QUARTER',
-	EXPLORING = 'EXPLORING'
-}
+export {
+	ContactScope as ProjectScope,
+	ContactStart as ProjectStart
+} from '@workspace/api-services';
 
 export enum ContactFormStatus {
 	IDLE = 'IDLE',

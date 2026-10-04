@@ -46,6 +46,7 @@ The web schema (`apps/web/schemas/contact.ts`) and the API schema (`apps/api/src
 2. **Rate limits.**
     - Per IP in memory (`publicFormLimiter`, 5 per hour) — cheap, but each serverless instance counts on its own.
     - Per IP in the database: more than **5 messages from the same `ip_hash` in the past hour** → 429. This one holds across instances.
+    - Outside production, requests from this machine (loopback) skip both, so local runs and the e2e suite don't lock the form.
     - `ip_hash` is an HMAC-SHA-256 of the visitor's IP keyed with `SESSION_SECRET` — enough to spot repeats without keeping the address. Rotating the secret only resets this count.
 3. **Cloudflare Turnstile** (CAPTCHA). The widget runs when the visitor submits, in `interaction-only` appearance — invisible unless Cloudflare finds the visitor suspicious, when it shows a checkbox. The API verifies the token with Cloudflare (`siteverify`, with the visitor's IP) before saving.
     - `TURNSTILE_SECRET_KEY` unset on the API → no verification (local development). Set it in Production and Preview.

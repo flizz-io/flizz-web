@@ -10,7 +10,7 @@ Master index and tracker for the Flizz web project: public site pages, admin CRU
 | 2   | About                     | [about-page.md](about-page.md)           | `/about`                                   | Stage 3            | Team section from the API (E4); timeline and figures static                                    | Built — pending PM content                      |
 | 3   | Services (list)           | [services-pages.md](services-pages.md)   | `/services`                                | Stage 4            | API (S7)                                                                                       | Live data — pending PM content                  |
 | 4   | Single Service detail     | [services-pages.md](services-pages.md)   | `/services/[slug]`                         | Stage 4            | API (S7)                                                                                       | Live data — pending PM content                  |
-| 5   | Contact Us                | [contact-page.md](contact-page.md)       | `/contact`                                 | Stage 5            | Static; form doesn't submit yet (Phase CM)                                                     | Built — backend in Phase CM                     |
+| 5   | Contact Us                | [contact-page.md](contact-page.md)       | `/contact`                                 | Stage 5            | Form posts to the API (CM6); rest static                                                       | Built — backend in Phase CM                     |
 | 6   | Portfolio/Projects (list) | [portfolio-pages.md](portfolio-pages.md) | `/portfolio`                               | Stage 6            | API (E1)                                                                                       | Live data — pending PM content                  |
 | 7   | Single Project detail     | [portfolio-pages.md](portfolio-pages.md) | `/portfolio/[slug]`                        | Stage 6            | API (E1)                                                                                       | Live data — pending PM content                  |
 | 8   | Articles (list)           | [articles-pages.md](articles-pages.md)   | `/articles`                                | Stage 7            | Static constants until Phase AR                                                                | Built — pending PM content                      |
@@ -198,7 +198,7 @@ From the pre-launch review on 2026-10-03. **Paused 2026-10-04**: the remaining t
 | CM3 | Admin inbox API: list (status filter, search, unread count), detail (marks read on first open), status change, internal note, delete; `requirePermission(CONTACT_MESSAGES)`                                                               | Done 2026-10-04 — `/api/contact-messages`                                                               |
 | CM4 | Team email notification on a new message (required, see L8)                                                                                                                                                                               | Code done 2026-10-04 — email (Resend) and Slack, each off until configured; provider and DNS wait on L8 |
 | CM5 | `packages/api-services`: contact models, enums and service functions                                                                                                                                                                      | Done 2026-10-04                                                                                         |
-| CM6 | Web: `use-contact-form` POSTs to the API, with real success and error states; Turnstile runs on submit (invisible unless the visitor looks suspicious, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`)                                                  | Not started                                                                                             |
+| CM6 | Web: `use-contact-form` POSTs to the API, with real success and error states; Turnstile runs on submit (invisible unless the visitor looks suspicious, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`)                                                  | Done 2026-10-04                                                                                         |
 | CM7 | Dashboard inbox: list with status tabs and an unread badge in the sidebar, detail view, status/note actions, archive/spam/delete                                                                                                          | Not started                                                                                             |
 | CM8 | Book a Call: Calendly inline embed in the booking slot on `/contact` (`NEXT_PUBLIC_CALENDLY_URL`), name/email prefill, UTM tags, light/dark fit. No database and no CAPTCHA of ours (the booking happens inside Calendly's iframe)        | Not started                                                                                             |
 | CM9 | Production release (no migration needed); end-to-end check of form → inbox and a test booking — **review checkpoint**                                                                                                                     | Not started                                                                                             |
@@ -260,13 +260,12 @@ Each item below is marked with a `// TODO:` at the referenced location, so the c
 
 ### Contact page — blocking launch
 
-| Item              | Needed from PM                                                       | Location                       |
-| ----------------- | -------------------------------------------------------------------- | ------------------------------ |
-| NDA line          | Confirm the wording before launch                                    | `constants/contact.ts:18`      |
-| Booking scheduler | Confirm which scheduler, then swap the placeholder slot              | `constants/contact.ts:115`     |
-| Form submission   | No endpoint yet — form validates but does not POST (due Stage 10/13) | `hooks/use-contact-form.ts:93` |
+| Item              | Needed from PM                                          | Location                   |
+| ----------------- | ------------------------------------------------------- | -------------------------- |
+| NDA line          | Confirm the wording before launch                       | `constants/contact.ts:18`  |
+| Booking scheduler | Confirm which scheduler, then swap the placeholder slot | `constants/contact.ts:115` |
 
-The old "Contact Us form field list" item is now **resolved** — the field list was settled during the Stage 5 build.
+The old "Contact Us form field list" item is now **resolved** — the field list was settled during the Stage 5 build. Form submission is resolved too: the form posts to the API since CM6.
 
 ### Portfolio pages — built
 

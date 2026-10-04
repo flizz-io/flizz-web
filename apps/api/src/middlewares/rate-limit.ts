@@ -2,6 +2,7 @@ import { rateLimit, type Options } from 'express-rate-limit';
 
 import { rateLimits, safeMethods } from '../constants/rate-limits.js';
 import { HttpError } from '../utils/http-error.js';
+import { isLocalDevRequest } from '../utils/loopback.js';
 
 /**
  * Same envelope as every other error — `{ error: { code: 'RATE_LIMITED' } }`
@@ -29,4 +30,6 @@ export const writeLimiter = limiter(rateLimits.write, {
 });
 
 /** On anonymous form endpoints — `POST /api/public/contact`. */
-export const publicFormLimiter = limiter(rateLimits.publicForm);
+export const publicFormLimiter = limiter(rateLimits.publicForm, {
+	skip: (req) => isLocalDevRequest(req.ip)
+});

@@ -10,8 +10,11 @@ import type {
 // redeclared, so the two lists stay renderable by the same treatment.
 import type { FaqItem } from '@/types/home';
 
-/** Anchors the hero's hand-off to the form. */
-export const contactFormAnchorId = 'start';
+/**
+ * Anchors the hero's hand-off to the form. Must not match a field name — the
+ * fields use theirs as element ids (`start`, `message`, …).
+ */
+export const contactFormAnchorId = 'contact-form';
 
 // What the page promises, stated before anything is asked for. Every line here
 // is already made elsewhere on the site (see `riskReversals` and `faqItems`) —
@@ -134,3 +137,22 @@ export const contactFaqItems: FaqItem[] = [
 		answer: 'We tell you on the call rather than in a proposal three weeks later, and we point you toward someone better suited. Taking on the wrong project costs us more than turning it down.'
 	}
 ];
+
+/** Cloudflare Turnstile's script, rendered explicitly by `useTurnstile`. */
+export const turnstileScriptUrl =
+	'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+
+/** Shown in the analytics of the Turnstile dashboard. */
+export const turnstileAction = 'contact';
+
+/** The honeypot's field name — people never see it; bots fill it. */
+export const contactHoneypotField = 'website';
+
+/** What the visitor reads when a send fails, by cause. */
+export const contactSubmitErrors = {
+	rateLimited:
+		'That’s a lot of messages in a short time. Wait a while, or email',
+	captcha:
+		'We couldn’t confirm you’re not a robot. Reload and try again, or email',
+	generic: 'That didn’t send. Try again, or email'
+} as const;

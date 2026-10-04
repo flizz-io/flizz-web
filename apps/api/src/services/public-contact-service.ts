@@ -5,6 +5,7 @@ import { contactIpLimit } from '../constants/contact.js';
 import type { SubmitContactInput } from '../schemas/contact-schema.js';
 import { HttpError } from '../utils/http-error.js';
 import { hashIp } from '../utils/ip-hash.js';
+import { isLocalDevRequest } from '../utils/loopback.js';
 
 /** Over `contactIpLimit` from this visitor in the window → 429. */
 async function assertUnderIpLimit(ipHash: string | null) {
@@ -33,7 +34,7 @@ export async function submitContactMessage(
 	if (input.website) return null;
 
 	const ipHash = hashIp(ip);
-	await assertUnderIpLimit(ipHash);
+	if (!isLocalDevRequest(ip)) await assertUnderIpLimit(ipHash);
 	await verifyTurnstile(input.turnstileToken, ip);
 
 	const message = await prisma.contactMessage.create({

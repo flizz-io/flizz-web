@@ -2,9 +2,17 @@
 
 import { useCallback, useMemo, useState } from 'react';
 
+import { contactIntegrations } from '@/configs/contact';
+import { contactHoneypotField, contactSubmitErrors } from '@/constants/contact';
 import { ContactField, ContactFormStatus } from '@/enums/contact';
+import { useTurnstile } from '@/hooks/use-turnstile';
 import { contactFormSchema } from '@/schemas/contact';
 import type { ContactFieldErrors, ContactFormValues } from '@/types/contact';
+import {
+	ApiError,
+	ApiErrorCode,
+	submitContactService
+} from '@workspace/api-services';
 
 const emptyContactForm: ContactFormValues = {
 	name: '',
@@ -24,6 +32,29 @@ const requiredFields: ContactField[] = [
 	ContactField.MESSAGE
 ];
 
+const formFields = new Set<string>(Object.values(ContactField));
+
+/** The API's field messages for fields the form shows; the rest are dropped. */
+function fieldErrorsOf(error: ApiError): ContactFieldErrors {
+	return Object.fromEntries(
+		Object.entries(error.fieldErrors).filter(([field]) =>
+			formFields.has(field)
+		)
+	);
+}
+
+/** The sentence beside the button when a send fails as a whole. */
+function submitErrorOf(error: unknown) {
+	if (error instanceof ApiError) {
+		if (error.code === ApiErrorCode.RATE_LIMITED)
+			return contactSubmitErrors.rateLimited;
+		if (error.fieldErrors.turnstileToken)
+			return contactSubmitErrors.captcha;
+	}
+
+	return contactSubmitErrors.generic;
+}
+
 /**
  * Everything the three form variations have in common. They differ only in how
  * a field is presented — the state, the validation and what a submission does
@@ -34,6 +65,10 @@ export function useContactForm() {
 	const [errors, setErrors] = useState<ContactFieldErrors>({});
 	const [status, setStatus] = useState<ContactFormStatus>(
 		ContactFormStatus.IDLE
+	);
+	const [submitError, setSubmitError] = useState<string | null>(null);
+	const { containerRef: turnstileRef, getToken } = useTurnstile(
+		contactIntegrations.turnstileSiteKey
 	);
 
 	const setField = useCallback(
@@ -86,25 +121,49 @@ export function useContactForm() {
 				return;
 			}
 
+			const honeypot = new FormData(event.currentTarget).get(
+				contactHoneypotField
+			);
+
 			setErrors({});
+			setSubmitError(null);
 			setStatus(ContactFormStatus.SUBMITTING);
 
 			try {
-				// TODO: POST `parsed.data` to the contact endpoint once it
-				// exists. Nothing leaves the browser yet — the pause below
-				// stands in for the round trip.
-				await new Promise((resolve) => setTimeout(resolve, 900));
+				const turnstileToken = await getToken().catch(() => {
+					throw new ApiError(
+						400,
+						ApiErrorCode.VALIDATION_FAILED,
+						'',
+						{
+							turnstileToken: contactSubmitErrors.captcha
+						}
+					);
+				});
+
+				await submitContactService(
+					{
+						...parsed.data,
+						sourcePath: window.location.pathname,
+						website: typeof honeypot === 'string' ? honeypot : '',
+						turnstileToken
+					},
+					{ baseUrl: contactIntegrations.apiUrl }
+				);
 				setStatus(ContactFormStatus.SUCCESS);
-			} catch {
+			} catch (error) {
+				if (error instanceof ApiError) setErrors(fieldErrorsOf(error));
+				setSubmitError(submitErrorOf(error));
 				setStatus(ContactFormStatus.ERROR);
 			}
 		},
-		[values]
+		[values, getToken]
 	);
 
 	const reset = useCallback(() => {
 		setValues(emptyContactForm);
 		setErrors({});
+		setSubmitError(null);
 		setStatus(ContactFormStatus.IDLE);
 	}, []);
 
@@ -112,6 +171,8 @@ export function useContactForm() {
 		values,
 		errors,
 		status,
+		submitError,
+		turnstileRef,
 		setField,
 		submit,
 		reset,
