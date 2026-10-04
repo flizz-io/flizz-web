@@ -124,6 +124,8 @@ Decided 2026-10-05: Slack plus Gmail-to-Gmail email, both free. Gmail sends from
 
 ## Environment variables
 
+Step-by-step account setup for the owner: [contact-setup.md](../guides/contact-setup.md).
+
 | App | Variable                         | Purpose                                       |
 | --- | -------------------------------- | --------------------------------------------- |
 | api | `TURNSTILE_SECRET_KEY`           | Verifies the CAPTCHA token. Unset → skipped   |
