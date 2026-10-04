@@ -117,7 +117,8 @@ L8 still has the owner pick the provider and set up SPF, DKIM and DMARC. Resend 
 - **Calendly inline embed** in the booking section's slot, as an `iframe` (`loading="lazy"`, so nothing loads from Calendly until the visitor scrolls near it). URL from `NEXT_PUBLIC_CALENDLY_URL` — the event link, e.g. `https://calendly.com/flizz/discovery-call`. Unset → the slot keeps its "email us instead" state.
 - **Prefill**: once the visitor has typed a name and email into the form above, the embed is opened with them (`name`, `email`), so they don't type them twice.
 - **UTM tags**: `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term` from the page URL are passed through; without them it sends `utm_source=website`, `utm_medium=contact-page`.
-- **Light/dark**: `background_color`, `text_color` and `primary_color` follow the site theme; `hide_gdpr_banner=1` (the cookie banner is ours).
+- **Light/dark**: `background_color`, `text_color` and `primary_color` follow the site theme; `hide_gdpr_banner=1` (the cookie banner is ours). Calendly applies custom colours only on its paid plans — on the free plan the embed keeps Calendly's own light look.
+- **Height**: the frame starts at 700 px and grows to the height Calendly reports (`calendly.page_height` messages), so it never scrolls inside the page.
 - **No database and no CAPTCHA of ours** — the booking happens inside Calendly's iframe, which handles its own abuse.
 - **Consent**: the embed is the service the visitor asked for, not tracking, so it isn't gated by the cookie banner. Calendly is listed as a processor in the privacy policy.
 

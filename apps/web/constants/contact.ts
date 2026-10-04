@@ -115,8 +115,8 @@ export const contactBookingPoints: string[] = [
 	'Come with a problem, leave with a direction'
 ];
 
-// TODO: PM to confirm the scheduler, then swap the placeholder slot in
-// `contact-booking.tsx` for the real embed.
+// Shown in the booking slot until NEXT_PUBLIC_CALENDLY_URL is set.
+// TODO: owner to create the Calendly account and event (contact-page.md).
 export const contactBookingSlotLabel = 'Calendar — not connected yet';
 
 export const contactFaqItems: FaqItem[] = [
@@ -156,3 +156,35 @@ export const contactSubmitErrors = {
 		'We couldn’t confirm you’re not a robot. Reload and try again, or email',
 	generic: 'That didn’t send. Try again, or email'
 } as const;
+
+/**
+ * Calendly's embed colours, as hex without `#` — the site's background,
+ * foreground and primary tokens (packages/ui/src/styles/globals.css) per theme.
+ */
+export const calendlyThemeColors = {
+	light: { background: 'fdfcff', text: '0b0812', primary: '5e17eb' },
+	dark: { background: '08060d', text: 'f7f5fb', primary: '8b5cf6' }
+} as const;
+
+/** Campaign tags Calendly records with each booking. */
+export const calendlyUtmParams = [
+	'utm_source',
+	'utm_medium',
+	'utm_campaign',
+	'utm_content',
+	'utm_term'
+] as const;
+
+/** Used when the visitor arrived without campaign tags. */
+export const calendlyDefaultUtm = {
+	utm_source: 'website',
+	utm_medium: 'contact-page'
+} as const;
+
+/** Until Calendly reports the height of what it's showing. */
+export const CALENDLY_DEFAULT_HEIGHT = 700;
+
+/** Start loading the embed this far before it scrolls into view. */
+export const CALENDLY_PRELOAD_MARGIN = '600px';
+
+export const contactCalendlyTitle = 'Book a call with Flizz — Calendly';

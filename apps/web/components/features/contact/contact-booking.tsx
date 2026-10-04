@@ -4,6 +4,7 @@ import { EmptyState } from '@/components/snippets/empty-state/empty-state';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { ScrollLink } from '@/components/snippets/scroll-link/scroll-link';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
+import { contactIntegrations } from '@/configs/contact';
 import { siteConfig } from '@/configs/site';
 import {
 	contactBookingPoints,
@@ -11,6 +12,8 @@ import {
 	contactFormAnchorId
 } from '@/constants/contact';
 import { cn } from '@workspace/ui/lib/utils';
+
+import { ContactCalendly } from './contact-calendly';
 
 interface ContactBookingProps {
 	sectionIndex: number;
@@ -20,8 +23,8 @@ interface ContactBookingProps {
 
 /**
  * The faster path, for people who would rather talk than write. The slot holds
- * the scheduler once one is chosen — until then it says so plainly rather than
- * standing in with a fake calendar.
+ * Calendly's scheduler (`NEXT_PUBLIC_CALENDLY_URL`) — until that's set it says
+ * so plainly rather than standing in with a fake calendar.
  */
 export function ContactBooking({
 	sectionIndex,
@@ -73,13 +76,17 @@ export function ContactBooking({
 				</Reveal>
 
 				<Reveal delay={80}>
-					<EmptyState
-						className="min-h-72 justify-center bg-card/40 backdrop-blur-sm"
-						title={contactBookingSlotLabel}
-						description="The scheduler is not wired up yet. Email us and we will send times back the same day."
-						linkLabel={siteConfig.contactEmail}
-						linkHref={`mailto:${siteConfig.contactEmail}`}
-					/>
+					{contactIntegrations.calendlyUrl ? (
+						<ContactCalendly />
+					) : (
+						<EmptyState
+							className="min-h-72 justify-center bg-card/40 backdrop-blur-sm"
+							title={contactBookingSlotLabel}
+							description="The scheduler is not wired up yet. Email us and we will send times back the same day."
+							linkLabel={siteConfig.contactEmail}
+							linkHref={`mailto:${siteConfig.contactEmail}`}
+						/>
+					)}
 				</Reveal>
 			</div>
 		</section>

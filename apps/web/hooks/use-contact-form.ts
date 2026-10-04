@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { contactIntegrations } from '@/configs/contact';
 import { contactHoneypotField, contactSubmitErrors } from '@/constants/contact';
+import { useContactPrefill } from '@/contexts/contact-prefill-context';
 import { ContactField, ContactFormStatus } from '@/enums/contact';
 import { useTurnstile } from '@/hooks/use-turnstile';
 import { contactFormSchema } from '@/schemas/contact';
@@ -70,6 +71,7 @@ export function useContactForm() {
 	const { containerRef: turnstileRef, getToken } = useTurnstile(
 		contactIntegrations.turnstileSiteKey
 	);
+	const { setPrefill } = useContactPrefill();
 
 	const setField = useCallback(
 		<TField extends keyof ContactFormValues>(
@@ -77,6 +79,10 @@ export function useContactForm() {
 			value: ContactFormValues[TField]
 		) => {
 			setValues((current) => ({ ...current, [field]: value }));
+			// The booking embed below offers these, so they aren't typed twice.
+			if (field === ContactField.NAME || field === ContactField.EMAIL) {
+				setPrefill({ [field]: value });
+			}
 
 			// Clear this field's error on the first keystroke. Re-validating as
 			// it is typed would call every half-written address broken.
@@ -88,7 +94,7 @@ export function useContactForm() {
 				return next;
 			});
 		},
-		[]
+		[setPrefill]
 	);
 
 	const completedCount = useMemo(

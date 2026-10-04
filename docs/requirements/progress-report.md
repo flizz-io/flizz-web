@@ -200,7 +200,7 @@ From the pre-launch review on 2026-10-03. **Paused 2026-10-04**: the remaining t
 | CM5 | `packages/api-services`: contact models, enums and service functions                                                                                                                                                                      | Done 2026-10-04                                                                                         |
 | CM6 | Web: `use-contact-form` POSTs to the API, with real success and error states; Turnstile runs on submit (invisible unless the visitor looks suspicious, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`)                                                  | Done 2026-10-04                                                                                         |
 | CM7 | Dashboard inbox: list with status tabs and an unread badge in the sidebar, detail view, status/note actions, archive/spam/delete                                                                                                          | Done 2026-10-04 — `/messages`                                                                           |
-| CM8 | Book a Call: Calendly inline embed in the booking slot on `/contact` (`NEXT_PUBLIC_CALENDLY_URL`), name/email prefill, UTM tags, light/dark fit. No database and no CAPTCHA of ours (the booking happens inside Calendly's iframe)        | Not started                                                                                             |
+| CM8 | Book a Call: Calendly inline embed in the booking slot on `/contact` (`NEXT_PUBLIC_CALENDLY_URL`), name/email prefill, UTM tags, light/dark fit. No database and no CAPTCHA of ours (the booking happens inside Calendly's iframe)        | Code done 2026-10-04 — on once `NEXT_PUBLIC_CALENDLY_URL` is set (owner: Calendly account and event)    |
 | CM9 | Production release (no migration needed); end-to-end check of form → inbox and a test booking — **review checkpoint**                                                                                                                     | Not started                                                                                             |
 
 ### Phase T — Testimonials
@@ -260,10 +260,9 @@ Each item below is marked with a `// TODO:` at the referenced location, so the c
 
 ### Contact page — blocking launch
 
-| Item              | Needed from PM                                          | Location                   |
-| ----------------- | ------------------------------------------------------- | -------------------------- |
-| NDA line          | Confirm the wording before launch                       | `constants/contact.ts:18`  |
-| Booking scheduler | Confirm which scheduler, then swap the placeholder slot | `constants/contact.ts:115` |
+| Item     | Needed from PM                    | Location                  |
+| -------- | --------------------------------- | ------------------------- |
+| NDA line | Confirm the wording before launch | `constants/contact.ts:18` |
 
 The old "Contact Us form field list" item is now **resolved** — the field list was settled during the Stage 5 build. Form submission is resolved too: the form posts to the API since CM6.
 
@@ -307,7 +306,7 @@ Both routes shipped 2026-09-01: `/services` and twelve `/services/[slug]` pages,
 
 ### Upcoming stages
 
-- **Book a Call**: Calendly embed on `/contact`. See task CM8.
+- **Book a Call**: Calendly embed on `/contact` is built (CM8); it switches on once the owner sets `NEXT_PUBLIC_CALENDLY_URL`.
 
 ## Engineering cleanup before production
 
