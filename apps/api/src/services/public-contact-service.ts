@@ -1,3 +1,4 @@
+import { notifyNewContactMessage } from './contact-notification-service.js';
 import { verifyTurnstile } from './turnstile-service.js';
 import { prisma } from '../configs/database.js';
 import { contactIpLimit } from '../constants/contact.js';
@@ -22,7 +23,8 @@ async function assertUnderIpLimit(ipHash: string | null) {
 /**
  * Stores a Contact Us submission. A filled honeypot returns quietly without
  * storing anything — the bot gets the same answer as a person, so it learns
- * nothing. Returns the stored message, or `null` for a caught bot.
+ * nothing. Then tells the team. Returns the stored message, or `null` for a
+ * caught bot.
  */
 export async function submitContactMessage(
 	input: SubmitContactInput,
@@ -34,7 +36,7 @@ export async function submitContactMessage(
 	await assertUnderIpLimit(ipHash);
 	await verifyTurnstile(input.turnstileToken, ip);
 
-	return prisma.contactMessage.create({
+	const message = await prisma.contactMessage.create({
 		data: {
 			name: input.name,
 			company: input.company,
@@ -46,4 +48,8 @@ export async function submitContactMessage(
 			ipHash
 		}
 	});
+
+	await notifyNewContactMessage(message);
+
+	return message;
 }

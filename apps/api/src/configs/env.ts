@@ -51,6 +51,11 @@ const baseEnvSchema = z.object({
 	WEB_REVALIDATE_SECRET: blankAsUnset,
 	SENTRY_DSN: blankAsUnset.pipe(z.url().optional()),
 	TURNSTILE_SECRET_KEY: blankAsUnset,
+	RESEND_API_KEY: blankAsUnset,
+	CONTACT_NOTIFY_FROM: blankAsUnset,
+	CONTACT_NOTIFY_TO: commaList.pipe(z.array(z.email())),
+	CONTACT_SLACK_WEBHOOK_URL: blankAsUnset.pipe(z.url().optional()),
+	DASHBOARD_URL: blankAsUnset.pipe(z.url().optional()),
 	/** Vercel sets it: production, preview or development. */
 	VERCEL_ENV: blankAsUnset
 });
@@ -123,6 +128,15 @@ export const env = {
 	},
 	/** Contact form CAPTCHA (Cloudflare Turnstile) — off without a secret. */
 	turnstileSecretKey: values.TURNSTILE_SECRET_KEY ?? null,
+	/** New contact message alerts — each channel off until it's configured. */
+	contactNotify: {
+		resendApiKey: values.RESEND_API_KEY ?? null,
+		from: values.CONTACT_NOTIFY_FROM ?? null,
+		to: values.CONTACT_NOTIFY_TO,
+		slackWebhookUrl: values.CONTACT_SLACK_WEBHOOK_URL ?? null
+	},
+	/** The dashboard, for links in notifications. */
+	dashboardUrl: values.DASHBOARD_URL?.replace(/\/+$/, '') ?? null,
 	/** Error tracking — off without a DSN. */
 	sentry: {
 		dsn: values.SENTRY_DSN ?? null,
