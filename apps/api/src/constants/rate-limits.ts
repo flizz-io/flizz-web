@@ -11,7 +11,7 @@ export const rateLimits = {
 	signIn: { windowMs: 15 * MINUTE_MS, limit: 20 },
 	/** Any write (POST, PUT, PATCH, DELETE) — dashboard edits and uploads. */
 	write: { windowMs: 15 * MINUTE_MS, limit: 300 },
-	/** Anonymous form submissions — the contact form (CM2). */
+	/** Anonymous form submissions — the contact form. */
 	publicForm: { windowMs: 60 * MINUTE_MS, limit: 5 }
 } as const;
 

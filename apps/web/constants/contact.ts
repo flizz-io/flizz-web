@@ -10,8 +10,11 @@ import type {
 // redeclared, so the two lists stay renderable by the same treatment.
 import type { FaqItem } from '@/types/home';
 
-/** Anchors the hero's hand-off to the form. */
-export const contactFormAnchorId = 'start';
+/**
+ * Anchors the hero's hand-off to the form. Must not match a field name — the
+ * fields use theirs as element ids (`start`, `message`, …).
+ */
+export const contactFormAnchorId = 'contact-form';
 
 // What the page promises, stated before anything is asked for. Every line here
 // is already made elsewhere on the site (see `riskReversals` and `faqItems`) —
@@ -112,8 +115,8 @@ export const contactBookingPoints: string[] = [
 	'Come with a problem, leave with a direction'
 ];
 
-// TODO: PM to confirm the scheduler, then swap the placeholder slot in
-// `contact-booking.tsx` for the real embed.
+// Shown in the booking slot until NEXT_PUBLIC_CALENDLY_URL is set.
+// TODO: owner to create the Calendly account and event (contact-page.md).
 export const contactBookingSlotLabel = 'Calendar — not connected yet';
 
 export const contactFaqItems: FaqItem[] = [
@@ -134,3 +137,54 @@ export const contactFaqItems: FaqItem[] = [
 		answer: 'We tell you on the call rather than in a proposal three weeks later, and we point you toward someone better suited. Taking on the wrong project costs us more than turning it down.'
 	}
 ];
+
+/** Cloudflare Turnstile's script, rendered explicitly by `useTurnstile`. */
+export const turnstileScriptUrl =
+	'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+
+/** Shown in the analytics of the Turnstile dashboard. */
+export const turnstileAction = 'contact';
+
+/** The honeypot's field name — people never see it; bots fill it. */
+export const contactHoneypotField = 'website';
+
+/** What the visitor reads when a send fails, by cause. */
+export const contactSubmitErrors = {
+	rateLimited:
+		'That’s a lot of messages in a short time. Wait a while, or email',
+	captcha:
+		'We couldn’t confirm you’re not a robot. Reload and try again, or email',
+	generic: 'That didn’t send. Try again, or email'
+} as const;
+
+/**
+ * Calendly's embed colours, as hex without `#` — the site's background,
+ * foreground and primary tokens (packages/ui/src/styles/globals.css) per theme.
+ */
+export const calendlyThemeColors = {
+	light: { background: 'fdfcff', text: '0b0812', primary: '5e17eb' },
+	dark: { background: '08060d', text: 'f7f5fb', primary: '8b5cf6' }
+} as const;
+
+/** Campaign tags Calendly records with each booking. */
+export const calendlyUtmParams = [
+	'utm_source',
+	'utm_medium',
+	'utm_campaign',
+	'utm_content',
+	'utm_term'
+] as const;
+
+/** Used when the visitor arrived without campaign tags. */
+export const calendlyDefaultUtm = {
+	utm_source: 'website',
+	utm_medium: 'contact-page'
+} as const;
+
+/** Until Calendly reports the height of what it's showing. */
+export const CALENDLY_DEFAULT_HEIGHT = 700;
+
+/** Start loading the embed this far before it scrolls into view. */
+export const CALENDLY_PRELOAD_MARGIN = '600px';
+
+export const contactCalendlyTitle = 'Book a call with Flizz — Calendly';

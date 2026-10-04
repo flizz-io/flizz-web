@@ -53,6 +53,7 @@ function NavMenu({ items, pathname }: { items: NavItem[]; pathname: string }) {
 							<span>{item.title}</span>
 						</Link>
 					</SidebarMenuButton>
+					{item.badge ? <item.badge /> : null}
 				</SidebarMenuItem>
 			))}
 		</SidebarMenu>

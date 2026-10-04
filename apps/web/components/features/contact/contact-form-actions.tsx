@@ -3,6 +3,7 @@
 import { ArrowRight, LoaderCircle } from 'lucide-react';
 
 import { siteConfig } from '@/configs/site';
+import { contactSubmitErrors } from '@/constants/contact';
 import { ContactFormStatus } from '@/enums/contact';
 import type { ContactFieldErrors } from '@/types/contact';
 import { Button } from '@workspace/ui/components/button';
@@ -11,6 +12,8 @@ import { cn } from '@workspace/ui/lib/utils';
 interface ContactFormActionsProps {
 	status: ContactFormStatus;
 	errors: ContactFieldErrors;
+	/** Why the last send failed as a whole — set with the `ERROR` status. */
+	errorMessage?: string | null;
 	submitLabel: string;
 	className?: string;
 }
@@ -23,6 +26,7 @@ interface ContactFormActionsProps {
 export function ContactFormActions({
 	status,
 	errors,
+	errorMessage,
 	submitLabel,
 	className
 }: ContactFormActionsProps) {
@@ -52,8 +56,14 @@ export function ContactFormActions({
 				role="alert"
 				className="font-mono text-xs text-destructive"
 			>
-				That didn&apos;t send. Try again, or email{' '}
-				{siteConfig.contactEmail}.
+				{errorMessage ?? contactSubmitErrors.generic}{' '}
+				<a
+					href={`mailto:${siteConfig.contactEmail}`}
+					className="underline underline-offset-4"
+				>
+					{siteConfig.contactEmail}
+				</a>
+				.
 			</p>
 		);
 	}

@@ -15,6 +15,7 @@ import { cn } from '@workspace/ui/lib/utils';
 
 import { ContactFormActions } from './contact-form-actions';
 import { ContactFormReceipt } from './contact-form-receipt';
+import { ContactFormSafeguards } from './contact-form-safeguards';
 import { ContactFormShell } from './contact-form-shell';
 
 /** Ties a blank to its message in the list under the sentence. */
@@ -166,8 +167,16 @@ export function ContactFormBrief({
 	sectionIndex,
 	totalSections
 }: ContactFormVariationProps) {
-	const { values, errors, status, setField, submit, reset } =
-		useContactForm();
+	const {
+		values,
+		errors,
+		status,
+		submitError,
+		turnstileRef,
+		setField,
+		submit,
+		reset
+	} = useContactForm();
 
 	// Messages live under the sentence rather than beside each blank: a note
 	// hung off an inline field would break the line it belongs to.
@@ -302,10 +311,13 @@ export function ContactFormBrief({
 						/>
 					</div>
 
+					<ContactFormSafeguards turnstileRef={turnstileRef} />
+
 					<ContactFormActions
 						className="mt-10"
 						status={status}
 						errors={errors}
+						errorMessage={submitError}
 						submitLabel="Send the brief"
 					/>
 				</form>
