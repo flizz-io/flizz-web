@@ -178,13 +178,5 @@ export const calendlyUtmParams = [
 /** Used when the visitor arrived without campaign tags. */
 export const calendlyDefaultUtm = {
 	utm_source: 'website',
-	utm_medium: 'contact-page'
+	utm_medium: 'booking-popup'
 } as const;
-
-/** Until Calendly reports the height of what it's showing. */
-export const CALENDLY_DEFAULT_HEIGHT = 700;
-
-/** Start loading the embed this far before it scrolls into view. */
-export const CALENDLY_PRELOAD_MARGIN = '600px';
-
-export const contactCalendlyTitle = 'Book a call with Flizz — Calendly';

@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { Footer } from '@/components/snippets/footer/footer';
 import { Header } from '@/components/snippets/header/header';
 import { SmoothScroll } from '@/components/snippets/smooth-scroll/smooth-scroll';
+import { BookingProvider } from '@/contexts/booking-context';
 import { IntroProvider } from '@/contexts/intro-context';
 import { ThemeLabMount } from '@workspace/theme-lab';
 
@@ -14,24 +15,26 @@ import { ThemeLabMount } from '@workspace/theme-lab';
 export function MarketingShell({ children }: { children: ReactNode }) {
 	return (
 		<IntroProvider>
-			<SmoothScroll
-				fixed={
-					<>
-						<Header />
-						{/* Renders nothing unless NEXT_PUBLIC_ENABLE_THEME_LAB=true. */}
-						<ThemeLabMount />
-					</>
-				}
-			>
-				{/* Holds the header's 4rem of flow now that it's fixed outside
+			<BookingProvider>
+				<SmoothScroll
+					fixed={
+						<>
+							<Header />
+							{/* Renders nothing unless NEXT_PUBLIC_ENABLE_THEME_LAB=true. */}
+							<ThemeLabMount />
+						</>
+					}
+				>
+					{/* Holds the header's 4rem of flow now that it's fixed outside
 				    the smoothed content — heroes pull up under it by that much. */}
-				<div
-					aria-hidden
-					className="h-16"
-				/>
-				<main>{children}</main>
-				<Footer />
-			</SmoothScroll>
+					<div
+						aria-hidden
+						className="h-16"
+					/>
+					<main>{children}</main>
+					<Footer />
+				</SmoothScroll>
+			</BookingProvider>
 		</IntroProvider>
 	);
 }
