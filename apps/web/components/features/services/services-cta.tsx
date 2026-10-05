@@ -3,7 +3,9 @@ import Link from 'next/link';
 import { BookCallButton } from '@/components/snippets/book-call/book-call-button';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
+import { contactFormAnchorId } from '@/constants/contact';
 import { servicesCtaHeading, servicesCtaLead } from '@/constants/services';
+import { sectionHref } from '@/utils/navigation';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
 
@@ -89,7 +91,14 @@ export function ServicesCta({
 							size="lg"
 							className={ctaClassName}
 						>
-							<Link href="/contact">{ctaLabel}</Link>
+							<Link
+								href={sectionHref(
+									'/contact',
+									contactFormAnchorId
+								)}
+							>
+								{ctaLabel}
+							</Link>
 						</Button>
 					)}
 				</Reveal>
