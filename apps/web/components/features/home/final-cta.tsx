@@ -1,10 +1,9 @@
 import { Check } from 'lucide-react';
-import Link from 'next/link';
 
+import { BookCallButton } from '@/components/snippets/book-call/book-call-button';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { riskReversals } from '@/constants/home';
-import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface FinalCtaProps {
@@ -83,13 +82,12 @@ export function FinalCta({
 						aria-hidden
 						className="pointer-events-none absolute size-56 rounded-full bg-primary/20 opacity-0 blur-3xl transition-opacity duration-[1600ms] group-data-[revealed=true]/reveal:opacity-100"
 					/>
-					<Button
-						asChild
+					<BookCallButton
 						size="lg"
 						className="relative h-12 px-7 text-base shadow-[0_0_40px_-12px_var(--color-primary)]"
 					>
-						<Link href="/contact">Schedule a Discovery Call →</Link>
-					</Button>
+						Schedule a Discovery Call →
+					</BookCallButton>
 				</Reveal>
 
 				<Reveal

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { BookCallButton } from '@/components/snippets/book-call/book-call-button';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { articlesCtaHeading, articlesCtaLead } from '@/constants/articles';
@@ -56,7 +57,7 @@ export function ArticlesCta({
 
 				<Reveal
 					delay={140}
-					className="relative mt-10 flex items-center justify-center"
+					className="relative mt-10 flex flex-wrap items-center justify-center gap-3"
 				>
 					<span
 						aria-hidden
@@ -69,6 +70,13 @@ export function ArticlesCta({
 					>
 						<Link href="/contact">Start a conversation →</Link>
 					</Button>
+					<BookCallButton
+						size="lg"
+						variant="outline"
+						className="relative h-12 bg-background/60 px-7 text-base backdrop-blur-sm"
+					>
+						Book a call
+					</BookCallButton>
 				</Reveal>
 			</div>
 		</section>

@@ -1,9 +1,7 @@
-import Link from 'next/link';
-
+import { BookCallButton } from '@/components/snippets/book-call/book-call-button';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { aboutCtaHeading, aboutCtaLead } from '@/constants/about';
-import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface AboutCtaProps {
@@ -63,13 +61,12 @@ export function AboutCta({
 						aria-hidden
 						className="pointer-events-none absolute inset-x-0 h-px origin-center scale-x-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent transition-transform duration-[1600ms] ease-power-on group-data-[revealed=true]/reveal:scale-x-100"
 					/>
-					<Button
-						asChild
+					<BookCallButton
 						size="lg"
 						className="relative h-12 px-7 text-base shadow-[0_0_40px_-12px_var(--color-primary)]"
 					>
-						<Link href="/contact">Start a conversation →</Link>
-					</Button>
+						Book a discovery call →
+					</BookCallButton>
 				</Reveal>
 			</div>
 		</section>

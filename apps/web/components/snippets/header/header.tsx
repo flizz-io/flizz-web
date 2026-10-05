@@ -5,12 +5,12 @@ import gsap from 'gsap';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
+import { BookCallButton } from '@/components/snippets/book-call/book-call-button';
 import { Logo } from '@/components/snippets/logo/logo';
 import { ThemeToggle } from '@/components/snippets/theme-toggle/theme-toggle';
 import { primaryNavItems } from '@/configs/nav';
 import { useIntro } from '@/contexts/intro-context';
 import { IntroGate, IntroPhase } from '@/enums/intro';
-import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
 
 import { MobileNav } from './mobile-nav';
@@ -128,12 +128,9 @@ export function Header() {
 						className="flex items-center gap-1.5"
 					>
 						<ThemeToggle className="hidden" />
-						<Button
-							asChild
-							className="hidden rounded-full px-6 font-bold sm:inline-flex"
-						>
-							<Link href="/contact">Book a call</Link>
-						</Button>
+						<BookCallButton className="hidden rounded-full px-6 font-bold sm:inline-flex">
+							Book a call
+						</BookCallButton>
 						<MobileNav navItems={primaryNavItems} />
 					</div>
 				</div>

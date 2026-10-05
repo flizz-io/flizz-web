@@ -109,6 +109,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
 				heading={`Thinking about ${service.title}?`}
 				lead="Bring the problem rather than a spec. A free discovery call will tell you whether this is the right answer, or whether something smaller would do."
 				ctaLabel="Book a discovery call →"
+				booking
 			/>
 		</>
 	);
