@@ -1,9 +1,8 @@
-import Link from 'next/link';
-
+import { BookCallButton } from '@/components/snippets/book-call/book-call-button';
+import { ChatButton } from '@/components/snippets/chat-button/chat-button';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { articlesCtaHeading, articlesCtaLead } from '@/constants/articles';
-import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface ArticlesCtaProps {
@@ -56,19 +55,25 @@ export function ArticlesCta({
 
 				<Reveal
 					delay={140}
-					className="relative mt-10 flex items-center justify-center"
+					className="relative mt-10 flex flex-wrap items-center justify-center gap-3"
 				>
 					<span
 						aria-hidden
 						className="pointer-events-none absolute inset-x-0 h-px origin-center scale-x-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent transition-transform duration-[1600ms] ease-power-on group-data-[revealed=true]/reveal:scale-x-100"
 					/>
-					<Button
-						asChild
+					<ChatButton
 						size="lg"
 						className="relative h-12 px-7 text-base shadow-[0_0_40px_-12px_var(--color-primary)]"
 					>
-						<Link href="/contact">Start a conversation →</Link>
-					</Button>
+						Start a conversation →
+					</ChatButton>
+					<BookCallButton
+						size="lg"
+						variant="outline"
+						className="relative h-12 bg-background/60 px-7 text-base backdrop-blur-sm"
+					>
+						Book a call
+					</BookCallButton>
 				</Reveal>
 			</div>
 		</section>

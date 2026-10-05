@@ -4,6 +4,7 @@ import { Menu } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
+import { BookCallButton } from '@/components/snippets/book-call/book-call-button';
 import type { NavItem } from '@/types/nav';
 import { Button } from '@workspace/ui/components/button';
 import {
@@ -59,6 +60,15 @@ export function MobileNav({ navItems }: MobileNavProps) {
 						</SheetClose>
 					))}
 				</nav>
+				<div className="mt-auto p-4">
+					<BookCallButton
+						size="lg"
+						className="h-12 w-full rounded-full text-base font-bold"
+						onOpen={() => setOpen(false)}
+					>
+						Book a call
+					</BookCallButton>
+				</div>
 			</SheetContent>
 		</Sheet>
 	);

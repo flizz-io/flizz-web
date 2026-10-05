@@ -65,6 +65,9 @@ export function useTurnstile(siteKey: string) {
 							pendingRef.current = null;
 						},
 						'error-callback': (code) => {
+							// Cloudflare's code says why — 110200 is a hostname
+							// missing from the widget's list in its dashboard.
+							console.warn(`Turnstile error ${code}`);
 							pendingRef.current?.reject(
 								new Error(`Turnstile error ${code}`)
 							);
@@ -72,8 +75,9 @@ export function useTurnstile(siteKey: string) {
 						}
 					}) ?? null;
 			})
-			.catch(() => {
+			.catch((error: unknown) => {
 				// Left without a widget, `getToken` rejects and the form says so.
+				console.warn('Turnstile did not start:', error);
 			});
 
 		return () => {

@@ -3,9 +3,9 @@
 import { motion, type Variants } from 'framer-motion';
 import { ArrowDown, Sparkle } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
 
 import { HeroAtmosphere } from '@/components/features/home/hero-atmosphere';
+import { BookCallButton } from '@/components/snippets/book-call/book-call-button';
 import {
 	heroDisciplinesSceneConfig,
 	heroScrollTargetId
@@ -13,7 +13,6 @@ import {
 import { useSmoother } from '@/contexts/smooth-scroll-context';
 import { scaleVariants } from '@/utils/animation';
 import { scrollToElement } from '@/utils/scroll';
-import { Button } from '@workspace/ui/components/button';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 
 // Three.js is heavy — keep it out of the initial bundle.
@@ -97,15 +96,12 @@ export function HeroConstellation() {
 						variants={reduceMotion ? undefined : item}
 						className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4"
 					>
-						<Button
-							asChild
+						<BookCallButton
 							size="lg"
 							className="h-11 px-6 text-base"
 						>
-							<Link href="/contact">
-								Schedule a Discovery Call →
-							</Link>
-						</Button>
+							Schedule a Discovery Call →
+						</BookCallButton>
 
 						<button
 							type="button"

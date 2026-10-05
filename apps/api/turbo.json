@@ -1,0 +1,34 @@
+{
+	"$schema": "https://turbo.build/schema.json",
+	"extends": ["//"],
+	"tasks": {
+		"build": {
+			"passThroughEnv": [
+				"TRUST_PROXY_HOPS",
+				"GOOGLE_CLIENT_ID",
+				"SESSION_SECRET",
+				"SUPER_ADMIN_EMAIL",
+				"CORS_ORIGINS",
+				"MEDIA_PROVIDER",
+				"MEDIA_STORAGE_DIR",
+				"MEDIA_PUBLIC_BASE_URL",
+				"CLOUDINARY_CLOUD_NAME",
+				"CLOUDINARY_API_KEY",
+				"CLOUDINARY_API_SECRET",
+				"CLOUDINARY_FOLDER",
+				"WEB_URL",
+				"WEB_REVALIDATE_SECRET",
+				"SENTRY_DSN",
+				"VERCEL_ENV",
+				"TURNSTILE_SECRET_KEY",
+				"SMTP_HOST",
+				"SMTP_PORT",
+				"SMTP_USER",
+				"SMTP_PASSWORD",
+				"CONTACT_NOTIFY_TO",
+				"CONTACT_SLACK_WEBHOOK_URL",
+				"DASHBOARD_URL"
+			]
+		}
+	}
+}

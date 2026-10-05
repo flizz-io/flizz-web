@@ -3,12 +3,11 @@
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ArrowDown } from 'lucide-react';
-import Link from 'next/link';
 import { Fragment, useRef } from 'react';
 
+import { BookCallButton } from '@/components/snippets/book-call/book-call-button';
 import { heroCinematicCopy, socialProofLogos } from '@/constants/home';
 import type { HeroFacts } from '@/types/home';
-import { Button } from '@workspace/ui/components/button';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { cn } from '@workspace/ui/lib/utils';
 
@@ -276,15 +275,12 @@ export function HeroCinematicCopy({
 				className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4"
 			>
 				<Magnetic>
-					<Button
-						asChild
+					<BookCallButton
 						size="lg"
 						className="h-12 rounded-full px-7 text-base"
 					>
-						<Link href="/contact">
-							{heroCinematicCopy.primaryAction}
-						</Link>
-					</Button>
+						{heroCinematicCopy.primaryAction}
+					</BookCallButton>
 				</Magnetic>
 
 				<button

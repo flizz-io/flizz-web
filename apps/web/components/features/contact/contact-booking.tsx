@@ -1,19 +1,19 @@
-import { ArrowUp, Check } from 'lucide-react';
+import { ArrowUp, CalendarDays, Check } from 'lucide-react';
 
+import { BookCallButton } from '@/components/snippets/book-call/book-call-button';
 import { EmptyState } from '@/components/snippets/empty-state/empty-state';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { ScrollLink } from '@/components/snippets/scroll-link/scroll-link';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { contactIntegrations } from '@/configs/contact';
 import { siteConfig } from '@/configs/site';
+import { bookCallCardCopy } from '@/constants/booking';
 import {
 	contactBookingPoints,
 	contactBookingSlotLabel,
 	contactFormAnchorId
 } from '@/constants/contact';
 import { cn } from '@workspace/ui/lib/utils';
-
-import { ContactCalendly } from './contact-calendly';
 
 interface ContactBookingProps {
 	sectionIndex: number;
@@ -22,9 +22,10 @@ interface ContactBookingProps {
 }
 
 /**
- * The faster path, for people who would rather talk than write. The slot holds
- * Calendly's scheduler (`NEXT_PUBLIC_CALENDLY_URL`) — until that's set it says
- * so plainly rather than standing in with a fake calendar.
+ * The faster path, for people who would rather talk than write. The card opens
+ * Calendly's scheduler in a popup (`NEXT_PUBLIC_CALENDLY_URL`), so choosing a
+ * time never reflows the page — until that's set it says so plainly rather
+ * than standing in with a fake calendar.
  */
 export function ContactBooking({
 	sectionIndex,
@@ -77,7 +78,32 @@ export function ContactBooking({
 
 				<Reveal delay={80}>
 					{contactIntegrations.calendlyUrl ? (
-						<ContactCalendly />
+						<div className="relative overflow-hidden rounded-2xl border border-border bg-card/40 p-8 backdrop-blur-sm sm:p-10">
+							<span
+								aria-hidden
+								className="pointer-events-none absolute -top-24 -right-24 size-64 rounded-full bg-primary/15 blur-3xl"
+							/>
+							<div className="relative">
+								<span className="inline-flex size-12 items-center justify-center rounded-xl border border-primary/30 bg-primary/10 text-primary">
+									<CalendarDays className="size-6" />
+								</span>
+								<p className="mt-6 font-mono text-xs tracking-[0.15em] text-muted-foreground uppercase">
+									{bookCallCardCopy.eyebrow}
+								</p>
+								<h3 className="mt-2 font-heading text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+									{bookCallCardCopy.title}
+								</h3>
+								<p className="mt-3 max-w-md text-base text-pretty text-muted-foreground">
+									{bookCallCardCopy.description}
+								</p>
+								<BookCallButton
+									size="lg"
+									className="mt-8 h-12 px-7 text-base shadow-[0_0_40px_-12px_var(--color-primary)]"
+								>
+									{bookCallCardCopy.action} →
+								</BookCallButton>
+							</div>
+						</div>
 					) : (
 						<EmptyState
 							className="min-h-72 justify-center bg-card/40 backdrop-blur-sm"
