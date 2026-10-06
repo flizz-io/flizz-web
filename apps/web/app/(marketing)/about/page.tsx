@@ -8,13 +8,15 @@ import { AboutOperating } from '@/components/features/about/about-operating';
 import { AboutOrigin } from '@/components/features/about/about-origin';
 import { AboutTeam } from '@/components/features/about/about-team';
 import { AboutValues } from '@/components/features/about/about-values';
+import { staticPageSeo } from '@/constants/seo';
+import { RoutePath } from '@/enums/routes';
+import { buildPageMetadata } from '@/utils/metadata';
 import { getAboutTeam } from '@/utils/team-api';
 
-export const metadata: Metadata = {
-	title: 'About',
-	description:
-		'Flizz started in 2024 building its own products, and moved into services from there. Seven people, four of them founders, and the terms of every engagement stated up front.'
-};
+export const metadata: Metadata = buildPageMetadata({
+	...staticPageSeo[RoutePath.ABOUT],
+	path: RoutePath.ABOUT
+});
 
 export default async function AboutPage() {
 	const team = await getAboutTeam();

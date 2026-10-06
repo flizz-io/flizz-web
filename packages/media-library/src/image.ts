@@ -18,6 +18,13 @@ export const imagePresets = {
 	projectCover: { width: 1600, height: 1000, fit: 'inside', quality: 82 },
 	/** Project gallery images — nothing cropped away. */
 	projectGallery: { width: 1600, height: 1200, fit: 'inside', quality: 82 },
+	/**
+	 * Article covers — 16:9, cropped to fill. The detail banner (21:9) and the
+	 * list thumbnails crop again from the centre.
+	 */
+	articleCover: { width: 1920, height: 1080, fit: 'cover', quality: 82 },
+	/** Diagrams and screenshots in an article body — nothing cropped away. */
+	articleBodyImage: { width: 1600, height: 1600, fit: 'inside', quality: 82 },
 	/** Share images (Open Graph) — the 1200 × 630 card every network expects. */
 	shareImage: { width: 1200, height: 630, fit: 'cover', quality: 82 }
 } as const satisfies Record<string, ImagePreset>;

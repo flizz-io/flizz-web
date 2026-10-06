@@ -68,16 +68,6 @@ export const serviceFieldLimits = {
 	seoDescription: 200
 } as const;
 
-/** Where search engines start cutting — the counters warn past these. */
-export const searchSnippetTargets = {
-	titleMax: 60,
-	descriptionMin: 140,
-	descriptionMax: 160
-} as const;
-
-/** The share image — docs/requirements/services-crud.md#fields. */
-export const shareImageSize = { width: 1200, height: 630 } as const;
-
 /** The public page a service lives at, for the search preview. */
 export const serviceSiteUrl = (slug: string) =>
 	`${process.env.NEXT_PUBLIC_SITE_URL ?? ''}/services/${slug}`;
@@ -154,7 +144,6 @@ export const serviceFormMessages = {
 		seoDescription: 'SEO description',
 		seoDescriptionHint: (min: number, max: number) =>
 			`${min}–${max} characters read best.`,
-		searchPreview: 'Search result preview',
 		shareImage: 'Share image',
 		shareImageHint:
 			'Shown when the page is shared on LinkedIn, X, Slack… Without one, a card is generated from the title.',

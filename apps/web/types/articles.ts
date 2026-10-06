@@ -1,27 +1,22 @@
 import type { ArticleCategory } from '@/enums/articles';
+import type { TeamMemberLinks } from '@/types/about';
+import type { PublicArticleBlock } from '@workspace/api-services';
 
 /**
- * One unit of article body. A discriminated union rather than HTML, matching
- * the project convention that rich text is persisted as JSON — so the renderer
- * written against this keeps working when the CRUD supplies the same shape.
+ * One unit of article body — the API's JSON, as stored. A discriminated union
+ * rather than HTML, so the renderer's switch is exhaustive over it.
  */
-export type ArticleBlock =
-	| { type: 'paragraph'; text: string }
-	| { type: 'heading'; level: 2 | 3; text: string }
-	| { type: 'list'; ordered?: boolean; items: string[] }
-	| { type: 'quote'; text: string; attribution?: string }
-	| { type: 'code'; language: string; code: string }
-	| {
-			type: 'image';
-			/** Absent until real artwork lands; the slot renders as reserved. */
-			src?: string;
-			/** Always required — diagrams and GIFs carry meaning, not decoration. */
-			alt: string;
-			caption?: string;
-			/** Frame shape. Diagrams are usually wider than they are tall. */
-			aspect?: '16/9' | '4/3' | '1/1';
-	  };
+export type ArticleBlock = PublicArticleBlock;
 
+/** The named byline — someone from the About page roster. */
+export interface ArticleAuthor {
+	name: string;
+	role: string;
+	photo?: string;
+	links: TeamMemberLinks;
+}
+
+/** A list row, related row or static param — everything but the body. */
 export interface Article {
 	/** Route segment: /articles/[slug]. */
 	slug: string;
@@ -35,14 +30,27 @@ export interface Article {
 	 * freely without a schema change.
 	 */
 	tags: string[];
-	/** ISO date. The list is ordered by this. */
+	/** ISO date-time. The list is ordered by this. */
 	publishedAt: string;
-	/** Matched by name against `aboutTeam`; unused when the byline is COMPANY. */
-	author: string;
-	body: ArticleBlock[];
+	/** ISO date-time — `article:modified_time` and `dateModified`. */
+	updatedAt: string;
+	/** Absent → the company byline. */
+	author?: ArticleAuthor;
 	/**
 	 * Path to a real cover image. Unfilled slots render the registration marks
 	 * used elsewhere on the site rather than invented art.
 	 */
 	coverImage?: string;
+	/** Computed by the API from the body on every read, never stored. */
+	readingMinutes: number;
+}
+
+/** The detail page — the body plus its search and share overrides. */
+export interface ArticleDetail extends Article {
+	body: ArticleBlock[];
+	seoTitle?: string;
+	seoDescription?: string;
+	/** An uploaded share image, used before the cover and the generated card. */
+	ogImage?: string;
+	noindex?: boolean;
 }

@@ -1,4 +1,4 @@
-import { serviceFormMessages } from '@/constants/services';
+import { seoMessages } from '@/constants/seo';
 
 interface SearchResultPreviewProps {
 	url: string;
@@ -15,7 +15,7 @@ export function SearchResultPreview({
 	return (
 		<figure className="flex flex-col gap-2">
 			<figcaption className="text-sm font-medium">
-				{serviceFormMessages.fields.searchPreview}
+				{seoMessages.searchPreview}
 			</figcaption>
 			<div className="flex flex-col gap-1 rounded-lg border bg-muted/30 p-4">
 				<p className="truncate text-xs text-muted-foreground">{url}</p>

@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react';
 
-import { SearchResultPreview } from '@/components/features/services/search-result-preview';
 import { FormField } from '@/components/snippets/form-field/form-field';
+import { SearchResultPreview } from '@/components/snippets/search-result-preview/search-result-preview';
 import { SectionCard } from '@/components/snippets/section-card/section-card';
+import { SeoCounter } from '@/components/snippets/seo-counter/seo-counter';
+import { searchSnippetTargets as targets } from '@/constants/seo';
 import {
-	searchSnippetTargets as targets,
 	serviceFieldLimits as limits,
 	serviceFormMessages,
 	serviceSiteUrl
@@ -12,7 +13,6 @@ import {
 import type { ServiceSectionProps } from '@/types/service-form';
 import { Input } from '@workspace/ui/components/input';
 import { Textarea } from '@workspace/ui/components/textarea';
-import { cn } from '@workspace/ui/lib/utils';
 
 interface ServiceSeoSectionProps extends ServiceSectionProps {
 	/** The share image controls — only once the service exists. */
@@ -20,23 +20,6 @@ interface ServiceSeoSectionProps extends ServiceSectionProps {
 }
 
 const { fields, sections } = serviceFormMessages;
-
-/** "58 / 70", red once search results would cut it. */
-function Counter({
-	length,
-	max,
-	warn
-}: {
-	length: number;
-	max: number;
-	warn: boolean;
-}) {
-	return (
-		<span className={cn(warn && 'font-medium text-destructive')}>
-			{length} / {max}
-		</span>
-	);
-}
 
 /** SEO title and description, a search preview, and the share image. */
 export function ServiceSeoSection({
@@ -59,7 +42,7 @@ export function ServiceSeoSection({
 				hint={fields.seoTitleHint(targets.titleMax)}
 				error={errors.seoTitle}
 				aside={
-					<Counter
+					<SeoCounter
 						length={titleLength}
 						max={limits.seoTitle}
 						warn={titleLength > targets.titleMax}
@@ -86,7 +69,7 @@ export function ServiceSeoSection({
 				)}
 				error={errors.seoDescription}
 				aside={
-					<Counter
+					<SeoCounter
 						length={descriptionLength}
 						max={limits.seoDescription}
 						warn={

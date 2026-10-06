@@ -3,14 +3,12 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 
-import { articles } from '@/constants/articles';
 import {
 	ArticleCategory,
 	ArticleFilterParam,
 	ArticleSort
 } from '@/enums/articles';
 import type { Article } from '@/types/articles';
-import { getReadingMinutes } from '@/utils/articles';
 
 function isSort(value: string | null): value is ArticleSort {
 	return Object.values(ArticleSort).some((entry) => entry === value);
@@ -47,14 +45,14 @@ function matchesQuery(article: Article, query: string): boolean {
 /**
  * Filter state lives in the query string rather than component state, so a
  * filtered view can be linked to, survives a refresh, and the back button
- * behaves. It also means the contract is already in place when the API takes
- * over filtering at Stage 13.
+ * behaves. The list itself comes from the page (the API's published articles),
+ * so filtering stays instant on the client.
  *
  * Categories and tags are both multi-select. Within one facet the selections
  * are OR-ed — picking Engineering and AI widens the result — while the facets
  * themselves are AND-ed, which is what a reader means by narrowing.
  */
-export function useArticleFilters() {
+export function useArticleFilters(articles: Article[]) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
@@ -133,7 +131,7 @@ export function useArticleFilters() {
 			[...new Set(articles.flatMap((article) => article.tags))].sort(
 				(a, b) => a.localeCompare(b)
 			),
-		[]
+		[articles]
 	);
 
 	const results = useMemo(() => {
@@ -162,18 +160,14 @@ export function useArticleFilters() {
 				case ArticleSort.OLDEST:
 					return a.publishedAt.localeCompare(b.publishedAt);
 				case ArticleSort.LONGEST:
-					return (
-						getReadingMinutes(b.body) - getReadingMinutes(a.body)
-					);
+					return b.readingMinutes - a.readingMinutes;
 				case ArticleSort.SHORTEST:
-					return (
-						getReadingMinutes(a.body) - getReadingMinutes(b.body)
-					);
+					return a.readingMinutes - b.readingMinutes;
 				case ArticleSort.NEWEST:
 					return b.publishedAt.localeCompare(a.publishedAt);
 			}
 		});
-	}, [query, selectedCategories, selectedTags, sort]);
+	}, [articles, query, selectedCategories, selectedTags, sort]);
 
 	const isFiltered = Boolean(
 		query || selectedCategories.length || selectedTags.length

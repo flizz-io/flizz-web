@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+
 import { Faq } from '@/components/features/home/faq';
 import { FinalCta } from '@/components/features/home/final-cta';
 import { Hero } from '@/components/features/home/hero';
@@ -11,11 +13,21 @@ import { Testimonials } from '@/components/features/home/testimonials';
 import { WhoWeBuildFor } from '@/components/features/home/who-we-build-for';
 import { WhyUs } from '@/components/features/home/why-us';
 import { SectionReveals } from '@/components/snippets/section-reveals/section-reveals';
+import { staticPageSeo } from '@/constants/seo';
+import { RoutePath } from '@/enums/routes';
+import { buildPageMetadata } from '@/utils/metadata';
 import { portfolioMetaOf, sinceYearOf } from '@/utils/portfolio';
 import { getHomeProjects, getPortfolioProjects } from '@/utils/projects-api';
 import { serviceCategoryCardsOf } from '@/utils/services';
 import { getCatalogueServices } from '@/utils/services-api';
 import { getHomeTestimonials } from '@/utils/testimonials-api';
+
+export const metadata: Metadata = buildPageMetadata({
+	...staticPageSeo[RoutePath.HOME],
+	path: RoutePath.HOME,
+	// Already leads with what the company does and ends with the brand.
+	absoluteTitle: true
+});
 
 export default async function HomePage() {
 	const [homeProjects, projects, services, testimonials] = await Promise.all([

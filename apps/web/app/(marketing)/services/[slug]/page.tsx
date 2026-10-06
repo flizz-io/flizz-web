@@ -10,6 +10,8 @@ import { ServicesCta } from '@/components/features/services/services-cta';
 import { TrackContentView } from '@/components/snippets/analytics/track-content-view';
 import { serviceDetailBackNav } from '@/constants/services';
 import { ContentType } from '@/enums/analytics';
+import { RoutePath } from '@/enums/routes';
+import { buildPageMetadata } from '@/utils/metadata';
 import {
 	getCatalogueService,
 	getCatalogueServices,
@@ -38,13 +40,11 @@ export async function generateMetadata({
 
 	if (!service) return {};
 
-	return {
+	return buildPageMetadata({
 		title: service.seoTitle ?? service.title,
 		description: service.seoDescription ?? service.summary,
-		...(service.ogImage
-			? { openGraph: { images: [{ url: service.ogImage }] } }
-			: {})
-	};
+		path: `${RoutePath.SERVICES}/${service.slug}`
+	});
 }
 
 export default async function ServicePage({ params }: ServicePageProps) {

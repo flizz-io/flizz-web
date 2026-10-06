@@ -11,6 +11,9 @@ import { ProjectRelated } from '@/components/features/portfolio/project-related'
 import { TrackContentView } from '@/components/snippets/analytics/track-content-view';
 import { siteConfig } from '@/configs/site';
 import { ContentType } from '@/enums/analytics';
+import { RoutePath } from '@/enums/routes';
+import { OgType } from '@/enums/seo';
+import { buildPageMetadata } from '@/utils/metadata';
 import { getProjectService } from '@/utils/portfolio';
 import {
 	getPortfolioProject,
@@ -40,27 +43,14 @@ export async function generateMetadata({
 
 	if (!project) return {};
 
-	const url = `${siteConfig.url}/portfolio/${project.slug}`;
-
-	return {
+	return buildPageMetadata({
 		title: project.name,
 		description: project.summary,
+		path: `${RoutePath.PORTFOLIO}/${project.slug}`,
+		type: OgType.ARTICLE,
 		keywords: [project.sector, project.service, siteConfig.name],
-		alternates: { canonical: url },
-		openGraph: {
-			type: 'article',
-			url,
-			siteName: siteConfig.fullname,
-			title: project.name,
-			description: project.summary,
-			section: project.sector
-		},
-		twitter: {
-			card: 'summary_large_image',
-			title: project.name,
-			description: project.summary
-		}
-	};
+		article: { section: project.sector }
+	});
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {

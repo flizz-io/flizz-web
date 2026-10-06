@@ -3,10 +3,12 @@ import type { ReactNode } from 'react';
 
 import { Atmosphere } from '@/components/snippets/atmosphere/atmosphere';
 import { Reveal } from '@/components/snippets/reveal/reveal';
-import { articles, articlesHeroLead } from '@/constants/articles';
+import { articlesHeroLead } from '@/constants/articles';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface ArticlesHeroProps {
+	/** The newest article's date; the "Last updated" line drops out without one. */
+	latestPublishedAt?: string;
 	/** Browse controls, docked to the foot of the masthead. */
 	children?: ReactNode;
 	className?: string;
@@ -24,11 +26,11 @@ interface ArticlesHeroProps {
  * component: they read the query string, which takes them out of the
  * prerendered HTML, and the heading shouldn't go with them.
  */
-export function ArticlesHero({ children, className }: ArticlesHeroProps) {
-	const latest = articles.reduce((newest, article) =>
-		article.publishedAt > newest.publishedAt ? article : newest
-	);
-
+export function ArticlesHero({
+	latestPublishedAt,
+	children,
+	className
+}: ArticlesHeroProps) {
 	return (
 		<section
 			className={cn(
@@ -52,17 +54,19 @@ export function ArticlesHero({ children, className }: ArticlesHeroProps) {
 						    is actually judging on an articles index. The count
 						    lives on the index header, where it answers to the
 						    filters. */}
-						<p className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
-							Last updated
-							<span className="ml-3 text-foreground">
-								{new Date(
-									latest.publishedAt
-								).toLocaleDateString('en-GB', {
-									month: 'long',
-									year: 'numeric'
-								})}
-							</span>
-						</p>
+						{latestPublishedAt ? (
+							<p className="font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
+								Last updated
+								<span className="ml-3 text-foreground">
+									{new Date(
+										latestPublishedAt
+									).toLocaleDateString('en-GB', {
+										month: 'long',
+										year: 'numeric'
+									})}
+								</span>
+							</p>
+						) : null}
 					</div>
 
 					<div className="mt-8 grid gap-x-14 gap-y-6 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-end">

@@ -6,10 +6,13 @@ import Link from 'next/link';
 import { MediaSlot } from '@/components/snippets/media-slot/media-slot';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { useArticleFilters } from '@/hooks/use-article-filters';
-import { formatArticleDate, getReadingMinutes } from '@/utils/articles';
+import type { Article } from '@/types/articles';
+import { formatArticleDate } from '@/utils/articles';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface ArticlesResultsProps {
+	/** Every published article, newest first. */
+	articles: Article[];
 	sectionIndex: number;
 	totalSections?: number;
 	className?: string;
@@ -28,11 +31,12 @@ interface ArticlesResultsProps {
  * deliberately narrowed makes the result look wrong.
  */
 export function ArticlesResults({
+	articles,
 	sectionIndex,
 	totalSections,
 	className
 }: ArticlesResultsProps) {
-	const { results, isFiltered, clear } = useArticleFilters();
+	const { results, isFiltered, clear } = useArticleFilters(articles);
 
 	const [featured, ...rest] = results;
 	const rows = isFiltered ? results : rest;
@@ -100,7 +104,7 @@ export function ArticlesResults({
 									{formatArticleDate(featured.publishedAt)}
 								</time>
 								<span className="text-border">·</span>
-								{getReadingMinutes(featured.body)} min read
+								{featured.readingMinutes} min read
 							</p>
 							<h2 className="mt-5 font-heading text-3xl font-semibold tracking-tight text-balance text-foreground transition-colors group-hover/lead:text-primary sm:text-4xl">
 								{featured.title}
@@ -162,7 +166,7 @@ export function ArticlesResults({
 									<span className="flex items-center gap-4 font-mono text-[0.6rem] tracking-[0.18em] text-muted-foreground uppercase">
 										{article.category}
 										<span className="text-border">·</span>
-										{getReadingMinutes(article.body)} min
+										{article.readingMinutes} min
 										<ArrowUpRight className="size-4 shrink-0 transition-transform group-hover/row:translate-x-0.5 group-hover/row:-translate-y-0.5 group-hover/row:text-primary" />
 									</span>
 								</Link>

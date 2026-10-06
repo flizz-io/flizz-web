@@ -43,6 +43,8 @@ enum MediaPurpose {
   ARTICLE_IMAGE
   /// A service's share image (Open Graph), 1200 × 630.
   SERVICE_OG_IMAGE
+  /// An article's share image (Open Graph), 1200 × 630.
+  ARTICLE_OG_IMAGE
 
   @@map("media_purpose")
 }
@@ -201,6 +203,7 @@ model MediaFile {
   projectCovers   Project[]      @relation("ProjectCover")
   projectImages   ProjectImage[] @relation("ProjectImageMedia")
   articleCovers   Article[]      @relation("ArticleCover")
+  articleOgImages Article[]      @relation("ArticleOgImage")
   serviceOgImages Service[]      @relation("ServiceOgImage")
 
   @@map("media_files")
@@ -369,6 +372,16 @@ model Article {
   /// a name so a roster rename can't silently drop it.
   authorId     Int?            @map("author_id")
 
+  // Search & social (SEO5) — each falls back to the content when empty.
+  /// ≤ 70 chars; empty → `title`.
+  seoTitle       String? @map("seo_title")
+  /// ≤ 200 chars; empty → `excerpt`.
+  seoDescription String? @map("seo_description")
+  /// 1200 × 630 share image; empty → the cover, then the generated card.
+  ogImageId      Int?    @map("og_image_id")
+  /// Keeps the page out of search results and the sitemap.
+  noindex        Boolean @default(false)
+
   status           PublishStatus @default(DRAFT)
   /// Optional go-live time; in the future → hidden until then.
   publishAt        DateTime?     @map("publish_at") @db.Timestamptz(3)
@@ -384,6 +397,7 @@ model Article {
   deletedById Int?      @map("deleted_by_id")
 
   coverImage MediaFile? @relation("ArticleCover", fields: [coverImageId], references: [id])
+  ogImage    MediaFile? @relation("ArticleOgImage", fields: [ogImageId], references: [id])
   author     User?      @relation("ArticleAuthor", fields: [authorId], references: [id])
   createdBy  User?      @relation("ArticleCreatedBy", fields: [createdById], references: [id])
   updatedBy  User?      @relation("ArticleUpdatedBy", fields: [updatedById], references: [id])

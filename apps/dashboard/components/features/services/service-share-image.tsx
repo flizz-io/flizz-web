@@ -7,7 +7,8 @@ import { toast } from 'sonner';
 
 import { ImageUploader } from '@/components/snippets/image-uploader/image-uploader';
 import { uploadLimitsKb } from '@/constants/media';
-import { serviceFormMessages, shareImageSize } from '@/constants/services';
+import { shareImageSize } from '@/constants/seo';
+import { serviceFormMessages } from '@/constants/services';
 import {
 	clearServiceOgImageService,
 	ImageFit,

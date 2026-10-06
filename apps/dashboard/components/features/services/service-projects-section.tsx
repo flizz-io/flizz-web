@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
-import { VisibilityBadge } from '@/components/features/projects/visibility-badge';
 import { SectionCard } from '@/components/snippets/section-card/section-card';
+import { VisibilityBadge } from '@/components/snippets/visibility-badge/visibility-badge';
 import { projectPath } from '@/constants/projects';
 import { serviceFormMessages } from '@/constants/services';
 import type { ServiceProject } from '@workspace/api-services';

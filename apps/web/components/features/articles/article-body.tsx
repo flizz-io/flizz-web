@@ -1,7 +1,9 @@
 import { Fragment, type ReactNode } from 'react';
 
+import { InlineContent } from '@/components/features/articles/inline-content';
 import { MediaSlot } from '@/components/snippets/media-slot/media-slot';
 import type { ArticleBlock } from '@/types/articles';
+import { ArticleBlockType } from '@workspace/api-services';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface ArticleBodyProps {
@@ -33,14 +35,14 @@ export function ArticleBody({ body, className, children }: ArticleBodyProps) {
 
 function renderBlock(block: ArticleBlock) {
 	switch (block.type) {
-		case 'paragraph':
+		case ArticleBlockType.PARAGRAPH:
 			return (
 				<p className="mt-6 text-lg leading-relaxed text-pretty text-muted-foreground first:mt-0">
-					{block.text}
+					<InlineContent content={block.content} />
 				</p>
 			);
 
-		case 'heading':
+		case ArticleBlockType.HEADING:
 			return block.level === 2 ? (
 				<h2 className="mt-14 font-heading text-2xl font-semibold tracking-tight text-balance text-foreground sm:text-3xl">
 					{block.text}
@@ -51,13 +53,15 @@ function renderBlock(block: ArticleBlock) {
 				</h3>
 			);
 
-		case 'list': {
-			const items = block.items.map((item) => (
+		case ArticleBlockType.LIST: {
+			const items = block.items.map((item, index) => (
 				<li
-					key={item}
+					// Items have no identity beyond their position.
+
+					key={index}
 					className="pl-2 text-lg leading-relaxed text-pretty text-muted-foreground marker:text-primary"
 				>
-					{item}
+					<InlineContent content={item} />
 				</li>
 			));
 
@@ -68,11 +72,11 @@ function renderBlock(block: ArticleBlock) {
 			);
 		}
 
-		case 'quote':
+		case ArticleBlockType.QUOTE:
 			return (
 				<figure className="mt-10 border-l-2 border-primary/50 pl-6">
 					<blockquote className="font-serif text-xl leading-snug text-pretty text-foreground italic sm:text-2xl">
-						{block.text}
+						<InlineContent content={block.content} />
 					</blockquote>
 					{block.attribution ? (
 						<figcaption className="mt-3 font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
@@ -82,7 +86,7 @@ function renderBlock(block: ArticleBlock) {
 				</figure>
 			);
 
-		case 'image':
+		case ArticleBlockType.IMAGE:
 			return (
 				<figure className="mt-10">
 					<div
@@ -103,7 +107,7 @@ function renderBlock(block: ArticleBlock) {
 				</figure>
 			);
 
-		case 'code':
+		case ArticleBlockType.CODE:
 			return (
 				<div className="mt-8 overflow-hidden rounded-lg border border-border bg-card/60">
 					<div className="flex items-center justify-between border-b border-border px-4 py-2">

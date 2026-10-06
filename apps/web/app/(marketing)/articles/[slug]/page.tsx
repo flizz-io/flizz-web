@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 
 import { ArticleBody } from '@/components/features/articles/article-body';
 import { ArticleBylineCard } from '@/components/features/articles/article-byline';
@@ -15,92 +15,135 @@ import {
 	articleByline,
 	articleComments,
 	articleEngagement,
-	articleEngagementOptions,
-	articles
+	articleEngagementOptions
 } from '@/constants/articles';
 import { ContentType } from '@/enums/analytics';
-import { getReadingMinutes } from '@/utils/articles';
+import { RoutePath } from '@/enums/routes';
+import { OgType } from '@/enums/seo';
+import type { ArticleDetail } from '@/types/articles';
+import {
+	getArticleRedirect,
+	getPublishedArticle,
+	getPublishedArticles
+} from '@/utils/articles-api';
+import { buildPageMetadata } from '@/utils/metadata';
 
 interface ArticlePageProps {
 	params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-	return articles.map((article) => ({ slug: article.slug }));
+/**
+ * Every published article is built ahead; one published later renders on its
+ * first visit and is cached from then on (`dynamicParams` stays on).
+ */
+export async function generateStaticParams() {
+	return (await getPublishedArticles()).map((article) => ({
+		slug: article.slug
+	}));
 }
+
+const aboutUrl = `${siteConfig.url}${RoutePath.ABOUT}`;
 
 export async function generateMetadata({
 	params
 }: ArticlePageProps): Promise<Metadata> {
 	const { slug } = await params;
-	const article = articles.find((entry) => entry.slug === slug);
+	const article = await getPublishedArticle(slug);
 
 	if (!article) return {};
 
-	const url = `${siteConfig.url}/articles/${article.slug}`;
+	return {
+		...buildPageMetadata({
+			title: article.seoTitle ?? article.title,
+			description: article.seoDescription ?? article.excerpt,
+			path: `${RoutePath.ARTICLES}/${article.slug}`,
+			type: OgType.ARTICLE,
+			noindex: article.noindex,
+			keywords: [article.category, ...article.tags],
+			article: {
+				publishedTime: article.publishedAt,
+				modifiedTime: article.updatedAt,
+				// A profile URL, as `article:author` expects, when someone is named.
+				authors: article.author ? [aboutUrl] : [siteConfig.url],
+				section: article.category,
+				tags: article.tags
+			}
+		}),
+		authors: [
+			article.author
+				? { name: article.author.name, url: aboutUrl }
+				: { name: siteConfig.name, url: siteConfig.url }
+		]
+	};
+}
+
+/** The byline as structured data — a person with their profiles, or the company. */
+function authorSchema(article: ArticleDetail) {
+	if (!article.author) {
+		return {
+			'@type': 'Organization',
+			name: siteConfig.name,
+			url: siteConfig.url
+		};
+	}
+	const sameAs = Object.values(article.author.links).filter(Boolean);
 
 	return {
-		title: article.title,
-		description: article.excerpt,
-		keywords: [article.category, 'software engineering', siteConfig.name],
-		authors: [{ name: article.author }],
-		alternates: { canonical: url },
-		openGraph: {
-			type: 'article',
-			url,
-			siteName: siteConfig.fullname,
-			title: article.title,
-			description: article.excerpt,
-			publishedTime: article.publishedAt,
-			authors: [article.author],
-			section: article.category
-		},
-		twitter: {
-			card: 'summary_large_image',
-			title: article.title,
-			description: article.excerpt
-		}
+		'@type': 'Person',
+		name: article.author.name,
+		...(article.author.role ? { jobTitle: article.author.role } : {}),
+		url: aboutUrl,
+		...(sameAs.length ? { sameAs } : {})
 	};
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
 	const { slug } = await params;
-	const article = articles.find((entry) => entry.slug === slug);
+	const [article, articles] = await Promise.all([
+		getPublishedArticle(slug),
+		getPublishedArticles()
+	]);
 
-	if (!article) notFound();
+	if (!article) {
+		// An old slug of a renamed article answers with a 308 to the new one.
+		const current = await getArticleRedirect(slug);
+		if (current) permanentRedirect(`${RoutePath.ARTICLES}/${current}`);
+		notFound();
+	}
 
-	const related = articles
-		.filter(
-			(entry) =>
-				entry.category === article.category &&
-				entry.slug !== article.slug
-		)
-		.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+	const related = articles.filter(
+		(entry) =>
+			entry.category === article.category && entry.slug !== article.slug
+	);
 
 	// "Keep reading" drops out when nothing else shares the category, so the
 	// counter is built from what actually renders.
 	const totalSections = related.length ? 3 : 2;
-	const url = `${siteConfig.url}/articles/${article.slug}`;
+	const url = `${siteConfig.url}${RoutePath.ARTICLES}/${article.slug}`;
+	const image = article.ogImage ?? article.coverImage;
 
 	// Article and BreadcrumbList, so search results can show the byline, the
-	// date and a crumb trail rather than just a title and a URL.
+	// dates and a crumb trail rather than just a title and a URL.
 	const structuredData = [
 		{
 			'@context': 'https://schema.org',
 			'@type': 'Article',
 			headline: article.title,
-			description: article.excerpt,
+			description: article.seoDescription ?? article.excerpt,
 			datePublished: article.publishedAt,
-			dateModified: article.publishedAt,
-			author: { '@type': 'Person', name: article.author },
+			dateModified: article.updatedAt,
+			author: authorSchema(article),
 			publisher: {
 				'@type': 'Organization',
-				name: siteConfig.fullname,
+				name: siteConfig.name,
+				alternateName: siteConfig.fullname,
 				url: siteConfig.url
 			},
 			mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+			...(image ? { image } : {}),
 			articleSection: article.category,
-			timeRequired: `PT${getReadingMinutes(article.body)}M`,
+			keywords: article.tags.join(', '),
+			timeRequired: `PT${article.readingMinutes}M`,
 			inLanguage: 'en-GB'
 		},
 		{
@@ -117,7 +160,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 					'@type': 'ListItem',
 					position: 2,
 					name: 'Articles',
-					item: `${siteConfig.url}/articles`
+					item: `${siteConfig.url}${RoutePath.ARTICLES}`
 				},
 				{ '@type': 'ListItem', position: 3, name: article.title }
 			]
