@@ -5,6 +5,7 @@
  * `revalidationTags`.
  */
 export enum CacheTag {
+	ARTICLES = 'articles',
 	PROJECTS = 'projects',
 	SERVICES = 'services',
 	TEAM = 'team',
