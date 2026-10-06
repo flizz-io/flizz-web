@@ -1,5 +1,10 @@
 import { Router } from 'express';
 
+import {
+	getPublicArticleBySlug,
+	getPublicArticleRedirect,
+	getPublicArticles
+} from '../controllers/public-article-controller.js';
 import { postContactMessage } from '../controllers/public-contact-controller.js';
 import {
 	getHomeProjects,
@@ -19,6 +24,9 @@ import { publicFormLimiter } from '../middlewares/rate-limit.js';
 export const publicRouter = Router();
 
 publicRouter.get('/team', getPublicTeam);
+publicRouter.get('/articles', getPublicArticles);
+publicRouter.get('/articles/redirects/:slug', getPublicArticleRedirect);
+publicRouter.get('/articles/:slug', getPublicArticleBySlug);
 publicRouter.get('/projects', getPublicProjects);
 // Before `/:slug` — `home` is a reserved slug for this reason.
 publicRouter.get('/projects/home', getHomeProjects);
