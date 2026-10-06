@@ -6,19 +6,19 @@ People now find services two ways: classic search engines, and AI assistants (Ch
 
 ### Where things stand (2026-10-03)
 
-| Item                                               | State                                                                                                                            |
-| -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `metadataBase`, title template, default OG/Twitter | Done, in `app/layout.tsx`                                                                                                        |
-| Per-page `metadata` / `generateMetadata`           | Every page calls `buildPageMetadata()` (`utils/metadata.ts`, SEO1): title, description, canonical, robots, full OG + Twitter set |
-| Home page's own title/description                  | Done — static pages' copy lives in `staticPageSeo` (`constants/seo.ts`)                                                          |
-| JSON-LD                                            | `Article` + `BreadcrumbList` on articles, and on portfolio details. Missing on home and services                                 |
-| Generated OG images                                | Articles and portfolio details. Missing for home, services and the list pages                                                    |
-| `sitemap.xml`                                      | **Missing**                                                                                                                      |
-| `robots.txt`                                       | **Missing**                                                                                                                      |
-| Canonical URLs                                     | Done — set by `buildPageMetadata()` from each page's path                                                                        |
-| Dashboard `noindex`                                | Done, in `apps/dashboard/app/layout.tsx`                                                                                         |
-| Preview deployments kept out of Google             | **Missing**                                                                                                                      |
-| Redirect when a slug changes                       | **Missing**. Slugs are editable, so old links 404                                                                                |
+| Item                                               | State                                                                                                                                                               |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `metadataBase`, title template, default OG/Twitter | Done, in `app/layout.tsx`                                                                                                                                           |
+| Per-page `metadata` / `generateMetadata`           | Every page calls `buildPageMetadata()` (`utils/metadata.ts`, SEO1): title, description, canonical, robots, full OG + Twitter set                                    |
+| Home page's own title/description                  | Done — static pages' copy lives in `staticPageSeo` (`constants/seo.ts`)                                                                                             |
+| JSON-LD                                            | `Article` + `BreadcrumbList` on articles, and on portfolio details. Missing on home and services                                                                    |
+| Generated OG images                                | Done (SEO3) — every page segment has an `opengraph-image.tsx` rendering the shared `ShareCard`; a service's uploaded share image is served from its route as stored |
+| `sitemap.xml`                                      | **Missing**                                                                                                                                                         |
+| `robots.txt`                                       | **Missing**                                                                                                                                                         |
+| Canonical URLs                                     | Done — set by `buildPageMetadata()` from each page's path                                                                                                           |
+| Dashboard `noindex`                                | Done, in `apps/dashboard/app/layout.tsx`                                                                                                                            |
+| Preview deployments kept out of Google             | **Missing**                                                                                                                                                         |
+| Redirect when a slug changes                       | **Missing**. Slugs are editable, so old links 404                                                                                                                   |
 
 ### Tasks, in priority order
 
@@ -48,6 +48,8 @@ Every public page must output the full set below. Search engines use the meta ta
 - Nothing except portfolio and article details has an **OG image**, so their share cards are text-only.
 
 The fix is one helper that every page calls, so no page can forget a field (task SEO1).
+
+**Share images follow the same trap, plus one more.** A page that sets `openGraph` also drops any `opengraph-image` from a parent segment, so every page segment has its own `opengraph-image.tsx`. And in practice (Next 16.2) an `openGraph.images` set in `metadata` **replaces** the route's file-based image, despite the docs saying file-based wins — so `buildPageMetadata()` only sets `images` when a page passes one, and an uploaded share image (services today, articles in AR7) is served from the route itself rather than from `generateMetadata`.
 
 #### Tags every page outputs
 

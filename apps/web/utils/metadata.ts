@@ -5,8 +5,9 @@ import { OgType } from '@/enums/seo';
 import type { PageImage, PageMetadataInput } from '@/types/seo';
 
 /**
- * `{ images }` only when there is one. Even an `images: undefined` key counts
- * as set and hides the route's generated `opengraph-image`.
+ * `{ images }` only when the page passes one. Metadata images outrank the
+ * route's `opengraph-image` file, so even a default here would hide every
+ * generated card — and an `images: undefined` key counts as set too.
  */
 function toImageField(image?: PageImage) {
 	if (!image) return {};
@@ -30,7 +31,8 @@ function toImageField(image?: PageImage) {
  * Next merges metadata shallowly, so a page that sets `openGraph` replaces the
  * root layout's object outright and one that doesn't inherits the home page's
  * title and URL. Building every page's set here means no page can drop a field.
- * Leave `image` out to keep the route's generated `opengraph-image`.
+ * The share image comes from the `opengraph-image` file next to each page; pass
+ * `image` only to replace it.
  */
 export function buildPageMetadata({
 	title,

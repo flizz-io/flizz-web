@@ -33,7 +33,10 @@ export interface PageMetadataInput {
 	absoluteTitle?: boolean;
 	/** `website` unless set. `article` adds the `article:*` tags. */
 	type?: OgType;
-	/** Omit to let the route's generated `opengraph-image` apply. */
+	/**
+	 * Replaces the page's generated `opengraph-image`. Every page segment has
+	 * one, since a page's `openGraph` drops any image inherited from a parent.
+	 */
 	image?: PageImage;
 	/** Keeps a single record out of search results. */
 	noindex?: boolean;
@@ -43,6 +46,8 @@ export interface PageMetadataInput {
 
 /** Search and share copy for a page without a database record. */
 export interface PageSeo {
+	/** Short page name — the eyebrow on the page's generated share card. */
+	label: string;
 	title: string;
 	description: string;
 }

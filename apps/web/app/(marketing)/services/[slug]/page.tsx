@@ -8,7 +8,6 @@ import { ServiceProblem } from '@/components/features/services/service-problem';
 import { ServiceRelated } from '@/components/features/services/service-related';
 import { ServicesCta } from '@/components/features/services/services-cta';
 import { TrackContentView } from '@/components/snippets/analytics/track-content-view';
-import { shareImageSize } from '@/constants/seo';
 import { serviceDetailBackNav } from '@/constants/services';
 import { ContentType } from '@/enums/analytics';
 import { RoutePath } from '@/enums/routes';
@@ -44,10 +43,7 @@ export async function generateMetadata({
 	return buildPageMetadata({
 		title: service.seoTitle ?? service.title,
 		description: service.seoDescription ?? service.summary,
-		path: `${RoutePath.SERVICES}/${service.slug}`,
-		image: service.ogImage
-			? { url: service.ogImage, alt: service.title, ...shareImageSize }
-			: undefined
+		path: `${RoutePath.SERVICES}/${service.slug}`
 	});
 }
 
