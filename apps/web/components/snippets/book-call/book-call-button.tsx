@@ -6,6 +6,7 @@ import type { ComponentProps, MouseEvent } from 'react';
 import { bookCallFallbackHref } from '@/constants/booking';
 import { useBooking } from '@/contexts/booking-context';
 import { useContactPrefill } from '@/contexts/contact-prefill-context';
+import { CtaType } from '@/enums/analytics';
 import { Button } from '@workspace/ui/components/button';
 
 type BookCallButtonProps = Omit<
@@ -47,6 +48,7 @@ export function BookCallButton({
 			<Link
 				href={bookCallFallbackHref}
 				onClick={onClick}
+				data-cta={CtaType.BOOK_CALL}
 			>
 				{children}
 			</Link>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 import { BookCallButton } from '@/components/snippets/book-call/book-call-button';
+import { CtaLocation } from '@/enums/analytics';
 import type { NavItem } from '@/types/nav';
 import { Button } from '@workspace/ui/components/button';
 import {
@@ -40,6 +41,8 @@ export function MobileNav({ navItems }: MobileNavProps) {
 			</SheetTrigger>
 			<SheetContent
 				side="right"
+				// Portalled out of <header>, so it says where it belongs.
+				data-cta-location={CtaLocation.HEADER}
 				className="w-full sm:max-w-xs"
 			>
 				<SheetHeader>

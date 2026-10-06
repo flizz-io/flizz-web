@@ -5,6 +5,7 @@ import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { contactFormAnchorId } from '@/constants/contact';
 import { servicesCtaHeading, servicesCtaLead } from '@/constants/services';
+import { CtaType } from '@/enums/analytics';
 import { sectionHref } from '@/utils/navigation';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
@@ -96,6 +97,7 @@ export function ServicesCta({
 									'/contact',
 									contactFormAnchorId
 								)}
+								data-cta={CtaType.CONTACT}
 							>
 								{ctaLabel}
 							</Link>

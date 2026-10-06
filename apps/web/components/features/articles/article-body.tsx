@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, type ReactNode } from 'react';
 
 import { MediaSlot } from '@/components/snippets/media-slot/media-slot';
 import type { ArticleBlock } from '@/types/articles';
@@ -7,6 +7,8 @@ import { cn } from '@workspace/ui/lib/utils';
 interface ArticleBodyProps {
 	body: ArticleBlock[];
 	className?: string;
+	/** Placed after the blocks — e.g. read-depth markers, positioned in it. */
+	children?: ReactNode;
 }
 
 /**
@@ -18,12 +20,13 @@ interface ArticleBodyProps {
  * The column stays narrow at every width. Long measure is the single thing
  * most likely to make a reading page fail.
  */
-export function ArticleBody({ body, className }: ArticleBodyProps) {
+export function ArticleBody({ body, className, children }: ArticleBodyProps) {
 	return (
-		<div className={cn('mx-auto max-w-2xl', className)}>
+		<div className={cn('relative mx-auto max-w-2xl', className)}>
 			{body.map((block, index) => (
 				<Fragment key={index}>{renderBlock(block)}</Fragment>
 			))}
+			{children}
 		</div>
 	);
 }

@@ -1,6 +1,56 @@
 # Analytics — Google Analytics 4 & Meta Pixel (`apps/web`)
 
-How to add GA4 and the Meta Pixel to the landing app yourself. Nothing here is built yet. The dashboard never gets analytics: it's internal and `noindex`.
+GA4 and the Meta Pixel on the landing app. The dashboard never gets analytics: it's internal and `noindex`.
+
+**Built 2026-10-06** as direct tags (no GTM) behind the consent banner. To switch it on, do step 1 and set the two variables in step 2 — nothing else. Code:
+
+| File                                                                   | What it does                                                                           |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `components/snippets/analytics/analytics.tsx`                          | Mounted once in `app/layout.tsx`; renders GA and the Pixel inside `<WithConsent>`      |
+| `components/snippets/analytics/google-analytics.tsx`, `meta-pixel.tsx` | The tags; the Pixel also sends a PageView on each client-side navigation               |
+| `utils/analytics.ts`                                                   | `trackEvent(AnalyticsEvent.X)`; `setTrackingAllowed()` for a choice changed after load |
+| `constants/analytics.ts`, `configs/analytics.ts`, `enums/analytics.ts` | Snippets, event names per tool, the env-backed IDs                                     |
+
+Every page sends a page view to both tools. On top of that:
+
+| Event (GA4 / Pixel)          | When                                             | Parameters                                                                                       | Where it fires                                    |
+| ---------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
+| `generate_lead` / `Lead`     | Contact form sent                                | —                                                                                                | `hooks/use-contact-form.ts`                       |
+| `schedule_call` / `Schedule` | Call booked in the Calendly popup                | —                                                                                                | `book-call-dialog.tsx`                            |
+| `chat_open` / —              | Crisp chat opened, however it was opened         | —                                                                                                | Crisp snippet (`constants/chat.ts`) → `Analytics` |
+| `view_item` / `ViewContent`  | Service, article or project detail page viewed   | GA: `items[0]` = slug, title, type. Pixel: `content_ids`, `content_name`, `content_category`     | `<TrackContentView>` on each `[slug]` page        |
+| `cta_click` / —              | Click on any element with `data-cta`             | `cta_type` (`book_call`, `start_chat`, `contact`), `cta_text`, `cta_location` (`header`, `page`) | One capture-phase listener in `Analytics`         |
+| `article_read` / —           | Reader reaches 50% and 100% of an article's body | `article_slug`, `percent_read`                                                                   | `<ArticleReadDepth>` inside `ArticleBody`         |
+
+**A new CTA** only needs `data-cta={CtaType.X}`; `BookCallButton` and `ChatButton` already carry it. A region that should report a different location gets `data-cta-location` (the header and the mobile menu have it).
+
+**In GA4 → Admin → Custom definitions**, register `cta_type`, `cta_text`, `cta_location`, `article_slug` and `percent_read` as event-scoped custom dimensions, or the reports won't show them. `view_item` needs nothing: its items show in Reports → Monetization → E-commerce purchases ("Items viewed"). GA's own scroll event (90% of the whole page, footer included) still fires too.
+
+Events sent before a script has loaded wait in a queue (`utils/analytics.ts`) and go out once its snippet fires `flizz:ga-ready` / `flizz:pixel-ready`, so a content view on the page where someone accepts is still counted.
+
+Rejecting in "Cookie settings" after accepting sets GA's `ga-disable-<id>` flag, calls `fbq('consent', 'revoke')` and deletes the `_ga*`, `_gid`, `_fbp` and `_fbc` cookies, without a reload.
+
+## Why direct tags, not Google Tag Manager
+
+Chosen because only GA4 and the Pixel are needed (rule of thumb from step 0: pick GTM if marketing will keep adding tags). Revisit if that changes.
+
+**What direct tags give us**
+
+- **Simpler consent.** The scripts load only after Accept, so nothing reaches Google or Meta before the visitor agrees. With GTM, every tag must be set up correctly in GTM's settings, and one wrongly set-up tag could fire without consent.
+- **Every change is in the repo and reviewed.** Tracking changes go through a commit and PR. No one can quietly add a script to the live site from a separate dashboard.
+- **Less to load.** No GTM script on top of GA and the Pixel, and no tags that someone added in GTM and forgot.
+- **No extra tool to manage.** No GTM account, logins or versions to look after.
+
+**What we can't do without GTM**
+
+- **Add or change tags without a developer.** A LinkedIn Insight tag, TikTok pixel or Google Ads conversion tag needs a code change and a deploy. In GTM, marketing adds it in minutes.
+- **Change what counts as an event without a deploy.** The tracked events (contact form, Calendly booking, chat open) live in code. In GTM, marketing can set up triggers like "clicks on this button", "scrolled 75%" or "visited /pricing" themselves.
+- **Use GTM's preview and rollback.** Tags are checked with GA DebugView and the Meta Pixel Helper instead (section 6).
+- **Run quick marketing experiments.** Short-lived campaign tags, A/B testing tools or heatmaps (e.g. Hotjar) each need a developer.
+
+**Switching to GTM later** is about an hour of work. The site loads only GTM, still inside `<WithConsent>`, and GA4 and the Pixel move into GTM's dashboard. The consent handling and the `trackEvent()` calls mostly stay; `trackEvent()` would push events into GTM (via `dataLayer`), which passes them on to each tool.
+
+The rest of this guide is the original plan, kept for the reasoning and the verification steps.
 
 Before you start, check the Next.js version in `apps/web/package.json` (16.2 when this was written). The bundled docs in `node_modules/next/dist/docs/01-app/02-guides/third-party-libraries.md` are the reference for the `@next/third-parties` API.
 

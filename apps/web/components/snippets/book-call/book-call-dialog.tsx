@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes';
 import { useEffect, useMemo, useState } from 'react';
 
 import { contactIntegrations } from '@/configs/contact';
+import { calendlyScheduledEvent } from '@/constants/analytics';
 import {
 	bookCallDialogCopy,
 	CALENDLY_ORIGIN,
@@ -12,6 +13,8 @@ import {
 	calendlyReadyEvents
 } from '@/constants/booking';
 import type { ContactPrefill } from '@/contexts/contact-prefill-context';
+import { AnalyticsEvent } from '@/enums/analytics';
+import { trackEvent } from '@/utils/analytics';
 import { buildCalendlyUrl } from '@/utils/calendly';
 import { Button } from '@workspace/ui/components/button';
 import {
@@ -106,6 +109,9 @@ function CalendlyFrame({ prefill }: { prefill: ContactPrefill }) {
 	useEffect(() => {
 		const onMessage = (event: MessageEvent<CalendlyMessage>) => {
 			if (event.origin !== CALENDLY_ORIGIN) return;
+			if (event.data?.event === calendlyScheduledEvent) {
+				trackEvent(AnalyticsEvent.SCHEDULE);
+			}
 			if (calendlyReadyEvents.includes(event.data?.event ?? '')) {
 				setReady(true);
 			}

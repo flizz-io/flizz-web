@@ -8,6 +8,7 @@ import {
 import localFont from 'next/font/local';
 
 import '@workspace/ui/globals.css';
+import { Analytics } from '@/components/snippets/analytics/analytics';
 import { ConsentBanner } from '@/components/snippets/consent/consent-banner';
 import { CrispChat } from '@/components/snippets/crisp-chat/crisp-chat';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -105,6 +106,8 @@ export default function RootLayout({
 						    its fixed position holds. */}
 						<ConsentBanner />
 					</ThemeProvider>
+					{/* GA4 and the Meta Pixel — only after Accept. */}
+					<Analytics />
 				</ConsentProvider>
 				<CrispChat />
 			</body>
