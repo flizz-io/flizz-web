@@ -132,6 +132,9 @@ importers:
       '@workspace/service-visuals':
         specifier: workspace:*
         version: link:../../packages/service-visuals
+      '@workspace/text-editor':
+        specifier: workspace:*
+        version: link:../../packages/text-editor
       '@workspace/ui':
         specifier: workspace:*
         version: link:../../packages/ui

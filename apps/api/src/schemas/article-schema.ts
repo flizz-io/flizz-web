@@ -92,7 +92,11 @@ const paragraphBlock = z.object({
 const headingBlock = z.object({
 	type: z.literal('heading'),
 	level: z.union([z.literal(2), z.literal(3)]),
-	text: text(limits.heading)
+	text: z
+		.string()
+		.trim()
+		.min(1, 'Write the heading, or remove the block.')
+		.max(limits.heading)
 });
 
 const listBlock = z.object({
@@ -112,15 +116,26 @@ const quoteBlock = z.object({
 
 const codeBlock = z.object({
 	type: z.literal('code'),
-	language: text(limits.codeLanguage),
-	code: z.string().min(1).max(limits.code)
+	language: z
+		.string()
+		.trim()
+		.min(1, 'Name the language — ts, sql, or text.')
+		.max(limits.codeLanguage),
+	code: z
+		.string()
+		.min(1, 'Add the code, or remove the block.')
+		.max(limits.code)
 });
 
 /** Stores the media `uuid`; `src` is only ever added to responses. */
 const imageBlock = z.object({
 	type: z.literal('image'),
 	mediaUuid: z.uuid().optional(),
-	alt: text(limits.imageAlt),
+	alt: z
+		.string()
+		.trim()
+		.min(1, 'Describe what the image shows — alt text is required.')
+		.max(limits.imageAlt),
 	caption: z.string().trim().max(limits.imageCaption).optional(),
 	aspect: z.enum(articleImageAspects).optional()
 });

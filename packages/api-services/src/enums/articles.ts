@@ -1,3 +1,5 @@
+import { ProjectVisibility } from './projects';
+
 /** Mirrors the API's `ArticleCategory` — keys; display labels live in the apps. */
 export enum ArticleCategory {
 	ENGINEERING = 'ENGINEERING',
@@ -8,13 +10,11 @@ export enum ArticleCategory {
 
 /**
  * Whether an article shows on the website, derived by the API: Draft,
- * Scheduled (Published, publish date ahead) or Live.
+ * Scheduled (Published, publish date ahead) or Live. The same three values as
+ * projects, so it *is* that enum — one badge and one set of labels serve both.
  */
-export enum ArticleVisibility {
-	DRAFT = 'DRAFT',
-	SCHEDULED = 'SCHEDULED',
-	LIVE = 'LIVE'
-}
+export const ArticleVisibility = ProjectVisibility;
+export type ArticleVisibility = ProjectVisibility;
 
 /** Order of the public list — by public date. */
 export enum ArticleSortOrder {

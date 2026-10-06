@@ -5,9 +5,9 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { VisibilityBadge } from '@/components/features/projects/visibility-badge';
 import { HighlightedQuote } from '@/components/features/testimonials/highlighted-quote';
 import { TestimonialStatusBadge } from '@/components/features/testimonials/testimonial-status-badge';
+import { VisibilityBadge } from '@/components/snippets/visibility-badge/visibility-badge';
 import { allFilterValue } from '@/constants/filters';
 import {
 	testimonialPath,

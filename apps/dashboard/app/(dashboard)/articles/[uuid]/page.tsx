@@ -3,40 +3,41 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
-import { DeleteProjectButton } from '@/components/features/projects/delete-project-button';
-import { ProjectForm } from '@/components/features/projects/project-form';
+import { ArticleForm } from '@/components/features/articles/article-form';
+import { DeleteArticleButton } from '@/components/features/articles/delete-article-button';
 import { RecordAuthorship } from '@/components/snippets/record-authorship/record-authorship';
 import { VisibilityBadge } from '@/components/snippets/visibility-badge/visibility-badge';
-import { homePath } from '@/constants/auth';
 import {
-	projectFormMessages,
-	projectsMessages,
-	projectsPath
-} from '@/constants/projects';
+	articleFormMessages,
+	articlesMessages,
+	articlesPath
+} from '@/constants/articles';
+import { homePath } from '@/constants/auth';
 import { getCurrentUser } from '@/utils/get-current-user';
 import { serverApiContext, serverCall } from '@/utils/server-api';
 import {
 	ApiError,
 	Feature,
-	getProjectService,
-	getServiceOptionsService
+	getArticleAuthorsService,
+	getArticleService,
+	getArticleTagsService
 } from '@workspace/api-services';
 import { Button } from '@workspace/ui/components/button';
 
 const NOT_FOUND_STATUS = 404;
 const BAD_REQUEST_STATUS = 400;
 
-interface ProjectPageProps {
+interface ArticlePageProps {
 	params: Promise<{ uuid: string }>;
 }
 
-export const metadata: Metadata = { title: projectsMessages.title };
+export const metadata: Metadata = { title: articlesMessages.title };
 
 /** A deleted, unknown or malformed id is a 404. */
-async function loadProject(uuid: string) {
+async function loadArticle(uuid: string) {
 	try {
 		return await serverCall(
-			getProjectService(uuid, await serverApiContext())
+			getArticleService(uuid, await serverApiContext())
 		);
 	} catch (error) {
 		if (
@@ -50,15 +51,17 @@ async function loadProject(uuid: string) {
 	}
 }
 
-/** Needs Projects › View; the form is read-only without Edit. */
-export default async function ProjectPage({ params }: ProjectPageProps) {
+/** Needs Articles › View; the form is read-only without Edit. */
+export default async function ArticlePage({ params }: ArticlePageProps) {
 	const user = await getCurrentUser();
-	const grant = user?.permissions[Feature.PROJECTS];
+	const grant = user?.permissions[Feature.ARTICLES];
 	if (!grant?.view) redirect(homePath);
 
-	const [project, serviceOptions] = await Promise.all([
-		loadProject((await params).uuid),
-		serverCall(getServiceOptionsService(await serverApiContext()))
+	const context = await serverApiContext();
+	const [article, authors, tags] = await Promise.all([
+		loadArticle((await params).uuid),
+		serverCall(getArticleAuthorsService(context)),
+		serverCall(getArticleTagsService(context))
 	]);
 
 	return (
@@ -70,41 +73,42 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 					size="sm"
 					className="self-start"
 				>
-					<Link href={projectsPath}>
+					<Link href={articlesPath}>
 						<ArrowLeft />
-						{projectFormMessages.backToList}
+						{articleFormMessages.backToList}
 					</Link>
 				</Button>
 				<div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 					<div className="flex flex-col gap-1">
 						<div className="flex items-center gap-3">
 							<h1 className="text-2xl font-semibold tracking-tight">
-								{project.name}
+								{article.title}
 							</h1>
-							<VisibilityBadge visibility={project.visibility} />
+							<VisibilityBadge visibility={article.visibility} />
 						</div>
 						<p className="text-sm text-muted-foreground">
-							{projectFormMessages.editLead(project.slug)}
+							{articleFormMessages.editLead(article.slug)}
 						</p>
-						<RecordAuthorship {...project} />
+						<RecordAuthorship {...article} />
 						{grant.edit ? null : (
 							<p className="text-sm text-muted-foreground">
-								{projectFormMessages.readOnly}
+								{articleFormMessages.readOnly}
 							</p>
 						)}
 					</div>
 					{grant.delete ? (
-						<DeleteProjectButton
-							uuid={project.uuid}
-							name={project.name}
+						<DeleteArticleButton
+							uuid={article.uuid}
+							title={article.title}
 						/>
 					) : null}
 				</div>
 			</div>
-			<ProjectForm
-				project={project}
+			<ArticleForm
+				article={article}
 				canSave={grant.edit}
-				serviceOptions={serviceOptions}
+				authors={authors}
+				tagSuggestions={tags}
 			/>
 		</>
 	);
