@@ -12,6 +12,7 @@ import {
 	getPublicServices
 } from '../controllers/public-service-controller.js';
 import { getPublicTeam } from '../controllers/public-team-controller.js';
+import { getPublicTestimonials } from '../controllers/public-testimonial-controller.js';
 import { publicFormLimiter } from '../middlewares/rate-limit.js';
 
 /** Endpoints the public site calls — no session. All read-only but the form. */
@@ -25,4 +26,5 @@ publicRouter.get('/projects/:slug', getPublicProjectBySlug);
 publicRouter.get('/services', getPublicServices);
 publicRouter.get('/services/redirects/:slug', getPublicServiceRedirect);
 publicRouter.get('/services/:slug', getPublicServiceBySlug);
+publicRouter.get('/testimonials', getPublicTestimonials);
 publicRouter.post('/contact', publicFormLimiter, postContactMessage);
