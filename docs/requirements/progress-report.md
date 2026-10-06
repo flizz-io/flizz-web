@@ -32,7 +32,7 @@ Each page's requirements doc is written just before its static-design stage star
 | Services           | Powers the Services list, Single Service detail, and the Home page Services teaser. Each project links to one service — [services-crud.md](services-crud.md).                                                                             | Done 2026-10-04 (Phase S), in production                                      |
 | Contact Us         | Stores/manages Contact Us form submissions. Schema migrated (`contact_messages`).                                                                                                                                                         | Done 2026-10-04 (Phase CM) — inbox at `/messages`; production release pending |
 | Book a Call        | Calendly embed on `/contact` (and any CTA that links to it). **No table** — Calendly holds the bookings and sends the notifications. Add a `call_bookings` table fed by Calendly webhooks only if the dashboard ever needs to list calls. | Built 2026-10-04 (CM8) — on once `NEXT_PUBLIC_CALENDLY_URL` is set            |
-| Testimonial        | Home page section only — no dedicated public page or list. Schema migrated (`testimonials`).                                                                                                                                              | Not started — Phase T                                                         |
+| Testimonial        | Home page section only — no dedicated public page or list. Schema migrated (`testimonials`) — [testimonials-crud.md](testimonials-crud.md).                                                                                               | Not started — Phase T                                                         |
 | Articles           | Powers the Articles list and Single Article detail pages. Renamed from Blog on 2026-09-01 to match the shipped nav. Schema migrated (`articles`).                                                                                         | Not started — Phase AR                                                        |
 | Case Studies       | **Dropped 2026-09-03** — a case study is a project shown in full, not a separate record. The Projects CRUD covers both.                                                                                                                   | —                                                                             |
 
@@ -205,14 +205,14 @@ From the pre-launch review on 2026-10-03. **Paused 2026-10-04**: the remaining t
 
 ### Phase T — Testimonials
 
-| #   | Task                                                                                                                                      | Status      |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| T1  | Requirements doc `testimonials-crud.md`: fields, highlights must be exact phrases in the quote, display order, optional project link      | Not started |
-| T2  | Testimonials API: public list (published, ordered) and admin CRUD + reorder, `requirePermission(TESTIMONIALS)`, revalidates the home page | Not started |
-| T3  | `packages/api-services`: testimonial models and service functions                                                                         | Not started |
-| T4  | Dashboard Testimonials: list with drag reorder; form with a highlight picker (select phrases in the quote) and a project dropdown         | Not started |
-| T5  | Seed the three placeholder quotes; home testimonials section reads from the API; retire the constant                                      | Not started |
-| T6  | Production release: seed — **review checkpoint**                                                                                          | Not started |
+| #   | Task                                                                                                                                                       | Status      |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| T1  | Requirements doc [testimonials-crud.md](testimonials-crud.md): fields, highlights must be exact phrases in the quote, display order, optional project link | Done        |
+| T2  | Testimonials API: public list (published, ordered) and admin CRUD + reorder, `requirePermission(TESTIMONIALS)`, revalidates the home page                  | Not started |
+| T3  | `packages/api-services`: testimonial models and service functions                                                                                          | Not started |
+| T4  | Dashboard Testimonials: list with drag reorder; form with a highlight picker (select phrases in the quote) and a project dropdown                          | Not started |
+| T5  | Seed the three placeholder quotes; home testimonials section reads from the API; retire the constant                                                       | Not started |
+| T6  | Production release: seed — **review checkpoint**                                                                                                           | Not started |
 
 ### Phase AR — Articles
 
