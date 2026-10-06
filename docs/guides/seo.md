@@ -6,19 +6,19 @@ People now find services two ways: classic search engines, and AI assistants (Ch
 
 ### Where things stand (2026-10-03)
 
-| Item                                               | State                                                                                                                          |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `metadataBase`, title template, default OG/Twitter | Done, in `app/layout.tsx`                                                                                                      |
-| Per-page `metadata` / `generateMetadata`           | Title and description on every page except home. **Open Graph is wrong or missing on most pages**, see the per-page spec below |
-| Home page's own title/description                  | Missing, so it falls back to the root default ("Flizz")                                                                        |
-| JSON-LD                                            | `Article` + `BreadcrumbList` on articles, and on portfolio details. Missing on home and services                               |
-| Generated OG images                                | Articles and portfolio details. Missing for home, services and the list pages                                                  |
-| `sitemap.xml`                                      | **Missing**                                                                                                                    |
-| `robots.txt`                                       | **Missing**                                                                                                                    |
-| Canonical URLs                                     | Partial. Check every page sets `alternates.canonical`                                                                          |
-| Dashboard `noindex`                                | Done, in `apps/dashboard/app/layout.tsx`                                                                                       |
-| Preview deployments kept out of Google             | **Missing**                                                                                                                    |
-| Redirect when a slug changes                       | **Missing**. Slugs are editable, so old links 404                                                                              |
+| Item                                               | State                                                                                                                            |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `metadataBase`, title template, default OG/Twitter | Done, in `app/layout.tsx`                                                                                                        |
+| Per-page `metadata` / `generateMetadata`           | Every page calls `buildPageMetadata()` (`utils/metadata.ts`, SEO1): title, description, canonical, robots, full OG + Twitter set |
+| Home page's own title/description                  | Missing, so it falls back to the root default ("Flizz")                                                                          |
+| JSON-LD                                            | `Article` + `BreadcrumbList` on articles, and on portfolio details. Missing on home and services                                 |
+| Generated OG images                                | Articles and portfolio details. Missing for home, services and the list pages                                                    |
+| `sitemap.xml`                                      | **Missing**                                                                                                                      |
+| `robots.txt`                                       | **Missing**                                                                                                                      |
+| Canonical URLs                                     | Done — set by `buildPageMetadata()` from each page's path                                                                        |
+| Dashboard `noindex`                                | Done, in `apps/dashboard/app/layout.tsx`                                                                                         |
+| Preview deployments kept out of Google             | **Missing**                                                                                                                      |
+| Redirect when a slug changes                       | **Missing**. Slugs are editable, so old links 404                                                                                |
 
 ### Tasks, in priority order
 

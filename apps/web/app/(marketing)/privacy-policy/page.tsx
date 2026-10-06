@@ -1,29 +1,14 @@
 import type { Metadata } from 'next';
 
 import { LegalDocument } from '@/components/features/legal/legal-document';
-import { siteConfig } from '@/configs/site';
 import { legalPaths, privacyPolicy } from '@/constants/legal';
+import { buildPageMetadata } from '@/utils/metadata';
 
-const url = `${siteConfig.url}${legalPaths.privacy}`;
-
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
 	title: privacyPolicy.title,
 	description: privacyPolicy.lead,
-	alternates: { canonical: url },
-	openGraph: {
-		type: 'website',
-		url,
-		siteName: siteConfig.fullname,
-		locale: 'en_GB',
-		title: `${privacyPolicy.title} — ${siteConfig.name}`,
-		description: privacyPolicy.lead
-	},
-	twitter: {
-		card: 'summary_large_image',
-		title: `${privacyPolicy.title} — ${siteConfig.name}`,
-		description: privacyPolicy.lead
-	}
-};
+	path: legalPaths.privacy
+});
 
 export default function PrivacyPolicyPage() {
 	return (

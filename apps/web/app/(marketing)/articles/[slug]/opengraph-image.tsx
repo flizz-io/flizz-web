@@ -2,9 +2,10 @@ import { ImageResponse } from 'next/og';
 
 import { siteConfig } from '@/configs/site';
 import { articles } from '@/constants/articles';
+import { shareImageSize } from '@/constants/seo';
 
 export const alt = 'Flizz article';
-export const size = { width: 1200, height: 630 };
+export const size = shareImageSize;
 export const contentType = 'image/png';
 
 export function generateStaticParams() {

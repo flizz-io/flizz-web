@@ -10,6 +10,8 @@ export const siteConfig = {
 	url: siteUrl,
 	fullname: 'Flizzio',
 	shortName: 'FZ',
+	/** Open Graph locale — British English, matching the copy. */
+	locale: 'en_GB',
 	tagline: "Your Technology Partner for What's Next",
 	description:
 		'We build transparent, maintainable systems that give you freedom to pivot, scale, or switch vendors without starting over.',

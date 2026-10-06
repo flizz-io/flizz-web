@@ -8,28 +8,17 @@ import {
 import { ArticlesCta } from '@/components/features/articles/articles-cta';
 import { ArticlesHero } from '@/components/features/articles/articles-hero';
 import { ArticlesResults } from '@/components/features/articles/articles-results';
-import { siteConfig } from '@/configs/site';
+import { RoutePath } from '@/enums/routes';
+import { buildPageMetadata } from '@/utils/metadata';
 
 const description =
 	'Notes on building software that has to keep working — what we argue about, what we got wrong, and the decisions that turned out to matter.';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
 	title: 'Articles',
 	description,
-	alternates: { canonical: `${siteConfig.url}/articles` },
-	openGraph: {
-		type: 'website',
-		url: `${siteConfig.url}/articles`,
-		siteName: siteConfig.fullname,
-		title: `Articles — ${siteConfig.name}`,
-		description
-	},
-	twitter: {
-		card: 'summary_large_image',
-		title: `Articles — ${siteConfig.name}`,
-		description
-	}
-};
+	path: RoutePath.ARTICLES
+});
 
 export default function ArticlesPage() {
 	const totalSections = 2;

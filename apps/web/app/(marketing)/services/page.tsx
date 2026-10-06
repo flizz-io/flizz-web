@@ -3,13 +3,16 @@ import type { Metadata } from 'next';
 import { ServicesCatalogue } from '@/components/features/services/services-catalogue';
 import { ServicesCta } from '@/components/features/services/services-cta';
 import { ServicesHero } from '@/components/features/services/services-hero';
+import { RoutePath } from '@/enums/routes';
+import { buildPageMetadata } from '@/utils/metadata';
 import { getCatalogueServices } from '@/utils/services-api';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
 	title: 'Services',
 	description:
-		'Services across custom software, AI and automation, e-commerce and mobile — and a straight answer about when an off-the-shelf tool would do instead.'
-};
+		'Services across custom software, AI and automation, e-commerce and mobile — and a straight answer about when an off-the-shelf tool would do instead.',
+	path: RoutePath.SERVICES
+});
 
 export default async function ServicesPage() {
 	const services = await getCatalogueServices();

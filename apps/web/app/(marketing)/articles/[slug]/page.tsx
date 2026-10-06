@@ -19,7 +19,10 @@ import {
 	articles
 } from '@/constants/articles';
 import { ContentType } from '@/enums/analytics';
+import { RoutePath } from '@/enums/routes';
+import { OgType } from '@/enums/seo';
 import { getReadingMinutes } from '@/utils/articles';
+import { buildPageMetadata } from '@/utils/metadata';
 
 interface ArticlePageProps {
 	params: Promise<{ slug: string }>;
@@ -37,29 +40,24 @@ export async function generateMetadata({
 
 	if (!article) return {};
 
-	const url = `${siteConfig.url}/articles/${article.slug}`;
-
 	return {
-		title: article.title,
-		description: article.excerpt,
-		keywords: [article.category, 'software engineering', siteConfig.name],
-		authors: [{ name: article.author }],
-		alternates: { canonical: url },
-		openGraph: {
-			type: 'article',
-			url,
-			siteName: siteConfig.fullname,
+		...buildPageMetadata({
 			title: article.title,
 			description: article.excerpt,
-			publishedTime: article.publishedAt,
-			authors: [article.author],
-			section: article.category
-		},
-		twitter: {
-			card: 'summary_large_image',
-			title: article.title,
-			description: article.excerpt
-		}
+			path: `${RoutePath.ARTICLES}/${article.slug}`,
+			type: OgType.ARTICLE,
+			keywords: [
+				article.category,
+				'software engineering',
+				siteConfig.name
+			],
+			article: {
+				publishedTime: article.publishedAt,
+				authors: [article.author],
+				section: article.category
+			}
+		}),
+		authors: [{ name: article.author }]
 	};
 }
 

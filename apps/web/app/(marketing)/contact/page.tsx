@@ -7,12 +7,15 @@ import { ContactForm } from '@/components/features/contact/contact-form';
 import { ContactHero } from '@/components/features/contact/contact-hero';
 import { ContactNextSteps } from '@/components/features/contact/contact-next-steps';
 import { ContactPrefillProvider } from '@/contexts/contact-prefill-context';
+import { RoutePath } from '@/enums/routes';
+import { buildPageMetadata } from '@/utils/metadata';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
 	title: 'Contact',
 	description:
-		'Tell us what you are building, or what is breaking. An engineer replies within one business day — free discovery call, fixed-price proposal.'
-};
+		'Tell us what you are building, or what is breaking. An engineer replies within one business day — free discovery call, fixed-price proposal.',
+	path: RoutePath.CONTACT
+});
 
 export default function ContactPage() {
 	const totalSections = 5;
