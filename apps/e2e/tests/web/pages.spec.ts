@@ -20,6 +20,7 @@ const staticPages = [
 	'/about',
 	'/services',
 	'/portfolio',
+	'/articles',
 	'/contact',
 	'/privacy-policy',
 	'/terms-and-conditions'
@@ -50,6 +51,15 @@ test('a portfolio project renders', async ({ page }) => {
 	test.skip(!slug, 'no published project');
 
 	const response = await page.goto(`/portfolio/${slug}`);
+	expect(response?.status()).toBe(200);
+	await expect(page.locator('h1').first()).toBeAttached();
+});
+
+test('an article renders', async ({ page }) => {
+	const slug = await firstSlug('articles');
+	test.skip(!slug, 'no published article');
+
+	const response = await page.goto(`/articles/${slug}`);
 	expect(response?.status()).toBe(200);
 	await expect(page.locator('h1').first()).toBeAttached();
 });

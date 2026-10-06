@@ -27,6 +27,7 @@ test.describe('signed in as the Super Admin', () => {
 	for (const { path, heading } of [
 		{ path: '/projects', heading: 'Projects' },
 		{ path: '/services', heading: 'Services' },
+		{ path: '/articles', heading: 'Articles' },
 		{ path: '/testimonials', heading: 'Testimonials' },
 		{ path: '/messages', heading: 'Messages' },
 		{ path: '/team', heading: 'Team' },
