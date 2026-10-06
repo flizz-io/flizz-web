@@ -10,6 +10,7 @@ import { Logo } from '@/components/snippets/logo/logo';
 import { ThemeToggle } from '@/components/snippets/theme-toggle/theme-toggle';
 import { primaryNavItems } from '@/configs/nav';
 import { useIntro } from '@/contexts/intro-context';
+import { CtaLocation } from '@/enums/analytics';
 import { IntroGate, IntroPhase } from '@/enums/intro';
 import { cn } from '@workspace/ui/lib/utils';
 
@@ -90,6 +91,7 @@ export function Header() {
 		<header
 			ref={headerRef}
 			data-intro-header
+			data-cta-location={CtaLocation.HEADER}
 			className="fixed inset-x-0 top-4 z-40 px-0 sm:px-6 lg:px-8"
 		>
 			<div

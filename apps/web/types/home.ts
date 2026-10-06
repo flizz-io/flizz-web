@@ -156,6 +156,8 @@ export interface Testimonial {
 	highlights?: string[];
 	author: string;
 	role: string;
+	/** The work it came from — only while that project is on the site. */
+	project?: { slug: string; name: string };
 }
 
 export interface FaqItem {

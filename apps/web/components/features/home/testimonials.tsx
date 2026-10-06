@@ -1,10 +1,11 @@
 'use client';
 
+import Link from 'next/link';
 import { Fragment, useEffect, useState } from 'react';
 
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
-import { testimonials } from '@/constants/home';
+import type { Testimonial } from '@/types/home';
 import { Avatar, AvatarFallback } from '@workspace/ui/components/avatar';
 import {
 	Carousel,
@@ -55,12 +56,15 @@ function splitOnHighlights(quote: string, highlights: string[]) {
 }
 
 interface TestimonialsProps {
+	/** Published, in the dashboard's order — the section is left out when empty. */
+	testimonials: Testimonial[];
 	sectionIndex: number;
 	totalSections?: number;
 	className?: string;
 }
 
 export function Testimonials({
+	testimonials,
 	sectionIndex,
 	totalSections,
 	className
@@ -92,6 +96,8 @@ export function Testimonials({
 
 		return () => window.clearTimeout(timer);
 	}, [current]);
+
+	if (!testimonials.length) return null;
 
 	return (
 		<section
@@ -146,7 +152,9 @@ export function Testimonials({
 								const isLit = litIndex === index;
 
 								return (
-									<CarouselItem key={testimonial.author}>
+									<CarouselItem
+										key={`${testimonial.author}-${index}`}
+									>
 										<figure className="relative mx-auto flex max-w-3xl flex-col items-center gap-8 py-4 text-center">
 											<blockquote className="relative font-serif text-3xl leading-tight tracking-wide text-pretty text-foreground italic sm:text-4xl">
 												{splitOnHighlights(
@@ -194,6 +202,15 @@ export function Testimonials({
 													<p className="text-xs text-muted-foreground">
 														{testimonial.role}
 													</p>
+													{testimonial.project ? (
+														<Link
+															href={`/portfolio/${testimonial.project.slug}`}
+															className="mt-1 inline-block text-xs text-primary underline-offset-4 hover:underline"
+														>
+															See the project
+															&rarr;
+														</Link>
+													) : null}
 												</div>
 											</figcaption>
 										</figure>
@@ -211,7 +228,7 @@ export function Testimonials({
 							<div className="flex items-center gap-2">
 								{testimonials.map((testimonial, index) => (
 									<button
-										key={testimonial.author}
+										key={`${testimonial.author}-${index}`}
 										type="button"
 										onClick={() => api?.scrollTo(index)}
 										aria-label={`Show testimonial ${index + 1}`}

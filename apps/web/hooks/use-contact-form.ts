@@ -5,10 +5,12 @@ import { useCallback, useMemo, useState } from 'react';
 import { contactIntegrations } from '@/configs/contact';
 import { contactHoneypotField, contactSubmitErrors } from '@/constants/contact';
 import { useContactPrefill } from '@/contexts/contact-prefill-context';
+import { AnalyticsEvent } from '@/enums/analytics';
 import { ContactField, ContactFormStatus } from '@/enums/contact';
 import { useTurnstile } from '@/hooks/use-turnstile';
 import { contactFormSchema } from '@/schemas/contact';
 import type { ContactFieldErrors, ContactFormValues } from '@/types/contact';
+import { trackEvent } from '@/utils/analytics';
 import {
 	ApiError,
 	ApiErrorCode,
@@ -157,6 +159,7 @@ export function useContactForm() {
 					{ baseUrl: contactIntegrations.apiUrl }
 				);
 				setStatus(ContactFormStatus.SUCCESS);
+				trackEvent(AnalyticsEvent.LEAD);
 			} catch (error) {
 				if (error instanceof ApiError) setErrors(fieldErrorsOf(error));
 				setSubmitError(submitErrorOf(error));

@@ -4,6 +4,7 @@ import { AudienceList } from '@/components/features/home/audience-list';
 import { AudienceWall } from '@/components/features/home/audience-wall';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
+import { CtaType } from '@/enums/analytics';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
 
@@ -76,7 +77,12 @@ export function WhoWeBuildFor({
 						variant="outline"
 						className="h-11 rounded-full border-primary/50 px-6 text-base hover:border-primary hover:bg-primary/10"
 					>
-						<Link href="/contact">See if we&apos;re a fit →</Link>
+						<Link
+							href="/contact"
+							data-cta={CtaType.CONTACT}
+						>
+							See if we&apos;re a fit →
+						</Link>
 					</Button>
 				</Reveal>
 			</div>

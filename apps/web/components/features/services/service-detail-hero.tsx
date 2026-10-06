@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Atmosphere } from '@/components/snippets/atmosphere/atmosphere';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SchematicFrame } from '@/components/snippets/schematic-frame/schematic-frame';
+import { CtaType } from '@/enums/analytics';
 import { ServiceBackNav, serviceCategoryAnchors } from '@/enums/services';
 import type { ServiceDetail } from '@/types/services';
 import { sectionHref } from '@/utils/navigation';
@@ -96,7 +97,12 @@ export function ServiceDetailHero({
 							size="lg"
 							className="h-11 px-6"
 						>
-							<Link href="/contact">Talk about this →</Link>
+							<Link
+								href="/contact"
+								data-cta={CtaType.CONTACT}
+							>
+								Talk about this →
+							</Link>
 						</Button>
 
 						{service.engagement ? (

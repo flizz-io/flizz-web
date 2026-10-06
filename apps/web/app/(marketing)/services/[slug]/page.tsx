@@ -7,7 +7,9 @@ import { ServiceHandover } from '@/components/features/services/service-handover
 import { ServiceProblem } from '@/components/features/services/service-problem';
 import { ServiceRelated } from '@/components/features/services/service-related';
 import { ServicesCta } from '@/components/features/services/services-cta';
+import { TrackContentView } from '@/components/snippets/analytics/track-content-view';
 import { serviceDetailBackNav } from '@/constants/services';
+import { ContentType } from '@/enums/analytics';
 import {
 	getCatalogueService,
 	getCatalogueServices,
@@ -73,6 +75,11 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
 	return (
 		<>
+			<TrackContentView
+				type={ContentType.SERVICE}
+				id={service.slug}
+				name={service.title}
+			/>
 			<ServiceDetailHero
 				service={service}
 				backNav={serviceDetailBackNav}

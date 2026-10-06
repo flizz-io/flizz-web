@@ -6,7 +6,7 @@ export enum ServiceCategory {
 	MOBILE = 'MOBILE'
 }
 
-/** Mirrors the API's `PublishStatus` — services (and later articles). */
+/** Mirrors the API's `PublishStatus` — services, testimonials (and later articles). */
 export enum PublishStatus {
 	DRAFT = 'DRAFT',
 	PUBLISHED = 'PUBLISHED'

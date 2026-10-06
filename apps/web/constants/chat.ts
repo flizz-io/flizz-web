@@ -1,13 +1,16 @@
+import { crispChatOpenedEvent } from '@/constants/analytics';
+
 /** Crisp's chatbox loader — the same file its install snippet pulls in. */
 export const crispScriptUrl = 'https://client.crisp.chat/l.js';
 
 /**
  * Crisp's install snippet: sets the website ID it reads on load, then adds
- * its loader. The ID is passed through `JSON.stringify` so it lands as a
+ * its loader. Also announces every chat opening on `window`, so analytics
+ * can count it however the chat was opened. The ID is passed through `JSON.stringify` so it lands as a
  * quoted string literal, whatever the env value holds.
  */
 export const getCrispScript = (websiteId: string) =>
-	`window.$crisp=[];window.CRISP_WEBSITE_ID=${JSON.stringify(websiteId)};(function(){var s=document.createElement('script');s.src='${crispScriptUrl}';s.async=1;document.head.appendChild(s)})()`;
+	`window.$crisp=[];window.$crisp.push(['on','chat:opened',function(){window.dispatchEvent(new Event('${crispChatOpenedEvent}'))}]);window.CRISP_WEBSITE_ID=${JSON.stringify(websiteId)};(function(){var s=document.createElement('script');s.src='${crispScriptUrl}';s.async=1;document.head.appendChild(s)})()`;
 
 /** Shows the chatbox (if hidden) and opens it on the conversation. */
 export const crispOpenCommands: unknown[][] = [

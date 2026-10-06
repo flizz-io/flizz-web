@@ -8,6 +8,8 @@ import { ArticleDetailHero } from '@/components/features/articles/article-detail
 import { ArticleEngagementBar } from '@/components/features/articles/article-engagement';
 import { ArticleRelated } from '@/components/features/articles/article-related';
 import { ArticlesCta } from '@/components/features/articles/articles-cta';
+import { ArticleReadDepth } from '@/components/snippets/analytics/article-read-depth';
+import { TrackContentView } from '@/components/snippets/analytics/track-content-view';
 import { siteConfig } from '@/configs/site';
 import {
 	articleByline,
@@ -16,6 +18,7 @@ import {
 	articleEngagementOptions,
 	articles
 } from '@/constants/articles';
+import { ContentType } from '@/enums/analytics';
 import { getReadingMinutes } from '@/utils/articles';
 
 interface ArticlePageProps {
@@ -130,6 +133,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 					__html: JSON.stringify(structuredData)
 				}}
 			/>
+			<TrackContentView
+				type={ContentType.ARTICLE}
+				id={article.slug}
+				name={article.title}
+			/>
 
 			<ArticleDetailHero
 				article={article}
@@ -137,7 +145,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 			/>
 
 			<article className="px-4 pb-20 sm:px-6 sm:pb-28 lg:px-8">
-				<ArticleBody body={article.body} />
+				<ArticleBody body={article.body}>
+					<ArticleReadDepth slug={article.slug} />
+				</ArticleBody>
 				<ArticleEngagementBar
 					slug={article.slug}
 					title={article.title}
