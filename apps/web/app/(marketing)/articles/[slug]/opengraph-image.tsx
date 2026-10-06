@@ -2,20 +2,27 @@ import { ImageResponse } from 'next/og';
 
 import { ShareCard } from '@/components/snippets/share-card/share-card';
 import { siteConfig } from '@/configs/site';
-import { articles } from '@/constants/articles';
 import { shareImageSize } from '@/constants/seo';
+import {
+	getPublishedArticle,
+	getPublishedArticles
+} from '@/utils/articles-api';
+import { serveUploadedShareImage } from '@/utils/share-card';
 
 export const alt = 'Flizz article: its title, category and author';
 export const size = shareImageSize;
 export const contentType = 'image/png';
 
-export function generateStaticParams() {
-	return articles.map((article) => ({ slug: article.slug }));
+export async function generateStaticParams() {
+	return (await getPublishedArticles()).map((article) => ({
+		slug: article.slug
+	}));
 }
 
 /**
- * Generated rather than designed per article, so every share card is correct
- * the moment a piece is published and nobody has to remember to make one.
+ * The article's share image, else its cover, else a generated card — so every
+ * share card is right the moment a piece is published. All three come from
+ * this route: an image set in `generateMetadata` would replace it everywhere.
  */
 export default async function OpengraphImage({
 	params
@@ -23,14 +30,20 @@ export default async function OpengraphImage({
 	params: Promise<{ slug: string }>;
 }) {
 	const { slug } = await params;
-	const article = articles.find((entry) => entry.slug === slug);
+	const article = await getPublishedArticle(slug);
+	const uploaded = article?.ogImage ?? article?.coverImage;
 
-	return new ImageResponse(
-		<ShareCard
-			eyebrow={article?.category ?? siteConfig.name}
-			title={article?.title ?? siteConfig.tagline}
-			footnote={article?.author}
-		/>,
-		size
-	);
+	const renderCard = () =>
+		new ImageResponse(
+			<ShareCard
+				eyebrow={article?.category ?? siteConfig.name}
+				title={article?.title ?? siteConfig.tagline}
+				footnote={article?.author?.name}
+			/>,
+			size
+		);
+
+	return uploaded
+		? serveUploadedShareImage(uploaded, renderCard)
+		: renderCard();
 }

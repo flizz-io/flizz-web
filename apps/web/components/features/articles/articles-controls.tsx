@@ -11,6 +11,7 @@ import {
 } from '@/enums/articles';
 import { useArticleFilters } from '@/hooks/use-article-filters';
 import { useDragScroll } from '@/hooks/use-drag-scroll';
+import type { Article } from '@/types/articles';
 import { Button } from '@workspace/ui/components/button';
 import {
 	DropdownMenu,
@@ -41,7 +42,12 @@ const skeletonTagWidths = ['4rem', '7rem', '5.5rem', '6.5rem', '8rem', '5rem'];
  * neither owns the other's state, which is what lets them live in separate
  * parts of the tree while staying in step.
  */
-export function ArticlesControls() {
+interface ArticlesControlsProps {
+	/** Every published article — the tags on offer come from these. */
+	articles: Article[];
+}
+
+export function ArticlesControls({ articles }: ArticlesControlsProps) {
 	const {
 		query,
 		selectedCategories,
@@ -51,7 +57,7 @@ export function ArticlesControls() {
 		setParam,
 		toggleCategory,
 		toggleTag
-	} = useArticleFilters();
+	} = useArticleFilters(articles);
 
 	return (
 		<div className="flex flex-col gap-4">

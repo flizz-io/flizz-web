@@ -5,7 +5,7 @@ import { MediaSlot } from '@/components/snippets/media-slot/media-slot';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import type { Article } from '@/types/articles';
-import { formatArticleDate, getReadingMinutes } from '@/utils/articles';
+import { formatArticleDate } from '@/utils/articles';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface ArticleRelatedProps {
@@ -92,7 +92,7 @@ export function ArticleRelated({
 									</span>
 
 									<span className="flex items-center gap-4 font-mono text-[0.6rem] tracking-[0.18em] text-muted-foreground uppercase">
-										{getReadingMinutes(article.body)} min
+										{article.readingMinutes} min
 										<ArrowUpRight className="size-4 shrink-0 transition-transform group-hover/row:translate-x-0.5 group-hover/row:-translate-y-0.5 group-hover/row:text-primary" />
 									</span>
 								</Link>

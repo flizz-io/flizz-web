@@ -95,6 +95,8 @@ export interface PublicArticleResponse {
 	updatedAt: string;
 	author?: PublicArticleAuthorResponse;
 	coverImage?: string;
+	/** Computed from the body on every read, never stored. */
+	readingMinutes: number;
 }
 
 export interface PublicArticleDetailResponse extends PublicArticleResponse {

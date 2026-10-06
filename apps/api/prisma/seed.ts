@@ -3,6 +3,7 @@ import path from 'node:path';
 
 import { imagePresets } from '@workspace/media-library';
 
+import articleSeeds from './seed-data/articles.json' with { type: 'json' };
 import projectSeeds from './seed-data/projects.json' with { type: 'json' };
 import serviceSeeds from './seed-data/services.json' with { type: 'json' };
 import testimonialSeeds from './seed-data/testimonials.json' with { type: 'json' };
@@ -10,6 +11,7 @@ import { prisma } from '../src/configs/database.js';
 import { env } from '../src/configs/env.js';
 import { storage } from '../src/configs/media.js';
 import {
+	ArticleCategory,
 	MediaPurpose,
 	ProjectSector,
 	ProjectStatus,
@@ -18,7 +20,9 @@ import {
 	UserRole,
 	UserStatus
 } from '../src/generated/prisma/enums.js';
+import { articleBodySchema } from '../src/schemas/article-schema.js';
 import { storeImage } from '../src/services/media-service.js';
+import { displayName } from '../src/utils/user-display.js';
 
 /** Seed files; `coverImagePath` in projects.json is relative to this. */
 const SEED_DATA_DIR = path.resolve('prisma/seed-data');
@@ -265,11 +269,71 @@ async function seedTestimonials(authorId: number) {
 	);
 }
 
+/**
+ * The six placeholder articles of the retired static roster
+ * (seed-data/articles.json, from apps/web `constants/articles.ts`), Published
+ * with their original dates. The author is matched by name against the people
+ * shown on the website; no match → the company byline. Only creates slugs that
+ * don't exist yet — even deleted — so dashboard edits are never overwritten.
+ */
+async function seedArticles(createdById: number) {
+	const authors = await prisma.user.findMany({
+		where: {
+			showOnWebsite: true,
+			status: UserStatus.ACTIVE,
+			deletedAt: null
+		},
+		select: {
+			id: true,
+			uuid: true,
+			email: true,
+			firstName: true,
+			lastName: true
+		}
+	});
+	const authorIdByName = new Map(
+		authors.map((user) => [displayName(user).toLowerCase(), user.id])
+	);
+	let created = 0;
+
+	for (const { authorName, publishAt, ...seed } of articleSeeds) {
+		const existing = await prisma.article.findUnique({
+			where: { slug: seed.slug }
+		});
+		if (existing) continue;
+
+		const publishedAt = new Date(publishAt);
+		await prisma.article.create({
+			data: {
+				...seed,
+				category:
+					ArticleCategory[
+						seed.category as keyof typeof ArticleCategory
+					],
+				// Validated like any save, so a bad seed fails here, not on the site.
+				body: articleBodySchema.parse(seed.body),
+				authorId: authorIdByName.get(authorName.toLowerCase()) ?? null,
+				status: PublishStatus.PUBLISHED,
+				publishAt: publishedAt,
+				firstPublishedAt: publishedAt,
+				createdById,
+				updatedById: createdById
+			}
+		});
+		created += 1;
+	}
+
+	console.info(
+		`Articles: ${created} created, ${articleSeeds.length - created} already there`
+	);
+}
+
 try {
 	const superAdmin = await seedSuperAdmin();
 	await seedServices(superAdmin.id);
 	await seedProjects(superAdmin.id);
 	await seedTestimonials(superAdmin.id);
+	await seedArticles(superAdmin.id);
 } finally {
 	await prisma.$disconnect();
 }

@@ -49,7 +49,7 @@ Every public page must output the full set below. Search engines use the meta ta
 
 The fix is one helper that every page calls, so no page can forget a field (task SEO1).
 
-**Share images follow the same trap, plus one more.** A page that sets `openGraph` also drops any `opengraph-image` from a parent segment, so every page segment has its own `opengraph-image.tsx`. And in practice (Next 16.2) an `openGraph.images` set in `metadata` **replaces** the route's file-based image, despite the docs saying file-based wins — so `buildPageMetadata()` only sets `images` when a page passes one, and an uploaded share image (services today, articles in AR7) is served from the route itself rather than from `generateMetadata`.
+**Share images follow the same trap, plus one more.** A page that sets `openGraph` also drops any `opengraph-image` from a parent segment, so every page segment has its own `opengraph-image.tsx`. And in practice (Next 16.2) an `openGraph.images` set in `metadata` **replaces** the route's file-based image, despite the docs saying file-based wins — so `buildPageMetadata()` only sets `images` when a page passes one, and an uploaded share image (services, and for articles the share image then the cover) is served from the route itself rather than from `generateMetadata`.
 
 #### Tags every page outputs
 

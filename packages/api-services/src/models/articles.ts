@@ -189,6 +189,8 @@ export interface PublicArticle {
 	updatedAt: string;
 	author?: PublicArticleAuthor;
 	coverImage?: string;
+	/** Computed by the API from the body on every read. */
+	readingMinutes: number;
 }
 
 /** The detail page — the body plus the SEO fields. */

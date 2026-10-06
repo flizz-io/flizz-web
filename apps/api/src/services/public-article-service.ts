@@ -20,6 +20,7 @@ import type {
 import type { PublicSlugRedirectResponse } from '../types/service.js';
 import { HttpError } from '../utils/http-error.js';
 import { avatarUrlOf, mediaUrl } from '../utils/media-url.js';
+import { readingMinutesOf } from '../utils/reading-time.js';
 
 const cardInclude = {
 	coverImage: true,
@@ -87,7 +88,8 @@ function toPublicArticle(article: PublicCardRow): PublicArticleResponse {
 		publishedAt: publishedAt.toISOString(),
 		updatedAt: article.updatedAt.toISOString(),
 		...(author ? { author } : {}),
-		...(cover ? { coverImage: cover } : {})
+		...(cover ? { coverImage: cover } : {}),
+		readingMinutes: readingMinutesOf(blocksOf(article.body))
 	};
 }
 

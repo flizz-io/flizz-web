@@ -1,10 +1,11 @@
-import { aboutTeam } from '@/constants/about';
 import { ArticleByline as Byline } from '@/enums/articles';
+import type { ArticleAuthor } from '@/types/articles';
 import { getInitials } from '@/utils/team';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface ArticleBylineProps {
-	author: string;
+	/** Absent when the article has no author, or they've left the About page. */
+	author?: ArticleAuthor;
 	/** Which attribution renders. Both named and company forms are built. */
 	variant?: Byline;
 	className?: string;
@@ -23,12 +24,11 @@ export function ArticleBylineCard({
 }: ArticleBylineProps) {
 	if (variant === Byline.NONE) return null;
 
-	const member = aboutTeam.find((person) => person.name === author);
-	const isNamed = variant === Byline.AUTHOR && Boolean(member);
+	const named = variant === Byline.AUTHOR ? author : undefined;
 
-	const name = isNamed ? author : 'Flizz';
-	const detail = isNamed
-		? member?.role
+	const name = named?.name ?? 'Flizz';
+	const detail = named
+		? named.role
 		: 'Written by the team that does the work';
 
 	return (
@@ -42,7 +42,7 @@ export function ArticleBylineCard({
 				aria-hidden
 				className="flex size-12 shrink-0 items-center justify-center rounded-full border border-border bg-card font-heading text-sm font-semibold text-foreground/40"
 			>
-				{isNamed ? getInitials(name) : 'FZ'}
+				{named ? getInitials(name) : 'FZ'}
 			</span>
 
 			<span className="min-w-0">
