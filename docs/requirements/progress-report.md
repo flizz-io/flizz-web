@@ -34,6 +34,7 @@ Each page's requirements doc is written just before its static-design stage star
 | Book a Call        | Calendly embed on `/contact` (and any CTA that links to it). **No table** — Calendly holds the bookings and sends the notifications. Add a `call_bookings` table fed by Calendly webhooks only if the dashboard ever needs to list calls. | Built 2026-10-04 (CM8) — on once `NEXT_PUBLIC_CALENDLY_URL` is set            |
 | Testimonial        | Home page section only — no dedicated public page or list. Schema migrated (`testimonials`) — [testimonials-crud.md](testimonials-crud.md).                                                                                               | Built 2026-10-06 — production seed pending (T6)                               |
 | Articles           | Powers the Articles list and Single Article detail pages. Renamed from Blog on 2026-09-01 to match the shipped nav. Schema migrated (`articles`).                                                                                         | Not started — Phase AR                                                        |
+| Analytics          | Read-only GA4 and Meta Pixel reports inside the dashboard, fetched server-side by the API. No content table; needs an `ANALYTICS` feature permission (View only).                                                                         | Not started — Phase AN                                                        |
 | Case Studies       | **Dropped 2026-09-03** — a case study is a project shown in full, not a separate record. The Projects CRUD covers both.                                                                                                                   | —                                                                             |
 
 ## Development plan (execution order)
@@ -226,6 +227,27 @@ From the pre-launch review on 2026-10-03. **Paused 2026-10-04**: the remaining t
 | AR6 | Dashboard Articles list (search, category/status filters) and form (meta, tags, author from Team, cover, body editor, publishing); delete with confirm                                                       | Not started |
 | AR7 | Seed the six placeholder articles; `/articles`, `/articles/[slug]` and OG images read from the API; retire the constants. Engagement (comments, reactions, views) stays static, deferred 2026-10-03          | Not started |
 | AR8 | Production release: seed + media — **review checkpoint**                                                                                                                                                     | Not started |
+
+### Phase AN — Analytics in the dashboard
+
+Planned 2026-10-06. Shows the GA4 and Meta Pixel data collected by the landing site ([analytics.md](../guides/analytics.md)) on a dashboard page, so the team doesn't have to open Google Analytics or Meta Events Manager. **No paid plan is needed**: the Google Analytics Data API is free on standard GA4 properties, and the Meta Marketing API (pixel `/stats`, Ads Insights) is free too. Independent of the CRUD slices. It can start any time, but it is only worth checking once production has been collecting data for a while (the IDs are set and the site is live).
+
+Decisions to keep:
+
+- **The API calls Google and Meta, never the browser.** The service-account key and Meta token are server-only env vars in `apps/api`; the dashboard only sees our own endpoints.
+- **Cache every report** (15–60 min, realtime ~1 min) so dashboard loads don't burn the GA4 per-property quota.
+- **Numbers are consented visitors only.** Tracking is consent-gated, so both sources undercount real traffic. The page says so.
+- GA4 standard reports lag 24–48 h; only the realtime card is live. Meta pixel stats are event counts only, so GA4 is the main source and Meta a secondary panel.
+
+| #   | Task                                                                                                                                                                                                                                                                                                     | Status      |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| AN1 | Requirements doc `analytics-dashboard.md`: which metrics and charts, date ranges (7/28/90 days, custom), comparison with the previous period, caching rules, who can see it. **Owner** setup steps: Google Cloud project, Data API enabled, service account added as GA4 Viewer; Meta System User token  | Not started |
+| AN2 | `ANALYTICS` feature permission (View only): Prisma enum migration, API and `api-services` enums, permissions drawer shows View only for it, sidebar entry gated on it                                                                                                                                    | Not started |
+| AN3 | API GA4 client (`@google-analytics/data`, service account from env): overview (users, sessions, page views, engagement, key events `generate_lead` / `schedule_call`), traffic over time, top pages, sources/channels, countries, devices, realtime active users; cached, `requirePermission(ANALYTICS)` | Not started |
+| AN4 | API Meta client (Graph API, System User token from env): pixel event counts over time (PageView, Lead, Schedule, Contact), and ad spend/reach/clicks from Ads Insights once ads run; cached, same permission. Unset env → endpoint reports "not configured" instead of failing                           | Not started |
+| AN5 | `packages/api-services`: analytics models, enums (date range, report type) and service functions                                                                                                                                                                                                         | Not started |
+| AN6 | Dashboard `/analytics` page: date-range picker, stat tiles with change vs the previous period, traffic chart, top pages, sources, countries/devices, conversions, realtime card, Meta events panel, "consented visitors only" note, empty and not-configured states                                      | Not started |
+| AN7 | Production release: env vars on the API project ([deployment.md](../guides/deployment.md#environment-variables)), migration for the enum, numbers cross-checked against the GA4 and Meta UIs — **review checkpoint**                                                                                     | Not started |
 
 ### Phase SEO — metadata, Open Graph, search & AI visibility
 
