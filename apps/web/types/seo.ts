@@ -40,3 +40,9 @@ export interface PageMetadataInput {
 	keywords?: string[];
 	article?: PageArticleMeta;
 }
+
+/** Search and share copy for a page without a database record. */
+export interface PageSeo {
+	title: string;
+	description: string;
+}

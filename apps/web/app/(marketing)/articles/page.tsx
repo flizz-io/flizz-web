@@ -8,15 +8,12 @@ import {
 import { ArticlesCta } from '@/components/features/articles/articles-cta';
 import { ArticlesHero } from '@/components/features/articles/articles-hero';
 import { ArticlesResults } from '@/components/features/articles/articles-results';
+import { staticPageSeo } from '@/constants/seo';
 import { RoutePath } from '@/enums/routes';
 import { buildPageMetadata } from '@/utils/metadata';
 
-const description =
-	'Notes on building software that has to keep working — what we argue about, what we got wrong, and the decisions that turned out to matter.';
-
 export const metadata: Metadata = buildPageMetadata({
-	title: 'Articles',
-	description,
+	...staticPageSeo[RoutePath.ARTICLES],
 	path: RoutePath.ARTICLES
 });
 

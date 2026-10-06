@@ -4,15 +4,15 @@ import { PortfolioArchive } from '@/components/features/portfolio/portfolio-arch
 import { PortfolioCta } from '@/components/features/portfolio/portfolio-cta';
 import { PortfolioHero } from '@/components/features/portfolio/portfolio-hero';
 import { PortfolioReelSection } from '@/components/features/portfolio/portfolio-reel-section';
-import { portfolioHeroLead, portfolioReelVariant } from '@/constants/portfolio';
+import { portfolioReelVariant } from '@/constants/portfolio';
+import { staticPageSeo } from '@/constants/seo';
 import { RoutePath } from '@/enums/routes';
 import { buildPageMetadata } from '@/utils/metadata';
 import { archiveOf, reelOf } from '@/utils/portfolio';
 import { getPortfolioProjects } from '@/utils/projects-api';
 
 export const metadata: Metadata = buildPageMetadata({
-	title: 'Portfolio',
-	description: portfolioHeroLead,
+	...staticPageSeo[RoutePath.PORTFOLIO],
 	path: RoutePath.PORTFOLIO
 });
 

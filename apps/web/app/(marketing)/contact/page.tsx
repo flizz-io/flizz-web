@@ -6,14 +6,13 @@ import { ContactFaq } from '@/components/features/contact/contact-faq';
 import { ContactForm } from '@/components/features/contact/contact-form';
 import { ContactHero } from '@/components/features/contact/contact-hero';
 import { ContactNextSteps } from '@/components/features/contact/contact-next-steps';
+import { staticPageSeo } from '@/constants/seo';
 import { ContactPrefillProvider } from '@/contexts/contact-prefill-context';
 import { RoutePath } from '@/enums/routes';
 import { buildPageMetadata } from '@/utils/metadata';
 
 export const metadata: Metadata = buildPageMetadata({
-	title: 'Contact',
-	description:
-		'Tell us what you are building, or what is breaking. An engineer replies within one business day — free discovery call, fixed-price proposal.',
+	...staticPageSeo[RoutePath.CONTACT],
 	path: RoutePath.CONTACT
 });
 

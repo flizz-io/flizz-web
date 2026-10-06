@@ -10,7 +10,7 @@ People now find services two ways: classic search engines, and AI assistants (Ch
 | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | `metadataBase`, title template, default OG/Twitter | Done, in `app/layout.tsx`                                                                                                        |
 | Per-page `metadata` / `generateMetadata`           | Every page calls `buildPageMetadata()` (`utils/metadata.ts`, SEO1): title, description, canonical, robots, full OG + Twitter set |
-| Home page's own title/description                  | Missing, so it falls back to the root default ("Flizz")                                                                          |
+| Home page's own title/description                  | Done — static pages' copy lives in `staticPageSeo` (`constants/seo.ts`)                                                          |
 | JSON-LD                                            | `Article` + `BreadcrumbList` on articles, and on portfolio details. Missing on home and services                                 |
 | Generated OG images                                | Articles and portfolio details. Missing for home, services and the list pages                                                    |
 | `sitemap.xml`                                      | **Missing**                                                                                                                      |
@@ -172,7 +172,7 @@ AI answers quote **passages**, not pages. Write so that any single paragraph can
 - **Answer first.** Open each service page and article with one or two sentences that directly answer the question someone would ask ("Flizz builds MVPs for early-stage founders in 6–10 weeks, …"), then the detail.
 - **Use the questions people actually ask as headings.** "How long does an MVP take?", "What does SaaS development cost?". Then answer under each heading in two to four sentences.
 - **Be specific and factual.** Durations, team sizes, technologies, industries served, where the team is based, typical engagement shapes, results with numbers. Models prefer concrete, checkable claims over adjectives. Vague copy ("innovative solutions") never gets cited.
-- **Keep the company's facts consistent everywhere**: name, one-line description, location, services list. `siteConfig` currently uses both "Flizz" and "Flizzio". Pick one canonical brand name and use the other only as an alternate (`alternateName` in JSON-LD), or models may treat them as two companies.
+- **Keep the company's facts consistent everywhere**: name, one-line description, location, services list. Decided 2026-10-06: "Flizz" is the name in every title, share card and JSON-LD; "Flizzio" (the wordmark) appears only as `alternateName`, so models don't treat them as two companies.
 - **Add an FAQ to each service.** Plan a `faqs` JSON field (`[{ question, answer }]`) on `services` in S1, rendered visibly and as `FAQPage` JSON-LD.
 - **Write comparison and decision content** in articles: "Custom software vs no-code for operations teams", "When to rebuild a legacy system". These match how people prompt AI assistants.
 - **Show dates and authors.** Visible "Updated <date>" and a named author with credentials signal freshness and expertise.
