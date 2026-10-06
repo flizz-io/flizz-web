@@ -205,14 +205,14 @@ From the pre-launch review on 2026-10-03. **Paused 2026-10-04**: the remaining t
 
 ### Phase T — Testimonials
 
-| #   | Task                                                                                                                                                       | Status      |
-| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| T1  | Requirements doc [testimonials-crud.md](testimonials-crud.md): fields, highlights must be exact phrases in the quote, display order, optional project link | Done        |
-| T2  | Testimonials API: public list (published, ordered) and admin CRUD + reorder, `requirePermission(TESTIMONIALS)`, revalidates the home page                  | Done        |
-| T3  | `packages/api-services`: testimonial models and service functions                                                                                          | Done        |
-| T4  | Dashboard Testimonials: list with drag reorder; form with a highlight picker (select phrases in the quote) and a project dropdown                          | Not started |
-| T5  | Seed the three placeholder quotes; home testimonials section reads from the API; retire the constant                                                       | Not started |
-| T6  | Production release: seed — **review checkpoint**                                                                                                           | Not started |
+| #   | Task                                                                                                                                                       | Status                                                                                 |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| T1  | Requirements doc [testimonials-crud.md](testimonials-crud.md): fields, highlights must be exact phrases in the quote, display order, optional project link | Done                                                                                   |
+| T2  | Testimonials API: public list (published, ordered) and admin CRUD + reorder, `requirePermission(TESTIMONIALS)`, revalidates the home page                  | Done                                                                                   |
+| T3  | `packages/api-services`: testimonial models and service functions                                                                                          | Done                                                                                   |
+| T4  | Dashboard Testimonials: list with drag reorder; form with a highlight picker (select phrases in the quote) and a project dropdown                          | Done — move up / down instead of drag ([decision](testimonials-crud.md#decisions-log)) |
+| T5  | Seed the three placeholder quotes; home testimonials section reads from the API; retire the constant                                                       | Not started                                                                            |
+| T6  | Production release: seed — **review checkpoint**                                                                                                           | Not started                                                                            |
 
 ### Phase AR — Articles
 
