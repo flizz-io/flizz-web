@@ -211,7 +211,7 @@ From the pre-launch review on 2026-10-03. **Paused 2026-10-04**: the remaining t
 | T2  | Testimonials API: public list (published, ordered) and admin CRUD + reorder, `requirePermission(TESTIMONIALS)`, revalidates the home page                  | Done                                                                                   |
 | T3  | `packages/api-services`: testimonial models and service functions                                                                                          | Done                                                                                   |
 | T4  | Dashboard Testimonials: list with drag reorder; form with a highlight picker (select phrases in the quote) and a project dropdown                          | Done — move up / down instead of drag ([decision](testimonials-crud.md#decisions-log)) |
-| T5  | Seed the three placeholder quotes; home testimonials section reads from the API; retire the constant                                                       | Not started                                                                            |
+| T5  | Seed the three placeholder quotes; home testimonials section reads from the API; retire the constant                                                       | Done                                                                                   |
 | T6  | Production release: seed — **review checkpoint**                                                                                                           | Not started                                                                            |
 
 ### Phase AR — Articles

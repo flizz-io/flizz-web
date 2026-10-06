@@ -5,6 +5,7 @@ import { imagePresets } from '@workspace/media-library';
 
 import projectSeeds from './seed-data/projects.json' with { type: 'json' };
 import serviceSeeds from './seed-data/services.json' with { type: 'json' };
+import testimonialSeeds from './seed-data/testimonials.json' with { type: 'json' };
 import { prisma } from '../src/configs/database.js';
 import { env } from '../src/configs/env.js';
 import { storage } from '../src/configs/media.js';
@@ -228,10 +229,47 @@ async function seedServices(authorId: number) {
 	);
 }
 
+/**
+ * The three placeholder quotes of the retired static list
+ * (seed-data/testimonials.json, from apps/web `constants/home.ts`),
+ * Published, after any already there. A quote that exists — even deleted —
+ * is skipped, so dashboard edits stay and a deleted placeholder stays gone.
+ */
+async function seedTestimonials(authorId: number) {
+	let created = 0;
+
+	for (const seed of testimonialSeeds) {
+		const existing = await prisma.testimonial.findFirst({
+			where: { quote: seed.quote }
+		});
+		if (existing) continue;
+
+		const last = await prisma.testimonial.aggregate({
+			where: { deletedAt: null },
+			_max: { displayOrder: true }
+		});
+		await prisma.testimonial.create({
+			data: {
+				...seed,
+				displayOrder: (last._max.displayOrder ?? -1) + 1,
+				status: PublishStatus.PUBLISHED,
+				createdById: authorId,
+				updatedById: authorId
+			}
+		});
+		created += 1;
+	}
+
+	console.info(
+		`Testimonials: ${created} created, ${testimonialSeeds.length - created} already there`
+	);
+}
+
 try {
 	const superAdmin = await seedSuperAdmin();
 	await seedServices(superAdmin.id);
 	await seedProjects(superAdmin.id);
+	await seedTestimonials(superAdmin.id);
 } finally {
 	await prisma.$disconnect();
 }

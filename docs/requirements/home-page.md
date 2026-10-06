@@ -99,7 +99,7 @@ WordPress Plugin Development was also in the sheet but wasn't listed under any c
 
 ## Testimonials
 
-Backed by the Testimonial CRUD feature (see [progress-report.md](progress-report.md)) — testimonials only ever render here, there's no dedicated Testimonials page. No content provided yet — use placeholder quotes for the static build.
+Backed by the Testimonial CRUD feature ([testimonials-crud.md](testimonials-crud.md)) — testimonials only ever render here, there's no dedicated Testimonials page. Reads the published testimonials from the API in the dashboard's order (since T5, 2026-10-06); with none published the section is left out and the later sections renumber. A testimonial linked to a live project shows "See the project →". No real content provided yet — the three placeholder quotes are seeded from `apps/api/prisma/seed-data/testimonials.json`.
 
 ## FAQs
 
