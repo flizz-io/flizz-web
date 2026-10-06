@@ -217,16 +217,16 @@ From the pre-launch review on 2026-10-03. **Paused 2026-10-04**: the remaining t
 
 ### Phase AR — Articles
 
-| #   | Task                                                                                                                                                                                                         | Status      |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
-| AR1 | Requirements doc `articles-crud.md`: fields, the body editor approach (shared `packages/text-editor` vs a dashboard block editor, both saving `ArticleBlock[]` JSON), byline (PM decision), tags, publishing | Not started |
-| AR2 | Article media: cover and body-image presets in `packages/media-library`, upload endpoints, image blocks resolved from media `uuid` to URL in responses                                                       | Not started |
-| AR3 | Articles API: public list (category/tag/search/sort) + detail + related, admin CRUD, Zod validation of the block union, `requirePermission(ARTICLES)`, revalidates the web pages                             | Not started |
-| AR4 | `packages/api-services`: article models, enums and service functions                                                                                                                                         | Not started |
-| AR5 | Body editor: paragraph, heading, list, quote, code and image blocks, with JSON in and out                                                                                                                    | Not started |
-| AR6 | Dashboard Articles list (search, category/status filters) and form (meta, tags, author from Team, cover, body editor, publishing); delete with confirm                                                       | Not started |
-| AR7 | Seed the six placeholder articles; `/articles`, `/articles/[slug]` and OG images read from the API; retire the constants. Engagement (comments, reactions, views) stays static, deferred 2026-10-03          | Not started |
-| AR8 | Production release: seed + media — **review checkpoint**                                                                                                                                                     | Not started |
+| #   | Task                                                                                                                                                                                                         | Status                                      |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------- |
+| AR1 | Requirements doc `articles-crud.md`: fields, the body editor approach (shared `packages/text-editor` vs a dashboard block editor, both saving `ArticleBlock[]` JSON), byline (PM decision), tags, publishing | Done — [articles-crud.md](articles-crud.md) |
+| AR2 | Article media: cover and body-image presets in `packages/media-library`, upload endpoints, image blocks resolved from media `uuid` to URL in responses                                                       | Not started                                 |
+| AR3 | Articles API: public list (category/tag/search/sort) + detail + related, admin CRUD, Zod validation of the block union, `requirePermission(ARTICLES)`, revalidates the web pages                             | Not started                                 |
+| AR4 | `packages/api-services`: article models, enums and service functions                                                                                                                                         | Not started                                 |
+| AR5 | Body editor: paragraph, heading, list, quote, code and image blocks, with JSON in and out                                                                                                                    | Not started                                 |
+| AR6 | Dashboard Articles list (search, category/status filters) and form (meta, tags, author from Team, cover, body editor, publishing); delete with confirm                                                       | Not started                                 |
+| AR7 | Seed the six placeholder articles; `/articles`, `/articles/[slug]` and OG images read from the API; retire the constants. Engagement (comments, reactions, views) stays static, deferred 2026-10-03          | Not started                                 |
+| AR8 | Production release: seed + media — **review checkpoint**                                                                                                                                                     | Not started                                 |
 
 ### Phase AN — Analytics in the dashboard
 
