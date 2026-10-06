@@ -6,7 +6,7 @@ import { MediaSlot } from '@/components/snippets/media-slot/media-slot';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { ArticleByline as Byline } from '@/enums/articles';
 import type { Article } from '@/types/articles';
-import { formatArticleDate, getReadingMinutes } from '@/utils/articles';
+import { formatArticleDate } from '@/utils/articles';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface ArticleDetailHeroProps {
@@ -26,7 +26,7 @@ export function ArticleDetailHero({
 	byline = Byline.AUTHOR,
 	className
 }: ArticleDetailHeroProps) {
-	const showAuthor = byline === Byline.AUTHOR;
+	const author = byline === Byline.AUTHOR ? article.author : undefined;
 
 	return (
 		<section
@@ -60,10 +60,10 @@ export function ArticleDetailHero({
 					</p>
 
 					<p className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-5 font-mono text-sm tracking-[0.18em] text-muted-foreground uppercase">
-						{showAuthor ? (
+						{author ? (
 							<>
 								<span className="text-foreground">
-									{article.author}
+									{author.name}
 								</span>
 								<span className="text-border">·</span>
 							</>
@@ -72,7 +72,7 @@ export function ArticleDetailHero({
 							{formatArticleDate(article.publishedAt)}
 						</time>
 						<span className="text-border">·</span>
-						{getReadingMinutes(article.body)} min read
+						{article.readingMinutes} min read
 					</p>
 				</Reveal>
 			</div>

@@ -5,8 +5,8 @@ import { notFound, redirect } from 'next/navigation';
 
 import { DeleteProjectButton } from '@/components/features/projects/delete-project-button';
 import { ProjectForm } from '@/components/features/projects/project-form';
-import { VisibilityBadge } from '@/components/features/projects/visibility-badge';
 import { RecordAuthorship } from '@/components/snippets/record-authorship/record-authorship';
+import { VisibilityBadge } from '@/components/snippets/visibility-badge/visibility-badge';
 import { homePath } from '@/constants/auth';
 import {
 	projectFormMessages,

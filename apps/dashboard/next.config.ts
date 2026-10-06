@@ -5,7 +5,8 @@ const nextConfig: NextConfig = {
 	transpilePackages: [
 		'@workspace/ui',
 		'@workspace/api-services',
-		'@workspace/service-visuals'
+		'@workspace/service-visuals',
+		'@workspace/text-editor'
 	],
 	// The dashboard talks to the API as /api/* on its own origin, so the
 	// session cookie is first-party here — no CORS, no cross-site cookies.

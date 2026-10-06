@@ -23,13 +23,13 @@ Treat the bullet list above as a starting menu, not a mandate — replace anythi
 
 Packages are created per feature/functionality; each has its own `src/` folder with an `index.ts` entry point. Add new shared packages here as they're scaffolded, following the same pattern as `packages/ui`:
 
-- **`packages/api-services`** _(scaffolded 2026-10-02 — auth, team, projects, services, contact and testimonials so far)_ — everything API-related shared across apps. Every service takes an optional `ApiContext` last (browser default: the app's `/api` rewrite):
+- **`packages/api-services`** _(scaffolded 2026-10-02 — auth, team, projects, services, contact, testimonials and articles so far)_ — everything API-related shared across apps. Every service takes an optional `ApiContext` last (browser default: the app's `/api` rewrite):
     - `src/services` — the common `apiService` fetcher function and all API functions (e.g. `getPostService`).
     - `src/models` — API payload, response, and query-param types.
     - `src/enums` — API-related enums and parameter options.
 - **`packages/utils`** _(example)_ — common utility functions shared across apps (debounce, throttle, date helpers, etc.).
 - **`packages/media-library`** _(scaffolded 2026-10-02)_ — shared file/image upload, built as a pluggable storage-provider interface (Cloudinary free tier by default, local disk for offline development, others later) so calling code doesn't need to change when the backend changes. The database stores storage keys in `media_files`, never URLs. A dashboard picker component is still to come.
-- **`packages/text-editor`** _(example)_ — shared rich-text editor component (e.g. Tiptap), JSON output, used for all rich text fields across apps.
+- **`packages/text-editor`** _(scaffolded 2026-10-06)_ — the shared rich-text editor, JSON output: a block editor over the `ArticleBlock` union (paragraph, heading, list, quote, code, image) with inline marks as spans. Used for article bodies; use it for any future rich-text field. Tiptap was rejected — its document JSON is a different shape from the stored blocks.
 - **`packages/payments`** _(example)_ — payment handling, built as a pluggable provider interface so a new gateway can be added later without reworking calling code.
 
 > When any package above (or a new one) is scaffolded, also add it to the Architecture section of root `CLAUDE.md`.
@@ -153,7 +153,7 @@ These apply project-wide — worth deciding early, before the first few features
 - **Prefer computing visibility at read time over background jobs for scheduled visibility** — e.g. `status == PUBLISHED AND (scheduled_at IS NULL OR scheduled_at <= now())` — for scheduled publish, registration-open countdowns, and similar timing logic. Only introduce an actual job/worker when a real side effect is required (e.g. sending a notification email at that moment).
 - **Snapshot associations that must preserve history.** When an association can change over time but past state must remain accurate, model it as a dedicated snapshot/junction record tied to that point in time — not a live foreign key that silently rewrites history when the underlying data changes.
 - **All file/image uploads go through one shared package** (e.g. `packages/media-library`) — no feature implements its own one-off upload handling.
-- **All rich text fields use one shared editor package** (e.g. `packages/text-editor`). Content is persisted as JSON, never raw HTML.
+- **All rich text fields use one shared editor package** (`packages/text-editor`). Content is persisted as JSON, never raw HTML.
 - **Nothing is ever hard-deleted** (decided 2026-10-02). Every table has `deleted_at` + `deleted_by_id`; "delete" sets them, and lists and public APIs exclude deleted rows. What else happens on delete is still feature-specific — some entities should block deletion while in use, others detach from referencing records — decide per entity and document it where the entity's requirements live.
 - **Every table records authorship**: `created_by_id` and `updated_by_id` → `users.id`, set by the API from the signed-in user, never from the request body. The dashboard shows who created and last changed each record. See `docs/requirements/users-and-permissions.md`.
 

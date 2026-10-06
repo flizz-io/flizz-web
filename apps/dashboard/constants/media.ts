@@ -7,7 +7,9 @@ import { ImageFit } from '@workspace/api-services';
 export const uploadLimitsKb = {
 	profilePhoto: 500,
 	projectImage: 2048,
-	shareImage: 2048
+	shareImage: 2048,
+	/** Article covers and body images. */
+	articleImage: 2048
 } as const;
 
 /** Output size an upload gets unless the uploader is told otherwise. */

@@ -1,6 +1,6 @@
-import { VisibilityBadge } from '@/components/features/projects/visibility-badge';
 import { FormField } from '@/components/snippets/form-field/form-field';
 import { SectionCard } from '@/components/snippets/section-card/section-card';
+import { VisibilityBadge } from '@/components/snippets/visibility-badge/visibility-badge';
 import {
 	noProjectValue,
 	testimonialFormMessages

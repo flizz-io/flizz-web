@@ -43,7 +43,7 @@ This matches the project convention that rich text is persisted as JSON and neve
 
 Both treatments are built and switched by `articleByline` in `constants/articles.ts`:
 
-- `AUTHOR` — bylined to someone from the About roster, reusing `aboutTeam`. Cross-links the two pages, and technical writing carries more weight with a named engineer behind it.
+- `AUTHOR` — bylined to the article's author, picked in the dashboard from the people shown on the About page (since AR7, [articles-crud.md](articles-crud.md)). Cross-links the two pages, and technical writing carries more weight with a named engineer behind it. An article without an author falls back to `COMPANY`.
 - `COMPANY` — published by Flizz, no individual named. Nothing breaks if the team section is switched off.
 - `NONE` — date and reading time only.
 
@@ -66,16 +66,16 @@ Tags render as chips on each list row and drive the tag filter. They do not curr
 
 ## Data model
 
-| Field         | Used by | Notes                                                                                                 |
-| ------------- | ------- | ----------------------------------------------------------------------------------------------------- |
-| `slug`        | both    | Route segment                                                                                         |
-| `title`       | both    |                                                                                                       |
-| `excerpt`     | both    | List entry and meta description                                                                       |
-| `category`    | both    | One of the four                                                                                       |
-| `publishedAt` | both    | ISO date; the list is ordered by it                                                                   |
-| `author`      | both    | Matched by name against `aboutTeam`; ignored when byline is COMPANY                                   |
-| `body`        | detail  | The block array                                                                                       |
-| `coverImage`  | both    | Optional. Unfilled slots use the registration-mark treatment from the project strip, not invented art |
+| Field         | Used by | Notes                                                                                                                      |
+| ------------- | ------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `slug`        | both    | Route segment                                                                                                              |
+| `title`       | both    |                                                                                                                            |
+| `excerpt`     | both    | List entry and meta description                                                                                            |
+| `category`    | both    | One of the four                                                                                                            |
+| `publishedAt` | both    | ISO date; the list is ordered by it                                                                                        |
+| `author`      | both    | From the API (`{ name, role, photo, links }`), present only while the person is on the About page; absent → company byline |
+| `body`        | detail  | The block array                                                                                                            |
+| `coverImage`  | both    | Optional. Unfilled slots use the registration-mark treatment from the project strip, not invented art                      |
 
 **Reading time is computed, not stored** — counted from the body at render time, so it can never go stale against an edited article.
 
@@ -112,8 +112,8 @@ Notes:
 ## Build notes
 
 - **Bodies are typed blocks, and the renderer's switch is exhaustive over the union.** Adding a block type to `ArticleBlock` fails the build in `article-body.tsx` rather than silently rendering nothing — the main reason for typed JSON over an HTML string.
-- **Reading time is computed from the body**, never stored, so it cannot go stale. Code counts for a quarter of its word count, since code is scanned rather than read.
-- **`author` is matched against `aboutTeam` by exact string.** A roster rename silently drops the byline to the company form instead of erroring — this already happened once, when the placeholder team was replaced with real names. Check both files together when either changes.
+- **Reading time is computed from the body by the API on every read** (`readingMinutes`, since AR7), never stored, so it cannot go stale. Code counts for a quarter of its word count, since code is scanned rather than read.
+- **The author is a relation, not a name** (since AR7). The old string match against `aboutTeam` silently dropped bylines on a roster rename; the API now sends the author object, so a rename follows automatically.
 - **The reading column is capped at `max-w-2xl`** (672px, roughly 70 characters) at every width. Long measure is the single thing most likely to make a reading page fail.
 - **Code blocks scroll inside their own container**; the page body never scrolls horizontally. Verified at 390px.
 - **The detail hero is centred on the reading column**, unlike the left-aligned heroes elsewhere, so the eye never travels sideways to find where the body starts.
@@ -149,7 +149,7 @@ All four are switched by `articleEngagementOptions` in `constants/articles.ts`:
 
 Nothing persists. The form is disabled rather than left live to collect input that would be discarded.
 
-**TODO: connect to the Articles API at Stage 10** — posting, moderation, pagination, real counts. Then remove `articleEngagement` and `articleComments` from constants.
+**Deferred (2026-10-03):** the Articles API (AR3) doesn't cover engagement — posting, moderation, pagination, real counts come later. Then remove `articleEngagement` and `articleComments` from constants.
 
 Replies nest one level only. A thread is a conversation, not a tree, and unbounded nesting is unreadable on a phone.
 

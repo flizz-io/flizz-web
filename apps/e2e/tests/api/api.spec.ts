@@ -21,7 +21,8 @@ test.describe('API basics', () => {
 			'/api/public/services',
 			'/api/public/projects',
 			'/api/public/team',
-			'/api/public/testimonials'
+			'/api/public/testimonials',
+			'/api/public/articles'
 		]) {
 			const response = await request.get(path);
 			expect(response.status(), path).toBe(200);

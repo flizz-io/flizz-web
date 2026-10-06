@@ -1,13 +1,15 @@
 import { ImageResponse } from 'next/og';
 
+import { ShareCard } from '@/components/snippets/share-card/share-card';
 import { siteConfig } from '@/configs/site';
+import { shareCardColors, shareImageSize } from '@/constants/seo';
 import {
 	getPortfolioProject,
 	getPortfolioProjects
 } from '@/utils/projects-api';
 
-export const alt = 'Flizz project';
-export const size = { width: 1200, height: 630 };
+export const alt = 'Flizz case study: the project, its sector and its result';
+export const size = shareImageSize;
 export const contentType = 'image/png';
 
 export async function generateStaticParams() {
@@ -20,8 +22,6 @@ export async function generateStaticParams() {
  * Generated rather than designed per project, so every share card is correct
  * the moment a case study is published. The headline result travels with the
  * name — the card has to say what the work did, not just what it was called.
- * Deliberately plain: system fonts only, since loading the brand faces would
- * mean shipping font binaries into the edge bundle for a 1200x630 png.
  */
 export default async function OpengraphImage({
 	params
@@ -33,60 +33,12 @@ export default async function OpengraphImage({
 	const headline = project?.results[0];
 
 	return new ImageResponse(
-		<div
-			style={{
-				width: '100%',
-				height: '100%',
-				display: 'flex',
-				flexDirection: 'column',
-				justifyContent: 'space-between',
-				background: '#08060d',
-				padding: '72px',
-				color: '#f7f5fb'
-			}}
-		>
-			<div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-				<div
-					style={{
-						width: 12,
-						height: 12,
-						borderRadius: 999,
-						background: '#8b5cf6'
-					}}
-				/>
-				<div
-					style={{
-						fontSize: 24,
-						letterSpacing: 6,
-						textTransform: 'uppercase',
-						color: '#9d94b8'
-					}}
-				>
-					{project?.sector ?? siteConfig.name}
-				</div>
-			</div>
-
-			<div
-				style={{
-					display: 'flex',
-					flexDirection: 'column',
-					gap: 28,
-					maxWidth: 1000
-				}}
-			>
-				<div
-					style={{
-						display: 'flex',
-						fontSize: project && project.name.length > 26 ? 68 : 82,
-						lineHeight: 1.1,
-						fontWeight: 600,
-						letterSpacing: -1.5
-					}}
-				>
-					{project?.name ?? siteConfig.tagline}
-				</div>
-
-				{headline ? (
+		<ShareCard
+			eyebrow={project?.sector ?? siteConfig.name}
+			title={project?.name ?? siteConfig.tagline}
+			footnote={project?.year}
+			detail={
+				headline ? (
 					<div
 						style={{
 							display: 'flex',
@@ -95,36 +47,33 @@ export default async function OpengraphImage({
 							fontSize: 30
 						}}
 					>
-						<div style={{ display: 'flex', color: '#9d94b8' }}>
+						<div
+							style={{
+								display: 'flex',
+								color: shareCardColors.muted
+							}}
+						>
 							{headline.from}
 						</div>
 						<div
 							style={{
 								width: 40,
 								height: 1,
-								background: '#4b4360'
+								background: shareCardColors.rule
 							}}
 						/>
-						<div style={{ display: 'flex', color: '#b9a7ff' }}>
+						<div
+							style={{
+								display: 'flex',
+								color: shareCardColors.highlight
+							}}
+						>
 							{headline.to}
 						</div>
 					</div>
-				) : null}
-			</div>
-
-			<div
-				style={{
-					display: 'flex',
-					justifyContent: 'space-between',
-					alignItems: 'center',
-					fontSize: 24,
-					color: '#9d94b8'
-				}}
-			>
-				<div style={{ display: 'flex' }}>{siteConfig.fullname}</div>
-				<div style={{ display: 'flex' }}>{project?.year ?? ''}</div>
-			</div>
-		</div>,
+				) : undefined
+			}
+		/>,
 		size
 	);
 }

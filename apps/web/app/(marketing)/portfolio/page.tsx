@@ -4,28 +4,17 @@ import { PortfolioArchive } from '@/components/features/portfolio/portfolio-arch
 import { PortfolioCta } from '@/components/features/portfolio/portfolio-cta';
 import { PortfolioHero } from '@/components/features/portfolio/portfolio-hero';
 import { PortfolioReelSection } from '@/components/features/portfolio/portfolio-reel-section';
-import { siteConfig } from '@/configs/site';
-import { portfolioHeroLead, portfolioReelVariant } from '@/constants/portfolio';
+import { portfolioReelVariant } from '@/constants/portfolio';
+import { staticPageSeo } from '@/constants/seo';
+import { RoutePath } from '@/enums/routes';
+import { buildPageMetadata } from '@/utils/metadata';
 import { archiveOf, reelOf } from '@/utils/portfolio';
 import { getPortfolioProjects } from '@/utils/projects-api';
 
-export const metadata: Metadata = {
-	title: 'Portfolio',
-	description: portfolioHeroLead,
-	alternates: { canonical: `${siteConfig.url}/portfolio` },
-	openGraph: {
-		type: 'website',
-		url: `${siteConfig.url}/portfolio`,
-		siteName: siteConfig.fullname,
-		title: `Portfolio — ${siteConfig.name}`,
-		description: portfolioHeroLead
-	},
-	twitter: {
-		card: 'summary_large_image',
-		title: `Portfolio — ${siteConfig.name}`,
-		description: portfolioHeroLead
-	}
-};
+export const metadata: Metadata = buildPageMetadata({
+	...staticPageSeo[RoutePath.PORTFOLIO],
+	path: RoutePath.PORTFOLIO
+});
 
 export default async function PortfolioPage() {
 	const projects = await getPortfolioProjects();

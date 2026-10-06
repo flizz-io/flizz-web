@@ -3,6 +3,7 @@ import {
 	Inbox,
 	Layers,
 	LayoutDashboard,
+	Newspaper,
 	Quote,
 	UserRound,
 	Users
@@ -11,6 +12,7 @@ import type { LucideIcon } from 'lucide-react';
 import type { ComponentType } from 'react';
 
 import { UnreadMessagesBadge } from '@/components/features/messages/unread-messages-badge';
+import { articlesPath } from '@/constants/articles';
 import { messagesPath } from '@/constants/contact-messages';
 import { projectsPath } from '@/constants/projects';
 import { servicesPath } from '@/constants/services';
@@ -46,6 +48,12 @@ export const sidebarNavItems: NavItem[] = [
 		href: servicesPath,
 		icon: Layers,
 		feature: Feature.SERVICES
+	},
+	{
+		title: 'Articles',
+		href: articlesPath,
+		icon: Newspaper,
+		feature: Feature.ARTICLES
 	},
 	{
 		title: 'Testimonials',

@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 
 import { FeaturedToggle } from '@/components/features/projects/featured-toggle';
 import { ProjectCell } from '@/components/features/projects/project-cell';
-import { VisibilityBadge } from '@/components/features/projects/visibility-badge';
+import { VisibilityBadge } from '@/components/snippets/visibility-badge/visibility-badge';
 import { allFilterValue } from '@/constants/filters';
 import {
 	projectsMessages,
