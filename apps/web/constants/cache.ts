@@ -7,7 +7,8 @@
 export enum CacheTag {
 	PROJECTS = 'projects',
 	SERVICES = 'services',
-	TEAM = 'team'
+	TEAM = 'team',
+	TESTIMONIALS = 'testimonials'
 }
 
 /** How often pages refetch on their own, when periodic refresh is on. */

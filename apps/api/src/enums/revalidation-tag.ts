@@ -2,5 +2,6 @@
 export enum RevalidationTag {
 	PROJECTS = 'projects',
 	SERVICES = 'services',
-	TEAM = 'team'
+	TEAM = 'team',
+	TESTIMONIALS = 'testimonials'
 }

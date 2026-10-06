@@ -5,6 +5,7 @@ import type { ComponentProps, MouseEvent } from 'react';
 
 import { crispChatboxId, crispOpenCommands } from '@/constants/chat';
 import { contactFormAnchorId } from '@/constants/contact';
+import { CtaType } from '@/enums/analytics';
 import { sectionHref } from '@/utils/navigation';
 import { Button } from '@workspace/ui/components/button';
 
@@ -41,6 +42,7 @@ export function ChatButton({ children, ...props }: ChatButtonProps) {
 			<Link
 				href={briefHref}
 				onClick={onClick}
+				data-cta={CtaType.START_CHAT}
 			>
 				{children}
 			</Link>

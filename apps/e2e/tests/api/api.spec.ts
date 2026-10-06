@@ -20,7 +20,8 @@ test.describe('API basics', () => {
 		for (const path of [
 			'/api/public/services',
 			'/api/public/projects',
-			'/api/public/team'
+			'/api/public/team',
+			'/api/public/testimonials'
 		]) {
 			const response = await request.get(path);
 			expect(response.status(), path).toBe(200);

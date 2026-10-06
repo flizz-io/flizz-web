@@ -8,7 +8,9 @@ import { ProjectDetailHero } from '@/components/features/portfolio/project-detai
 import { ProjectGallery } from '@/components/features/portfolio/project-gallery';
 import { ProjectOutcome } from '@/components/features/portfolio/project-outcome';
 import { ProjectRelated } from '@/components/features/portfolio/project-related';
+import { TrackContentView } from '@/components/snippets/analytics/track-content-view';
 import { siteConfig } from '@/configs/site';
+import { ContentType } from '@/enums/analytics';
 import { getProjectService } from '@/utils/portfolio';
 import {
 	getPortfolioProject,
@@ -135,6 +137,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 				dangerouslySetInnerHTML={{
 					__html: JSON.stringify(structuredData)
 				}}
+			/>
+			<TrackContentView
+				type={ContentType.PROJECT}
+				id={project.slug}
+				name={project.name}
 			/>
 
 			<ProjectDetailHero

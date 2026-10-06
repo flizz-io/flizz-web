@@ -15,14 +15,20 @@ import { portfolioMetaOf, sinceYearOf } from '@/utils/portfolio';
 import { getHomeProjects, getPortfolioProjects } from '@/utils/projects-api';
 import { serviceCategoryCardsOf } from '@/utils/services';
 import { getCatalogueServices } from '@/utils/services-api';
+import { getHomeTestimonials } from '@/utils/testimonials-api';
 
 export default async function HomePage() {
-	const [homeProjects, projects, services] = await Promise.all([
+	const [homeProjects, projects, services, testimonials] = await Promise.all([
 		getHomeProjects(),
 		getPortfolioProjects(),
-		getCatalogueServices()
+		getCatalogueServices(),
+		getHomeTestimonials()
 	]);
-	const totalSections = 9;
+	// Testimonials drop out when none are published, so the counter is
+	// built from what actually renders.
+	const testimonialsCount = Number(testimonials.length > 0);
+	const totalSections = 8 + testimonialsCount;
+	const afterTestimonials = 3 + testimonialsCount;
 
 	return (
 		<>
@@ -46,34 +52,35 @@ export default async function HomePage() {
 				totalSections={totalSections}
 			/>
 			<Testimonials
+				testimonials={testimonials}
 				sectionIndex={3}
 				totalSections={totalSections}
 			/>
 			<WhyUs
-				sectionIndex={4}
+				sectionIndex={afterTestimonials}
 				totalSections={totalSections}
 			/>
 			<Problem
-				sectionIndex={5}
+				sectionIndex={afterTestimonials + 1}
 				totalSections={totalSections}
 			/>
 			<StatsBand />
 			<Solution
 				variation="scroll"
-				sectionIndex={6}
+				sectionIndex={afterTestimonials + 2}
 				totalSections={totalSections}
 			/>
 			<WhoWeBuildFor
-				sectionIndex={7}
+				sectionIndex={afterTestimonials + 3}
 				totalSections={totalSections}
 				marqueeSpeed={0.5}
 			/>
 			<Faq
-				sectionIndex={8}
+				sectionIndex={afterTestimonials + 4}
 				totalSections={totalSections}
 			/>
 			<FinalCta
-				sectionIndex={9}
+				sectionIndex={afterTestimonials + 5}
 				totalSections={totalSections}
 			/>
 			{/* After the sections, so it finds them all mounted. */}

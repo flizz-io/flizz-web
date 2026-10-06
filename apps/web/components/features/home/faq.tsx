@@ -5,6 +5,7 @@ import { OpenIndicator } from '@/components/snippets/open-indicator/open-indicat
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
 import { faqItems } from '@/constants/home';
+import { CtaType } from '@/enums/analytics';
 import {
 	Accordion,
 	AccordionContent,
@@ -78,6 +79,7 @@ export function Faq({ sectionIndex, totalSections, className }: FaqProps) {
 				    answers above is the one you needed. */}
 				<Link
 					href="/contact"
+					data-cta={CtaType.CONTACT}
 					className="group flex items-center justify-between gap-5 border-b border-border py-6 transition-colors hover:border-primary/50"
 				>
 					<span className="flex items-baseline gap-5">
