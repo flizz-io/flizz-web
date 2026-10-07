@@ -73,6 +73,7 @@ export default async function HomePage() {
 				totalSections={totalSections}
 			/>
 			<Problem
+				variation="split"
 				sectionIndex={afterTestimonials + 1}
 				totalSections={totalSections}
 			/>

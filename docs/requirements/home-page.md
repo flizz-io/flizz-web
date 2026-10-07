@@ -31,6 +31,11 @@ Public marketing homepage for `apps/web`. Sections below are in page order.
 - **Problem 3 — Slow-moving agencies or internal teams:** Months of meetings. Endless scope discussions. By the time something ships, requirements have changed. Technical debt piles up because "we'll fix it later."
 - **The Real Cost:** Technology that holds you back instead of moving you forward. Competitive advantages you can't capture. Growth opportunities you can't pursue. Teams frustrated by tools that make work harder, not easier.
 
+**Variations** (`<Problem variation>`): the sequence is the same five stages either way — the opening, one per problem, then the real cost — pinned for the same scroll, with the same background scene per stage, the same draining accent, the same seam on each change, the same rail and the same "Skip the problem".
+
+- `stages` (default) — each stage takes the whole screen in turn, the opening being the first of them: the headline leaves as the first problem arrives.
+- `split` (the home page) — the opening instead holds the left column for the whole sequence, and the stages run through the right one, so the headline stays put while the problems and the real cost pass beside it. The first stage leaves that column empty. Inside the column the stage number leads its block rather than standing beside it, the type holds one step smaller, and the scene's carve is centred rather than left of centre so the backdrop reads around both columns. Large screens only: below `lg` there is no room for two columns, so it reads as `stages` (the carve stays centred, which is where the copy is at that width anyway).
+
 ## Solution Section
 
 > **Content issue:** the sheet reuses the Problem section's headline ("Is This How You're Building Your Digital Solutions?") here too — almost certainly a copy/paste leftover. **Needs a real headline from the PM before build.**

@@ -9,7 +9,6 @@ import { ProblemScene } from '@/components/features/home/problem-scenes';
 import { Pinned } from '@/components/snippets/pinned/pinned';
 import { Reveal } from '@/components/snippets/reveal/reveal';
 import { SectionHeader } from '@/components/snippets/section-header/section-header';
-import { SectionTag } from '@/components/snippets/section-tag/section-tag';
 import { problemItems, realCostItems } from '@/constants/home';
 import { useSmoother } from '@/contexts/smooth-scroll-context';
 import { useScrollProgress } from '@/hooks/use-scroll-progress';
@@ -43,6 +42,11 @@ const COST_DRAIN = 0.14;
 
 const SCENE_MASK =
 	'radial-gradient(ellipse 58% 56% at 34% 50%, transparent 10%, #000 76%)';
+/** Split: copy down both sides, so the scene reads around it rather than beside. */
+const SPLIT_SCENE_MASK =
+	'radial-gradient(ellipse 86% 64% at 50% 50%, transparent 24%, #000 92%)';
+/** The two columns, declared once so the held header and the stages align. */
+const SPLIT_GRID = 'grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16';
 
 interface ProblemStage {
 	key: string;
@@ -52,9 +56,18 @@ interface ProblemStage {
 	number?: number;
 }
 
+type ProblemVariation = 'stages' | 'split';
+
 interface ProblemProps {
 	sectionIndex: number;
 	totalSections?: number;
+	/**
+	 * `stages` — each stage takes the whole screen in turn, the header being
+	 * the first of them. `split` — the header holds the left column for the
+	 * whole sequence and the stages run through the right one. Below `lg`
+	 * there is no room for two columns, so `split` reads as `stages` there.
+	 */
+	variation?: ProblemVariation;
 	/** Viewport heights of scroll each stage is held for. */
 	stageScrollVh?: number;
 	/** Which axis stages travel on as the sequence advances. */
@@ -110,16 +123,33 @@ function CostCallout({ item, drain }: { item: ProblemItem; drain: number }) {
 function ProblemBody({
 	item,
 	number,
-	drain
+	drain,
+	/**
+	 * Half the stage rather than all of it: the number leads instead of
+	 * standing beside, and the type holds its smaller step. Only from `lg`,
+	 * where the two columns exist — narrower than that both read the same.
+	 */
+	narrow = false
 }: {
 	item: ProblemItem;
 	number: number;
 	drain: number;
+	narrow?: boolean;
 }) {
 	return (
-		<div className="grid items-center gap-6 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-16">
+		<div
+			className={cn(
+				'grid items-center gap-6',
+				narrow
+					? 'lg:gap-2'
+					: 'lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-16'
+			)}
+		>
 			<span
-				className="font-serif text-7xl leading-none text-primary lg:text-[10rem]"
+				className={cn(
+					'font-serif text-7xl leading-none text-primary',
+					!narrow && 'lg:text-[10rem]'
+				)}
 				style={{ opacity: 0.25 + drain * 0.6 }}
 			>
 				{String(number).padStart(2, '0')}
@@ -127,7 +157,12 @@ function ProblemBody({
 
 			<div className="max-w-2xl">
 				<StageEyebrow drain={drain}>{item.eyebrow}</StageEyebrow>
-				<h3 className="mt-3 font-heading text-4xl leading-[1.05] font-semibold text-balance text-foreground sm:text-4xl lg:text-5xl">
+				<h3
+					className={cn(
+						'mt-3 font-heading text-4xl leading-[1.05] font-semibold text-balance text-foreground sm:text-4xl',
+						!narrow && 'lg:text-5xl'
+					)}
+				>
 					{item.title}
 				</h3>
 				<p className="mt-5 max-w-xl text-base text-pretty text-muted-foreground sm:text-lg">
@@ -142,10 +177,100 @@ function ProblemBody({
 	);
 }
 
+/** The section's own opening: held beside the stages in `split`, a stage of its own otherwise. */
+function ProblemIntro({
+	sectionIndex,
+	totalSections,
+	showCue = true,
+	className
+}: {
+	sectionIndex: number;
+	totalSections?: number;
+	/** The cue has said its piece once the sequence is moving. */
+	showCue?: boolean;
+	className?: string;
+}) {
+	return (
+		<div className={className}>
+			<SectionHeader
+				index={sectionIndex}
+				total={totalSections}
+				eyebrow="The Problem"
+				title="Is this how you're building your digital solutions?"
+				description="Most businesses face the same frustrating choices when building software."
+				descriptionClassName="max-w-xl"
+			/>
+			<p
+				className={cn(
+					'mt-12 flex items-center gap-3 font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase transition-opacity duration-700 ease-power-on',
+					!showCue && 'opacity-0'
+				)}
+			>
+				<span className="h-px w-10 bg-primary/60" />
+				Keep scrolling
+			</p>
+		</div>
+	);
+}
+
+/** The closing stage: what all of it adds up to, each loss rising in turn. */
+function RealCost({
+	isActive,
+	/** Half the stage: tighter rows and one type step down, from `lg` up. */
+	narrow = false
+}: {
+	isActive: boolean;
+	narrow?: boolean;
+}) {
+	return (
+		<div className="max-w-3xl">
+			<p className="font-mono text-base tracking-[0.22em] text-primary uppercase">
+				The real cost
+			</p>
+
+			<ul className={cn('mt-8', narrow && 'lg:mt-5')}>
+				{realCostItems.map((item, itemIndex) => (
+					// The row clips its own content, so each loss rises out
+					// from behind the rule above it.
+					<li
+						key={item.line}
+						className="overflow-hidden border-b border-border/60 last:border-0"
+					>
+						<div
+							className={cn(
+								'flex items-center gap-5 py-4 transition-transform duration-[900ms] ease-power-on sm:gap-7',
+								narrow && 'lg:py-3',
+								isActive ? 'translate-y-0' : 'translate-y-full'
+							)}
+							style={{
+								transitionDelay: `${scaleMs(200 + itemIndex * 150)}ms`
+							}}
+						>
+							<CostDiagram
+								kind={item.diagram}
+								active={isActive}
+							/>
+							<p
+								className={cn(
+									'font-heading text-lg leading-snug text-foreground sm:text-xl',
+									!narrow && 'lg:text-2xl'
+								)}
+							>
+								{item.line}
+							</p>
+						</div>
+					</li>
+				))}
+			</ul>
+		</div>
+	);
+}
+
 export function Problem({
 	className,
 	sectionIndex,
 	totalSections,
+	variation = 'stages',
 	stageScrollVh = STAGE_SCROLL_VH,
 	slideDirection = 'vertical',
 	showSkip = true
@@ -156,6 +281,8 @@ export function Problem({
 	const progress = useScrollProgress(trackRef);
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [isInView, setIsInView] = useState(false);
+
+	const isSplit = variation === 'split';
 
 	// intro + one per problem + the real cost
 	const stageCount = problemItems.length + 2;
@@ -258,8 +385,12 @@ export function Problem({
 										: 'text-foreground opacity-[0.16]'
 								)}
 								style={{
-									maskImage: SCENE_MASK,
-									WebkitMaskImage: SCENE_MASK
+									maskImage: isSplit
+										? SPLIT_SCENE_MASK
+										: SCENE_MASK,
+									WebkitMaskImage: isSplit
+										? SPLIT_SCENE_MASK
+										: SCENE_MASK
 								}}
 							>
 								{stage.scene === 'cost' ? (
@@ -295,8 +426,49 @@ export function Problem({
 						})}
 					/>
 
+					{/* `split`: the opening holds the left column for the
+					    whole sequence, so the stages have the right one to
+					    themselves. Below `lg` it is a stage like any other. */}
+					{isSplit ? (
+						<div className="absolute inset-0 hidden items-center px-4 sm:px-6 lg:flex lg:px-8">
+							<div className="mx-auto w-full max-w-7xl">
+								<div className={SPLIT_GRID}>
+									<ProblemIntro
+										sectionIndex={sectionIndex}
+										totalSections={totalSections}
+										showCue={activeIndex === 0}
+									/>
+								</div>
+							</div>
+						</div>
+					) : null}
+
 					{stages.map((stage, index) => {
 						const isActive = index === activeIndex;
+						const content =
+							stage.key === 'intro' ? (
+								<ProblemIntro
+									sectionIndex={sectionIndex}
+									totalSections={totalSections}
+									// Said already, beside the stages.
+									className={cn(
+										'max-w-3xl',
+										isSplit && 'lg:hidden'
+									)}
+								/>
+							) : stage.key === 'cost' ? (
+								<RealCost
+									isActive={isActive}
+									narrow={isSplit}
+								/>
+							) : stage.item ? (
+								<ProblemBody
+									item={stage.item}
+									number={stage.number ?? 1}
+									drain={stage.drain}
+									narrow={isSplit}
+								/>
+							) : null;
 
 						return (
 							<div
@@ -321,73 +493,17 @@ export function Problem({
 								)}
 							>
 								<div className="mx-auto w-full max-w-7xl">
-									{stage.key === 'intro' ? (
-										<div className="max-w-3xl">
-											<SectionHeader
-												index={sectionIndex}
-												total={totalSections}
-												eyebrow="The Problem"
-												title="Is this how you're building your digital solutions?"
-												description="Most businesses face the same frustrating choices when building software."
-												descriptionClassName="max-w-xl"
+									{isSplit ? (
+										<div className={SPLIT_GRID}>
+											<div
+												aria-hidden
+												className="hidden lg:block"
 											/>
-											<p className="mt-12 flex items-center gap-3 font-mono text-sm tracking-[0.2em] text-muted-foreground uppercase">
-												<span className="h-px w-10 bg-primary/60" />
-												Keep scrolling
-											</p>
+											<div>{content}</div>
 										</div>
-									) : stage.key === 'cost' ? (
-										<div className="max-w-3xl">
-											<p className="font-mono text-base tracking-[0.22em] text-primary uppercase">
-												The real cost
-											</p>
-
-											<ul className="mt-8">
-												{realCostItems.map(
-													(item, itemIndex) => (
-														// The row clips its own
-														// content, so each loss
-														// rises out from behind
-														// the rule above it.
-														<li
-															key={item.line}
-															className="overflow-hidden border-b border-border/60 last:border-0"
-														>
-															<div
-																className={cn(
-																	'flex items-center gap-5 py-4 transition-transform duration-[900ms] ease-power-on sm:gap-7',
-																	isActive
-																		? 'translate-y-0'
-																		: 'translate-y-full'
-																)}
-																style={{
-																	transitionDelay: `${scaleMs(200 + itemIndex * 150)}ms`
-																}}
-															>
-																<CostDiagram
-																	kind={
-																		item.diagram
-																	}
-																	active={
-																		isActive
-																	}
-																/>
-																<p className="font-heading text-lg leading-snug text-foreground sm:text-xl lg:text-2xl">
-																	{item.line}
-																</p>
-															</div>
-														</li>
-													)
-												)}
-											</ul>
-										</div>
-									) : stage.item ? (
-										<ProblemBody
-											item={stage.item}
-											number={stage.number ?? 1}
-											drain={stage.drain}
-										/>
-									) : null}
+									) : (
+										content
+									)}
 								</div>
 							</div>
 						);
