@@ -1,6 +1,6 @@
 # Home — Hero v3 ("cinematic")
 
-A third hero variation for the home page, alongside `starfield` (removed 2026-10-04, L16) and `constellation`. Same message and the same `HeroDisciplinesScene`, told as one orchestrated sequence: a loading screen, a header and scene reveal, then a scroll-driven hand-off that moves the scene aside and builds the copy in its place.
+A third hero variation for the home page, alongside `starfield` (removed 2026-10-04, L16) and `constellation`. Same message and the same `HeroDisciplinesScene`, told as one orchestrated sequence: a loading screen, a header and scene reveal, then a hand-off that moves the scene aside and builds the copy in its place.
 
 Copy source of truth stays in [home-page.md § Hero](home-page.md#hero). Selected in `app/(marketing)/page.tsx` with `<Hero variation="cinematic" />`; the other two variations remain available.
 
@@ -28,29 +28,32 @@ Copy source of truth stays in [home-page.md § Hero](home-page.md#hero). Selecte
 - **Stage-A caption** under the scene: "Your Technology Partner" and a scroll cue with the floating arrow.
 - Coordinated through `contexts/intro-context.tsx` — phase `PENDING → REVEALING → DONE`.
 
-### 3. Scroll hand-off (large screens)
+### 3. The hand-off (large screens)
 
-- The hero pins (ScrollTrigger `pin`, inside ScrollSmoother) for `scrollDistance` % of a screen of extra scroll, scrubbed.
-- Over that travel:
+One timed beat, `handOffSeconds` long — not a scroll. Nothing in it changes the page's height or position, so the document never moves under the reader.
+
+- **Plays once a load**, on the first of: a wheel, touch or down-key (the reader asking to move on), a click on the scroll cue, or `autoAdvanceSeconds` of sitting still. Nothing winds it back: the opening stage is gone until the page is reloaded.
+- Over the beat:
     - the stage-A caption lifts away first;
     - the scene slides from centre into the right column and eases to its resting scale;
     - the copy builds from the left: headline lines rise out of masks, the client logo strip (placeholder wordmarks from `socialProofLogos`, looping marquee that pauses on hover) resolves from blur, then the actions and the facts line.
-- The real layout is the **final** one (copy left, scene right). The centred start is a measured offset the timeline animates back to zero, so it stays correct at every width and the "See the works" jump still lands on the right section.
-- **Auto-advance:** if the reader hasn't scrolled `autoAdvanceSeconds` (default 4) after the reveal, the page scrolls itself — slowly, via the cinematic scroll — to the end of the pin, so nobody is left without the headline and CTA. Any wheel/touch/key input cancels it. `0` disables it.
+- **The page is held still while it plays** — ScrollSmoother paused, the same hold the loader uses, handed straight back when the beat ends. The reader asked for the hand-off, and there is nothing below worth scrolling to until the hero has assembled. A reader who keeps pushing hurries it along (to `HURRY_SCALE`×) rather than being made to wait it out.
+- **The real layout is the final one** (copy left, scene right). The opening stage is a set of transforms over that layout — the centred scene a measured offset, re-measured on resize — so it holds at every width, and anything that measures the page (the "See the works" jump) lands true at every point in the sequence.
+- **Already past it:** a page that doesn't start at the top — a restored scroll position, a `?section=` link, the scrollbar dragged — skips the stage and shows the hero assembled.
+- **Transform owners.** Each side of the stage is three nested elements: the parallax plane (`[data-hero-depth]`), the hand-off's travelling layer inside it, and the pointer layer (`[data-hero-pointer]`) inside that. One owner per transform, so none of the three can revert or restore another's.
 
 ### 4. Parallax
 
 Four depth planes — `HeroDepth` (`enums/home.ts`): the aurora glows (`FAR`), the particles (`MID`), the scene (`SCENE`) and the copy (`COPY`). Built with GSAP in `hooks/use-hero-parallax.ts`; every depth lives in `heroParallax` (`constants/home.ts`).
 
-- **Exit** (all sizes): as the hero scrolls away, each plane trails (+) or leads (−) the page by its `scroll` share of the hero's height. Starts where the pin ends (or at the top when nothing pins).
-- **Hand-off** (large screens): while pinned, `FAR` and `MID` drift by their `pinned` % so the stage never reads as a flat backdrop.
+- **Exit** (all sizes, from the top of the page): large screens hold the hero (`hold`) while Services slides up over it, the copy blurring away; below `lg` each plane trails (+) or leads (−) the page by its `scroll` share of the hero's height.
 - **Pointer** (fine pointers only): planes lean with the cursor by `pointer` px; negative counters it. Paused while a button is held so it never fights a drag on the scene. It moves each plane's inner `[data-hero-pointer]` layer, so it never shares a transform with the scroll layers.
 - Off under reduced motion.
 
 ### Small screens and reduced motion
 
-- Below `lg`: no pin, no travel. The scene sits above the copy; the copy plays one short entrance after the reveal.
-- Reduced motion: no loader, no pin, no rotation — the final layout, static.
+- Below `lg`: no opening stage and no hand-off. The scene sits above the copy; the copy plays one short entrance after the reveal.
+- Reduced motion: no loader, no stage, no rotation — the final layout, static.
 
 ## Copy block design
 
@@ -68,8 +71,8 @@ One bold element — the headline's rotating third line. Everything around it st
 | -------------------- | ------------------------------------------------- | --------------------------------------------------------------- |
 | `loaderSeconds`      | `1.8`                                             | Minimum loader time in real seconds, clamped 1.5–4.             |
 | `showLoader`         | `true`                                            | Off skips straight to the reveal.                               |
-| `scrollDistance`     | `120`                                             | Pinned scroll travel, % of the viewport height.                 |
-| `autoAdvanceSeconds` | `4`                                               | Idle time before the hand-off plays itself; `0` disables.       |
+| `handOffSeconds`     | `1.2`                                             | How long the stage takes to hand over.                          |
+| `autoAdvanceSeconds` | `10`                                              | Idle time before the hand-off plays itself; `0` disables.       |
 | `rotatingPhrases`    | `["what's next.", "what scales.", "what lasts."]` | Third headline line, in order; the first is the accessible one. |
 | `phraseHoldSeconds`  | `3`                                               | How long each phrase holds.                                     |
 
@@ -79,18 +82,18 @@ The whole landing site's animation speed is one dial: `NEXT_PUBLIC_ANIMATION_SPE
 
 ## Files
 
-| File                                                   | Role                                                      |
-| ------------------------------------------------------ | --------------------------------------------------------- |
-| `enums/intro.ts`                                       | `IntroPhase`.                                             |
-| `contexts/intro-context.tsx`                           | Intro phase provider + `useIntro()`.                      |
-| `components/snippets/intro-loader/intro-loader.tsx`    | The loading screen and its exit.                          |
-| `components/features/home/hero-atmosphere.tsx`         | Background layers, extracted from v2 and shared by both.  |
-| `components/features/home/hero-cinematic.tsx`          | The variation: stage, pin, scroll timeline, auto-advance. |
-| `components/features/home/hero-cinematic-copy.tsx`     | The copy block and its rotating line.                     |
-| `hooks/use-hero-parallax.ts`                           | Exit, hand-off and pointer parallax.                      |
-| `components/features/home/hero-disciplines-scene.tsx`  | Adds `onReady`.                                           |
-| `components/snippets/header/header.tsx`                | Intro entrance.                                           |
-| `app/layout.tsx`, `packages/ui/src/styles/globals.css` | `data-intro` pre-paint script and gating CSS.             |
+| File                                                   | Role                                                     |
+| ------------------------------------------------------ | -------------------------------------------------------- |
+| `enums/intro.ts`                                       | `IntroPhase`.                                            |
+| `contexts/intro-context.tsx`                           | Intro phase provider + `useIntro()`.                     |
+| `components/snippets/intro-loader/intro-loader.tsx`    | The loading screen and its exit.                         |
+| `components/features/home/hero-atmosphere.tsx`         | Background layers, extracted from v2 and shared by both. |
+| `components/features/home/hero-cinematic.tsx`          | The variation: stage, hand-off timeline, auto-advance.   |
+| `components/features/home/hero-cinematic-copy.tsx`     | The copy block and its rotating line.                    |
+| `hooks/use-hero-parallax.ts`                           | Exit, hand-off and pointer parallax.                     |
+| `components/features/home/hero-disciplines-scene.tsx`  | Adds `onReady`.                                          |
+| `components/snippets/header/header.tsx`                | Intro entrance.                                          |
+| `app/layout.tsx`, `packages/ui/src/styles/globals.css` | `data-intro` pre-paint script and gating CSS.            |
 
 ## Build order
 
@@ -99,7 +102,7 @@ The whole landing site's animation speed is one dial: `NEXT_PUBLIC_ANIMATION_SPE
 3. Intro loader (timing, progress, exit) and scroll lock.
 4. Header entrance.
 5. Hero v3 layout, scene reveal, stage-A caption.
-6. Pinned scroll timeline + auto-advance; small-screen and reduced-motion paths.
+6. Hand-off timeline + auto-advance; small-screen and reduced-motion paths.
 7. Copy block: rotating line, word resolve, magnetic CTA, facts line.
 8. Wire `variation="cinematic"` on the home page; verify with headless screenshots at desktop and mobile widths; typecheck + lint.
 

@@ -2,7 +2,6 @@
 
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowDown } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import {
@@ -29,11 +28,11 @@ import { IntroGate, IntroPhase } from '@/enums/intro';
 import { useHeroParallax } from '@/hooks/use-hero-parallax';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import type { HeroCinematicConfig, HeroFacts } from '@/types/home';
-import { scrollToElement, scrollToPosition } from '@/utils/scroll';
+import { scrollToElement } from '@/utils/scroll';
 import { usePrefersReducedMotion } from '@workspace/ui/hooks/use-prefers-reduced-motion';
 import { cn } from '@workspace/ui/lib/utils';
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+gsap.registerPlugin(useGSAP);
 
 // Three.js is heavy — keep it out of the initial bundle.
 const HeroDisciplinesScene = dynamic(
@@ -50,6 +49,25 @@ const MAX_LOADER_SECONDS = 4;
 const CENTRED_SCALE = 1.12;
 /** Any of these counts as the reader taking over from the auto-advance. */
 const TAKEOVER_EVENTS = ['wheel', 'touchstart', 'keydown', 'pointerdown'];
+/** …and any of these, as the reader asking the stage to hand over. */
+const INTENT_EVENTS = ['wheel', 'touchmove', 'keydown'];
+/** The keys that mean "move down the page" — the rest leave the stage alone. */
+const INTENT_KEYS = [
+	'ArrowDown',
+	'ArrowUp',
+	'PageDown',
+	'PageUp',
+	'Home',
+	'End',
+	' ',
+	'Spacebar'
+];
+/** How much faster the hand-off runs for a reader who keeps pushing. */
+const HURRY_SCALE = 2;
+/** Scrolled further than this and the stage is not what they are looking at. */
+const TOP_SLACK = 4;
+/** How long the page has to hold a position before it counts as settled. */
+const SETTLE_MS = 200;
 const DESKTOP_QUERY = '(min-width: 1024px)';
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 
@@ -62,7 +80,7 @@ function motionNow() {
 
 	return {
 		reduced,
-		pinned: !reduced && window.matchMedia(DESKTOP_QUERY).matches
+		staged: !reduced && window.matchMedia(DESKTOP_QUERY).matches
 	};
 }
 
@@ -96,19 +114,24 @@ interface HeroCinematicProps extends HeroCinematicConfig {
 }
 
 /**
- * Hero v3: an intro loader, a reveal, then a scroll-driven hand-off.
+ * Hero v3: an intro loader, a reveal, then the stage handing over.
  *
- * The scene opens alone in the centre of the stage. On large screens the
- * section then pins, and scrolling slides the scene into the right column
- * while the copy builds in on the left. The real layout is the final one —
- * the centred start is a measured offset the timeline eases back to zero —
- * so it holds at every width and anything that measures the page (the "See
- * the works" jump) still lands true. See docs/requirements/home-hero-cinematic.md.
+ * The scene opens alone in the centre of the stage. On large screens the first
+ * sign the reader wants to move on — a wheel, the cue, or simply waiting —
+ * plays the hand-off: the scene slides into its column while the copy builds
+ * in beside it, over `handOffSeconds`, with the page held still for exactly
+ * that long. It plays once a load and nothing winds it back, so the stage is
+ * gone until the page is reloaded.
+ *
+ * Nothing about it touches the page's height: the real layout is the final one
+ * and the opening stage is a set of transforms over it, so anything that
+ * measures the page (the "See the works" jump) lands true throughout.
+ * See docs/requirements/home-hero-cinematic.md.
  */
 export function HeroCinematic({
 	loaderSeconds,
 	showLoader,
-	scrollDistance,
+	handOffSeconds,
 	autoAdvanceSeconds,
 	rotatingPhrases,
 	phraseHoldSeconds,
@@ -119,7 +142,7 @@ export function HeroCinematic({
 		MAX_LOADER_SECONDS,
 		loaderSeconds
 	);
-	const { setPhase } = useIntro();
+	const { phase, setPhase } = useIntro();
 	const smoother = useSmoother();
 	const reduceMotion = usePrefersReducedMotion();
 	const isDesktop = useMediaQuery(DESKTOP_QUERY);
@@ -130,7 +153,13 @@ export function HeroCinematic({
 	const captionRef = useRef<HTMLDivElement>(null);
 	const captionInnerRef = useRef<HTMLDivElement>(null);
 	const copyRef = useRef<HTMLDivElement>(null);
-	const handOffRef = useRef<ScrollTrigger | null>(null);
+	const handOffRef = useRef<gsap.core.Timeline | null>(null);
+	/** The hand-off's authored speed, to hurry it from and settle back to. */
+	const baseScaleRef = useRef(1);
+	/** Set the moment the hand-off starts: the stage never opens twice. */
+	const spentRef = useRef(false);
+	/** Whether the hand-off is the one holding the page still. */
+	const lockedRef = useRef(false);
 
 	// Decided once, on the client's first render. The server has no say (it
 	// renders the loader either way and the pre-paint gate hides it), and
@@ -141,15 +170,61 @@ export function HeroCinematic({
 	const [sceneReady, setSceneReady] = useState(false);
 	const [fontsReady, setFontsReady] = useState(false);
 	const [revealed, setRevealed] = useState(false);
+	/** The hand-off has finished; the stage is off the page. */
+	const [handedOff, setHandedOff] = useState(false);
 
-	const pinned = isDesktop && !reduceMotion;
+	/** Large screens with motion allowed — the only place the stage opens. */
+	const staged = isDesktop && !reduceMotion;
 
-	const scrollToHandOffEnd = useCallback(() => {
-		const end = handOffRef.current?.end;
-		if (end === undefined) return;
+	/** Hands the page back after the hand-off has held it still. */
+	const releaseScroll = useCallback(() => {
+		if (!lockedRef.current) return;
 
-		scrollToPosition(smoother, end, { cinematic: true });
+		lockedRef.current = false;
+		smoother?.paused(false);
 	}, [smoother]);
+
+	/**
+	 * The stage handing over — once a load, by wheel, cue or auto-advance.
+	 *
+	 * The page is held still for the length of it: the reader asked for the
+	 * hand-off, and there is nothing below worth scrolling to until the hero
+	 * has finished assembling. Asking again while it runs hurries it along
+	 * rather than queueing a second one. `instant` is for a reader who is
+	 * already past the hero — a restored scroll position, or a link into a
+	 * section — where the stage has nothing left to say.
+	 */
+	const playHandOff = useCallback(
+		({ instant = false } = {}) => {
+			const handOff = handOffRef.current;
+
+			if (spentRef.current) {
+				if (handOff?.isActive()) {
+					gsap.to(handOff, {
+						timeScale: baseScaleRef.current * HURRY_SCALE,
+						duration: 0.2,
+						overwrite: true
+					});
+				}
+				return;
+			}
+
+			spentRef.current = true;
+
+			if (instant || !handOff) {
+				handOff?.progress(1);
+				setHandedOff(true);
+				return;
+			}
+
+			if (smoother) {
+				lockedRef.current = true;
+				smoother.paused(true);
+			}
+			handOff.play();
+		},
+		[smoother]
+	);
 
 	const scrollToWork = useCallback(() => {
 		const target = document.getElementById(heroScrollTargetId);
@@ -197,7 +272,7 @@ export function HeroCinematic({
 			}
 		);
 
-		if (motion.pinned) {
+		if (motion.staged) {
 			timeline.fromTo(
 				captionInnerRef.current,
 				{ opacity: 0, y: 18 },
@@ -205,7 +280,7 @@ export function HeroCinematic({
 				0.7
 			);
 		} else {
-			// Small screens: no scroll hand-off, so the copy plays its
+			// Small screens: no opening stage, so the copy plays its
 			// entrance here, once.
 			const copy = gsap.utils.selector(copyRef.current);
 			timeline
@@ -281,15 +356,75 @@ export function HeroCinematic({
 		smoother.paused(true);
 
 		return () => {
-			smoother.paused(false);
+			// Unless the hand-off has taken the hold over in the meantime —
+			// a wheel during the reveal plays it before this effect is done.
+			if (!lockedRef.current) smoother.paused(false);
 		};
 	}, [playIntro, revealed, smoother]);
 
 	useEffect(() => {
-		if (!revealed || !pinned || autoAdvanceSeconds <= 0) return;
+		if (!staged || handedOff) return;
+
+		// A page that doesn't settle at the top isn't watching the stage: a
+		// restored scroll position, a link into a section, the scrollbar
+		// dragged. Past the first screen the hero is gone, so it is simply
+		// there, assembled, when they come back up; a nudge inside it still
+		// gets the hand-off played.
+		//
+		// Settled, because a client-side return to this page arrives with the
+		// last one's scroll position and is put back to the top a frame later.
+		let timer = 0;
+		const onScroll = () => {
+			window.clearTimeout(timer);
+			timer = window.setTimeout(() => {
+				const top = window.scrollY;
+				if (top <= TOP_SLACK) return;
+
+				playHandOff({ instant: top > window.innerHeight / 2 });
+			}, SETTLE_MS);
+		};
+
+		onScroll();
+		window.addEventListener('scroll', onScroll, { passive: true });
+
+		return () => {
+			window.clearTimeout(timer);
+			window.removeEventListener('scroll', onScroll);
+		};
+	}, [handedOff, playHandOff, staged]);
+
+	useEffect(() => {
+		// From the moment the hero is on screen, the first sign the reader
+		// wants to move on plays the hand-off instead of moving the page.
+		if (!staged || handedOff || phase === IntroPhase.IDLE) return;
+
+		const onIntent = (event: Event) => {
+			if (
+				event instanceof KeyboardEvent &&
+				!INTENT_KEYS.includes(event.key)
+			) {
+				return;
+			}
+
+			playHandOff();
+		};
+
+		INTENT_EVENTS.forEach((type) =>
+			window.addEventListener(type, onIntent, { passive: true })
+		);
+
+		return () =>
+			INTENT_EVENTS.forEach((type) =>
+				window.removeEventListener(type, onIntent)
+			);
+	}, [handedOff, phase, playHandOff, staged]);
+
+	useEffect(() => {
+		if (!revealed || !staged || handedOff || autoAdvanceSeconds <= 0)
+			return;
 
 		// Nobody should miss the headline for not scrolling: if the reader
-		// sits on the opening stage, the hand-off plays itself, slowly.
+		// sits on the opening stage, the hand-off plays itself.
 		const takeOver = () => {
 			window.clearTimeout(timer);
 			TAKEOVER_EVENTS.forEach((type) =>
@@ -298,7 +433,7 @@ export function HeroCinematic({
 		};
 		const timer = window.setTimeout(() => {
 			takeOver();
-			if (window.scrollY < 8) scrollToHandOffEnd();
+			playHandOff();
 		}, autoAdvanceSeconds * 1000);
 
 		TAKEOVER_EVENTS.forEach((type) =>
@@ -306,15 +441,15 @@ export function HeroCinematic({
 		);
 
 		return takeOver;
-	}, [autoAdvanceSeconds, pinned, revealed, scrollToHandOffEnd]);
+	}, [autoAdvanceSeconds, handedOff, playHandOff, revealed, staged]);
 
-	// --- the pinned, scrubbed hand-off (large screens) -----------------------
+	// --- the hand-off (large screens) ---------------------------------------
 	useGSAP(
 		() => {
 			const section = sectionRef.current;
 			const travel = travelRef.current;
 			const copyRoot = copyRef.current;
-			if (!pinned || !smoother || !section || !travel || !copyRoot)
+			if (spentRef.current || !staged || !section || !travel || !copyRoot)
 				return;
 
 			const copy = gsap.utils.selector(copyRoot);
@@ -334,49 +469,50 @@ export function HeroCinematic({
 				);
 			};
 
+			// The opening stage is set, not tweened from: what the markup
+			// lays out is the final arrangement, and these transforms are
+			// what hold it back until the hand-off runs. The centre is a
+			// measurement, so a resize before then takes it again.
+			const openStage = () => {
+				gsap.set(travel, { x: centreOffset(), scale: CENTRED_SCALE });
+				gsap.set(copyRoot, { x: -90 });
+				gsap.set(copy('[data-copy-line]'), { yPercent: 115 });
+				gsap.set(copy('[data-copy-word]'), {
+					opacity: 0,
+					filter: 'blur(8px)'
+				});
+				gsap.set(copy('[data-copy-reveal]'), { opacity: 0, y: 24 });
+				if (count) gsap.set(count, { innerText: 0 });
+			};
+			const onResize = () => {
+				if (!spentRef.current) openStage();
+			};
+
+			openStage();
+
 			const timeline = gsap.timeline({
+				paused: true,
 				defaults: { ease: 'none' },
-				scrollTrigger: {
-					trigger: section,
-					// Pins from the very first pixel of scroll: pulled up under
-					// the header, its offset is 0 — still read, in case a page
-					// ever puts something above it.
-					start: () => `top top+=${section.offsetTop}`,
-					end: () =>
-						`+=${(window.innerHeight * scrollDistance) / 100}`,
-					pin: true,
-					scrub: 1.2,
-					invalidateOnRefresh: true
+				onComplete: () => {
+					releaseScroll();
+					setHandedOff(true);
 				}
 			});
 
 			timeline
-				.fromTo(
+				.to(
 					captionRef.current,
-					{ opacity: 1, y: 0 },
-					{
-						opacity: 0,
-						y: -40,
-						duration: 0.2,
-						immediateRender: false
-					},
+					{ opacity: 0, y: -40, duration: 0.2 },
 					0
 				)
-				.fromTo(
+				.to(
 					travel,
-					{ x: centreOffset, scale: CENTRED_SCALE },
 					{ x: 0, scale: 1, duration: 1, ease: 'power2.inOut' },
 					0
 				)
-				.fromTo(
-					copyRoot,
-					{ x: -90 },
-					{ x: 0, duration: 0.8, ease: 'power3.out' },
-					0.3
-				)
-				.fromTo(
+				.to(copyRoot, { x: 0, duration: 0.8, ease: 'power3.out' }, 0.3)
+				.to(
 					copy('[data-copy-line]'),
-					{ yPercent: 115 },
 					{
 						yPercent: 0,
 						duration: 0.45,
@@ -385,9 +521,8 @@ export function HeroCinematic({
 					},
 					0.35
 				)
-				.fromTo(
+				.to(
 					copy('[data-copy-word]'),
-					{ opacity: 0, filter: 'blur(8px)' },
 					{
 						opacity: 1,
 						filter: 'blur(0px)',
@@ -396,9 +531,8 @@ export function HeroCinematic({
 					},
 					0.6
 				)
-				.fromTo(
+				.to(
 					copy('[data-copy-reveal]'),
-					{ opacity: 0, y: 24 },
 					{
 						opacity: 1,
 						y: 0,
@@ -410,9 +544,8 @@ export function HeroCinematic({
 				);
 
 			if (count) {
-				timeline.fromTo(
+				timeline.to(
 					count,
-					{ innerText: 0 },
 					{
 						innerText: facts?.projectCount ?? 0,
 						snap: { innerText: 1 },
@@ -422,30 +555,40 @@ export function HeroCinematic({
 				);
 			}
 
-			handOffRef.current = timeline.scrollTrigger ?? null;
+			// Authored in its own units above; the config says how long the
+			// whole beat takes. Kept, so hurrying it has a speed to go back to.
+			timeline.totalDuration(handOffSeconds);
+			baseScaleRef.current = timeline.timeScale();
+			handOffRef.current = timeline;
+
+			window.addEventListener('resize', onResize);
 
 			return () => {
+				window.removeEventListener('resize', onResize);
 				handOffRef.current = null;
+				// Leaving mid-hand-off must not leave the page locked.
+				releaseScroll();
 			};
 		},
 		{
 			dependencies: [
-				pinned,
-				smoother,
-				scrollDistance,
+				handOffSeconds,
+				releaseScroll,
+				staged,
 				facts?.projectCount
 			],
+			// The stage's transforms come off with it, and what they were
+			// holding back is the final layout.
+			revertOnUpdate: true,
 			scope: sectionRef
 		}
 	);
 
-	// Declared after the hand-off so it measures from the pin's real end.
 	useHeroParallax({
 		sectionRef,
-		handOffRef,
 		enabled: !reduceMotion && Boolean(smoother),
-		pinned,
-		dependencies: [smoother, scrollDistance]
+		holds: staged,
+		dependencies: [smoother]
 	});
 
 	return (
@@ -470,69 +613,84 @@ export function HeroCinematic({
 
 				<div className="relative mx-auto grid h-full max-w-8xl grid-cols-1 items-center gap-12 px-4 pt-28 pb-24 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16 lg:px-8 lg:pt-16 lg:pb-0">
 					<div
-						ref={copyRef}
 						data-hero-depth={HeroDepth.COPY}
 						className="relative z-10"
 					>
-						<HeroCinematicCopy
-							phrases={rotatingPhrases}
-							phraseHoldSeconds={phraseHoldSeconds}
-							running={revealed}
-							facts={facts}
-							onSeeWorks={scrollToWork}
-						/>
+						{/* The hand-off slides the copy in on its own layer,
+						    so it never shares a transform with the parallax
+						    plane around it — the two are built, reverted and
+						    rebuilt independently. */}
+						<div ref={copyRef}>
+							<HeroCinematicCopy
+								phrases={rotatingPhrases}
+								phraseHoldSeconds={phraseHoldSeconds}
+								running={revealed}
+								facts={facts}
+								onSeeWorks={scrollToWork}
+							/>
+						</div>
 					</div>
 
 					{/* Square, and never taller than the stage, so the
 					    constellation neither distorts nor clips. Listed after
 					    the copy for reading order; shown first on phones. */}
 					<div
-						ref={travelRef}
 						data-hero-depth={HeroDepth.SCENE}
 						className="relative order-first aspect-square w-full max-w-xl justify-self-center lg:order-none lg:w-[min(100%,calc(100svh-10rem))] lg:max-w-none"
 					>
+						{/* The hand-off's own layer, between the parallax
+						    plane and the pointer lean: one transform owner
+						    each, so none of them reverts another's. */}
 						<div
-							ref={revealRef}
-							data-hero-pointer={HeroDepth.SCENE}
-							className={cn(
-								'absolute inset-0',
-								!reduceMotion && 'opacity-0'
-							)}
+							ref={travelRef}
+							className="absolute inset-0"
 						>
-							<HeroDisciplinesScene
-								{...heroDisciplinesSceneConfig}
-								onReady={() => setSceneReady(true)}
-							/>
+							<div
+								ref={revealRef}
+								data-hero-pointer={HeroDepth.SCENE}
+								className={cn(
+									'absolute inset-0',
+									!reduceMotion && 'opacity-0'
+								)}
+							>
+								<HeroDisciplinesScene
+									{...heroDisciplinesSceneConfig}
+									onReady={() => setSceneReady(true)}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>
 
 				{/* The opening stage's caption: what this is, and how to go on.
-				    Gone before the copy arrives to say it properly. */}
-				{/* Always rendered, hidden by CSS below `lg`: a skipped intro
-				    reveals before the media query settles, and a caption that
-				    didn't exist yet would never get its fade-in. */}
-				<div
-					ref={captionRef}
-					className="pointer-events-none absolute inset-x-0 bottom-10 z-10 hidden justify-center motion-safe:lg:flex"
-				>
+				    Gone before the copy arrives to say it properly, and gone
+				    from the page once the stage has handed over for good. */}
+				{/* Until then always rendered, hidden by CSS below `lg`: a
+				    skipped intro reveals before the media query settles, and a
+				    caption that didn't exist yet would never get its fade-in. */}
+				{!handedOff && (
 					<div
-						ref={captionInnerRef}
-						className="pointer-events-auto flex flex-col items-center gap-4 opacity-0"
+						ref={captionRef}
+						className="pointer-events-none absolute inset-x-0 bottom-10 z-10 hidden justify-center motion-safe:lg:flex"
 					>
-						<p className="text-base text-foreground/75">
-							{heroCinematicCopy.caption}
-						</p>
-						<button
-							type="button"
-							onClick={scrollToHandOffEnd}
-							className="group inline-flex cursor-pointer items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+						<div
+							ref={captionInnerRef}
+							className="pointer-events-auto flex flex-col items-center gap-4 opacity-0"
 						>
-							<ArrowDown className="size-4 text-primary drop-shadow-[0_0_6px_var(--color-primary)] group-hover:paused motion-safe:animate-float-cue" />
-							{heroCinematicCopy.scrollCue}
-						</button>
+							<p className="text-base text-foreground/75">
+								{heroCinematicCopy.caption}
+							</p>
+							<button
+								type="button"
+								onClick={() => playHandOff()}
+								className="group inline-flex cursor-pointer items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+							>
+								<ArrowDown className="size-4 text-primary drop-shadow-[0_0_6px_var(--color-primary)] group-hover:paused motion-safe:animate-float-cue" />
+								{heroCinematicCopy.scrollCue}
+							</button>
+						</div>
 					</div>
-				</div>
+				)}
 			</section>
 		</>
 	);

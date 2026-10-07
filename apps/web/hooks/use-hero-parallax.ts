@@ -18,23 +18,24 @@ interface HeroParallaxOptions {
 	 * by scroll) and the `[data-hero-pointer]` ones (moved by the pointer).
 	 */
 	sectionRef: RefObject<HTMLElement | null>;
-	/** The pinned hand-off, when there is one — the parallax hands on from it. */
-	handOffRef: RefObject<ScrollTrigger | null>;
 	enabled: boolean;
-	pinned: boolean;
-	/** Whatever rebuilds the hand-off, so the parallax re-measures after it. */
+	/**
+	 * Large screens: the hero holds while the next section slides up over it,
+	 * rather than each plane trailing the page on its way out.
+	 */
+	holds: boolean;
+	/** Whatever else the parallax should re-measure after. */
 	dependencies: unknown[];
 }
 
 /**
- * The cinematic hero's depth, in three GSAP layers:
+ * The cinematic hero's depth, in two GSAP layers:
  *
  * - **Exit** — large screens: the stage holds (`hold`) while Services slides
  *   up over it, the copy blurring away. Small screens: each plane trails or
- *   leads the page by its own share (`scroll`). Starts where the pinned
- *   hand-off ends, or at the top when nothing pins.
- * - **Hand-off** — while pinned, the atmosphere drifts (`pinned`) so the stage
- *   never reads as a flat backdrop behind the moving scene.
+ *   leads the page by its own share (`scroll`). Either way it starts at the
+ *   top of the page: the hero is the first thing on it, and the stage hands
+ *   over on its own time rather than on scroll.
  * - **Pointer** — the planes lean with the cursor (`pointer`). This moves
  *   each plane's inner `[data-hero-pointer]` layer, so it never shares a
  *   transform with the scroll layers above.
@@ -43,9 +44,8 @@ interface HeroParallaxOptions {
  */
 export function useHeroParallax({
 	sectionRef,
-	handOffRef,
 	enabled,
-	pinned,
+	holds,
 	dependencies
 }: HeroParallaxOptions) {
 	useGSAP(
@@ -54,23 +54,20 @@ export function useHeroParallax({
 			if (!enabled || !section) return;
 
 			const { layers } = heroParallax;
-			const handOff = pinned ? handOffRef.current : null;
 			const plane = (depth: HeroDepth) =>
 				gsap.utils.toArray<HTMLElement>(
 					`[data-hero-depth="${depth}"]`,
 					section
 				);
 
-			// The hero is gone once its bottom edge clears the top — from
-			// wherever it starts moving, that's its own offset plus height.
-			const exitStart = () => handOff?.end ?? 0;
-			const exitEnd = () =>
-				exitStart() + section.offsetTop + section.offsetHeight;
+			// The hero is gone once its bottom edge clears the top — its own
+			// offset plus its height, from the top of the page.
+			const exitEnd = () => section.offsetTop + section.offsetHeight;
 
 			const exit = gsap.timeline({
 				defaults: { ease: 'none', duration: 1 },
 				scrollTrigger: {
-					start: exitStart,
+					start: 0,
 					end: exitEnd,
 					scrub: true,
 					invalidateOnRefresh: true
@@ -79,11 +76,9 @@ export function useHeroParallax({
 
 			Object.values(HeroDepth).forEach((depth) => {
 				const targets = plane(depth);
-				// Pinned: counter the exit scroll, so the stage holds while
-				// the next section covers it. Otherwise trail the page.
-				const share = handOff
-					? layers[depth].hold
-					: layers[depth].scroll;
+				// Large screens: counter the exit scroll, so the stage holds
+				// while the next section covers it. Otherwise trail the page.
+				const share = holds ? layers[depth].hold : layers[depth].scroll;
 				if (!targets.length || !share) return;
 
 				exit.fromTo(
@@ -91,18 +86,15 @@ export function useHeroParallax({
 					{ y: 0 },
 					{
 						y: () =>
-							share *
-							(handOff
-								? exitEnd() - exitStart()
-								: section.offsetHeight)
+							share * (holds ? exitEnd() : section.offsetHeight)
 					},
 					0
 				);
 			});
 
-			// Pinned (large screens) only: below `lg` the copy sits under the
-			// scene and is still being read as the page starts to move.
-			if (handOff) {
+			// Large screens only: below `lg` the copy sits under the scene and
+			// is still being read as the page starts to move.
+			if (holds) {
 				const { exit: leave } = heroParallax;
 				const [copy] = plane(HeroDepth.COPY);
 				const [scene] = plane(HeroDepth.SCENE);
@@ -128,30 +120,6 @@ export function useHeroParallax({
 						0
 					);
 				}
-			}
-
-			if (handOff) {
-				const drift = gsap.timeline({
-					defaults: { ease: 'none', duration: 1 },
-					scrollTrigger: {
-						start: () => handOff.start,
-						end: () => handOff.end,
-						scrub: 1.2,
-						invalidateOnRefresh: true
-					}
-				});
-
-				Object.values(HeroDepth).forEach((depth) => {
-					const targets = plane(depth);
-					if (!targets.length || !layers[depth].pinned) return;
-
-					drift.fromTo(
-						targets,
-						{ yPercent: 0 },
-						{ yPercent: layers[depth].pinned },
-						0
-					);
-				});
 			}
 
 			if (!window.matchMedia(FINE_POINTER_QUERY).matches) return;
@@ -208,7 +176,10 @@ export function useHeroParallax({
 			};
 		},
 		{
-			dependencies: [enabled, pinned, ...dependencies],
+			dependencies: [enabled, holds, ...dependencies],
+			// Every rebuild replaces the planes' transforms rather than
+			// stacking a second set of them on top.
+			revertOnUpdate: true,
 			scope: sectionRef
 		}
 	);
