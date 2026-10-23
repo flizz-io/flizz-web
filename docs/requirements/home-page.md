@@ -102,6 +102,11 @@ WordPress Plugin Development was also in the sheet but wasn't listed under any c
 - **Support your entire growth journey** — from validating concepts to scaling operations, technology that grows with you
 - **Win customers through experience** — interfaces that delight, workflows that convert, interactions that build loyalty
 
+**Variations** (`<WhyUs variation>`): the same stem and the same six endings either way — the heading is a sentence stem and each value prop finishes it.
+
+- `scroll` — the stem is pinned beside the endings and the page's scroll lights whichever one is at the reading line, one clause at a time, numbered `01`–`06`. Six screens of scroll for six parallel claims, which is what made the section read as an interlude.
+- `brace` (the home page, added 2026-10-24) — the stem and all six endings sit on one screen instead, drawn as a single bracket: one line leaves the stem, meets a spine, and fans out to every ending. Endings are set in the serif and each gloss sits beside its ending on `lg` and under it below that, so the whole fan fits a screen. No numbering — the endings are alternatives, not steps. No client JS.
+
 ## Testimonials
 
 Backed by the Testimonial CRUD feature ([testimonials-crud.md](testimonials-crud.md)) — testimonials only ever render here, there's no dedicated Testimonials page. Reads the published testimonials from the API in the dashboard's order (since T5, 2026-10-06); with none published the section is left out and the later sections renumber. A testimonial linked to a live project shows "See the project →". No real content provided yet — the three placeholder quotes are seeded from `apps/api/prisma/seed-data/testimonials.json`.

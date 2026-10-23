@@ -144,6 +144,21 @@ export interface ValueProp {
 	description: string;
 }
 
+/**
+ * `scroll` — the stem is pinned beside the endings and the page's scroll
+ *   lights whichever one is at the reading line, a clause at a time.
+ * `brace` — the stem and all six endings sit on one screen, drawn as one
+ *   bracket, so the section is read rather than scrolled through.
+ */
+export type WhyUsVariation = 'scroll' | 'brace';
+
+/** What every Why Flizzio variation takes from the page. */
+export interface WhyUsVariationProps {
+	sectionIndex: number;
+	totalSections?: number;
+	className?: string;
+}
+
 export interface Testimonial {
 	quote: string;
 	/**
