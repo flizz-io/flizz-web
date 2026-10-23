@@ -16,8 +16,8 @@ export interface HeroCinematicConfig {
 	loaderSeconds: number;
 	/** Off skips straight to the reveal. */
 	showLoader: boolean;
-	/** Pinned scroll travel, as % of the viewport height. */
-	scrollDistance: number;
+	/** How long the stage takes to hand over to the final layout, in seconds. */
+	handOffSeconds: number;
 	/** Idle seconds before the hand-off plays itself; 0 disables. */
 	autoAdvanceSeconds: number;
 	/** The headline's rotating third line; the first is the accessible one. */
@@ -46,8 +46,6 @@ export interface HeroParallaxLayer {
 	 * a little under 1 lets it drift up a touch, for depth.
 	 */
 	hold: number;
-	/** During the pinned hand-off: a vertical drift, in % of its own height. */
-	pinned: number;
 	/**
 	 * With the pointer at the hero's edge: px the plane follows (+) or
 	 * counters (−) it. Fine pointers only; 0 holds the plane still.

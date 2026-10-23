@@ -41,7 +41,7 @@ export const heroDisciplines: HeroDiscipline[] = [
 export const heroCinematicConfig: HeroCinematicConfig = {
 	loaderSeconds: 1.8,
 	showLoader: true,
-	scrollDistance: 200,
+	handOffSeconds: 1.2,
 	autoAdvanceSeconds: 10,
 	rotatingPhrases: ['what\u2019s next.', 'what scales.', 'what lasts.'],
 	phraseHoldSeconds: 3
@@ -56,10 +56,10 @@ export const heroCinematicConfig: HeroCinematicConfig = {
 // and its labels slide under the next section.
 export const heroParallax: HeroParallaxConfig = {
 	layers: {
-		[HeroDepth.FAR]: { scroll: 0.45, hold: 1, pinned: -10, pointer: -28 },
-		[HeroDepth.MID]: { scroll: 0.25, hold: 0.96, pinned: -18, pointer: 16 },
-		[HeroDepth.SCENE]: { scroll: 0.18, hold: 0.9, pinned: 0, pointer: 12 },
-		[HeroDepth.COPY]: { scroll: -0.12, hold: 0.82, pinned: 0, pointer: 0 }
+		[HeroDepth.FAR]: { scroll: 0.45, hold: 1, pointer: -28 },
+		[HeroDepth.MID]: { scroll: 0.25, hold: 0.96, pointer: 16 },
+		[HeroDepth.SCENE]: { scroll: 0.18, hold: 0.9, pointer: 12 },
+		[HeroDepth.COPY]: { scroll: -0.12, hold: 0.82, pointer: 0 }
 	},
 	pointerFollowSeconds: 1.2,
 	exit: { copyScale: 1.08, copyBlur: 14, copyShare: 0.55, sceneOpacity: 0.3 }
