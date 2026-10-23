@@ -69,6 +69,7 @@ export default async function HomePage() {
 				totalSections={totalSections}
 			/>
 			<WhyUs
+				variation="brace"
 				sectionIndex={afterTestimonials}
 				totalSections={totalSections}
 			/>
