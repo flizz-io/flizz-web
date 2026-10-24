@@ -17,7 +17,7 @@ export const portfolioCtaLead =
 	'Most of this work started with someone describing a process they had outgrown. A discovery call is the fastest way to find out whether yours is the same shape.';
 
 /** How many index rows land at a time, before and after "Load more". */
-export const archivePageSize = 4;
+export const archivePageSize = 5;
 
 /**
  * The scenery each chapter of the reel plays against, borrowed from the

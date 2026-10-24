@@ -11,7 +11,8 @@ export const aboutHeroHeading = 'Accelerate growth,';
 export const aboutHeroHeadingAccent = 'not complexity';
 
 export const aboutHeroLead =
-	'We started by building our own products. The services came after — which is why we think like a product team that happens to be for hire, not an agency looking for the next brief.';
+	"We started by building our own products. Services came later. That experience shaped how we work: we think beyond the brief, challenge what doesn't make sense, and build technology around what the business actually needs.";
+// 'We started by building our own products. The services came after — which is why we think like a product team that happens to be for hire, not an agency looking for the next brief.';
 
 /**
  * TODO: PM to replace with real figures. Only the founding year is confirmed.
@@ -19,23 +20,26 @@ export const aboutHeroLead =
  * `constants/home.ts` — the two pages publish the same number.
  */
 export const aboutFigures: AboutFigure[] = [
-	{ value: '2024', label: 'Founded, in March' },
+	{ value: '2024', label: 'Founded' },
 	{ value: '20', suffix: '+', label: 'Projects shipped' },
-	{ value: '7', label: 'People, four of them founders' },
-	{ value: '18', label: 'Clients served' }
+	{ value: '11', label: 'People, three of them founders' },
+	{ value: '15', label: 'Clients served' }
 ];
 
 export const aboutMission =
 	'To solve the technology problems that hold businesses back.';
 
 export const aboutMissionSupport =
-	'Most software that fails a business does not fail technically. It fails because nobody asked what it was for. We start there, and we keep asking until the answer holds up.';
+	'Most software that fails a business does not fail technically. It fails because nobody asked what it was for. We start with that question, challenge the assumptions behind it, and keep going until the solution makes sense for the business.';
+// 'Most software that fails a business does not fail technically. It fails because nobody asked what it was for. We start there, and we keep asking until the answer holds up.';
 
 export const aboutOriginLead =
-	'Flizz began in March 2024 with two engineers and a handful of product ideas of our own. Building those taught us the thing most agencies never have to learn: what it costs to live with a decision for two years. Two more co-founders joined, companies started asking who built our tools, and the services practice grew out of the answer.';
+	'Flizz began in March 2024 with two engineers and a handful of product ideas of our own. Building those products taught us something most agencies never have to learn: what it costs to live with a decision for two years.';
+// 'Flizz began in March 2024 with two engineers and a handful of product ideas of our own. Building those taught us the thing most agencies never have to learn: what it costs to live with a decision for two years. Two more co-founders joined, companies started asking who built our tools, and the services practice grew out of the answer.';
 
 export const aboutOriginNote =
-	'We still build our own products. It is the reason we argue with briefs instead of just invoicing them.';
+	"We still build our own products. It's why we question the brief instead of simply invoicing it.";
+// 'We still build our own products. It is the reason we argue with briefs instead of just invoicing them.';
 
 /**
  * TODO: PM to correct every date after March 2024 — the founding month and the
@@ -46,28 +50,29 @@ export const aboutMilestones: Milestone[] = [
 		date: 'Mar 2024',
 		title: 'Two engineers, one workshop',
 		description:
-			'Founded to build our own product ideas, funded by the consulting work that paid for the time to build them.'
+			'Flizz began with two engineers building products of our own, working toward ideas we wanted to bring to life.'
+		// 'Founded to build our own product ideas, funded by the consulting work that paid for the time to build them.'
 	},
 	{
 		date: 'Sep 2024',
 		title: 'The founding four',
 		description:
-			'Two more co-founders joined, bringing product and design in-house and completing the team the company still runs on.'
+			'One more co-founder joined, bringing product and business into the team alongside engineering.'
 	},
 	{
-		date: 'Feb 2025',
+		date: 'Nov 2024',
 		title: 'First client engagement',
 		description:
-			'A company that had seen our internal tooling asked for the same thing. The services practice starts here.'
+			"A company saw what we'd built for ourselves and wanted something similar. Our first client engagement followed, marking the start of Flizz's services practice."
 	},
 	{
 		date: 'Jul 2025',
-		title: 'Seven people',
+		title: 'A team across disciplines',
 		description:
 			'Engineering, design, and QA became distinct disciplines rather than hats the founders swapped between.'
 	},
 	{
-		date: 'Mar 2026',
+		date: 'Oct 2025',
 		title: 'AI integration becomes a practice',
 		description:
 			'Retrieval, automation, and the unglamorous work of deciding when a smaller model is the right answer.'
@@ -76,7 +81,7 @@ export const aboutMilestones: Milestone[] = [
 		date: 'Aug 2026',
 		title: '20+ projects shipped',
 		description:
-			'Every one of them handed over with documentation, and every one still owned by the client.'
+			'More than 20 projects delivered, with documented handovers and client ownership of the work.'
 	}
 ];
 
