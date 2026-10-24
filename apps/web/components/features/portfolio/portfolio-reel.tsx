@@ -48,7 +48,7 @@ const sceneMask =
  * work we lead with gets a stage instead: it pins, the chapter's scenery sits
  * behind the title, the change the project made lands under it, and the next
  * frame arrives as this one leaves. Everything not highlighted is a row in
- * `PortfolioArchive` below, which is the right treatment for the rest.
+ * `PortfolioArchive` below, which lists every project for scanning.
  *
  * Every frame stays in the DOM so its link is always crawlable and its copy is
  * always in the page; only the active one is visible and reachable. The
