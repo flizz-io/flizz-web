@@ -66,8 +66,11 @@ worth recording because it explains the final one:
 2. **A reel of all ten projects**, one per screen. Right treatment, wrong scope:
    nobody wants to scroll ten full-height frames to reach the one that matches
    their situation.
-3. **What ships:** the reel plays the _highlighted_ work only, and everything
-   else falls to an index below it.
+3. **What ships:** the reel plays the _highlighted_ work only, and an index
+   below it carries the full roster. The index held just the leftovers until
+   2026-10-24, which left a visitor who had watched a frame unable to find that
+   project in the list under it — the reel is a highlight of the set, not a
+   slice taken out of it.
 
 **The reel** pins one stage to the viewport and advances by scrolling:
 
@@ -88,13 +91,14 @@ Every frame stays in the DOM, so all its links are crawlable and the copy is
 always in the page; only the active frame is visible, and the inactive ones are
 `inert` so they take no focus and no clicks.
 
-**The index** below it is the shared `IndexedList` snippet — numbered rows with
-the sector as an eyebrow, the summary, and the project's headline result, all
-in fixed columns so the set reads as a table rather than a ragged stack. It
-opens at four rows behind a **Load more** button (`archivePageSize`), because an
-index that opens at full length reads as a backlog. Paging is client-side over a
-static roster today, and the shape is what the Projects API will page against at
-Stage 13.
+**The index** below it holds **every project, newest first** (`projectIndexOf`)
+— featured work included, so it appears both in the reel and here. It is the
+shared `IndexedList` snippet — numbered rows with the sector as an eyebrow, the
+summary, and the project's headline result, all in fixed columns so the set
+reads as a table rather than a ragged stack. It opens at four rows behind a
+**Load more** button (`archivePageSize`), because an index that opens at full
+length reads as a backlog. Paging is client-side over a static roster today,
+and the shape is what the Projects API will page against at Stage 13.
 
 Because there are no longer per-sector groups to link to, the sector anchors are
 gone: the masthead lists sectors and counts as a statement of range, and a case

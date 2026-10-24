@@ -15,7 +15,7 @@ import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
 
 interface PortfolioArchiveProps {
-	/** The projects the reel doesn't carry, newest first — see `archiveOf`. */
+	/** The full roster, newest first — see `projectIndexOf`. */
 	projects: Project[];
 	sectionIndex: number;
 	totalSections?: number;
@@ -23,12 +23,15 @@ interface PortfolioArchiveProps {
 }
 
 /**
- * Everything the reel does not carry.
+ * Every project, in the site's own row idiom.
  *
- * The reel gives four projects a screen each, which is the right treatment for
- * work we lead with and the wrong one for the rest — nobody wants to scroll
- * through ten full-height frames to find the one that matches their situation.
- * So the remainder lands here in the site's own row idiom, a page at a time.
+ * The reel gives the highlighted work a screen each, which is the right
+ * treatment for what we lead with and the wrong one for browsing — nobody
+ * wants to scroll through ten full-height frames to find the one that matches
+ * their situation. So the whole roster also lands here, a page at a time,
+ * where it can be scanned. The reel is a highlight of this list, not a slice
+ * taken out of it: a visitor who just watched a frame can still find that
+ * project in the index below.
  *
  * Rows arrive in batches rather than all at once for the same reason the reel
  * exists: an index that opens at its full length reads as a backlog. Paging is
@@ -68,7 +71,7 @@ export function PortfolioArchive({
 							label="The index"
 						/>
 						<h2 className="mt-4 font-heading text-3xl font-semibold tracking-tight text-balance text-foreground sm:text-4xl">
-							The rest of the work
+							All the work
 						</h2>
 					</div>
 

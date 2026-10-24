@@ -40,11 +40,14 @@ export function reelChapters(reel: Project[]) {
 		.filter((chapter) => chapter.items.length > 0);
 }
 
-/** Everything the reel does not carry, newest first. */
-export function archiveOf(projects: Project[]): Project[] {
-	return projects
-		.filter((project) => !project.featured)
-		.sort((a, b) => b.year.localeCompare(a.year));
+/**
+ * Everything, newest first. The index used to hold only what the reel skipped,
+ * which left a visitor who had just watched a frame unable to find that project
+ * in the list below it. The reel is a highlight of the same set, not a slice
+ * taken out of it, so the index carries the full roster.
+ */
+export function projectIndexOf(projects: Project[]): Project[] {
+	return [...projects].sort((a, b) => b.year.localeCompare(a.year));
 }
 
 /** The earliest year in the portfolio, or '' when it's empty. */
